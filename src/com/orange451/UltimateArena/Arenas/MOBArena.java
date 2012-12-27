@@ -70,6 +70,7 @@ public class MOBArena extends Arena {
 				spawning.add("ZOMBIE");
 				spawning.add("SKELETON");
 			}
+			}
 			if (wave > 3) {
 				spawning.add("SPIDER");
 			}
@@ -79,10 +80,13 @@ public class MOBArena extends Arena {
 			}
 			if (wave > 9) {
 				spawning.add("PIG_ZOMBIE");
-				spawning.add("PIG_ZOMBIE");
+				spawning.add("ENDERMAN");
 			}
 			if (wave > 12) {
 				spawning.add("GHAST");
+			}
+			if (wave > 13) {
+				spawning.add("CREEPER");
 			}
 		}catch(Exception e) {
 			//
