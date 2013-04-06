@@ -1,4 +1,5 @@
 package com.orange451.UltimateArena.listeners;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -141,7 +142,7 @@ public class PluginEntityListener implements Listener {
 							if (dc.equals(DamageCause.ENTITY_ATTACK)) {
 								Entity damager = ((EntityDamageByEntityEvent)dev).getDamager(); 
 								if (plugin.isInArena(dead)) {
-									String attackerName = damager.getClass().toString();
+									String attackerName = damager.getType().getName();
 									if (damager instanceof Player) {
 										attackerName = ((Player)damager).getName();
 									}
@@ -218,9 +219,11 @@ public class PluginEntityListener implements Listener {
 											plugin.getArenaPlayer(attacker).killstreak++;
 											plugin.getArenaPlayer(attacker).XP += 25;
 											
-											String attstr = dead.getClass().toString();
-											attstr = attstr.replaceAll("class.org.bukkit.craftbukkit.entity.", "");
-											attstr = attstr.substring(5, attstr.length());
+											
+											
+											String attstr = dead.getType().getName();
+//											attstr = attstr.replaceAll("class.org.bukkit.craftbukkit.entity.", "");
+//											attstr = attstr.substring(5, attstr.length());
 											
 											String line1 = ChatColor.GREEN + attacker.getName() + ChatColor.WHITE + " killed " + ChatColor.RED + attstr;
 											String line2 = ChatColor.RED + "killed " + attstr + " +25 XP";
@@ -253,9 +256,11 @@ public class PluginEntityListener implements Listener {
 												plugin.getArenaPlayer(attacker).killstreak++;
 												plugin.getArenaPlayer(attacker).XP += 25;
 												
-												String attstr = dead.getClass().toString();
-												attstr = attstr.replaceAll("class.org.bukkit.craftbukkit.entity.", "");
-												attstr = attstr.substring(5, attstr.length());
+												String attstr = dead.getType().getName();
+
+//												String attstr = dead.getClass().toString();
+//												attstr = attstr.replaceAll("class.org.bukkit.craftbukkit.entity.", "");
+//												attstr = attstr.substring(5, attstr.length());
 												
 												String line1 = ChatColor.GREEN + attacker.getName() + ChatColor.WHITE + " killed " + ChatColor.RED + attstr;
 												String line2 = ChatColor.RED + "killed " + attstr + " +25 XP";

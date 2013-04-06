@@ -56,10 +56,14 @@ public class ArenaPlayer {
 			Material mat = Material.getMaterial(weapon1);
 			if (mat != null) {
 				if (!mat.equals(Material.AIR)) {
-					MaterialData data = new MaterialData(mat);
-					data.setData(dat);
-					ItemStack itm = data.toItemStack(amt);
-					p.getInventory().setItem(slot, itm);
+					if (dat == 0)
+						p.getInventory().addItem(new ItemStack(mat, amt));
+					else {
+						MaterialData data = new MaterialData(mat);
+						data.setData(dat);
+						ItemStack itm = data.toItemStack(amt);
+						p.getInventory().setItem(slot, itm);
+					}
 				}
 			}
 		}

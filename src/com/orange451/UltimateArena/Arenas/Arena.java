@@ -55,12 +55,12 @@ public abstract class Arena {
 	public String type;
 	public String name = "";
 	public ArenaZone az = null;
-
+	public boolean pauseStartTimer = false;
 	
 	public Arena(ArenaZone az) {
 		this.name = az.arenaName;
 		this.az = az;
-		this.world = Util.world;
+		this.world = az.world;
 		this.az.timesPlayed++;
 		this.az.plugin.arenasPlayed++;
 		
@@ -402,17 +402,23 @@ public abstract class Arena {
 	
 	public void giveItem(Player pl, int id, byte dat, int amt, String type) {
 		//gives a player an item
+		
 		Inventory inv = pl.getInventory();
 		int slot = InventoryHelper.getFirstFreeSlot(inv);
 		if (slot != -1) {
 			pl.sendMessage(ChatColor.GOLD + type);
-			MaterialData data = new MaterialData(id);
-			data.setData(dat);
-			ItemStack itm = data.toItemStack(amt);
-			pl.getInventory().setItem(slot, itm);
+			if (dat == 0)
+				inv.addItem(new ItemStack(id, amt));
+			else {
+				MaterialData data = new MaterialData(id);
+				data.setData(dat);
+				ItemStack itm = data.toItemStack(amt);
+				pl.getInventory().setItem(slot, itm);
+			}
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void doKillStreak(ArenaPlayer ap) {
 		//basic killstreak system
 		try{
@@ -597,15 +603,11 @@ public abstract class Arena {
 			reloadConfig();
 		}
 		
-		starttimer--;
+		if (!pauseStartTimer)
+			starttimer--;
 		broadcastTimer--;
 		if (starttimer <= 0) {
-			if (start == false) {
-				this.start = true;
-				this.startingAmount = this.amtPlayersInArena;
-				this.amtPlayersStartingInArena = this.startingAmount;
-				this.onStart();
-			}
+			start();
 			gametimer--;
 		}else{
 			if (broadcastTimer < 0) {
@@ -620,10 +622,23 @@ public abstract class Arena {
 			onOutOfTime();
 		}
 		
-		//////Timer Notify
-		if (starttimer == 0) {
+//		//////Timer Notify
+//		if (starttimer == 0) {
+//			spawnAll();
+//			gametimer = maxgametime;
+//		}
+	}
+	
+	public void start() {
+		if (start == false) {
+			this.start = true;
+			this.startingAmount = this.amtPlayersInArena;
+			this.amtPlayersStartingInArena = this.startingAmount;
+			this.onStart();
+			
 			spawnAll();
 			gametimer = maxgametime;
+			starttimer = -1;
 		}
 	}
 	
@@ -696,24 +711,27 @@ public abstract class Arena {
 							////////////////////
 							//DOING TIMER SHIT//
 							////////////////////
-							if (starttimer > 0 && starttimer < 11) {
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(starttimer) + ChatColor.GRAY + " second(s) until start!");
+							if (!pauseStartTimer) {
+								if (starttimer > 0 && starttimer < 11) {
+									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(starttimer) + ChatColor.GRAY + " second(s) until start!");
+								}
+								if (starttimer == 30) {
+									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "30 " + ChatColor.GRAY + " second(s) until start!");
+								}
+								if (starttimer == 60) {
+									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "60 " + ChatColor.GRAY + " second(s) until start!");
+								}
+								if (starttimer == 45) {
+									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "45 " + ChatColor.GRAY + " second(s) until start!");
+								}
+								if (starttimer == 15) {
+									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "15 " + ChatColor.GRAY + " second(s) until start!");
+								}
+								if (starttimer == 120) {
+									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "120 " + ChatColor.GRAY + " second(s) until start!");
+								}
 							}
-							if (starttimer == 30) {
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "30 " + ChatColor.GRAY + " second(s) until start!");
-							}
-							if (starttimer == 60) {
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "60 " + ChatColor.GRAY + " second(s) until start!");
-							}
-							if (starttimer == 45) {
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "45 " + ChatColor.GRAY + " second(s) until start!");
-							}
-							if (starttimer == 15) {
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "15 " + ChatColor.GRAY + " second(s) until start!");
-							}
-							if (starttimer == 120) {
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "120 " + ChatColor.GRAY + " second(s) until start!");
-							}
+							
 							if (gametimer > 0 && gametimer < 21) {
 								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(gametimer) + ChatColor.GRAY + " second(s) until end!");
 							}

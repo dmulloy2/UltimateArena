@@ -3,6 +3,7 @@ main: com.orange451.UltimateArena.UltimateArena
 version: 1.0
 website: http://orangegaming.webatu.com/
 author: orange451
+softdepend: [PVPGunPlus]
 commands: 
   ua:
     description:

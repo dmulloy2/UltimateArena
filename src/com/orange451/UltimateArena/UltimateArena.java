@@ -8,8 +8,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,12 +18,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.BOMBArena;
 import com.orange451.UltimateArena.Arenas.CONQUESTArena;
 import com.orange451.UltimateArena.Arenas.CTFArena;
 import com.orange451.UltimateArena.Arenas.FFAArena;
+import com.orange451.UltimateArena.Arenas.HUNGERArena;
 import com.orange451.UltimateArena.Arenas.INFECTArena;
 import com.orange451.UltimateArena.Arenas.KOTHArena;
 import com.orange451.UltimateArena.Arenas.MOBArena;
@@ -53,9 +53,11 @@ import com.orange451.UltimateArena.commands.PCommandKick;
 import com.orange451.UltimateArena.commands.PCommandLeave;
 import com.orange451.UltimateArena.commands.PCommandLike;
 import com.orange451.UltimateArena.commands.PCommandList;
+import com.orange451.UltimateArena.commands.PCommandPause;
 import com.orange451.UltimateArena.commands.PCommandRefresh;
 import com.orange451.UltimateArena.commands.PCommandSetDone;
 import com.orange451.UltimateArena.commands.PCommandSetPoint;
+import com.orange451.UltimateArena.commands.PCommandStart;
 import com.orange451.UltimateArena.commands.PCommandStats;
 import com.orange451.UltimateArena.commands.PCommandStop;
 import com.orange451.UltimateArena.listeners.PluginBlockListener;
@@ -87,7 +89,6 @@ public class UltimateArena extends JavaPlugin {
 	public ArrayList<String> loggedOutInArena = new ArrayList<String>();
 	public ArrayList<String> isUAAdmin = new ArrayList<String>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
-	private Timer timer;
 
 	public void SendMessageAll(String msg) {
 		plist = Util.Who();
@@ -353,6 +354,16 @@ public class UltimateArena extends JavaPlugin {
 		return isInArena(block.getLocation());
 	}
 	
+	public Arena getArenaInside(Block block) {
+		for (int i = 0; i < loadedArena.size(); i++) {
+			ArenaZone az = loadedArena.get(i);
+			if (az.checkLocation(block.getLocation()))
+				return getArena(az.arenaName);
+		}
+		
+		return null;
+	}
+	
 	public boolean isInArena(Location loc) {
 		for (int i = 0; i < loadedArena.size(); i++) {
 			ArenaZone az = loadedArena.get(i);
@@ -437,8 +448,7 @@ public class UltimateArena extends JavaPlugin {
 										}
 										if (!found) {
 							                RemindTask rmd = new RemindTask(player, name);
-							                Timer timer = new Timer();
-							                timer.schedule(rmd, 2000L);
+							                rmd.runTaskLater(this, 40L);
 							                player.sendMessage(ChatColor.GOLD + "Please stand still for 2 seconds!");
 							                this.waiting.add(rmd);
 											
@@ -514,6 +524,8 @@ public class UltimateArena extends JavaPlugin {
 							ar = new BOMBArena(a);
 						}else if (a.arenaType.equalsIgnoreCase("ffa")) {
 							ar = new FFAArena(a);
+						}else if (a.arenaType.equalsIgnoreCase("hunger")) {
+							ar = new HUNGERArena(a);
 						}else if (a.arenaType.equalsIgnoreCase("spleef")) {
 							ar = new SPLEEFArena(a);
 						}else if (a.arenaType.equalsIgnoreCase("infect")) {
@@ -690,6 +702,7 @@ public class UltimateArena extends JavaPlugin {
 		fieldTypes.add("spleef");
 		fieldTypes.add("infect");
 		fieldTypes.add("ctf");
+		fieldTypes.add("hunger");
 		
 		isUAAdmin.add("orange451");
 		
@@ -717,6 +730,8 @@ public class UltimateArena extends JavaPlugin {
 		commands.add(new PCommandDisable(this));
 		commands.add(new PCommandEnable(this));
 		commands.add(new PCommandKick(this));
+		commands.add(new PCommandStart(this));
+		commands.add(new PCommandPause(this));
 		
 		if (!loaded) {
 			loaded = true;
@@ -727,8 +742,9 @@ public class UltimateArena extends JavaPlugin {
 
 			Util.Initialize(this);
 			
-		    this.timer = new Timer();
-		    this.timer.schedule(new ArenaUpdater(), 100L, 1000L);
+//		    this.timer = new Timer();
+//		    this.timer.schedule(new ArenaUpdater(), 100L, 1000L);
+			new ArenaUpdater().runTaskTimer(this, 2L, 20L);
 		}
 		loadFiles();
 	}
@@ -744,7 +760,8 @@ public class UltimateArena extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		timer.cancel();
+		getServer().getScheduler().cancelTasks(this);
+//		timer.cancel();
 		clearMemory();
 	}
 
@@ -768,7 +785,7 @@ public class UltimateArena extends JavaPlugin {
 		wcmd.clear();
 	}
 	
-	public class ArenaUpdater extends TimerTask {
+	public class ArenaUpdater extends BukkitRunnable {
 		public void run() {
 		    for (int i = 0; i < activeArena.size(); i++) {
 		    	try{
@@ -780,7 +797,7 @@ public class UltimateArena extends JavaPlugin {
 		}
 	}
 	
-	public class RemindTask extends TimerTask {
+	public class RemindTask extends BukkitRunnable {
 		public Player player;
 		public String name;
 		public int t;

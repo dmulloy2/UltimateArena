@@ -67,7 +67,7 @@ public class ArenaCreator {
 			this.steps.add("playerspawn");
 			this.steps.add("kothflag");
 		}
-		if (arenaType.equals("ffa")) {
+		if (arenaType.equals("ffa") || arenaType.equals("hunger")) {
 			amtLobbys = 1;
 			this.steps.add("playerspawn");
 		}
@@ -117,6 +117,7 @@ public class ArenaCreator {
 			az.flags = (ArrayList<Location>) flags.clone();
 			az.maxPlayers = 24;
 			az.defaultClass = plugin.classes.get(0).name;
+			az.world = lobby1.getWorld();
 			az.save();
 			System.out.println("ARENA CREATED AND SAVED: " + arenaName + "  TYPE: " + arenaType);
 			plugin.loadedArena.add(az);
@@ -153,7 +154,7 @@ public class ArenaCreator {
 					player.sendMessage(ChatColor.GRAY + "Please create the RED team arena spawnpoint");
 					stepUp();
 				}else{
-					if (arenaType.equals("koth") || arenaType.equals("ffa")) {
+					if (arenaType.equals("koth") || arenaType.equals("ffa") || arenaType.equals("hunger")) {
 						player.sendMessage(ChatColor.GRAY + "Please add some player spawnpoints  " + ChatColor.LIGHT_PURPLE + "/ua setpoint");
 						player.sendMessage(ChatColor.GRAY + "use " + ChatColor.GOLD + "/ua done" + ChatColor.GRAY + " when done");
 					}else{

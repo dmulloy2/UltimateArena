@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.orange451.UltimateArena.UltimateArena;
+import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
 public class PluginBlockListener implements Listener {
@@ -25,7 +26,13 @@ public class PluginBlockListener implements Listener {
 			if (player != null) {
 				Block block = event.getBlock();
 				if (plugin.isInArena(block)) {
-					event.setCancelled(true);
+					Arena arena = plugin.getArenaInside(block);
+					if (arena.type == "Hunger" && arena.az.arena.isInside(block.getLocation())) {
+						event.setCancelled(false);
+					} else {
+						event.setCancelled(true);
+					}
+					
 					if (PermissionInterface.checkPermission(player, plugin.uaAdmin)) {
 						if (!(plugin.isInArena(player))) {
 							event.setCancelled(false);

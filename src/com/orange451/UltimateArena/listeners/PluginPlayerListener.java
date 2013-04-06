@@ -1,8 +1,5 @@
 package com.orange451.UltimateArena.listeners;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,6 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.Field3D;
 import com.orange451.UltimateArena.UltimateArena;
@@ -28,6 +26,7 @@ import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.SPLEEFArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
+import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
 
 public class PluginPlayerListener implements Listener {
 	private UltimateArena plugin;
@@ -144,7 +143,7 @@ public class PluginPlayerListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player pl = event.getPlayer();
 		if (pl != null) {
@@ -157,8 +156,9 @@ public class PluginPlayerListener implements Listener {
 							if (are != null) {
 								if (!are.stopped) {
 									if (are.gametimer > 1) {
-									    Timer timer = new Timer();
-									    timer.schedule(new RemindTask(pl), 1000L);
+										if (are.getSpawn(apl) != null)
+											event.setRespawnLocation(are.getSpawn(apl));
+										new RemindTask(pl).runTaskLater(plugin, 20L);
 									}
 								}
 							}
@@ -193,7 +193,17 @@ public class PluginPlayerListener implements Listener {
 		}
 	}	
 	
-	class RemindTask extends TimerTask {
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerGunFire(PVPGunPlusFireGunEvent event) {
+		Player pl = event.getShooterAsPlayer();
+		if (pl != null) {
+			if (plugin.isInArena(pl)) {
+				event.setAmountAmmoNeeded(0);
+			}
+		}
+	}
+	
+	class RemindTask extends BukkitRunnable {
 		Player event;
 		public RemindTask(Player event) {
 			this.event = event;

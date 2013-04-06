@@ -10,7 +10,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.Field;
@@ -49,6 +51,7 @@ public class ArenaZone {
 	public ArrayList<String> steps = new ArrayList<String>();
 	public ArrayList<Location> spawns = new ArrayList<Location>();
 	public ArrayList<Location> flags = new ArrayList<Location>();
+	public World world;
 	public UltimateArena plugin;
 	
 	public ArenaZone(UltimateArena plugin, 	File f) {
@@ -91,6 +94,7 @@ public class ArenaZone {
 			outFile = new FileWriter(path);
 			out = new PrintWriter(outFile);
 			out.println(arenaType);
+			out.println(world.getName());
 			out.println(lobby1.getBlockX() + "," + lobby1.getBlockZ());
 			out.println(lobby2.getBlockX() + "," + lobby2.getBlockZ());
 			out.println(arena1.getBlockX() + "," + arena1.getBlockZ());
@@ -130,7 +134,7 @@ public class ArenaZone {
 				}
 				out.println(flags.get(0).getBlockX() + "," + flags.get(0).getBlockY() + "," + flags.get(0).getBlockZ());
 			}
-			if (arenaType.equals("ffa")) {
+			if (arenaType.equals("ffa") || arenaType.equals("hunger")) {
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(spawns.size());
 				for (int i = 0; i < spawns.size(); i++) {
@@ -191,11 +195,15 @@ public class ArenaZone {
 	public Location getLocationFromString(String str) {
 		String[] arr = str.split(",");
 		if (arr.length == 2) {
-			return new Location(Util.world, Integer.parseInt(arr[0]), 0, Integer.parseInt(arr[1]));
+			return new Location(world, Integer.parseInt(arr[0]), 0, Integer.parseInt(arr[1]));
 		}else if (arr.length == 3) {
-			return new Location(Util.world, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+			return new Location(world, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
 		}
 		return null;
+	}
+	
+	public World getWorldFromString(String str) {
+		return str == null ? null : Bukkit.getServer().getWorld(str);
 	}
 	
 	public void loadArena() {
@@ -210,23 +218,31 @@ public class ArenaZone {
 			String strLine;
 			strLine = br.readLine();
 			this.arenaType = strLine.toLowerCase();
-			if (strLine.equalsIgnoreCase("pvp")) {
+			strLine = br.readLine();
+			this.world = getWorldFromString(strLine);
+			if (this.world == null) {
+				this.world = Util.world;
+				try {br.close();} catch (Exception ex) {}
+				br = new BufferedReader(new InputStreamReader(in));
+				br.readLine();
+			}
+			if (arenaType.equalsIgnoreCase("pvp")) {
 				readPVP(br);
-			}else if (strLine.equalsIgnoreCase("mob")) {
+			}else if (arenaType.equalsIgnoreCase("mob")) {
 				readMOB(br);
-			}else if (strLine.equalsIgnoreCase("cq")) {
+			}else if (arenaType.equalsIgnoreCase("cq")) {
 				readCONQUEST(br);
-			}else if (strLine.equalsIgnoreCase("koth")) {
+			}else if (arenaType.equalsIgnoreCase("koth")) {
 				readKOTH(br);
-			}else if (strLine.equalsIgnoreCase("bomb")) {
+			}else if (arenaType.equalsIgnoreCase("bomb")) {
 				readBOMB(br);
-			}else if (strLine.equalsIgnoreCase("ffa")) {
+			}else if (arenaType.equalsIgnoreCase("ffa") || arenaType.equalsIgnoreCase("hunger")) {
 				readFFA(br);
-			}else if (strLine.equalsIgnoreCase("spleef")) {
+			}else if (arenaType.equalsIgnoreCase("spleef")) {
 				readSPLEEF(br);
-			}else if (strLine.equalsIgnoreCase("infect")) {
+			}else if (arenaType.equalsIgnoreCase("infect")) {
 				readINFECT(br);
-			}else if (strLine.equalsIgnoreCase("ctf")) {
+			}else if (arenaType.equalsIgnoreCase("ctf")) {
 				readCTF(br);
 			}
 		} catch (Exception e) { }
@@ -240,8 +256,8 @@ public class ArenaZone {
 		ArrayList<String> file = new ArrayList<String>();
 		String strLine;
 		try {
-			String str = br.readLine();
-			if (str != null) {
+			String str;
+			while ((str = br.readLine()) != null) {
 				if (str.equals("--config--")) {
 					while ((strLine = br.readLine()) != null) {
 						file.add(strLine);
@@ -249,11 +265,7 @@ public class ArenaZone {
 					for (int i = 0; i < file.size(); i++) {
 				    	computeConfigData(file.get(i));
 				    }
-				}else{
-					System.out.println("[ULTIMATEARENA] arena " + this.arenaName + " has no specific config - not bad");
 				}
-			}else{
-				System.out.println("[ULTIMATEARENA] arena " + this.arenaName + " has no specific config - not bad");
 			}
 		}catch (IOException e) {
 			//
@@ -391,7 +403,7 @@ public class ArenaZone {
 			
 			this.flags.add(getLocationFromString(br.readLine()));
 			this.flags.add(getLocationFromString(br.readLine()));
-			
+
 			System.out.println("BOMB ARENA LOADED: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
@@ -411,7 +423,7 @@ public class ArenaZone {
 			
 			this.flags.add(getLocationFromString(br.readLine()));
 			this.flags.add(getLocationFromString(br.readLine()));
-			
+
 			System.out.println("CTF ARENA LOADED: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
@@ -430,6 +442,7 @@ public class ArenaZone {
 			for (int i = 0; i < amtSpawns; i++) {
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
+
 			System.out.println("MOB ARENA LOADED: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {

@@ -70,7 +70,6 @@ public class MOBArena extends Arena {
 				spawning.add("ZOMBIE");
 				spawning.add("SKELETON");
 			}
-			}
 			if (wave > 3) {
 				spawning.add("SPIDER");
 			}
@@ -84,9 +83,6 @@ public class MOBArena extends Arena {
 			}
 			if (wave > 12) {
 				spawning.add("GHAST");
-			}
-			if (wave > 13) {
-				spawning.add("CREEPER");
 			}
 		}catch(Exception e) {
 			//
@@ -143,6 +139,7 @@ public class MOBArena extends Arena {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void doKillStreak(ArenaPlayer ap) {
 		try{
@@ -188,6 +185,7 @@ public class MOBArena extends Arena {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void check() {
 		try{
