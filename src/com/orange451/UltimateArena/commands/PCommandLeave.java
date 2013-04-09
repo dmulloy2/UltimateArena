@@ -1,5 +1,7 @@
 package com.orange451.UltimateArena.commands;
 
+import org.bukkit.ChatColor;
+
 import com.orange451.UltimateArena.UltimateArena;
 
 public class PCommandLeave extends PBaseCommand {
@@ -9,7 +11,7 @@ public class PCommandLeave extends PBaseCommand {
 		aliases.add("leave");
 		aliases.add("l");
 		
-		desc = "to leave an arena";
+		desc = ChatColor.YELLOW + "leave an arena";
 	}
 	
 	@Override

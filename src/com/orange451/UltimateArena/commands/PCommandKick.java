@@ -18,7 +18,7 @@ public class PCommandKick extends PBaseCommand {
 		
 		mode = "admin";
 		
-		desc = ChatColor.WHITE + "[playername] " + ChatColor.YELLOW + "to kick a player from an arena";
+		desc = ChatColor.DARK_RED + "<player>" + ChatColor.YELLOW + " kick a player from an arena";
 	}
 	
 	@Override

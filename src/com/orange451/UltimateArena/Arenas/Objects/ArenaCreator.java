@@ -119,12 +119,12 @@ public class ArenaCreator {
 			az.defaultClass = plugin.classes.get(0).name;
 			az.world = lobby1.getWorld();
 			az.save();
-			System.out.println("ARENA CREATED AND SAVED: " + arenaName + "  TYPE: " + arenaType);
+			System.out.println("[UltimateArena] Arena created and saved: " + arenaName + "  Type: " + arenaType);
 			plugin.loadedArena.add(az);
 			player.sendMessage(ChatColor.GRAY + "Finished arena!");
 			player.sendMessage(ChatColor.GRAY + "use " + ChatColor.GOLD + "/ua join " + arenaName + ChatColor.GRAY + " to play!");
 		}catch(Exception e) {
-			System.out.println("HOLY SHIT, THERES AN ERROR FINALIZING THE ARENA!!!!! REPORT THIS TO ORANGE!!!!");
+			System.out.println("[UltimateArena] ERROR CREATING ARENA! REPORT TO DMULLOY2!");
 			e.printStackTrace();
 		}
 		plugin.makingArena.remove(this);
@@ -204,12 +204,12 @@ public class ArenaCreator {
 			if (step.equalsIgnoreCase("playerspawn")) {
 				if (spawns.size() > 0) {
 					stepUp();
-					player.sendMessage(ChatColor.GRAY + "Done with player spanws");
+					player.sendMessage(ChatColor.GRAY + "Done with player spawns");
 					if (arenaType.equals("koth")) {
 						player.sendMessage(ChatColor.GRAY + "please add a flag spawn");	
 					}
 				}else{
-					player.sendMessage("You need more than 0 player spawns bro");
+					player.sendMessage("You need more than 0 player spawns");
 				}
 			}
 			if (step.equalsIgnoreCase("spleefzone")) {
@@ -326,7 +326,7 @@ public class ArenaCreator {
 					if (team2spawn == null) {
 						if (amtSpawnpoints>1) {
 							team2spawn = loc;
-							msg = "BLU spawn point set!, if the spawn points are done, use" + ChatColor.GOLD + " /ua done";
+							msg = "BLUE spawn point set!, if the spawn points are done, use" + ChatColor.GOLD + " /ua done";
 							return;
 						}
 					}

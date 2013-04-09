@@ -113,7 +113,7 @@ public class ArenaConfig {
 				//FUCK YOU
 			}
 		}else{
-			System.out.println("[ULTIMATEARENA] Failed to load reward to arena: " + arenaName);
+			System.out.println("[UltimateArena] Failed to load reward to arena: " + arenaName);
 		}
 	}
 	

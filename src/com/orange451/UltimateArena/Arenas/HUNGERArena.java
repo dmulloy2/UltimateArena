@@ -19,9 +19,9 @@ public class HUNGERArena extends Arena {
 		super(az);
 		
 		type = "Hunger";
-		starttimer = 300;
-		maxgametime = 60 * 60 * 4;
-		maxDeaths = 0;
+		starttimer = 120;
+		maxgametime = 60 * 10 * 3;
+		maxDeaths = 1;
 		allowTeamKilling = true;
 		
 		for (int i = 0; i < this.az.spawns.size(); i++) {

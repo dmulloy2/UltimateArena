@@ -16,7 +16,7 @@ public class WhiteListCommands {
 	
 	public boolean isAllowed(String str) {
 		for (int i = 0; i < allowedCommand.size(); i++) {
-			if (allowedCommand.get(i).contains(str)) {
+			if (allowedCommand.get(i).startsWith(str)) {
 				return true;
 			}
 		}

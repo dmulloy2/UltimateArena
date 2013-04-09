@@ -1,6 +1,3 @@
-/**
- * Copyright (C) 2012 t7seven7t
- */
 package com.orange451.UltimateArena.commands;
 
 import org.bukkit.ChatColor;
@@ -9,9 +6,6 @@ import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
-/**
- * @author t7seven7t
- */
 public class PCommandStart extends PBaseCommand {
 
 	public PCommandStart(UltimateArena plugin) {
@@ -20,7 +14,7 @@ public class PCommandStart extends PBaseCommand {
 		
 		mode = "admin";
 		
-		desc = ChatColor.WHITE + "[fieldName] " + ChatColor.YELLOW + "to force start an arena";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " force start an arena";
 	}
 	
 	@Override
@@ -39,7 +33,7 @@ public class PCommandStart extends PBaseCommand {
 			}
 		} else {
 			player.sendMessage(ChatColor.RED + "Incorrect use of /ua start");
-			player.sendMessage(ChatColor.GOLD + "/ua start [ARENANAME]");
+			player.sendMessage(ChatColor.GOLD + "/ua start [arena]");
 		}
 	}
 	

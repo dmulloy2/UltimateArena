@@ -14,7 +14,7 @@ public class PCommandForceJoin extends PBaseCommand {
 		
 		mode = "admin";
 		
-		desc = ChatColor.WHITE + "[fieldName] " + ChatColor.YELLOW + "to force join an arena";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " force join an arena";
 	}
 	
 	@Override
@@ -22,14 +22,14 @@ public class PCommandForceJoin extends PBaseCommand {
 		if (parameters.size() == 2) {
 			if (PermissionInterface.checkPermission(player, plugin.uaAdmin)) {
 				String name = parameters.get(1);
-				player.sendMessage(ChatColor.GOLD + "ATTEMPTING TO JOIn ARENA");
+				player.sendMessage(ChatColor.GOLD + "Attempthing to join arena: " + name);
 				plugin.joinBattle(true, player, name);
 			}else{
 				player.sendMessage("You do not have permission to force join arenas");
 			}
 		}else{
 			player.sendMessage(ChatColor.RED + "Incorrect use of /ua fj");
-			player.sendMessage(ChatColor.GOLD + "/ua fj [ARENANAME]");
+			player.sendMessage(ChatColor.GOLD + "/ua fj [arena]");
 		}
 	}
 }

@@ -57,7 +57,7 @@ public class UltimateArenaAPI {
 			//found the UA plugin;
 			return new UltimateArenaAPI(p);
 		}else{
-			System.out.println("COULD NOT HOOK INTO ULTIMATEARENA! is it installed?");
+			System.out.println("Could not hook into UltimateArena! Is it installed?");
 		}
 		return null;
 	}

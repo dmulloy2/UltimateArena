@@ -16,7 +16,7 @@ public class PCommandEnable extends PBaseCommand {
 		
 		mode = "admin";
 		
-		desc = ChatColor.WHITE + "[field Name/Type] " + ChatColor.YELLOW + "to enable an arena";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " enable an arena";
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class PCommandEnable extends PBaseCommand {
 					Arena aa = plugin.activeArena.get(ii);
 					if (aa.name.equals(at)) {
 						aa.disabled = false;
-						player.sendMessage(ChatColor.GRAY + "[ULTIMATEARENA] Enabled " + at);
+						player.sendMessage(ChatColor.GRAY + "[UltimateArena] Enabled " + at);
 					}else if (aa.az.arenaType.equals(at)) {
 						aa.disabled = false;
 						player.sendMessage(ChatColor.GRAY + "[ULTIMATEARENA] Enabled " + at);
@@ -38,10 +38,10 @@ public class PCommandEnable extends PBaseCommand {
 					ArenaZone aa = plugin.loadedArena.get(ii);
 					if (aa.arenaType.equals(at)) {
 						aa.disabled = false;
-						player.sendMessage(ChatColor.GRAY + "[ULTIMATEARENA] Enabled " + at);
+						player.sendMessage(ChatColor.GRAY + "[UltimateArena] Enabled " + at);
 					}else if (aa.arenaName.equals(at)) {
 						aa.disabled = false;
-						player.sendMessage(ChatColor.GRAY + "[ULTIMATEARENA] Enabled " + at);
+						player.sendMessage(ChatColor.GRAY + "[UltimateArena] Enabled " + at);
 					}
 				}
 			}else{
@@ -49,7 +49,7 @@ public class PCommandEnable extends PBaseCommand {
 					plugin.activeArena.get(ii).disabled = false;
 				for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
 					plugin.loadedArena.get(ii).disabled = false;
-				player.sendMessage(ChatColor.GRAY + "[ULTIMATEARENA] Enabled ALL");
+				player.sendMessage(ChatColor.GRAY + "[UltimateArena] Enabled ALL arenas");
 			}
 		}
 	}

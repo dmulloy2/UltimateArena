@@ -1,5 +1,7 @@
 package com.orange451.UltimateArena.commands;
 
+import org.bukkit.ChatColor;
+
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
@@ -12,7 +14,7 @@ public class PCommandSetPoint extends PBaseCommand {
 		
 		mode = "build";
 		
-		desc = "to set a point of your field";
+		desc = ChatColor.YELLOW + "set a point of your field";
 	}
 	
 	@Override

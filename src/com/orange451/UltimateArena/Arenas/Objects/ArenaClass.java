@@ -77,9 +77,9 @@ public class ArenaClass {
 	    	computeData(file.get(i));
 	    }
 	    if (loaded) {
-	    	System.out.println("[ULTIMATEARENA] CLASS LOADED: " + name);
+	    	System.out.println("[UltimateArena] Class loaded: " + name);
 	    }else{
-	    	System.out.println("[ULTIMATEARENA] ERROR LOADING CLASS: " + name);
+	    	System.out.println("[UltimateArena] Error loading class: " + name);
 	    }
 	}
 	

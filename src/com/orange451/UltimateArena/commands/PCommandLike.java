@@ -12,7 +12,7 @@ public class PCommandLike extends PBaseCommand {
 		aliases.add("like");
 		aliases.add("l");
 		
-		desc = ChatColor.WHITE + "[arenaName] " + ChatColor.YELLOW + "to like an arena";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " like an arena";
 	}
 	
 	@Override

@@ -12,7 +12,7 @@ public class PCommandDislike extends PBaseCommand {
 		aliases.add("dislike");
 		aliases.add("d");
 		
-		desc = ChatColor.WHITE + "[arenaName] " + ChatColor.YELLOW + "to dislike an arena";
+		desc = ChatColor.DARK_RED + "<arena> " + ChatColor.YELLOW + " dislike an arena";
 	}
 	
 	@Override

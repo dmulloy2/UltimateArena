@@ -13,7 +13,7 @@ public class PCommandCreate extends PBaseCommand {
 		
 		mode = "build";
 		
-		desc = ChatColor.WHITE + "[fieldType] " + ChatColor.YELLOW + "to create an UltimateArena field";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " create an UltimateArena";
 	}
 	
 	@Override

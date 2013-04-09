@@ -1,6 +1,3 @@
-/**
- * Copyright (C) 2012 t7seven7t
- */
 package com.orange451.UltimateArena.commands;
 
 import org.bukkit.ChatColor;
@@ -9,9 +6,6 @@ import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
-/**
- * @author t7seven7t
- */
 public class PCommandPause extends PBaseCommand {
 
 	public PCommandPause(UltimateArena plugin) {
@@ -20,7 +14,7 @@ public class PCommandPause extends PBaseCommand {
 		
 		mode = "admin";
 		
-		desc = "To pause the start timer on an arena";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " pause the start timer on an arena";
 	}
 	
 	@Override
@@ -39,7 +33,7 @@ public class PCommandPause extends PBaseCommand {
 			}
 		} else {
 			player.sendMessage(ChatColor.RED + "Incorrect use of /ua pause");
-			player.sendMessage(ChatColor.GOLD + "/ua pause [ARENANAME]");
+			player.sendMessage(ChatColor.GOLD + "/ua pause [arena]");
 		}
 
 	}

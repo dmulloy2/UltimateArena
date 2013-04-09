@@ -15,7 +15,7 @@ public class PCommandInfo extends PBaseCommand {
 		aliases.add("info");
 		aliases.add("i");
 		
-		desc = "to view info on the arena you're in";
+		desc = ChatColor.YELLOW + " view info on the arena you're in";
 	}
 	
 	@Override
@@ -24,7 +24,7 @@ public class PCommandInfo extends PBaseCommand {
 			if (plugin.isInArena(player)) {
 				Arena ar = plugin.getArena(player);
 				if (ar != null) {
-					sendMessage(ChatColor.AQUA + "~~~" + ChatColor.GOLD + "Arena: " + ChatColor.GRAY + ar.az.arenaName + ChatColor.AQUA + "~~~");
+					sendMessage(ChatColor.DARK_RED + "==== " + ChatColor.GOLD + ar.az.arenaName + ChatColor.DARK_RED + " ====");
 					ArenaPlayer ap = plugin.getArenaPlayer(player);
 					if (ap != null) {
 						String out = ChatColor.GREEN + "NOT OUT";

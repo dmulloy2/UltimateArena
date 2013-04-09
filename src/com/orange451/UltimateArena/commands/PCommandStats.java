@@ -13,7 +13,7 @@ public class PCommandStats extends PBaseCommand {
 		aliases.add("stats");
 		aliases.add("stat");
 		
-		desc = ChatColor.WHITE + "[arenaName] " + ChatColor.YELLOW + "to view an arenas stats";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " view an arenas stats";
 	}
 	
 	@Override

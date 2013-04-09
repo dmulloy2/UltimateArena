@@ -70,25 +70,40 @@ public class PluginPlayerListener implements Listener {
 		}
 	}
 	
+	// dmulloy2 improved method.
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
 		Player pl = event.getPlayer();
 		if (pl != null) {
-			if (plugin.isInArena(pl)) {
-				if (plugin.isInArena(pl.getLocation())) {
+			if (plugin.isInArena(pl))
+			{
+				if (plugin.getArena(pl).type.equals("Hunger"))
+				{
+					event.setCancelled(false);
+				}
+				else
+				{
 					event.setCancelled(true);
 				}
 			}
 		}
 	}
 	
-	// t7seven7t new method.
+	// dmulloy2 improved method.
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player pl = event.getPlayer();
 		if (pl != null) {
-			if (plugin.isInArena(pl)) {
-				event.setCancelled(true);
+			if (plugin.isInArena(pl))
+			{
+				if (plugin.getArena(pl).type.equals("Hunger"))
+				{
+					event.setCancelled(false);
+				}
+				else
+				{
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -113,10 +128,10 @@ public class PluginPlayerListener implements Listener {
 										ac.mclass = arc;
 										player.sendMessage(ChatColor.GRAY + "You will spawn as a(n): " + ChatColor.GOLD + line1);
 									}else{
-										player.sendMessage(ChatColor.RED + "yo yo yo, you be needin' perms fo dis class");
+										player.sendMessage(ChatColor.RED + "You do not have the necessary perms for this class");
 									}
 								}else{
-									player.sendMessage(ChatColor.GRAY + "That's not a class!");
+									player.sendMessage(ChatColor.RED + "Error: " + line1 + " is not a class!");
 								}
 							}
 						}
@@ -175,7 +190,7 @@ public class PluginPlayerListener implements Listener {
 		Player p = event.getPlayer();
 		for (int i = 0; i < plugin.waiting.size(); i++) {
 			if (plugin.waiting.get(i).player.getName().equals(p.getName())) {
-				plugin.waiting.get(i).player.sendMessage("Cancelled!");
+				plugin.waiting.get(i).player.sendMessage(ChatColor.RED + "Cancelled!");
 				plugin.waiting.get(i).cancel();
 				plugin.waiting.remove(i);
 			}

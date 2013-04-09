@@ -14,7 +14,7 @@ public class PCommandForceStop extends PBaseCommand {
 		
 		mode = "admin";
 		
-		desc = "to force stop an arena";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW  + " force stop an arena";
 	}
 	
 	@Override
@@ -26,7 +26,7 @@ public class PCommandForceStop extends PBaseCommand {
 				plugin.forceStop();
 			}else{
 				player.sendMessage(ChatColor.RED + "Incorrect use of /ua forcestop");
-				player.sendMessage(ChatColor.GOLD + "/ua forcestop [ARENANAME]");
+				player.sendMessage(ChatColor.GOLD + "/ua forcestop [arena]");
 			}
 		}
 	}

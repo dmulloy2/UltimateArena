@@ -14,7 +14,7 @@ public class PCommandDelete extends PBaseCommand {
 		
 		mode = "build";
 		
-		desc = ChatColor.WHITE + "[fieldName] " + ChatColor.YELLOW + "to delete an arena";
+		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " delete an arena";
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public class PCommandDelete extends PBaseCommand {
 			}
 		}else{
 			player.sendMessage(ChatColor.RED + "Incorrect use of /ua delete");
-			player.sendMessage(ChatColor.GOLD + "/ua delete [ARENANAME]");
+			player.sendMessage(ChatColor.GOLD + "/ua delete [arena]");
 		}
 	}
 }

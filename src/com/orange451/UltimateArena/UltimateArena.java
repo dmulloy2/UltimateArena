@@ -71,7 +71,6 @@ public class UltimateArena extends JavaPlugin {
 	private PluginPlayerListener playerListener = new PluginPlayerListener(this);
 	private PluginEntityListener entityListener = new PluginEntityListener(this);
 	private List<PBaseCommand> commands = new ArrayList<PBaseCommand>();
-	private List<Player> plist;
 	private boolean loaded = false;
 	public int maxArenasRunning = 1024;
 	public int arenasPlayed = 0;
@@ -89,13 +88,6 @@ public class UltimateArena extends JavaPlugin {
 	public ArrayList<String> loggedOutInArena = new ArrayList<String>();
 	public ArrayList<String> isUAAdmin = new ArrayList<String>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
-
-	public void SendMessageAll(String msg) {
-		plist = Util.Who();
-		for (int i = 0; i < plist.size(); i++) {
-			plist.get(i).sendMessage(msg);
-		}
-	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -146,7 +138,7 @@ public class UltimateArena extends JavaPlugin {
 			Arena ar = this.getArena(player);
 			ArenaPlayer ap = this.getArenaPlayer(player);
 			if (ap != null) {
-				System.out.println("[ULTIMATEARENA] PLAYER LEAVING ARENA FROM QUIT");
+				System.out.println("[UltimateArena] Player " + player.getName() + " leaving arena " + ar + " from quit");
 				if (ar != null) {
 					if (ar.starttimer > 0 && (!ap.out)) { //in the lobby
 						loggedOut.add(player.getName());
@@ -213,7 +205,7 @@ public class UltimateArena extends JavaPlugin {
 			Arena a = this.getArena(player);
 			a.endPlayer(getArenaPlayer(player), false);
 		}else{
-			player.sendMessage("You are not in an arena! silly");
+			player.sendMessage(ChatColor.RED + "Error, you are not in an arena");
 		}
 	}
 	
@@ -260,7 +252,7 @@ public class UltimateArena extends JavaPlugin {
 	            System.err.println("Error: " + e.getMessage());
 	        }
 		}else{
-			System.out.println("[UltimateArena]No Whitelisted Commands file!");
+			System.out.println("[UltimateArena] No Whitelisted Commands file!");
 		}
 	}
 	
@@ -270,9 +262,9 @@ public class UltimateArena extends JavaPlugin {
 		if (f.exists()) {
 			ArenaConfig a = new ArenaConfig(this, str, f);
 			configs.add(a);
-			System.out.println("[ULTIMATEARENA] LOADED CONFIGURATION FOR ARENA TYPE: " + str);
+			System.out.println("[UltimateArena] Loaded configuration for arena type: " + str);
 		}else{
-			System.out.println("[ULTIMATEARENA] FAILED TO LOAD CONFIGURATION FOR ARENA TYPE: " + str);
+			System.out.println("[UltimateArena] Failed to load configuration for arena type: " + str);
 		}
 	}
 	
@@ -344,9 +336,9 @@ public class UltimateArena extends JavaPlugin {
 			}
 			forceStop(str);
 			this.loadedArena.remove(this.getArenaZone(str));
-			player.sendMessage("Deleted arena!");
+			player.sendMessage(ChatColor.YELLOW + "Deleted arena!");
 		}catch(Exception e) {
-			player.sendMessage("Failed to delete arena!");
+			player.sendMessage(ChatColor.RED + "Failed to delete arena!");
 		}
 	}
 	
@@ -453,26 +445,26 @@ public class UltimateArena extends JavaPlugin {
 							                this.waiting.add(rmd);
 											
 										}else{
-											player.sendMessage("You are already waiting!");
+											player.sendMessage(ChatColor.RED + "You are already waiting!");
 										}
 										//joinBattle(null, player, name);
 									/////////////////////////////////////////
 									/////////////////////////////////////////
 								}else{
-									player.sendMessage(ChatColor.RED + "You cannot leave and rejoin an arena! (noob)");
+									player.sendMessage(ChatColor.RED + "You cannot leave and rejoin an arena!");
 								}
 							}else{
-								player.sendMessage(ChatColor.RED + "SillyWilly! you're already in an arena!");
+								player.sendMessage(ChatColor.RED + "You're already in an arena!");
 							}
 						}else{
-							player.sendMessage(ChatColor.RED + "Oops! That arena doesn't exist!");
+							player.sendMessage(ChatColor.RED + "That arena doesn't exist!");
 						}
 					}else{
 						player.sendMessage(ChatColor.RED + "Please clear your inventory!");
 					}
 				}
 			}else{
-				player.sendMessage("You are in the middle of making an arena!");
+				player.sendMessage(ChatColor.RED + "You are in the middle of making an arena!");
 			}
 		}
 	}
@@ -542,7 +534,7 @@ public class UltimateArena extends JavaPlugin {
 					//	player.sendMessage(ChatColor.RED + "sorry, only " + Integer.toString(maxArenasRunning) + " arena(s) can be ran at a time!");
 					//}
 				}else{
-					player.sendMessage("This arena is disabled!");
+					player.sendMessage(ChatColor.RED + "Error, This arena is disabled!");
 				}
 			}
 		}catch(Exception e) {
@@ -592,7 +584,7 @@ public class UltimateArena extends JavaPlugin {
 				player.sendMessage(ChatColor.GRAY + ac.msg);
 			}
 		}else{
-			player.sendMessage(ChatColor.RED + "lol? you arren't even editing a field!");
+			player.sendMessage(ChatColor.RED + "Error, you aren't editing a field!");
 		}
 	}
 	
@@ -601,7 +593,7 @@ public class UltimateArena extends JavaPlugin {
 		if (ac != null) {
 			ac.setDone(player);
 		}else{
-			player.sendMessage(ChatColor.RED + "lol? you arren't even editing a field!");
+			player.sendMessage(ChatColor.RED + "Error, you aren't editing a field!");
 		}
 	}
 	
@@ -640,7 +632,7 @@ public class UltimateArena extends JavaPlugin {
 				}
 			}
 			if (found) {
-				System.out.println("[ULTIMATEARENA] " + player.getName() + "is making arena: " + name + " with a type: " + type);
+				System.out.println("[UltimateArena] " + player.getName() + "is making arena: " + name + " with a type: " + type);
 				ArenaCreator ac = new ArenaCreator(this, player);
 				ac.setArena(name, type);
 				makingArena.add(ac);
@@ -648,7 +640,7 @@ public class UltimateArena extends JavaPlugin {
 				player.sendMessage(ChatColor.RED + "This is not a valid field type!");
 			}
 		}else{
-			player.sendMessage("You are already creating an arena!");
+			player.sendMessage(ChatColor.RED + "You are already creating an arena!");
 		}
 	}
 	
@@ -680,7 +672,7 @@ public class UltimateArena extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		System.out.println("UltimateArena Enabled");
+		System.out.println("[UltimateArena] " + getDescription().getFullName() + " has been enabled");
 		
 		File dir = getDataFolder();
 		if (!dir.exists()) {
@@ -705,6 +697,7 @@ public class UltimateArena extends JavaPlugin {
 		fieldTypes.add("hunger");
 		
 		isUAAdmin.add("orange451");
+		isUAAdmin.add("dmulloy2");
 		
 		PermissionInterface.Initialize(this);
 		
@@ -751,7 +744,7 @@ public class UltimateArena extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		System.out.println("UltimateArena Disabled");
+		System.out.println("[UltimateArena] " + getDescription().getFullName() + " has been disabled");
 		isUAAdmin.clear();
 		for (int i = activeArena.size()-1; i >= 0; i--) {
 			try{

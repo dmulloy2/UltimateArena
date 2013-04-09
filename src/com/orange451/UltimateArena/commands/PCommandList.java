@@ -15,13 +15,13 @@ public class PCommandList extends PBaseCommand {
 		aliases.add("list");
 		aliases.add("li");
 		
-		desc = "to view all the UltimateArena Arenas";
+		desc = ChatColor.YELLOW + "view all the UltimateArenas";
 	}
 	
 	@Override
 	public void perform() {
 		if (parameters.size() == 1) {
-			sendMessage(ChatColor.AQUA + "~~~" + ChatColor.GOLD + "ULTIMATEARENAs" + ChatColor.AQUA + "~~~");
+			sendMessage(ChatColor.DARK_RED + "==== " + ChatColor.GOLD + "UltimateArenas" + ChatColor.DARK_RED + " ====");
 			List<ArenaZone> arenas = this.plugin.loadedArena;
 			List<Arena> activearenas = this.plugin.activeArena;
 			
@@ -29,13 +29,13 @@ public class PCommandList extends PBaseCommand {
 				String arena = arenas.get(i).arenaName;
 				String type = arenas.get(i).arenaType;
 				
-				String arenaType = ChatColor.BLUE + "[" + ChatColor.GRAY + type + " Arena" + ChatColor.BLUE + "]";
-				String arenaName = ChatColor.WHITE + arena;
+				String arenaType = ChatColor.GOLD + "[" + ChatColor.RED + type + " Arena" + ChatColor.GOLD + "]";
+				String arenaName = ChatColor.RED + arena;
 				String arenaMode = "";
-				String plays = ChatColor.AQUA + "[" + arenas.get(i).timesPlayed + "]";
+				String plays = ChatColor.YELLOW + "[" + arenas.get(i).timesPlayed + "]";
 				arenaMode = ChatColor.GREEN + "[FREE]";
 				if (arenas.get(i).disabled)
-					arenaMode = ChatColor.DARK_PURPLE + "[DISABLED]";
+					arenaMode = ChatColor.DARK_RED + "[DISABLED]";
 				
 				for (int ii = 0; ii < activearenas.size(); ii++) {
 					Arena ar = activearenas.get(ii);
@@ -44,10 +44,10 @@ public class PCommandList extends PBaseCommand {
 							if (ar.starttimer > 0) {
 								arenaMode = ChatColor.YELLOW + "[LOBBY  |  " + Integer.toString(ar.starttimer) + " seconds]";
 							}else{
-								arenaMode = ChatColor.RED + "[BUSY]";
+								arenaMode = ChatColor.DARK_RED + "[BUSY]";
 							}
 						}else{
-							arenaMode = ChatColor.DARK_PURPLE + "[DISABLED]";
+							arenaMode = ChatColor.DARK_RED + "[DISABLED]";
 						}
 					}
 				}

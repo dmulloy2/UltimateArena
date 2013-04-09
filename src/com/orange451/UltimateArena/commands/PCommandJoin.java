@@ -12,7 +12,7 @@ public class PCommandJoin extends PBaseCommand {
 		aliases.add("join");
 		aliases.add("j");
 		
-		desc = ChatColor.WHITE + "[fieldName] " + ChatColor.YELLOW + "to join/start an UltimateArena field";
+		desc = ChatColor.DARK_RED + "<arena> " + ChatColor.YELLOW + " join/start an UltimateArena";
 	}
 	
 	@Override

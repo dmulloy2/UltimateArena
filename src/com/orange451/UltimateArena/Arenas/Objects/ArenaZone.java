@@ -69,7 +69,7 @@ public class ArenaZone {
 		loadArena();
 		
 		if (!loaded) {
-			System.out.println("ARENA: " + arenaName + " HAS FAILED TO LOAD!");
+			System.out.println("[UltimateArena] Arena: " + arenaName + " has failed to load!");
 		}else{
 			lobby.setParam(lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
 			arena.setParam(arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
@@ -236,7 +236,7 @@ public class ArenaZone {
 				readKOTH(br);
 			}else if (arenaType.equalsIgnoreCase("bomb")) {
 				readBOMB(br);
-			}else if (arenaType.equalsIgnoreCase("ffa") || arenaType.equalsIgnoreCase("hunger")) {
+			}else if (arenaType.equalsIgnoreCase("ffa")||arenaType.equalsIgnoreCase("hunger")) {
 				readFFA(br);
 			}else if (arenaType.equalsIgnoreCase("spleef")) {
 				readSPLEEF(br);
@@ -245,7 +245,11 @@ public class ArenaZone {
 			}else if (arenaType.equalsIgnoreCase("ctf")) {
 				readCTF(br);
 			}
-		} catch (Exception e) { }
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
 		loadConfig(br);
 		try{ br.close(); }catch(Exception e) { }
 		try{ in.close(); }catch(Exception e) { }
@@ -296,7 +300,7 @@ public class ArenaZone {
 			this.lobbyBLUspawn = getLocationFromString(br.readLine());
 			this.team1spawn = getLocationFromString(br.readLine());
 			this.team2spawn = getLocationFromString(br.readLine());
-			System.out.println("PVP ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] PvP arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -312,7 +316,7 @@ public class ArenaZone {
 			this.lobbyBLUspawn = getLocationFromString(br.readLine());
 			this.team1spawn = getLocationFromString(br.readLine());
 			this.team2spawn = getLocationFromString(br.readLine());
-			System.out.println("INFECT ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] Infect arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -332,7 +336,7 @@ public class ArenaZone {
 			for (int i = 0; i < amtSpawns; i++) {
 				this.flags.add(getLocationFromString(br.readLine()));
 			}
-			System.out.println("CONQUEST ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] Conquest arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -350,7 +354,7 @@ public class ArenaZone {
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
 			this.flags.add(getLocationFromString(br.readLine()));
-			System.out.println("KOTH ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArnea] Koth arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -367,7 +371,7 @@ public class ArenaZone {
 			for (int i = 0; i < amtSpawns; i++) {
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
-			System.out.println("FFA ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] FFA arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -384,7 +388,7 @@ public class ArenaZone {
 			for (int i = 0; i < 4; i++) {
 				this.flags.add(getLocationFromString(br.readLine()));
 			}
-			System.out.println("FFA ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] Spleef arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -404,7 +408,7 @@ public class ArenaZone {
 			this.flags.add(getLocationFromString(br.readLine()));
 			this.flags.add(getLocationFromString(br.readLine()));
 
-			System.out.println("BOMB ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] Bomb arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -424,7 +428,7 @@ public class ArenaZone {
 			this.flags.add(getLocationFromString(br.readLine()));
 			this.flags.add(getLocationFromString(br.readLine()));
 
-			System.out.println("CTF ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] CTF arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -443,7 +447,7 @@ public class ArenaZone {
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
 
-			System.out.println("MOB ARENA LOADED: " + arenaName);
+			System.out.println("[UltimateArena] Mob arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
