@@ -1,6 +1,7 @@
 package com.orange451.UltimateArena;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class Field {
 	public int minx;
@@ -9,39 +10,51 @@ public class Field {
 	public int maxy;
 	public int width;
 	public int length;
+	private World world;
 	
-	public Field(double x, double z, double x2, double z2) {
-		setParam(x, z, x2, z2);
+	public Field(World world, double x, double z, double x2, double z2) 
+	{
+		setParam(world, x, z, x2, z2);
 	}
 
-	public Field() {
+	public Field() 
+	{
 	}
 
-	public void setParam(double x, double z, double x2, double z2) {
+	public void setParam(World world, double x, double z, double x2, double z2) 
+	{
 		this.minx = (int)x;
 		this.miny = (int)z;
 		this.maxx = (int)x2;
 		this.maxy = (int)z2;
 		
-		if (minx > maxx) {
+		if (minx > maxx) 
+		{
 			maxx = minx;
 			minx = (int)x2;
 		}
 		
-		if (miny > maxy) {
+		if (miny > maxy)
+		{
 			maxy = miny;
 			miny = (int)z2;
 		}
 		
 		this.width = maxx-minx;
 		this.length = maxy-miny;
+		
+		this.world = world;
 	}
 	
-	public boolean isInside(Location loc) {
+	public boolean isInside(Location loc)
+	{
 		int locx = loc.getBlockX();
 		int locz = loc.getBlockZ();
-		if (locx >= minx && locx <= maxx) {
-			if (locz >= miny && locz <= maxy) {
+		World locw = loc.getWorld();
+		if (locx >= minx && locx <= maxx && locw == world)
+		{
+			if (locz >= miny && locz <= maxy)
+			{
 				return true;
 			}
 		}

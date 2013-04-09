@@ -99,7 +99,7 @@ public class ArenaPlayer {
 						giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8);
 					}catch(Exception e) {
 						//e.printStackTrace();
-						System.out.println("[ULTIMATEARENA] Error giving player class items!");
+						System.out.println("[UltimateArena] Error giving player class items!");
 					}
 				}
 			}else{

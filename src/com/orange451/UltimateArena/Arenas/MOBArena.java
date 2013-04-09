@@ -207,7 +207,7 @@ public class MOBArena extends Arena {
 				}
 				
 				if (amtPlayersInArena == 0) {
-					System.out.println("[ULTIAMTEARENA]MOBARENA STOP");
+					System.out.println("[UltimateArena] Stopping Mob arena");
 					stop();
 				}
 				if (wave > maxwave) {

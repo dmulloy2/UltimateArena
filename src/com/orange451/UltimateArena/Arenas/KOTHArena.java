@@ -27,7 +27,7 @@ public class KOTHArena extends Arena {
 			this.flags.add( new KothFlag(this, this.az.flags.get(i)) );
 		}
 		for (int i = 0; i < this.az.spawns.size(); i++) {
-			this.spawns.add( new ArenaSpawn(this.az.spawns.get(i).getBlockX(), this.az.spawns.get(i).getBlockY(), this.az.spawns.get(i).getBlockZ()) );
+			this.spawns.add( new ArenaSpawn(this.az.spawns.get(i).getWorld(), this.az.spawns.get(i).getBlockX(), this.az.spawns.get(i).getBlockY(), this.az.spawns.get(i).getBlockZ()) );
 		}
 	}
 	

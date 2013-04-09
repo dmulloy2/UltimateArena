@@ -48,7 +48,7 @@ public class INFECTArena extends PVPArena {
 				chooseInfected(tries+1);
 			}
 		}else{
-			this.tellPlayers("ERROR STARTING!");
+			this.tellPlayers(ChatColor.RED + "Error starting!");
 			stop();
 		}
 	}

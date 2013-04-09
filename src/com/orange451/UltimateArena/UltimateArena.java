@@ -152,10 +152,12 @@ public class UltimateArena extends JavaPlugin {
 		}
 	}
 	
-	public void onJoin(Player player) {
-		
-		if (!this.isInArena(player)) {
-			if (this.isInArena(player.getLocation())) {
+	public void onJoin(Player player) 
+	{
+		if (!this.isInArena(player))
+		{
+			if (this.isInArena(player.getLocation())) 
+			{
 				normalize(player);
 				removePotions(player);
 			}

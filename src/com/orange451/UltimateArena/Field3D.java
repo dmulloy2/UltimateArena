@@ -13,8 +13,8 @@ public class Field3D extends Field{
 	public int height;
 	public UltimateArena plugin;
 	
-	public Field3D(double x, double y, double z, double x2, double y2, double z2) {
-		setParam(x, y, z, x2, y2, z2);
+	public Field3D(World world, double x, double y, double z, double x2, double y2, double z2) {
+		setParam(world, x, y, z, x2, y2, z2);
 	}
 
 	public Field3D() {
@@ -25,8 +25,8 @@ public class Field3D extends Field{
 		this.world = world;
 	}
 
-	public void setParam(double x, double y, double z, double x2, double y2, double z2) {
-		setParam(x, y, x2, y2);
+	public void setParam(World world, double x, double y, double z, double x2, double y2, double z2) {
+		setParam(world, x, y, x2, y2);
 		
 		this.minz = (int)z;
 		this.maxz = (int)z2;
@@ -46,7 +46,8 @@ public class Field3D extends Field{
 	public boolean isInside(Location loc) {
 		if (super.isInside(loc)) {
 			int locy = loc.getBlockY();
-			if (locy >= minz && locy <= maxz) {
+			World locw = loc.getWorld();
+			if (locy >= minz && locy <= maxz && locw == world) {
 				return true;
 			}
 		}

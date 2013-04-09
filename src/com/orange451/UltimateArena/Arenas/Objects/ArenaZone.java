@@ -71,8 +71,8 @@ public class ArenaZone {
 		if (!loaded) {
 			System.out.println("[UltimateArena] Arena: " + arenaName + " has failed to load!");
 		}else{
-			lobby.setParam(lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
-			arena.setParam(arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
+			lobby.setParam(lobby1.getWorld(), lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
+			arena.setParam(arena1.getWorld(), arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
 		}
 		
 	}
@@ -188,8 +188,8 @@ public class ArenaZone {
 		this.lobby = new Field();
 		this.arena = new Field();
 		
-		lobby.setParam(lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
-		arena.setParam(arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
+		lobby.setParam(lobby1.getWorld(), lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
+		arena.setParam(arena1.getWorld(), arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
 	}
 	
 	public Location getLocationFromString(String str) {

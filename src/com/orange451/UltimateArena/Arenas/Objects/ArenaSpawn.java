@@ -1,27 +1,33 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 
-import com.orange451.UltimateArena.util.Util;
-
-public class ArenaSpawn {
+public class ArenaSpawn
+{
 	public int x;
 	public int y;
 	public int z;
+	public World world;
 	
-	public ArenaSpawn(int x, int y, int z) {
+	public ArenaSpawn(World world, int x, int y, int z) 
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.world = world;
 	}
 
-	public Location getLocation() {
-		return new Location(Util.world, x, y, z);
+	public Location getLocation() 
+	{
+		return new Location(world, x, y, z);
 	}
 	
-	public void setLocation(int x, int y, int z) {
+	public void setLocation(World world, int x, int y, int z) 
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.world = world;
 	}
 }
