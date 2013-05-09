@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.Field;
 import com.orange451.UltimateArena.UltimateArena;
-import com.orange451.UltimateArena.util.Util;
 
 public class ArenaZone {
 	public int amtLobbys = 2;
@@ -69,7 +68,7 @@ public class ArenaZone {
 		loadArena();
 		
 		if (!loaded) {
-			System.out.println("[UltimateArena] Arena: " + arenaName + " has failed to load!");
+			plugin.getLogger().warning("Arena: " + arenaName + " has failed to load!");
 		}else{
 			lobby.setParam(lobby1.getWorld(), lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
 			arena.setParam(arena1.getWorld(), arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
@@ -221,7 +220,7 @@ public class ArenaZone {
 			strLine = br.readLine();
 			this.world = getWorldFromString(strLine);
 			if (this.world == null) {
-				this.world = Util.world;
+				this.world = plugin.getServer().getWorlds().get(0);
 				try {br.close();} catch (Exception ex) {}
 				br = new BufferedReader(new InputStreamReader(in));
 				br.readLine();
@@ -248,7 +247,7 @@ public class ArenaZone {
 		} 
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			plugin.getLogger().severe("Error loading arena " + arenaType + ": " + e.getMessage());
 		}
 		loadConfig(br);
 		try{ br.close(); }catch(Exception e) { }
@@ -300,7 +299,7 @@ public class ArenaZone {
 			this.lobbyBLUspawn = getLocationFromString(br.readLine());
 			this.team1spawn = getLocationFromString(br.readLine());
 			this.team2spawn = getLocationFromString(br.readLine());
-			System.out.println("[UltimateArena] PvP arena loaded: " + arenaName);
+			plugin.getLogger().info("PvP arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -316,7 +315,7 @@ public class ArenaZone {
 			this.lobbyBLUspawn = getLocationFromString(br.readLine());
 			this.team1spawn = getLocationFromString(br.readLine());
 			this.team2spawn = getLocationFromString(br.readLine());
-			System.out.println("[UltimateArena] Infect arena loaded: " + arenaName);
+			plugin.getLogger().info("Infect arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -336,7 +335,7 @@ public class ArenaZone {
 			for (int i = 0; i < amtSpawns; i++) {
 				this.flags.add(getLocationFromString(br.readLine()));
 			}
-			System.out.println("[UltimateArena] Conquest arena loaded: " + arenaName);
+			plugin.getLogger().info("Conquest arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -354,7 +353,7 @@ public class ArenaZone {
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
 			this.flags.add(getLocationFromString(br.readLine()));
-			System.out.println("[UltimateArnea] Koth arena loaded: " + arenaName);
+			plugin.getLogger().info("KOTH arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -371,7 +370,7 @@ public class ArenaZone {
 			for (int i = 0; i < amtSpawns; i++) {
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
-			System.out.println("[UltimateArena] FFA arena loaded: " + arenaName);
+			plugin.getLogger().info("FFA arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -388,7 +387,7 @@ public class ArenaZone {
 			for (int i = 0; i < 4; i++) {
 				this.flags.add(getLocationFromString(br.readLine()));
 			}
-			System.out.println("[UltimateArena] Spleef arena loaded: " + arenaName);
+			plugin.getLogger().info("Spleef arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -408,7 +407,7 @@ public class ArenaZone {
 			this.flags.add(getLocationFromString(br.readLine()));
 			this.flags.add(getLocationFromString(br.readLine()));
 
-			System.out.println("[UltimateArena] Bomb arena loaded: " + arenaName);
+			plugin.getLogger().info("Bomb arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -428,7 +427,7 @@ public class ArenaZone {
 			this.flags.add(getLocationFromString(br.readLine()));
 			this.flags.add(getLocationFromString(br.readLine()));
 
-			System.out.println("[UltimateArena] CTF arena loaded: " + arenaName);
+			plugin.getLogger().info("CTF arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}
@@ -447,7 +446,7 @@ public class ArenaZone {
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
 
-			System.out.println("[UltimateArena] Mob arena loaded: " + arenaName);
+			plugin.getLogger().info("Mob arena loaded: " + arenaName);
 			loaded = true;
 		} catch (IOException e) {
 		}

@@ -3,6 +3,7 @@ package com.orange451.UltimateArena.Arenas;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,7 +13,12 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
 import com.orange451.UltimateArena.InventoryHelper;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaConfig;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaFlag;
@@ -65,8 +71,8 @@ public abstract class Arena
 	
 	public Arena(ArenaZone az) 
 	{
-		this.name = az.arenaName;
 		this.az = az;
+		this.name = az.arenaName;
 		this.world = az.world;
 		this.az.timesPlayed++;
 		this.az.plugin.arenasPlayed++;
@@ -101,10 +107,28 @@ public abstract class Arena
 		pl.team = getTeam();
 		arenaplayers.add(pl);
 		spawn(player.getName(), false);
-		player.sendMessage("You have joined the arena");
+		player.sendMessage(ChatColor.GOLD + "You have joined the arena");
+		
+		// Basic things players need to play
+		player.setGameMode(GameMode.SURVIVAL);
 		player.setHealth(20);
-		//player.setExhaustion(-player.getExhaustion());
 		player.setFoodLevel(20);
+		player.setFireTicks(0);
+		
+		// If essentials is found, remove god mode.
+		PluginManager pm = az.plugin.getServer().getPluginManager();
+		if (pm.isPluginEnabled("Essentials"))
+		{
+			IEssentials ess = null;
+			Plugin essPlugin = pm.getPlugin("Essentials");
+			ess = (IEssentials) essPlugin;
+			User user = ess.getUser(player);
+			if (user.isGodModeEnabled())
+				user.setGodModeEnabled(false);
+			if (user.isFlying())
+				user.setFlying(false);
+		}
+		az.plugin.removePotions(player);
 		updatedTeams = true;
 	}
 	
@@ -195,6 +219,7 @@ public abstract class Arena
 				}
 				catch(Exception e) 
 				{
+					az.plugin.getLogger().severe("Error: " + e.getMessage());
 				}
 			}
 		}
@@ -203,15 +228,17 @@ public abstract class Arena
 	
 	public void spawnAll() 
 	{
-		System.out.println("[UltimateArena] Spawning all players!");
-		az.plugin.getServer().getScheduler().scheduleSyncDelayedTask(az.plugin, new Runnable() 
+		az.plugin.getLogger().info("Spawning all players!");
+		class SpawnTask extends BukkitRunnable
 		{
-		    public void run()
-		    {
+			@Override
+			public void run()
+			{
 				//spawns every player
 				for (int i = 0; i < arenaplayers.size(); i++)
 				{
-					try{
+					try
+					{
 						ArenaPlayer ap = arenaplayers.get(i);
 						if (ap != null)
 						{
@@ -223,11 +250,12 @@ public abstract class Arena
 					}
 					catch(Exception e) 
 					{
-						//
+						az.plugin.getLogger().severe("Error spawning players: " + e.getMessage());
 					}
 				}
 			}
-		});
+		}
+		new SpawnTask().runTask(az.plugin);
 	}
 	
 	public Location getSpawn(ArenaPlayer ap) 
@@ -254,7 +282,7 @@ public abstract class Arena
 		}
 		catch(Exception e) 
 		{
-			//
+			az.plugin.getLogger().severe("Error getting player spawn: " + e.getMessage());
 		}
 		if (loc != null)
 		{
@@ -269,7 +297,7 @@ public abstract class Arena
 		//spawns the player to THEIR team spawn, and gives them their class
 		if (!stopped)
 		{
-			final Player p = Util.MatchPlayer(name);
+			final Player p = Util.matchPlayer(name);
 			if (p != null) 
 			{
 				for (int i = 0; i < arenaplayers.size(); i++) 
@@ -291,13 +319,15 @@ public abstract class Arena
 											if (loc != null) 
 											{
 												final Location nloc = new Location(loc.getWorld(), loc.getX() + 0.25, loc.getY() + 1.0, loc.getZ() + 0.25);
-												az.plugin.getServer().getScheduler().scheduleSyncDelayedTask(az.plugin, new Runnable() 
+												class TeleportTask extends BukkitRunnable
 												{
+													@Override
 													public void run() 
 													{
 														teleport(p, nloc);
 													}
-												});
+												}
+												new TeleportTask().runTask(az.plugin);
 											}
 											ap.spawn();
 											if (!alreadyspawned)
@@ -318,7 +348,7 @@ public abstract class Arena
 					}
 					catch(Exception e)
 					{
-						//
+						az.plugin.getLogger().severe("Error: " + e.getMessage());
 					}
 				}
 			}
@@ -344,12 +374,12 @@ public abstract class Arena
 		else
 		{
 			Inventory inv = pl.getInventory();
-			inv.setItem(0, new ItemStack(Material.GOLD_INGOT, 1));
+			inv.addItem(new ItemStack(Material.GOLD_INGOT, 1));
 		}
 		
 		pl.setLevel(p.baselevel);
 		pl.setExp(p.startxp);
-		pl.giveExp((int) (p.XP / 9.0));
+		pl.giveExp((int) Math.ceil(p.XP / 9));
 		pl.sendMessage(ChatColor.BLUE + "Thanks for playing!");
 	}
 	
@@ -372,7 +402,7 @@ public abstract class Arena
 						}
 						catch(Exception e) 
 						{
-							//WHAT??!?!? ERRORS!?!?!? NO!
+							az.plugin.getLogger().severe("Error: " + e.getMessage());
 						}
 					}
 				}
@@ -386,8 +416,8 @@ public abstract class Arena
 		for (int i = 0; i < arenaplayers.size(); i++)
 		{
 			ArenaPlayer apl = arenaplayers.get(i);
-			if (apl != null
-					) {
+			if (apl != null)
+			{
 				if (apl.out == false)
 				{
 					apl.canReward = false;
@@ -413,10 +443,9 @@ public abstract class Arena
 				{
 					if (apl.points >= max)
 					{
-						stop();
-						reward(apl, Util.MatchPlayer(apl.username), false);
+						reward(apl, Util.matchPlayer(apl.username), false);
 						this.tellPlayers(ChatColor.GRAY + "Player " + ChatColor.GOLD + apl.username + ChatColor.GRAY + " has won!");
-						return;
+						stop();
 					}
 				}
 			}
@@ -500,7 +529,7 @@ public abstract class Arena
 		{
 			if (starttimer <= 0) 
 			{
-				Player p = Util.MatchPlayer(name);
+				Player p = Util.matchPlayer(name);
 				if (p != null) 
 				{
 					ArenaPlayer ap = this.az.plugin.getArenaPlayer(p);
@@ -519,7 +548,7 @@ public abstract class Arena
 		}
 		catch(Exception e) 
 		{
-			e.printStackTrace();
+			az.plugin.getLogger().severe("Error: " + e.getMessage());
 		}
 	}
 	
@@ -543,15 +572,18 @@ public abstract class Arena
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
+	/**Basic Killstreak System**/
 	public void doKillStreak(ArenaPlayer ap) 
 	{
-		//basic killstreak system
 		try
 		{
-			Player pl = Util.MatchPlayer(ap.player.getName());
+			Player pl = Util.matchPlayer(ap.player.getName());
 			if (pl != null)
 			{
+				/**Hunger Arena check**/
+				if (az.plugin.getArena(pl).type.equals("Hunger"))
+					return;
+				
 				if (ap.killstreak == 2)
 					giveItem(pl, Material.POTION.getId(), (byte)9, 1, "2 kills! Unlocked strength potion!");
 				
@@ -566,7 +598,7 @@ public abstract class Arena
 						pl.sendMessage(ChatColor.GOLD + "5 kills! Unlocked Zombies!");
 						for (int i = 0; i < 4; i++)
 						{
-							pl.getLocation().getWorld().spawnCreature(pl.getLocation(), EntityType.ZOMBIE);
+							pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.ZOMBIE);
 						}
 					}
 				}
@@ -575,7 +607,7 @@ public abstract class Arena
 					pl.sendMessage(ChatColor.GOLD + "8 kills! Unlocked attackdogs!");
 					for (int i = 0; i < 2; i++)
 					{
-						Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnCreature(pl.getLocation(), EntityType.WOLF);
+						Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
 						wolf.setOwner(pl);
 					}
 				}
@@ -588,7 +620,7 @@ public abstract class Arena
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			az.plugin.getLogger().severe("Error: " + e.getMessage());
 		}
 	}
 	
@@ -612,8 +644,7 @@ public abstract class Arena
 		//ends the arena
 		stopped = true;
 		onStop();
-		System.out.println("[UltimateArena] Preparing to stop arena: " + name + "!");
-		//az.plugin.getServer().getScheduler().cancelTask(timer);
+		az.plugin.getLogger().info("Preparing to stop arena: " + name + "!");
 		try
 		{
 			for (int i = 0; i < arenaplayers.size(); i++)
@@ -627,11 +658,11 @@ public abstract class Arena
 						{
 							if (gametimer <= maxgametime)
 							{
-								Util.MatchPlayer(arenaplayers.get(i).player.getName()).sendMessage(ChatColor.BLUE + "Game inturrupted/ended!");
+								Util.matchPlayer(arenaplayers.get(i).player.getName()).sendMessage(ChatColor.BLUE + "Game inturrupted/ended!");
 							}
 							else
 							{
-								Util.MatchPlayer(arenaplayers.get(i).player.getName()).sendMessage(ChatColor.BLUE + "Game Over!");
+								Util.matchPlayer(arenaplayers.get(i).player.getName()).sendMessage(ChatColor.BLUE + "Game Over!");
 							}
 							endPlayer(arenaplayers.get(i), false);
 						}
@@ -640,14 +671,14 @@ public abstract class Arena
 				}
 				catch(Exception e) 
 				{
-					System.out.println(e.getCause());
+					az.plugin.getLogger().severe("Error: " + e.getMessage());
 				}
 			}
 			az.plugin.activeArena.remove(this);
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			az.plugin.getLogger().severe("Error: " + e.getMessage());
 		}
 	}
 	
@@ -683,7 +714,7 @@ public abstract class Arena
 						
 						if (!(az.plugin.isInArena(pl.getLocation()))) 
 						{
-							System.out.println("[UltimateArena] " + ap.player.getName() + " Got out of the Arena! Putting him back in");
+							az.plugin.getLogger().info(ap.player.getName() + " got out of the Arena! Putting him back in");
 							ap.spawn();
 							spawn(ap.player.getName(), false);
 						}
@@ -691,7 +722,7 @@ public abstract class Arena
 				}
 				catch(Exception e) 
 				{
-					//NOOOOO D:
+					az.plugin.getLogger().severe("Error: " + e.getMessage());
 				}
 			}
 		}
@@ -706,13 +737,15 @@ public abstract class Arena
 	public void teleport(final Player p, final Location add) 
 	{
 		//safely teleports a player regardless of multi-threading
-		az.plugin.getServer().getScheduler().scheduleSyncDelayedTask(az.plugin, new Runnable() 
+		class TeleportThread extends BukkitRunnable
 		{
-		    public void run()
-		    {
-		    	p.teleport(add.clone().add(0.5, 0, 0.5));
+			@Override
+			public void run()
+			{
+				p.teleport(add.clone().add(0.5, 0, 0.5));
 			}
-		});
+		}
+		new TeleportThread().runTask(az.plugin);
 	}
 	
 	public void check() 
@@ -724,12 +757,12 @@ public abstract class Arena
 		//when the player is kicked from the arena after too many deaths
 		try
 		{
-			final Player pl = Util.MatchPlayer(p.player.getName());
+			final Player pl = Util.matchPlayer(p.player.getName());
 			if (pl != null) 
 			{
-				
-				az.plugin.getServer().getScheduler().scheduleSyncDelayedTask(az.plugin, new Runnable() 
+				class EndPlayerThread extends BukkitRunnable
 				{
+					@Override
 					public void run() 
 					{
 						teleport(pl, p.spawnBack.clone().add(0,2.0,0));
@@ -741,8 +774,9 @@ public abstract class Arena
 						
 						az.plugin.removePotions(pl);
 					}
-				});
-				
+				}
+				new EndPlayerThread().runTask(az.plugin);
+
 				p.out = true;
 				updatedTeams = true;
 				if (dead) 
@@ -753,7 +787,7 @@ public abstract class Arena
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			az.plugin.getLogger().severe("Error: " + e.getMessage());
 		}
 	}
 	
@@ -807,12 +841,6 @@ public abstract class Arena
 			az.plugin.forceStop(az.arenaName);
 			onOutOfTime();
 		}
-		
-//		//////Timer Notify
-//		if (starttimer == 0) {
-//			spawnAll();
-//			gametimer = maxgametime;
-//		}
 	}
 	
 	public void start()
@@ -842,9 +870,9 @@ public abstract class Arena
 			{
 				if (arenaplayers.get(i).player.getName() != null)
 				{
-					if (Util.MatchPlayer(arenaplayers.get(i).player.getName()) != null)
+					if (Util.matchPlayer(arenaplayers.get(i).player.getName()) != null)
 					{
-						Player online = Util.MatchPlayer(arenaplayers.get(i).player.getName());
+						Player online = Util.matchPlayer(arenaplayers.get(i).player.getName());
 						if (online != null)
 						{
 							if (arenaplayers.get(i).out != true)
@@ -868,7 +896,7 @@ public abstract class Arena
 		}
 		catch(Exception e) 
 		{
-			e.printStackTrace();
+			az.plugin.getLogger().severe("Error: " + e.getMessage());
 		}
 		check();
 
@@ -882,9 +910,9 @@ public abstract class Arena
 				Player pl = ap.player;
 				if (ap.player.getName() != null)
 				{
-					if (Util.MatchPlayer(ap.player.getName()) != null) 
+					if (Util.matchPlayer(ap.player.getName()) != null) 
 					{
-						ap.player = Util.MatchPlayer(ap.player.getName());
+						ap.player = Util.matchPlayer(ap.player.getName());
 						if (!ap.out)
 						{
 							
@@ -915,7 +943,7 @@ public abstract class Arena
 							
 							if (!(az.plugin.isInArena(pl.getLocation()))) 
 							{
-								System.out.println("[UltimateArena] " + ap.player.getName() + " Got out of the arena! Putting him back in");
+								az.plugin.getLogger().info(ap.player.getName() + " Got out of the arena! Putting him back in");
 								ap.amtkicked++;
 								spawn(ap.player.getName(), false);
 							}
@@ -926,41 +954,41 @@ public abstract class Arena
 							{
 								if (starttimer > 0 && starttimer < 11) 
 								{
-									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(starttimer) + ChatColor.GRAY + " second(s) until start!");
+									Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(starttimer) + ChatColor.GRAY + " second(s) until start!");
 								}
 								if (starttimer == 30) 
 								{
-									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "30 " + ChatColor.GRAY + " second(s) until start!");
+									Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "30 " + ChatColor.GRAY + " second(s) until start!");
 								}
 								if (starttimer == 60)
 								{
-									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "60 " + ChatColor.GRAY + " second(s) until start!");
+									Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "60 " + ChatColor.GRAY + " second(s) until start!");
 								}
 								if (starttimer == 45)
 								{
-									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "45 " + ChatColor.GRAY + " second(s) until start!");
+									Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "45 " + ChatColor.GRAY + " second(s) until start!");
 								}
 								if (starttimer == 15)
 								{
-									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "15 " + ChatColor.GRAY + " second(s) until start!");
+									Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "15 " + ChatColor.GRAY + " second(s) until start!");
 								}
 								if (starttimer == 120) 
 								{
-									Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "120 " + ChatColor.GRAY + " second(s) until start!");
+									Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "120 " + ChatColor.GRAY + " second(s) until start!");
 								}
 							}
 							
 							if (gametimer > 0 && gametimer < 21)
 							{
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(gametimer) + ChatColor.GRAY + " second(s) until end!");
+								Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(gametimer) + ChatColor.GRAY + " second(s) until end!");
 							}
 							if (gametimer == 60 && maxgametime > 60)
 							{
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString((gametimer-60)/60) + ChatColor.GRAY + " minute(s) until end!");
+								Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString((gametimer-60)/60) + ChatColor.GRAY + " minute(s) until end!");
 							}
 							if (gametimer == maxgametime/2) 
 							{
-								Util.MatchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(maxgametime/2) + ChatColor.GRAY + " second(s) until end!");
+								Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(maxgametime/2) + ChatColor.GRAY + " second(s) until end!");
 							}
 							
 							//////TP players back when dead
@@ -970,7 +998,7 @@ public abstract class Arena
 								{
 									try
 									{
-										Player p = Util.MatchPlayer(ap.player.getName());
+										Player p = Util.matchPlayer(ap.player.getName());
 										if (p != null) 
 										{
 											if (p.getHealth() > 0) 
@@ -982,7 +1010,7 @@ public abstract class Arena
 									}
 									catch(Exception e) 
 									{
-										e.printStackTrace();
+										az.plugin.getLogger().severe("Error: " + e.getMessage());
 									}
 								}
 							}
@@ -992,7 +1020,7 @@ public abstract class Arena
 			}
 			catch(Exception e) 
 			{
-				e.printStackTrace();
+				az.plugin.getLogger().severe("Error: " + e.getMessage());
 			}
 		}
 		

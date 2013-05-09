@@ -41,7 +41,7 @@ public class SPLEEFArena extends FFAArena {
 	@Override
 	public void spawn(String name, boolean alreadySpawned) {
 		super.spawn(name, false);
-		Player p = Util.MatchPlayer(name);
+		Player p = Util.matchPlayer(name);
 		if (p != null) {
 			Location loc = getBlockInSpleefArena(0);
 			if (loc != null) {

@@ -48,7 +48,7 @@ public class MOBArena extends Arena {
 				for (int i = 0; i < this.arenaplayers.size(); i++) {
 					try{
 						if (!arenaplayers.get(i).out) {
-							Player p = Util.MatchPlayer(arenaplayers.get(i).player.getName());
+							Player p = Util.matchPlayer(arenaplayers.get(i).player.getName());
 							if (p != null) {
 								p.sendMessage(ChatColor.GREEN + "You survived the wave!");
 								p.sendMessage(ChatColor.GREEN + "Now going to wave " + ChatColor.RED + wave);
@@ -139,11 +139,10 @@ public class MOBArena extends Arena {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void doKillStreak(ArenaPlayer ap) {
 		try{
-			Player pl = Util.MatchPlayer(ap.player.getName());
+			Player pl = Util.matchPlayer(ap.player.getName());
 			if (pl != null) {
 				if (ap.killstreak == 8)
 					giveItem(pl, Material.POTION.getId(), (byte)9, 1, "8 kills! Unlocked strength potion!");
@@ -162,7 +161,7 @@ public class MOBArena extends Arena {
 				if (ap.killstreak == 32) {
 					pl.sendMessage(ChatColor.GOLD + "32 kills! Unlocked attackdogs!");
 					for (int i = 0; i < 3; i++) {
-						Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnCreature(pl.getLocation(), EntityType.WOLF);
+						Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
 						wolf.setOwner(pl);
 					}
 				}
@@ -185,7 +184,6 @@ public class MOBArena extends Arena {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void check() {
 		try{
@@ -199,7 +197,7 @@ public class MOBArena extends Arena {
 							for (int i = 0; i < mobPerWave; i++) {
 								Location loc = this.az.spawns.get(Util.random(this.az.spawns.size()));
 								String mob = this.spawning.get(Util.random(spawning.size()));
-								LivingEntity newMob = loc.getWorld().spawnCreature(loc, EntityType.valueOf(mob));
+								LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
 								this.mobs.add(newMob);
 							}
 						}
@@ -207,7 +205,7 @@ public class MOBArena extends Arena {
 				}
 				
 				if (amtPlayersInArena == 0) {
-					System.out.println("[UltimateArena] Stopping Mob arena");
+					az.plugin.getLogger().info("Stopping Mob arena");
 					stop();
 				}
 				if (wave > maxwave) {
@@ -221,5 +219,4 @@ public class MOBArena extends Arena {
 			e.printStackTrace();
 		}
 	}
-	
 }

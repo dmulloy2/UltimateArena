@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -20,6 +21,7 @@ public class ArenaConfig {
 	public int lobbyTime;
 	public int maxDeaths;
 	public int maxwave;
+	public int cashReward;
 	public boolean allowTeamKilling;
 	public ArrayList<ArenaReward> rewards = new ArrayList<ArenaReward>();
 	public String arenaName;
@@ -57,6 +59,10 @@ public class ArenaConfig {
 				boolean value = Boolean.parseBoolean(str.substring(str.indexOf("=")+1));
 				allowTeamKilling = value;
 			}
+			if (str2.equalsIgnoreCase("cashreward")) {
+				int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
+				cashReward = value;
+			}
 		}else if (str.indexOf(",") > 0 ) {
 			getReward(str);
 		}
@@ -78,7 +84,6 @@ public class ArenaConfig {
 					
 					if (dat > 0) {
 						data.setData(dat);
-						//itm = data.toItemStack(1);
 					}
 					if (half)
 						amt = (int)(Math.floor(amt / 2.0));
@@ -87,8 +92,17 @@ public class ArenaConfig {
 					if (dat > 0) {
 						inv.getItem(i).setData(data);
 					}
-					//itm.setAmount(amt);
-					//inv.setItem(i, itm);
+					
+					// dmulloy2 new method
+					if (plugin.getConfig().getBoolean("moneyrewards"))
+					{
+						if (plugin.getEconomy() != null)
+						{
+							plugin.getEconomy().depositPlayer(pl.getName(), cashReward);
+							String format = plugin.getEconomy().format(cashReward);
+							pl.sendMessage(ChatColor.GREEN + format + " has been added to your balance!");
+						}
+					}
 				}
 			}
 		});
@@ -113,7 +127,7 @@ public class ArenaConfig {
 				//FUCK YOU
 			}
 		}else{
-			System.out.println("[UltimateArena] Failed to load reward to arena: " + arenaName);
+			plugin.getLogger().severe("Failed to load reward to arena: " + arenaName);
 		}
 	}
 	
@@ -151,7 +165,7 @@ public class ArenaConfig {
 			in.close();
 			fstream.close();
         }catch (Exception e){
-            System.err.println("Error: " + e.getMessage());
+        	plugin.getLogger().severe("Error: " + e.getMessage());
         }
 	    
 	    for (int i= 0; i < file.size(); i++) {

@@ -34,7 +34,7 @@ public class KOTHArena extends Arena {
 	@Override
 	public void doKillStreak(ArenaPlayer ap) {
 		try{
-			Player pl = Util.MatchPlayer(ap.player.getName());
+			Player pl = Util.matchPlayer(ap.player.getName());
 			if (pl != null) {
 				if (ap.killstreak == 2) {
 					giveItem(pl, Material.POTION.getId(), (byte)9, 1, "2 kills! Unlocked strength potion!");

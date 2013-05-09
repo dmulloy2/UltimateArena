@@ -25,7 +25,7 @@ public class PCommandKick extends PBaseCommand {
 	public void perform() {
 		if (PermissionInterface.checkPermission(player, plugin.uaAdmin)) {
 			if (parameters.size() == 2) {
-				Player p = Util.MatchPlayer(parameters.get(1));
+				Player p = Util.matchPlayer(parameters.get(1));
 				if (p != null) {
 					ArenaPlayer ap = plugin.getArenaPlayer(p);
 					if (ap != null) {

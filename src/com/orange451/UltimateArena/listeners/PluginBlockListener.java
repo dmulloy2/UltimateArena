@@ -25,7 +25,7 @@ public class PluginBlockListener implements Listener
 		this.plugin = plugin;
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) 
 	{
 		/**Checks to make sure the block is not null**/
@@ -118,7 +118,6 @@ public class PluginBlockListener implements Listener
 					/**If any other arena, disallow**/
 					else
 					{
-						player.sendMessage(ChatColor.RED + "You can't break this!");
 						event.setCancelled(true);
 					}
 				}
@@ -134,7 +133,6 @@ public class PluginBlockListener implements Listener
 					else
 					{
 						event.setCancelled(true);
-						player.sendMessage(ChatColor.RED + "You cannot break this!");
 					}
 				}
 			}

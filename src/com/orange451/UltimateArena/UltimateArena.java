@@ -8,6 +8,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+
+import lombok.Getter;
+
+import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,57 +21,20 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.orange451.UltimateArena.Arenas.Arena;
-import com.orange451.UltimateArena.Arenas.BOMBArena;
-import com.orange451.UltimateArena.Arenas.CONQUESTArena;
-import com.orange451.UltimateArena.Arenas.CTFArena;
-import com.orange451.UltimateArena.Arenas.FFAArena;
-import com.orange451.UltimateArena.Arenas.HUNGERArena;
-import com.orange451.UltimateArena.Arenas.INFECTArena;
-import com.orange451.UltimateArena.Arenas.KOTHArena;
-import com.orange451.UltimateArena.Arenas.MOBArena;
-import com.orange451.UltimateArena.Arenas.PVPArena;
-import com.orange451.UltimateArena.Arenas.SPLEEFArena;
-import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
-import com.orange451.UltimateArena.Arenas.Objects.ArenaConfig;
-import com.orange451.UltimateArena.Arenas.Objects.ArenaCreator;
-import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
-import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
-import com.orange451.UltimateArena.Arenas.Objects.WhiteListCommands;
-import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
-import com.orange451.UltimateArena.commands.PBaseCommand;
-import com.orange451.UltimateArena.commands.PCommandCreate;
-import com.orange451.UltimateArena.commands.PCommandDelete;
-import com.orange451.UltimateArena.commands.PCommandDisable;
-import com.orange451.UltimateArena.commands.PCommandDislike;
-import com.orange451.UltimateArena.commands.PCommandEnable;
-import com.orange451.UltimateArena.commands.PCommandForceJoin;
-import com.orange451.UltimateArena.commands.PCommandForceStop;
-import com.orange451.UltimateArena.commands.PCommandHelp;
-import com.orange451.UltimateArena.commands.PCommandInfo;
-import com.orange451.UltimateArena.commands.PCommandJoin;
-import com.orange451.UltimateArena.commands.PCommandKick;
-import com.orange451.UltimateArena.commands.PCommandLeave;
-import com.orange451.UltimateArena.commands.PCommandLike;
-import com.orange451.UltimateArena.commands.PCommandList;
-import com.orange451.UltimateArena.commands.PCommandPause;
-import com.orange451.UltimateArena.commands.PCommandRefresh;
-import com.orange451.UltimateArena.commands.PCommandSetDone;
-import com.orange451.UltimateArena.commands.PCommandSetPoint;
-import com.orange451.UltimateArena.commands.PCommandStart;
-import com.orange451.UltimateArena.commands.PCommandStats;
-import com.orange451.UltimateArena.commands.PCommandStop;
-import com.orange451.UltimateArena.listeners.PluginBlockListener;
-import com.orange451.UltimateArena.listeners.PluginEntityListener;
-import com.orange451.UltimateArena.listeners.PluginPlayerListener;
+import com.orange451.UltimateArena.Arenas.*;
+import com.orange451.UltimateArena.Arenas.Objects.*;
+import com.orange451.UltimateArena.commands.*;
+import com.orange451.UltimateArena.listeners.*;
 import com.orange451.UltimateArena.util.Util;
 
-public class UltimateArena extends JavaPlugin {
-
+public class UltimateArena extends JavaPlugin
+{
+	private @Getter Economy economy;
 	private PluginBlockListener blockListener = new PluginBlockListener(this);
 	private PluginPlayerListener playerListener = new PluginPlayerListener(this);
 	private PluginEntityListener entityListener = new PluginEntityListener(this);
@@ -86,14 +54,15 @@ public class UltimateArena extends JavaPlugin {
 	public ArrayList<String> fieldTypes = new ArrayList<String>();
 	public ArrayList<String> loggedOut = new ArrayList<String>();
 	public ArrayList<String> loggedOutInArena = new ArrayList<String>();
-	public ArrayList<String> isUAAdmin = new ArrayList<String>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
+	{
 		List<String> parameters = new ArrayList<String>(Arrays.asList(args));
 		
-		if (commandLabel.equals("tt")) {
+		if (commandLabel.equals("tt"))
+		{
 			testAPI tt = new testAPI();
 			tt.test((Player)sender);
 			return false;
@@ -103,16 +72,20 @@ public class UltimateArena extends JavaPlugin {
 		return true;
 	}
 	
-	public void handleCommand(CommandSender sender, List<String> parameters) {
-		if (parameters.size() == 0) {
+	public void handleCommand(CommandSender sender, List<String> parameters) 
+	{
+		if (parameters.size() == 0)
+		{
 			this.commands.get(0).execute(sender, parameters);
 			return;
 		}
 		
 		String commandName = parameters.get(0).toLowerCase();
 		
-		for (PBaseCommand fcommand : this.commands) {
-			if (fcommand.getAliases().contains(commandName)) {
+		for (PBaseCommand fcommand : this.commands) 
+		{
+			if (fcommand.getAliases().contains(commandName)) 
+			{
 				fcommand.execute(sender, parameters);
 				return;
 			}
@@ -121,32 +94,37 @@ public class UltimateArena extends JavaPlugin {
 		sender.sendMessage(ChatColor.YELLOW + "Unknown UltimateArena command \""+commandName+"\". Try /ua help");
 	}
 	
-	public List<PBaseCommand> getCommands() {
+	public List<PBaseCommand> getCommands() 
+	{
 		return commands;
 	}
 	
-	public File getRoot() {
+	public File getRoot() 
+	{
 		return getDataFolder();
 	}
 
-	public void onQuit(Player player) {
-		if (isPlayerCreatingArena(player)) {
+	public void onQuit(Player player)
+	{
+		if (isPlayerCreatingArena(player)) 
+		{
 			makingArena.remove(getArenaCreator(player));
 		}
 		
-		if (this.isInArena(player)) {
+		if (this.isInArena(player))
+		{
 			Arena ar = this.getArena(player);
 			ArenaPlayer ap = this.getArenaPlayer(player);
-			if (ap != null) {
-				System.out.println("[UltimateArena] Player " + player.getName() + " leaving arena " + ar + " from quit");
-				if (ar != null) {
-					if (ar.starttimer > 0 && (!ap.out)) { //in the lobby
+			if (ap != null)
+			{
+				getLogger().info("Player " + player.getName() + " leaving arena " + ar.name + " from quit");
+				if (ar != null) 
+				{
+					if (ar.starttimer > 0 && (!ap.out)) 
+					{
 						loggedOut.add(player.getName());
 						this.removeFromArena(player.getName());
 					}
-					/*if (ar.starttimer <= 0 && (!ap.out)) {
-						loggedOutInArena.add(player.getName());
-					}*/
 				}
 			}
 		}
@@ -163,38 +141,35 @@ public class UltimateArena extends JavaPlugin {
 			}
 		}
 		
-		/*boolean found = false;
-		for (int i = 0; i < loggedOutInArena.size(); i++) {
-			if (loggedOutInArena.get(i).equals(player.getName())) {
-				found = true;
-			}
-		}
-		if (found) {
-			Arena a = this.getArena(player);
-			if (a == null) {
-				normalize(player);
-			}
-		}*/
-		
 		boolean found = false;
-		for (int i = 0; i < loggedOut.size(); i++) {
-			if (loggedOut.get(i).equals(player.getName())) {
+		for (int i = 0; i < loggedOut.size(); i++) 
+		{
+			if (loggedOut.get(i).equals(player.getName())) 
+			{
 				found = true;
 			}
 		}
 		
-		if (found) {
+		if (found) 
+		{
 			Arena ar = this.getArena(player);
-			if (ar == null) {
+			if (ar == null)
+			{
 				loggedOut.remove(player.getName());
 				this.normalize(player);
-			}else{
-				if (ar.starttimer > 0) {
+			}
+			else
+			{
+				if (ar.starttimer > 0) 
+				{
 					loggedOut.remove(player.getName());
 					ArenaPlayer ap = this.getArenaPlayer(player);
-					if (ap != null) {
+					if (ap != null) 
+					{
 						ar.endPlayer(ap, true);
-					}else{
+					}
+					else
+					{
 						this.normalize(player);
 					}
 				}
@@ -202,80 +177,104 @@ public class UltimateArena extends JavaPlugin {
 		}
 	}
 	
-	public void leaveArena(Player player) {
-		if (this.isInArena(player)) {
+	public void leaveArena(Player player)
+	{
+		if (this.isInArena(player))
+		{
 			Arena a = this.getArena(player);
 			a.endPlayer(getArenaPlayer(player), false);
-		}else{
+		}
+		else
+		{
 			player.sendMessage(ChatColor.RED + "Error, you are not in an arena");
 		}
 	}
 	
-	public void loadArenas() {
+	public void loadArenas()
+	{
 		String path = getRoot().getAbsolutePath() + "/arenas";
 		File dir = new File(path);
 		String[] children = dir.list();
-		if (children != null) {
-		    for (int i=0; i<children.length; i++) {
-		        String filename = children[i];//.substring(0, children[i].length()-4);
-		        //sendMessage(ChatColor.YELLOW +filename);
+		if (children != null) 
+		{
+		    for (int i=0; i<children.length; i++)
+		    {
+		        String filename = children[i];
 		        ArenaZone az = new ArenaZone(this, new File(path + "/" + filename));
-		        if (az.loaded) {
+		        if (az.loaded) 
+		        {
 		        	this.loadedArena.add(az);
 		        }
 		    }
 		}
 	}
 	
-	public void loadConfigs() {
-		for (int i = 0; i < fieldTypes.size(); i++) {
+	public void loadConfigs() 
+	{
+		for (int i = 0; i < fieldTypes.size(); i++) 
+		{
 			loadConfig(fieldTypes.get(i));
 		}
 		
 		loadWhiteListedCommands();
 	}
 	
-	public void loadWhiteListedCommands() {
+	public void loadWhiteListedCommands()
+	{
 		String path = getRoot().getAbsolutePath() + "/whiteListedCommands.txt";
 		File f = new File(path);
-		if (f.exists()) {
-		    try{
+		if (f.exists()) 
+		{
+		    try
+		    {
 				FileInputStream fstream = new FileInputStream(f.getAbsolutePath());
 				DataInputStream in = new DataInputStream(fstream);
 				BufferedReader br = new BufferedReader(new InputStreamReader(in));
 				String strLine;
-				while ((strLine = br.readLine()) != null) {
+				while ((strLine = br.readLine()) != null) 
+				{
 					wcmd.addCommand(strLine);
 				}
 				br.close();
 				in.close();
 				fstream.close();
-	        }catch (Exception e){
-	            System.err.println("Error: " + e.getMessage());
 	        }
-		}else{
-			System.out.println("[UltimateArena] No Whitelisted Commands file!");
+		    catch (Exception e)
+	        {
+	            getLogger().severe("Error loading whitelisted commands: " + e.getMessage());
+	        }
+		}
+		else
+		{
+			getLogger().warning("No Whitelisted Commands file!");
 		}
 	}
 	
-	public void loadConfig(String str) {
+	public void loadConfig(String str)
+	{
 		String path = getRoot().getAbsolutePath() + "/" + str + "CONFIG.txt";
 		File f = new File(path);
-		if (f.exists()) {
+		if (f.exists()) 
+		{
 			ArenaConfig a = new ArenaConfig(this, str, f);
 			configs.add(a);
-			System.out.println("[UltimateArena] Loaded configuration for arena type: " + str);
-		}else{
-			System.out.println("[UltimateArena] Failed to load configuration for arena type: " + str);
+			getLogger().info("Loaded configuration for arena type: " + str);
+		}
+		else
+		{
+			getLogger().log(Level.WARNING, "Failed to load configuration for arena type: " + str);
 		}
 	}
 	
-	public void loadClasses() {
+	public void loadClasses() 
+	{
 		String path = getRoot().getAbsolutePath() + "/classes";
 		File dir = new File(path);
 		String[] children = dir.list();
-		if (children != null) {
-		    for (int i=0; i<children.length; i++) {
+		if (children != null) 
+		{
+		    for (int i=0; i<children.length; i++) 
+		    {
 		        String filename = children[i];
 		        ArenaClass ac = new ArenaClass(this, new File(path + "/" + filename));
 		        ac.name = filename;
@@ -284,73 +283,95 @@ public class UltimateArena extends JavaPlugin {
 		}
 	}
 	
-	public ArenaConfig getConfig(String type) {
-		for (int i = 0; i < configs.size(); i++) {
-			ArenaConfig a = configs.get(i);
-			if (a.arenaName.equalsIgnoreCase(type)) {
-				return a;
+	public ArenaConfig getConfig(String type) 
+	{
+		for (ArenaConfig ac : configs)
+		{
+			if (ac.arenaName.equalsIgnoreCase(type))
+			{
+				return ac;
 			}
 		}
 		return null;
 	}
-	
-	public void forceStop() {
-		for (int i = 0; i < activeArena.size(); i++) {
-			try{
-				activeArena.get(i).startingAmount = 0;
-				activeArena.get(i).stop();
-			}catch(Exception e) {
-				e.printStackTrace();
+
+	public void forceStop()
+	{
+		for (Arena arena : activeArena)
+		{
+			try
+			{
+				arena.startingAmount = 0;
+				arena.stop();
+			}
+			catch (Exception e)
+			{
+				getLogger().severe("Error forcing stop: " + e.getMessage());
 			}
 		}
 		activeArena.clear();
 	}
 	
-	public void forceStop(String str) {
+	public void forceStop(String str)
+	{
 		Arena a = null;
-		for (int i = 0; i < activeArena.size(); i++) {
-			if (activeArena.get(i).name.equals(str)) {
-				a = activeArena.get(i);
+		for (Arena arena : activeArena)
+		{
+			if (arena.name.equalsIgnoreCase(str))
+			{
+				a = arena;
 			}
 		}
 		
-		if (a != null) {
+		if (a != null) 
+		{
 			a.forceStop = true;
 			a.stop();
 		}
 	}
 	
-	public ArenaClass getArenaClass(String line) {
-		for (int i = 0; i < classes.size(); i++) {
-			if (classes.get(i).name.toLowerCase().equals(line.toLowerCase())) {
-				return classes.get(i);
+	public ArenaClass getArenaClass(String line)
+	{
+		for (ArenaClass ac : classes)
+		{
+			if (ac.name.equalsIgnoreCase(line))
+			{
+				return ac;
 			}
 		}
 		return null;
 	}
 	
-	public void deleteArena(Player player, String str) {
-		try{
+	public void deleteArena(Player player, String str) 
+	{
+		try
+		{
 			String path = getRoot().getAbsolutePath() + "/arenas";
 			File f = new File(path + "/" + str);
-			if (f.exists()) {
+			if (f.exists()) 
+			{
 				f.delete();
 			}
 			forceStop(str);
 			this.loadedArena.remove(this.getArenaZone(str));
 			player.sendMessage(ChatColor.YELLOW + "Deleted arena!");
-		}catch(Exception e) {
+			getLogger().info("Deleted arena: " + str);
+		}
+		catch(Exception e) 
+		{
 			player.sendMessage(ChatColor.RED + "Failed to delete arena!");
 		}
 	}
 	
-	public boolean isInArena(Block block) {
+	public boolean isInArena(Block block) 
+	{
 		return isInArena(block.getLocation());
 	}
 	
-	public Arena getArenaInside(Block block) {
-		for (int i = 0; i < loadedArena.size(); i++) {
-			ArenaZone az = loadedArena.get(i);
+	public Arena getArenaInside(Block block)
+	{
+		for (ArenaZone az : loadedArena)
+		{
 			if (az.checkLocation(block.getLocation()))
 				return getArena(az.arenaName);
 		}
@@ -358,333 +379,442 @@ public class UltimateArena extends JavaPlugin {
 		return null;
 	}
 	
-	public boolean isInArena(Location loc) {
-		for (int i = 0; i < loadedArena.size(); i++) {
-			ArenaZone az = loadedArena.get(i);
-			boolean is = az.checkLocation(loc);
-			if (is) {
+	public boolean isInArena(Location loc)
+	{
+		for (ArenaZone az : loadedArena)
+		{
+			if (az.checkLocation(loc))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean isInArena(Player player) {
-		if (getArenaPlayer(player) != null) {
+	public boolean isInArena(Player player) 
+	{
+		if (getArenaPlayer(player) != null) 
+		{
 			return true;
 		}
 		return false;
 	}
 	
-	public void removeFromArena(Player player) {
-		if (player != null) {
-			for (int i = 0; i < activeArena.size(); i++) {
-				Arena ac = activeArena.get(i);
+	public void removeFromArena(Player player)
+	{
+		if (player != null) 
+		{
+			for (Arena ac : activeArena)
+			{
 				ac.startingAmount--;
 				ArenaPlayer ap = ac.getArenaPlayer(player);
-				if (ap != null) {
+				if (ap != null) 
+				{
 					ac.arenaplayers.remove(ap);
 				}
 			}
 		}
 	}
 	
-	public void removeFromArena(String str) {
-		for (int i = 0; i < activeArena.size(); i++) {
-			Arena ac = activeArena.get(i);
-			for (int ii = ac.arenaplayers.size()-1; ii >= 0; ii--) {
-				ArenaPlayer ap = ac.arenaplayers.get(ii);
-				if (ap != null) {
-					if (ap.player.getName().equals(str)) {
-						ac.arenaplayers.remove(ii);
+	public void removeFromArena(String str) 
+	{
+		for (Arena ac : activeArena)
+		{
+			for (ArenaPlayer ap : ac.arenaplayers)
+			{
+				if (ap != null)
+				{
+					if (ap.player.getName().equals(str))
+					{
+						ac.arenaplayers.remove(ap);
 					}
 				}
 			}
 		}
 	}
 
-	public ArenaPlayer getArenaPlayer(Player player) {
-		try{
-			for (int i = 0; i < activeArena.size(); i++) {
-				Arena ac = activeArena.get(i);
+	public ArenaPlayer getArenaPlayer(Player player) 
+	{
+		try
+		{
+			for (Arena ac : activeArena)
+			{
 				ArenaPlayer ap = ac.getArenaPlayer(player);
-				if (ap != null) {
-					if (!ap.out) {
-						if (ap.player.getName().equals(player.getName())) {
+				if (ap != null)
+				{
+					if (!ap.out) 
+					{
+						if (ap.player.getName().equals(player.getName())) 
+						{
 							return ap;
 						}
 					}
 				}
 			}
-		}catch(Exception e) {
-			e.printStackTrace();
+		}
+		catch(Exception e)
+		{
+			getLogger().severe("Error getting arena player: " + e.getMessage());
 		}
 		return null;
 	}
 
-	public void fight(Player player, String name) {
-		if (player != null) {
-			if (player.isOnline()) {
-				if (!(isPlayerCreatingArena(player))) {
-					if (InventoryHelper.isEmpty(player.getInventory())) {
+	public void fight(Player player, String name)
+	{
+		if (player != null) 
+		{
+			if (player.isOnline())
+			{
+				if (!(isPlayerCreatingArena(player)))
+				{
+					if (InventoryHelper.isEmpty(player.getInventory())) 
+					{
 						ArenaZone a = getArenaZone(name);
-						if (a != null) {
-							if (!isInArena(player)) {
+						if (a != null)
+						{
+							if (!isInArena(player)) 
+							{
 								ArenaPlayer apl = this.getArenaPlayer(player);
-								if (apl == null) {
-									/////////////////////////////////////////
-									/////////////////////////////////////////
-										boolean found = false;
-										for (int i = 0; i < waiting.size(); i++) {
-											if (waiting.get(i).player.getName().equals(player.getName())) {
-												found = true;
-											}
+								if (apl == null) 
+								{
+									boolean found = false;
+									for (int i = 0; i < waiting.size(); i++)
+									{
+										if (waiting.get(i).player.getName().equals(player.getName()))
+										{
+											found = true;
 										}
-										if (!found) {
-							                RemindTask rmd = new RemindTask(player, name);
-							                rmd.runTaskLater(this, 40L);
-							                player.sendMessage(ChatColor.GOLD + "Please stand still for 2 seconds!");
-							                this.waiting.add(rmd);
-											
-										}else{
-											player.sendMessage(ChatColor.RED + "You are already waiting!");
-										}
-										//joinBattle(null, player, name);
-									/////////////////////////////////////////
-									/////////////////////////////////////////
-								}else{
+									}
+									if (!found)
+									{
+										RemindTask rmd = new RemindTask(player, name);
+										rmd.runTaskLater(this, 40L);
+										player.sendMessage(ChatColor.GOLD + "Please stand still for 2 seconds!");
+										this.waiting.add(rmd);				
+									}
+									else
+									{
+										player.sendMessage(ChatColor.RED + "You are already waiting!");
+									}
+								}
+								else
+								{
 									player.sendMessage(ChatColor.RED + "You cannot leave and rejoin an arena!");
 								}
-							}else{
+							}
+							else
+							{
 								player.sendMessage(ChatColor.RED + "You're already in an arena!");
 							}
-						}else{
+						}
+						else
+						{
 							player.sendMessage(ChatColor.RED + "That arena doesn't exist!");
 						}
-					}else{
+					}
+					else
+					{
 						player.sendMessage(ChatColor.RED + "Please clear your inventory!");
 					}
 				}
-			}else{
+			}
+			else
+			{
 				player.sendMessage(ChatColor.RED + "You are in the middle of making an arena!");
 			}
 		}
 	}
 	
-	public void joinBattle(boolean forced, Player player, String name) {
-		try{
+	public void joinBattle(boolean forced, Player player, String name) 
+	{
+		try
+		{
 			ArenaZone a = getArenaZone(name);
-			if (getArena(name) != null) {
-				if (getArena(name).starttimer < 1 && !forced) {
-					//this.waiting.remove(rmd);
+			if (getArena(name) != null)
+			{
+				if (getArena(name).starttimer < 1 && !forced) 
+				{
 					player.sendMessage(ChatColor.RED + "This arena has already started!");
-				}else{
+				}
+				else
+				{
 					Arena tojoin = getArena(name);
 					int maxplayers = tojoin.az.maxPlayers;
 					int players = tojoin.amtPlayersInArena;
-					if (players + 1 <= maxplayers) {
+					if (players + 1 <= maxplayers)
+					{
 						getArena(name).addPlayer(player);
-					}else{
+					}
+					else
+					{
 						player.sendMessage(ChatColor.RED + "This arena is full, sorry!");
 					}
 				}
-			}else{
+			}
+			else
+			{
 				Arena ar = null;
 				boolean disabled = false;
-				for (int ii = 0; ii < activeArena.size(); ii++) {
-					Arena aar = activeArena.get(ii);
-					if (aar.disabled && aar.az.equals(a)) {
+				for (Arena aar : activeArena)
+				{
+					if (aar.disabled && aar.az.equals(a))
+					{
 						disabled = true;
 					}
 				}
-				for (int ii = 0; ii < loadedArena.size(); ii++) {
-					ArenaZone aaz = loadedArena.get(ii);
-					if (aaz.disabled && aaz.equals(a)) {
+				for (ArenaZone aaz : loadedArena)
+				{
+					if (aaz.disabled && aaz.equals(a))
+					{
 						disabled = true;
 					}
 				}
 				
-				if (!disabled) {
-					//if (activeArena.size() + 1 <= maxArenasRunning) {
-						if (a.arenaType.equalsIgnoreCase("pvp")) {
-							ar = new PVPArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("mob")) {
-							ar = new MOBArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("cq")) {
-							ar = new CONQUESTArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("koth")) {
-							ar = new KOTHArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("bomb")) {
-							ar = new BOMBArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("ffa")) {
-							ar = new FFAArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("hunger")) {
-							ar = new HUNGERArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("spleef")) {
-							ar = new SPLEEFArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("infect")) {
-							ar = new INFECTArena(a);
-						}else if (a.arenaType.equalsIgnoreCase("ctf")) {
-							ar = new CTFArena(a);
-						}
-						if (ar != null) {
-							activeArena.add(ar);
-							ar.addPlayer(player);
-							ar.announce();
-						}
-					//}else{
-					//	player.sendMessage(ChatColor.RED + "sorry, only " + Integer.toString(maxArenasRunning) + " arena(s) can be ran at a time!");
-					//}
-				}else{
+				if (!disabled)
+				{
+					String arenaType = a.arenaType.toLowerCase();
+					if (arenaType.equals("pvp"))
+					{
+						ar = new PVPArena(a);
+					}
+					else if (arenaType.equals("mob")) 
+					{
+						ar = new MOBArena(a);
+					}
+					else if (arenaType.equals("cq"))
+					{
+						ar = new CONQUESTArena(a);
+					}
+					else if (arenaType.equals("koth")) 
+					{
+						ar = new KOTHArena(a);
+					}
+					else if (arenaType.equals("bomb")) 
+					{
+						ar = new BOMBArena(a);
+					}
+					else if (arenaType.equals("ffa"))
+					{
+						ar = new FFAArena(a);
+					}
+					else if (arenaType.equals("hunger")) 
+					{
+						ar = new HUNGERArena(a);
+					}
+					else if (arenaType.equals("spleef")) 
+					{
+						ar = new SPLEEFArena(a);
+					}
+					else if (arenaType.equals("infect"))
+					{
+						ar = new INFECTArena(a);
+					}
+					else if (arenaType.equals("ctf"))
+					{	
+						ar = new CTFArena(a);
+					}
+					if (ar != null) 
+					{
+						activeArena.add(ar);
+						ar.addPlayer(player);
+						ar.announce();
+					}
+				}
+				else
+				{
 					player.sendMessage(ChatColor.RED + "Error, This arena is disabled!");
 				}
 			}
-		}catch(Exception e) {
-			//
+		}
+		catch(Exception e) 
+		{
+			getLogger().severe("Error while joining battle: " + e.getMessage());
 		}
 	}
 	
-	public Arena getArena(Player player) {
-		for (int i = 0; i < activeArena.size(); i++) {
-			Arena ac = activeArena.get(i);
-			try{
-				if (ac.getArenaPlayer(player).player.getName().equals(player.getName())) {
+	public Arena getArena(Player player)
+	{
+		for (Arena ac : activeArena)
+		{
+			try
+			{
+				if (ac.getArenaPlayer(player).player.getName().equals(player.getName()))
+				{
 					return ac;
 				}
-			}catch(Exception e) {
-				
+			}
+			catch(Exception e)
+			{
+				getLogger().severe("Error while getting arena: " + e.getMessage());
 			}
 		}
 		return null;
 	}
 	
-	public Arena getArena(String name) {
-		for (int i = 0; i < activeArena.size(); i++) {
-			Arena ac = activeArena.get(i);
-			if (ac.name.equals(name)) {
+	public Arena getArena(String name) 
+	{
+		for (Arena ac : activeArena)
+		{
+			if (ac.name.equals(name))
+			{
 				return ac;
 			}
 		}
 		return null;
 	}
 	
-	public ArenaZone getArenaZone(String name) {
-		for (int i = 0; i < loadedArena.size(); i++) {
-			ArenaZone a = loadedArena.get(i);
-			if (a.arenaName.equals(name)) {
-				return a;
+	public ArenaZone getArenaZone(String name)
+	{
+		for (ArenaZone az : loadedArena)
+		{
+			if (az.arenaName.equals(name)) 
+			{
+				return az;
 			}
 		}
 		return null;
 	}
 	
-	public void setPoint(Player player) {
+	public void setPoint(Player player) 
+	{
 		ArenaCreator ac = getArenaCreator(player);
-		if (ac != null) {
+		if (ac != null)
+		{
 			ac.setPoint(player);
-			if (!(ac.msg.equals(""))) {
+			if (!(ac.msg.equals(""))) 
+			{
 				player.sendMessage(ChatColor.GRAY + ac.msg);
 			}
-		}else{
+		}
+		else
+		{
 			player.sendMessage(ChatColor.RED + "Error, you aren't editing a field!");
 		}
 	}
 	
-	public void setDone(Player player) {
+	public void setDone(Player player)
+	{
 		ArenaCreator ac = getArenaCreator(player);
-		if (ac != null) {
+		if (ac != null) 
+		{
 			ac.setDone(player);
-		}else{
+		}
+		else
+		{
 			player.sendMessage(ChatColor.RED + "Error, you aren't editing a field!");
 		}
 	}
 	
-	public boolean isPlayerCreatingArena(Player player) {
-		if (getArenaCreator(player) != null) {
+	public boolean isPlayerCreatingArena(Player player) 
+	{
+		if (getArenaCreator(player) != null) 
+		{
 			return true;
 		}
 		return false;
 	}
 	
-	public void stopCreatingArena(Player player) { 
-		for (int i = makingArena.size()-1; i >= 0; i--) {
-			ArenaCreator ac = makingArena.get(i);
-			if (ac.player.equals(player.getName())) {
-				makingArena.remove(i);
-			}
+	public void stopCreatingArena(Player player)
+	{ 
+		for (ArenaCreator ac : makingArena)
+		{
+			if (ac.player.equalsIgnoreCase(player.getName()))
+				makingArena.remove(ac);
 		}
 	}
 
-	public ArenaCreator getArenaCreator(Player player) {
-		for (int i = 0; i < makingArena.size(); i++) {
-			ArenaCreator ac = makingArena.get(i);
-			if (ac.player.equals(player.getName())) {
+	public ArenaCreator getArenaCreator(Player player)
+	{
+		for (ArenaCreator ac : makingArena)
+		{
+			if (ac.player.equalsIgnoreCase(player.getName()))
+			{
 				return ac;
 			}
 		}
 		return null;
 	}
 	
-	public void createField(Player player, String name, String type) {
-		if (!(isPlayerCreatingArena(player))) {
+	public void createField(Player player, String name, String type)
+	{
+		if (!(isPlayerCreatingArena(player))) 
+		{
 			boolean found = false;
-			for (int i = 0; i < fieldTypes.size(); i++) {
-				if (fieldTypes.get(i).equalsIgnoreCase(type)) {
+			for (int i = 0; i < fieldTypes.size(); i++) 
+			{
+				if (fieldTypes.get(i).equalsIgnoreCase(type)) 
+				{
 					found = true;
 				}
 			}
-			if (found) {
-				System.out.println("[UltimateArena] " + player.getName() + "is making arena: " + name + " with a type: " + type);
+			if (found)
+			{
+				getLogger().info(player.getName() + " is making arena " + name + ". Arena type: " + type);
 				ArenaCreator ac = new ArenaCreator(this, player);
 				ac.setArena(name, type);
 				makingArena.add(ac);
-			}else{
+			}
+			else
+			{
 				player.sendMessage(ChatColor.RED + "This is not a valid field type!");
 			}
-		}else{
+		}
+		else
+		{
 			player.sendMessage(ChatColor.RED + "You are already creating an arena!");
 		}
 	}
 	
-	public void normalizeAll() {
-		ArrayList<Player> arr = (ArrayList<Player>) Util.Who();
-		for (int i = 0; i < arr.size(); i++) {
-			Player p = arr.get(i);
-			Location ploc = p.getLocation();
-			if (isInArena(ploc)) {
-				normalize(p);
-				if (this.isInArena(p)) {
-					this.removeFromArena(p);
+	public void normalizeAll()
+	{
+		for (Player player : getServer().getOnlinePlayers())
+		{
+			Location loc = player.getLocation();
+			if (isInArena(loc))
+			{
+				normalize(player);
+				if (isInArena(player))
+				{
+					removeFromArena(player);
 				}
 			}
 		}
 	}
 	
-	public void normalize(Player p) {
-		try{
+	public void normalize(Player p)
+	{
+		try
+		{
 			p.getInventory().clear();
 			p.getInventory().setHelmet(null);
 			p.getInventory().setChestplate(null);
 			p.getInventory().setLeggings(null);
 			p.getInventory().setBoots(null);
-		}catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			//
 		}
 	}
 
 	@Override
-	public void onEnable() {
-		System.out.println("[UltimateArena] " + getDescription().getFullName() + " has been enabled");
-		
+	public void onEnable()
+	{
+		long start = System.currentTimeMillis();
+ 
 		File dir = getDataFolder();
-		if (!dir.exists()) {
+		if (!dir.exists()) 
+		{
 			dir.mkdir();
 		}
 		
 		File dir2 = new File(getDataFolder().getAbsolutePath() + "/arenas");
-		if (!dir2.exists()) {
+		if (!dir2.exists())
+		{
 			dir2.mkdir();
 		}
+		
+		saveDefaultConfig();
 		
 		//Add fields
 		fieldTypes.add("pvp");
@@ -697,12 +827,7 @@ public class UltimateArena extends JavaPlugin {
 		fieldTypes.add("infect");
 		fieldTypes.add("ctf");
 		fieldTypes.add("hunger");
-		
-		isUAAdmin.add("orange451");
-		isUAAdmin.add("dmulloy2");
-		
-		PermissionInterface.Initialize(this);
-		
+
 		//Add Commands
 		commands.add(new PCommandHelp(this));
 		commands.add(new PCommandInfo(this));
@@ -728,45 +853,66 @@ public class UltimateArena extends JavaPlugin {
 		commands.add(new PCommandStart(this));
 		commands.add(new PCommandPause(this));
 		
-		if (!loaded) {
+		commands.add(new PCommandClasses(this));
+		
+		if (!loaded)
+		{
 			loaded = true;
 			PluginManager pm = getServer().getPluginManager();
+			if (pm.isPluginEnabled("PVPGunPlus"))
+				pm.registerEvents(new PVPGunPlusListener (this), this);
+			
 			pm.registerEvents(entityListener, this);
 			pm.registerEvents(blockListener, this);
 			pm.registerEvents(playerListener, this);
 
 			Util.Initialize(this);
-			
-//		    this.timer = new Timer();
-//		    this.timer.schedule(new ArenaUpdater(), 100L, 1000L);
+ 
 			new ArenaUpdater().runTaskTimer(this, 2L, 20L);
+			
+			checkVault(pm);
 		}
 		loadFiles();
+		
+		long finish = System.currentTimeMillis();
+		getLogger().info(getDescription().getFullName() + " has been enabled ("+(finish-start)+"ms)");
 	}
 
 	@Override
-	public void onDisable() {
-		System.out.println("[UltimateArena] " + getDescription().getFullName() + " has been disabled");
-		isUAAdmin.clear();
-		for (int i = activeArena.size()-1; i >= 0; i--) {
-			try{
-				activeArena.get(i).stop();
-			}catch(Exception e) {
-				e.printStackTrace();
+	public void onDisable()
+	{
+		long start = System.currentTimeMillis();
+		
+		for (Arena arena : activeArena)
+		{
+			try
+			{
+				arena.stop();
+			}
+			catch (Exception e)
+			{
+				getLogger().severe("Error while stopping arena " + arena.name + ". (" + e.getMessage()+")");
 			}
 		}
+		
+		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
-//		timer.cancel();
+		
 		clearMemory();
+		
+		long finish = System.currentTimeMillis();
+		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
 	}
 
-	public void loadFiles() {
+	public void loadFiles() 
+	{
 		loadClasses();
 		loadConfigs();
 		loadArenas();
 	}
 	
-	public void clearMemory() {
+	public void clearMemory()
+	{
 		commands.clear();
 		loadedArena.clear();
 		activeArena.clear();
@@ -775,50 +921,50 @@ public class UltimateArena extends JavaPlugin {
 		classes.clear();
 		loggedOut.clear();
 		loggedOutInArena.clear();
-		isUAAdmin.clear();
 		configs.clear();
 		wcmd.clear();
 	}
 	
-	public class ArenaUpdater extends BukkitRunnable {
-		public void run() {
-		    for (int i = 0; i < activeArena.size(); i++) {
-		    	try{
-		    		activeArena.get(i).step();
-		    	}catch(Exception e) {
-		    		//fuck you
-		    	}
-		    }
+	public class ArenaUpdater extends BukkitRunnable
+	{
+		public void run()
+		{
+			for (Arena arena : activeArena)
+			{
+				try
+				{
+					arena.stop();
+				}
+				catch (Exception e)
+				{
+					getLogger().severe("Error while stopping arena " + arena.name + ". (" + e.getMessage()+")");
+				}
+			}
 		}
 	}
 	
-	public class RemindTask extends BukkitRunnable {
+	public class RemindTask extends BukkitRunnable 
+	{
 		public Player player;
 		public String name;
 		public int t;
 		
-		public RemindTask(Player player, String name) {
+		public RemindTask(Player player, String name) 
+		{
 			this.player = player;
 			this.name = name;
 		}
 
-		public void run() {
+		public void run() 
+		{
 			waiting.remove(this);
 			joinBattle(false, player, name);
 			this.cancel();
 		}
 	}
 
-	public boolean isUaAdmin(Player player) {
-		for (int i = 0; i < this.isUAAdmin.size(); i++) {
-			if (isUAAdmin.get(i).equals(player.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void removePotions(Player pl) {
+	public void removePotions(Player pl) 
+	{
 		pl.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
 		pl.removePotionEffect(PotionEffectType.SPEED);
 		pl.removePotionEffect(PotionEffectType.SLOW);
@@ -827,4 +973,22 @@ public class UltimateArena extends JavaPlugin {
 		pl.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 	}
 	
+    /**Vault Check**/
+	private void checkVault(PluginManager pm) 
+	{
+		if (pm.isPluginEnabled("Vault"))
+			setupEconomy();
+	}
+	
+    /**Set up vault economy**/
+    private boolean setupEconomy() 
+	{
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+		if (economyProvider != null) 
+		{
+			economy = ((Economy)economyProvider.getProvider());
+		}
+ 
+		return economy != null;
+	}
 }

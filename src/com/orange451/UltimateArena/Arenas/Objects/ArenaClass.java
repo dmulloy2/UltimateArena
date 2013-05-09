@@ -70,16 +70,16 @@ public class ArenaClass {
 			in.close();
 			fstream.close();
         }catch (Exception e){
-            System.err.println("Error: " + e.getMessage());
+            plugin.getLogger().severe("Error: " + e.getMessage());
         }
 	    
 	    for (int i= 0; i < file.size(); i++) {
 	    	computeData(file.get(i));
 	    }
 	    if (loaded) {
-	    	System.out.println("[UltimateArena] Class loaded: " + name);
+	    	plugin.getLogger().info("Class loaded: " + name);
 	    }else{
-	    	System.out.println("[UltimateArena] Error loading class: " + name);
+	    	plugin.getLogger().severe("Error loading class: " + name);
 	    }
 	}
 	

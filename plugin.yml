@@ -1,8 +1,8 @@
 name: UltimateArena
 main: com.orange451.UltimateArena.UltimateArena
-version: 2.0
+version: 2.1
 authors: [orange451, dmulloy2]
-softdepend: [PVPGunPlus]
+softdepend: [PVPGunPlus, Vault]
 description: The Ultimate in Minecraft death sports and spleef
 commands: 
   ua:
@@ -11,3 +11,10 @@ commands:
   tt:
     description: Ultimate Arena test API
     usage:
+permissions:
+  ultimatearena.player:
+    default: true
+  ultimatearena.builder:
+    default: op
+  ultimatearena.admin:
+    default: op

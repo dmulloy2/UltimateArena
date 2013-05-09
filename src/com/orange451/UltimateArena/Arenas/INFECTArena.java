@@ -38,7 +38,7 @@ public class INFECTArena extends PVPArena {
 		if (tries < 16) {
 			ArenaPlayer apl = this.arenaplayers.get(Util.random(this.arenaplayers.size()));
 			if (apl != null && apl.player.isOnline()) {
-				apl.player = Util.MatchPlayer(apl.username);
+				apl.player = Util.matchPlayer(apl.username);
 				apl.team = 2;
 				//spawn(apl.player.getName(), true);
 				apl.player.sendMessage(ChatColor.BLUE + "You have been chosen for the infected!");
@@ -108,7 +108,7 @@ public class INFECTArena extends PVPArena {
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl) {
 		if (pl.team == 1) {
-			pl.player.sendMessage(ChatColor.AQUA + "YOU HAVE JOINED THE INFECTED SIDE!");
+			pl.player.sendMessage(ChatColor.AQUA + "You have joined the Infected!");
 		}
 		pl.team = 2;
 	}

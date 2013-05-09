@@ -92,8 +92,8 @@ public class ArenaCreator {
 		this.step = steps.get(stepnum);
 		
 		try{
-			Util.MatchPlayer(player).sendMessage(ChatColor.GRAY + "Arena: " + ChatColor.GOLD + arenaName + ChatColor.GRAY + " has been initialised. Type: " + ChatColor.GOLD + arenaType);
-			Util.MatchPlayer(player).sendMessage(ChatColor.GRAY + "Please set two points for a lobby! " + ChatColor.GOLD + "/ua setpoint");
+			Util.matchPlayer(player).sendMessage(ChatColor.GRAY + "Arena: " + ChatColor.GOLD + arenaName + ChatColor.GRAY + " has been initialised. Type: " + ChatColor.GOLD + arenaType);
+			Util.matchPlayer(player).sendMessage(ChatColor.GRAY + "Please set two points for a lobby! " + ChatColor.GOLD + "/ua setpoint");
 		}catch(Exception e) {
 			
 		}
@@ -108,7 +108,6 @@ public class ArenaCreator {
 			az.lobbyREDspawn = lobbyREDspawn;
 			az.team1spawn = team1spawn;
 			az.team2spawn = team2spawn;
-			//az.lobby = new Field(lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
 			az.lobby1 = lobby1;
 			az.lobby2 = lobby2;
 			az.arena1 = arena1;
@@ -119,12 +118,14 @@ public class ArenaCreator {
 			az.defaultClass = plugin.classes.get(0).name;
 			az.world = lobby1.getWorld();
 			az.save();
-			System.out.println("[UltimateArena] Arena created and saved: " + arenaName + "  Type: " + arenaType);
+			plugin.getLogger().info("Arena created and saved: " + arenaName + "  Type: " + arenaType);
 			plugin.loadedArena.add(az);
 			player.sendMessage(ChatColor.GRAY + "Finished arena!");
 			player.sendMessage(ChatColor.GRAY + "use " + ChatColor.GOLD + "/ua join " + arenaName + ChatColor.GRAY + " to play!");
 		}catch(Exception e) {
-			System.out.println("[UltimateArena] ERROR CREATING ARENA! REPORT TO DMULLOY2!");
+			plugin.getLogger().severe("Error creating arena!");
+			player.sendMessage(ChatColor.RED + "Error creating arena: " + e.getMessage());
+			player.sendMessage(ChatColor.RED + "Check Console for more details");
 			e.printStackTrace();
 		}
 		plugin.makingArena.remove(this);

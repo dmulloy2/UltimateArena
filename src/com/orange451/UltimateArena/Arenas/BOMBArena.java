@@ -47,7 +47,7 @@ public class BOMBArena extends Arena {
 	}
 	
 	public synchronized void onPlayerDeath(ArenaPlayer pl) {
-		System.out.println("BOMB ARENA: player died!");
+		az.plugin.getLogger().info("Bomb: Player("+pl.player.getName()+") has died!");
 		if (pl.team == 1) {
 			REDTEAMPOWER--;
 			for (int i = 0; i < arenaplayers.size(); i++) {
@@ -95,7 +95,7 @@ public class BOMBArena extends Arena {
 					if (ap.team == 1) {
 						ap.out = true;
 						updatedTeams = true;
-						Player p = Util.MatchPlayer(ap.player.getName());
+						Player p = Util.matchPlayer(ap.player.getName());
 						if (p != null) {
 							p.sendMessage(ChatColor.RED + "Your team lost! :(");
 							endPlayer(ap, false);

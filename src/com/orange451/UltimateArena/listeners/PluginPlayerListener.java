@@ -26,7 +26,6 @@ import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.SPLEEFArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
-import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
 
 public class PluginPlayerListener implements Listener {
 	private UltimateArena plugin;
@@ -94,14 +93,10 @@ public class PluginPlayerListener implements Listener {
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player pl = event.getPlayer();
 		if (pl != null) {
-			if (plugin.isInArena(pl))
-			{
-				if (plugin.getArena(pl).type.equals("Hunger"))
-				{
+			if (plugin.isInArena(pl)) {
+				if (plugin.getArena(pl).type.equals("Hunger")) {
 					event.setCancelled(false);
-				}
-				else
-				{
+				} else {
 					event.setCancelled(true);
 				}
 			}
@@ -117,7 +112,7 @@ public class PluginPlayerListener implements Listener {
 				if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
 					if (event.hasBlock()) {
 						Block block = event.getClickedBlock();
-						if(block.getState() instanceof Sign){
+						if(block.getState() instanceof Sign) {
 							Sign s = (Sign)block.getState();
 							String line1 = s.getLine(0);
 							ArenaPlayer ac = plugin.getArenaPlayer(player);
@@ -127,10 +122,10 @@ public class PluginPlayerListener implements Listener {
 									if (arc.checkPermission(player)) {
 										ac.mclass = arc;
 										player.sendMessage(ChatColor.GRAY + "You will spawn as a(n): " + ChatColor.GOLD + line1);
-									}else{
+									} else {
 										player.sendMessage(ChatColor.RED + "You do not have the necessary perms for this class");
 									}
-								}else{
+								} else {
 									player.sendMessage(ChatColor.RED + "Error: " + line1 + " is not a class!");
 								}
 							}
@@ -200,23 +195,14 @@ public class PluginPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		String cmd = event.getMessage().toLowerCase();
-		if (!cmd.contains("/ua") && plugin.isInArena(event.getPlayer()) && !plugin.wcmd.isAllowed(cmd)) {
+		String[] check = cmd.split(" ");
+		if (!cmd.contains("/ua") && plugin.isInArena(event.getPlayer()) && !plugin.wcmd.isAllowed(check)) {
 			event.getPlayer().sendMessage(ChatColor.GRAY + "You cannot use non-ua commands in an arena!");
 			event.getPlayer().sendMessage(ChatColor.GRAY + "If you wish to use commands again, use " + ChatColor.LIGHT_PURPLE + "/ua leave");
 			event.setCancelled(true);
 			return;
 		}
 	}	
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerGunFire(PVPGunPlusFireGunEvent event) {
-		Player pl = event.getShooterAsPlayer();
-		if (pl != null) {
-			if (plugin.isInArena(pl)) {
-				event.setAmountAmmoNeeded(0);
-			}
-		}
-	}
 	
 	class RemindTask extends BukkitRunnable {
 		Player event;

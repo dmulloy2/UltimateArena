@@ -3,27 +3,37 @@ package com.orange451.UltimateArena.Arenas.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WhiteListCommands {
+public class WhiteListCommands
+{
 	public List<String> allowedCommand;
-	
-	public WhiteListCommands() {
+	public WhiteListCommands() 
+	{
 		this.allowedCommand = new ArrayList<String>();
 	}
 	
-	public void addCommand(String str) {
+	public void addCommand(String str)
+	{
 		allowedCommand.add(str);
 	}
 	
-	public boolean isAllowed(String str) {
-		for (int i = 0; i < allowedCommand.size(); i++) {
-			if (allowedCommand.get(i).startsWith(str)) {
+	public boolean isAllowed(String[] check)
+	{
+		for (String cmd : allowedCommand)
+		{
+			if (cmd.equalsIgnoreCase(check[0]))
+			{
+				return true;
+			}
+			else if (cmd.equalsIgnoreCase(check.toString()))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public void clear() {
+	public void clear() 
+	{
 		this.allowedCommand.clear();
 	}
 }

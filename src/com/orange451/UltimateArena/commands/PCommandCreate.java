@@ -31,7 +31,7 @@ public class PCommandCreate extends PBaseCommand {
 				}else{
 					player.sendMessage(ChatColor.RED + "4 Parameters? really? try again.");
 				}
-				player.sendMessage(ChatColor.GOLD + "/ua create [NAME] [ARENATYPE]");
+				player.sendMessage(ChatColor.GOLD + "/ua create [name] [type]");
 			}
 		}
 	}

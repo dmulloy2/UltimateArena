@@ -49,7 +49,7 @@ public class CONQUESTArena extends Arena {
 	@Override
 	public void spawn(String name, boolean alreadySpawned) {
 		super.spawn(name, false);
-		Player p = Util.MatchPlayer(name);
+		Player p = Util.matchPlayer(name);
 		if (p != null) {
 			ArenaPlayer ap = this.az.plugin.getArenaPlayer(p);
 			if (ap != null) {
@@ -72,7 +72,7 @@ public class CONQUESTArena extends Arena {
 	}
 	
 	public void onPlayerDeath(ArenaPlayer pl) {
-		System.out.println("CONQUEST ARENA: player died!");
+		az.plugin.getLogger().info("Conquest: Player("+pl.player.getName()+") has died!");
 		
 		int majority = 0;
 		int red = 0;
@@ -145,7 +145,7 @@ public class CONQUESTArena extends Arena {
 						if (ap.team == 2) {
 							ap.out = true;
 							updatedTeams = true;
-							Player p = Util.MatchPlayer(ap.player.getName());
+							Player p = Util.matchPlayer(ap.player.getName());
 							if (p != null) {
 								p.sendMessage(ChatColor.RED + "Your team lost! :(");
 								endPlayer(ap, false);
@@ -155,7 +155,7 @@ public class CONQUESTArena extends Arena {
 						if (ap.team == 1) {
 							ap.out = true;
 							updatedTeams = true;
-							Player p = Util.MatchPlayer(ap.player.getName());
+							Player p = Util.matchPlayer(ap.player.getName());
 							if (p != null) {
 								p.sendMessage(ChatColor.RED + "Your team lost! :(");
 								endPlayer(ap, false);

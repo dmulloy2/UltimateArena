@@ -22,11 +22,11 @@ public class PCommandJoin extends PBaseCommand {
 				String name = parameters.get(1);
 				plugin.fight(player, name);
 			}else{
-				player.sendMessage("You do not have permission to do this");
+				player.sendMessage(ChatColor.RED + "You do not have permission to do this");
 			}
 		}else{
 			player.sendMessage(ChatColor.RED + "Incorrect use of /ua join");
-			player.sendMessage(ChatColor.GOLD + "/ua join [ARENANAME]");
+			player.sendMessage(ChatColor.GOLD + "/ua join [arena]");
 		}
 	}
 }

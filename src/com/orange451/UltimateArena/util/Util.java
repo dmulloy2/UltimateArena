@@ -1,13 +1,12 @@
 package com.orange451.UltimateArena.util;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.UltimateArena;
@@ -15,34 +14,37 @@ import com.orange451.UltimateArena.UltimateArena;
 public class Util {
 
 	public static UltimateArena plugin;
-	public static World world;
 	public static Server server;
 
 	public static void Initialize(UltimateArena plugin) {
 		Util.plugin = plugin;
 		Util.server = plugin.getServer();
-		Util.world = server.getWorlds().get(0);
 	}
 
-	public static Player MatchPlayer(String player) {
-		List<Player> players = server.matchPlayer(player);
-
-		if (players.size() == 1) {
+	public static Player matchPlayer(String pl)
+	{
+		List<Player> players = server.matchPlayer(pl);
+		
+		if (players.size() >= 1)
 			return players.get(0);
-		}else{
-			return null;
-		}
-	}
-
-	public static List<Player> Who() {
-		Player players[] = Util.server.getOnlinePlayers();
-		List<Player> players1 = new ArrayList<Player>();
-		for (int i = 0; i < players.length; i++) {
-			players1.add(players[i]);
-		}
-		return players1;
+		
+		return null;
 	}
 	
+	public static OfflinePlayer matchOfflinePlayer(String pl)
+	{
+		if (matchPlayer(pl) != null)
+			return matchPlayer(pl);
+		
+		for (OfflinePlayer o : server.getOfflinePlayers())
+		{
+			if (o.getName().equalsIgnoreCase(pl))
+				return o;
+		}
+		
+		return null;
+	}
+
 	public static void playEffect(Effect e, Location l, int num) {
 		for (int i = 0; i < server.getOnlinePlayers().length; i++) {
 			server.getOnlinePlayers()[i].playEffect(l, e, num);
