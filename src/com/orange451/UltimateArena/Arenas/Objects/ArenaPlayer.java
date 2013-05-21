@@ -6,7 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffectType;
 
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.util.Util;
@@ -70,10 +72,18 @@ public class ArenaPlayer
 						p.getInventory().addItem(new ItemStack(mat, amt));
 					else
 					{
-						MaterialData data = new MaterialData(mat);
+						ItemStack itemStack = new ItemStack(mat, amt);
+						if (itemStack.getType() == Material.POTION)
+						{
+							PotionMeta meta = (PotionMeta)itemStack.getItemMeta();
+							PotionEffectType effect = PotionEffectType.getById(dat);
+							meta.setMainEffect(effect);
+							p.getInventory().setItem(slot, itemStack);
+						}
+						MaterialData data = itemStack.getData();
 						data.setData(dat);
-						ItemStack itm = data.toItemStack(amt);
-						p.getInventory().setItem(slot, itm);
+						itemStack.setData(data);
+						p.getInventory().setItem(slot, itemStack);
 					}
 				}
 			}
@@ -107,6 +117,7 @@ public class ArenaPlayer
 						if (mclass.armor1 > 0) { p.getInventory().setChestplate(new ItemStack(Material.getMaterial(mclass.armor1), 1)); }
 						if (mclass.armor2 > 0) { p.getInventory().setLeggings(new ItemStack(Material.getMaterial(mclass.armor2), 1)); }
 						if (mclass.armor3 > 0) { p.getInventory().setBoots(new ItemStack(Material.getMaterial(mclass.armor3), 1)); }
+						if (mclass.helmet == false) { p.getInventory().setHelmet(null); }
 						
 						giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0);
 						giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1);

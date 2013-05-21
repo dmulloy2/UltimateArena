@@ -13,9 +13,10 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.util.Util;
 
-public class HUNGERArena extends Arena {
-
-	public HUNGERArena(ArenaZone az) {
+public class HUNGERArena extends Arena 
+{
+	public HUNGERArena(ArenaZone az) 
+	{
 		super(az);
 		
 		type = "Hunger";
@@ -24,13 +25,15 @@ public class HUNGERArena extends Arena {
 		maxDeaths = 1;
 		allowTeamKilling = true;
 		
-		for (int i = 0; i < this.az.spawns.size(); i++) {
+		for (int i = 0; i < this.az.spawns.size(); i++) 
+		{
 			this.spawns.add( new ArenaSpawn(this.az.spawns.get(i).getWorld(), this.az.spawns.get(i).getBlockX(), this.az.spawns.get(i).getBlockY(), this.az.spawns.get(i).getBlockZ()) );
 		}
 	}
 	
 	@Override
-	public void spawn(String name, boolean alreadySpawned) {
+	public void spawn(String name, boolean alreadySpawned) 
+	{
 		super.spawn(name, false);
 		spawnRandom(name);
 		Player p = Util.matchPlayer(name);
@@ -67,18 +70,26 @@ public class HUNGERArena extends Arena {
 	}
 
 	@Override
-	public void check() {
-		if (starttimer <= 0) {
-			if (isEmpty()) {
-				if (amtPlayersInArena == 1) {
+	public void check() 
+	{
+		if (starttimer <= 0) 
+		{
+			if (isEmpty()) 
+			{
+				if (amtPlayersInArena == 1) 
+				{
 					this.setWinningTeam(-1);
 					stop();
-					for (int i = 0; i < arenaplayers.size(); i++) {
+					for (int i = 0; i < arenaplayers.size(); i++) 
+					{
 						spawn(arenaplayers.get(i).username, false);
 					}
-					if (this.amtPlayersStartingInArena > 1) {
+					if (this.amtPlayersStartingInArena > 1)
+					{
 						this.rewardTeam(winningTeam, ChatColor.BLUE + "You won!", false);
-					}else{
+					}
+					else
+					{
 						this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
 					}
 				}
@@ -87,9 +98,9 @@ public class HUNGERArena extends Arena {
 	}
 	
 	@Override
-	public void onPlayerDeath(ArenaPlayer pl) {
+	public void onPlayerDeath(ArenaPlayer pl) 
+	{
 		super.onPlayerDeath(pl);
 		pl.player.getWorld().strikeLightningEffect(pl.player.getLocation());
 	}
-	
 }

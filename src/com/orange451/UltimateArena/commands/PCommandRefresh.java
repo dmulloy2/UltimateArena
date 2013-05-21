@@ -5,9 +5,10 @@ import org.bukkit.ChatColor;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
-public class PCommandRefresh extends PBaseCommand {
-	
-	public PCommandRefresh(UltimateArena plugin) {
+public class PCommandRefresh extends PBaseCommand 
+{
+	public PCommandRefresh(UltimateArena plugin) 
+	{
 		this.plugin = plugin;
 		aliases.add("refresh");
 		aliases.add("r");
@@ -18,15 +19,25 @@ public class PCommandRefresh extends PBaseCommand {
 	}
 	
 	@Override
-	public void perform() {
-		if (PermissionInterface.checkPermission(player, plugin.uaAdmin)) {
-			try{
+	public void perform()
+	{
+		if (PermissionInterface.checkPermission(player, plugin.uaAdmin))
+		{
+			try
+			{
 				plugin.forceStop();
 				plugin.clearMemory();
 				plugin.onEnable();
-			}catch(Exception e) {
-				e.printStackTrace();
+				player.sendMessage(ChatColor.GREEN + "Reloaded UltimateArena!");
 			}
+			catch(Exception e) 
+			{
+				plugin.getLogger().severe("Error while reloading: " + e.getMessage());
+			}
+		}
+		else
+		{
+			player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
 		}
 	}
 }

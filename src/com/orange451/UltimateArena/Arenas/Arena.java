@@ -592,7 +592,8 @@ public abstract class Arena
 					giveItem(pl, Material.POTION.getId(), (byte)1, 1, "4 kills! Unlocked Health potion!");
 					giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 kills! Unlocked Food!");
 				}
-				if (ap.killstreak == 5) {
+				if (ap.killstreak == 5) 
+				{
 					if (!(this.az.arenaType.equalsIgnoreCase("cq"))) 
 					{
 						pl.sendMessage(ChatColor.GOLD + "5 kills! Unlocked Zombies!");

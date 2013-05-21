@@ -46,6 +46,7 @@ public class ArenaClass {
 	public byte special8 = 0;
 	public byte special9 = 0;
 	public boolean loaded = true;
+	public boolean helmet = true;
 	public UltimateArena plugin;
 	public File file;
 	
@@ -218,6 +219,15 @@ public class ArenaClass {
 					weapon9 = value;
 					special9 = (byte) value2;
 					amt9 = value3;
+				}
+				if (str2.equalsIgnoreCase("helmet")) {
+					String line = str.substring(str.indexOf("=")+1);
+					if (line.equalsIgnoreCase("true")) {
+						helmet = true;
+					}
+					else if (line.equalsIgnoreCase("false")) {
+						helmet = false;
+					}
 				}
 			}
 		}catch(Exception e) {
