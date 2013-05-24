@@ -7,8 +7,9 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map.Entry;
 
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,11 +37,9 @@ import com.orange451.UltimateArena.util.Util;
 public class UltimateArena extends JavaPlugin
 {
 	private @Getter Economy economy;
-	private PluginBlockListener blockListener = new PluginBlockListener(this);
-	private PluginPlayerListener playerListener = new PluginPlayerListener(this);
-	private PluginEntityListener entityListener = new PluginEntityListener(this);
+	private @Getter FileHelper fileHelper;
+	
 	private List<PBaseCommand> commands = new ArrayList<PBaseCommand>();
-	private boolean loaded = false;
 	public int maxArenasRunning = 1024;
 	public int arenasPlayed = 0;
 	public String uaAdmin = "ultimatearena.admin";
@@ -50,11 +50,151 @@ public class UltimateArena extends JavaPlugin
 	public List<ArenaZone> loadedArena = new ArrayList<ArenaZone>();
 	public List<Arena> activeArena = new ArrayList<Arena>();
 	public List<RemindTask> waiting = new ArrayList<RemindTask>();
-	public ArrayList<ArenaConfig> configs = new ArrayList<ArenaConfig>();
-	public ArrayList<String> fieldTypes = new ArrayList<String>();
-	public ArrayList<String> loggedOut = new ArrayList<String>();
-	public ArrayList<String> loggedOutInArena = new ArrayList<String>();
+	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
+	public List<String> fieldTypes = new ArrayList<String>();
+	public List<String> loggedOut = new ArrayList<String>();
+	public List<String> loggedOutInArena = new ArrayList<String>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
+	public HashMap<Player, HashMap<Integer, Location>> savedPlayers;
+	
+	@Override
+	public void onEnable()
+	{
+		long start = System.currentTimeMillis();
+ 
+		File dir = getDataFolder();
+		if (!dir.exists()) 
+		{
+			dir.mkdir();
+		}
+		
+		File dir2 = new File(getDataFolder().getAbsolutePath() + "/arenas");
+		if (!dir2.exists())
+		{
+			dir2.mkdir();
+		}
+		
+		saveDefaultConfig();
+		
+		//Add fields
+		fieldTypes.add("pvp");
+		fieldTypes.add("mob");
+		fieldTypes.add("cq");
+		fieldTypes.add("koth");
+		fieldTypes.add("bomb");
+		fieldTypes.add("ffa");
+		fieldTypes.add("spleef");
+		fieldTypes.add("infect");
+		fieldTypes.add("ctf");
+		fieldTypes.add("hunger");
+
+		//Add Commands
+		commands.add(new PCommandHelp(this));
+		commands.add(new PCommandInfo(this));
+		commands.add(new PCommandList(this));
+		commands.add(new PCommandJoin(this));
+		commands.add(new PCommandLeave(this));
+		commands.add(new PCommandStats(this));
+		commands.add(new PCommandLike(this));
+		commands.add(new PCommandDislike(this));
+		
+		commands.add(new PCommandCreate(this));
+		commands.add(new PCommandSetPoint(this));
+		commands.add(new PCommandSetDone(this));
+		commands.add(new PCommandDelete(this));
+		commands.add(new PCommandStop(this));
+		
+		commands.add(new PCommandForceStop(this));
+		commands.add(new PCommandRefresh(this));
+		commands.add(new PCommandForceJoin(this));
+		commands.add(new PCommandDisable(this));
+		commands.add(new PCommandEnable(this));
+		commands.add(new PCommandKick(this));
+		commands.add(new PCommandStart(this));
+		commands.add(new PCommandPause(this));
+		
+		commands.add(new PCommandClasses(this));
+		
+		fileHelper = new FileHelper(this);
+		
+		savedPlayers = fileHelper.savedPlayers();
+		for (Player player : getServer().getOnlinePlayers())
+		{
+			if (savedPlayers.containsKey(player))
+			{
+				for (Entry<Player, HashMap<Integer, Location>> entrySet : savedPlayers.entrySet())
+				{
+					if (player.getName() == entrySet.getKey().getName())
+					{
+						if (player != null && player.isOnline())
+						{
+							int exp = 0;
+							Location loc = null;
+							HashMap<Integer, Location> hashMap = entrySet.getValue();
+							for (Entry<Integer, Location> entrySet2 : hashMap.entrySet())
+							{
+								exp = entrySet2.getKey();
+								loc = entrySet2.getValue();
+							}
+							
+							normalize(player);
+							player.setExp(exp);
+							player.teleport(loc);
+							removePotions(player);
+						}
+					}
+				}
+			}
+		}
+
+		PluginManager pm = getServer().getPluginManager();
+		if (pm.isPluginEnabled("PVPGunPlus"))
+			pm.registerEvents(new PVPGunPlusListener (this), this);
+			
+		pm.registerEvents(new PluginEntityListener(this), this);
+		pm.registerEvents(new PluginBlockListener(this), this);
+		pm.registerEvents(new PluginPlayerListener(this), this);
+		
+		Util.Initialize(this);
+ 
+		new ArenaUpdater().runTaskTimer(this, 2L, 20L);
+			
+		checkVault(pm);
+
+		loadFiles();
+		
+		long finish = System.currentTimeMillis();
+		
+		getLogger().info(getDescription().getFullName() + " has been enabled ("+(finish-start)+"ms)");
+	}
+
+	@Override
+	public void onDisable()
+	{
+		long start = System.currentTimeMillis();
+		
+		fileHelper.onDisable(activeArena);
+		
+		for (int i=0; i<activeArena.size(); i++)
+		{
+			try
+			{
+				activeArena.get(i).stop();
+			}
+			catch (Exception e)
+			{
+				getLogger().severe("Error while stopping arena " + activeArena.get(i).name + ". (" + e.getMessage()+")");
+			}
+		}
+		
+		getServer().getServicesManager().unregisterAll(this);
+		getServer().getScheduler().cancelTasks(this);
+		
+		clearMemory();
+		
+		long finish = System.currentTimeMillis();
+		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
+	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
@@ -64,7 +204,8 @@ public class UltimateArena extends JavaPlugin
 		if (commandLabel.equals("tt"))
 		{
 			testAPI tt = new testAPI();
-			tt.test((Player)sender);
+			if (sender instanceof Player)
+				tt.test((Player)sender);
 			return false;
 		}
 		
@@ -132,6 +273,32 @@ public class UltimateArena extends JavaPlugin
 	
 	public void onJoin(Player player) 
 	{
+		if (savedPlayers.containsKey(player))
+		{
+			for (Entry<Player, HashMap<Integer, Location>> entrySet : savedPlayers.entrySet())
+			{
+				if (player.getName() == entrySet.getKey().getName())
+				{
+					if (player != null && player.isOnline())
+					{
+						int exp = 0;
+						Location loc = null;
+						HashMap<Integer, Location> hashMap = entrySet.getValue();
+						for (Entry<Integer, Location> entrySet2 : hashMap.entrySet())
+						{
+							exp = entrySet2.getKey();
+							loc = entrySet2.getValue();
+						}
+						
+						normalize(player);
+						player.setExp(exp);
+						player.teleport(loc);
+						removePotions(player);
+					}
+				}
+			}
+		}
+		
 		if (!this.isInArena(player))
 		{
 			if (this.isInArena(player.getLocation())) 
@@ -223,30 +390,30 @@ public class UltimateArena extends JavaPlugin
 	{
 		String path = getRoot().getAbsolutePath() + "/whiteListedCommands.txt";
 		File f = new File(path);
-		if (f.exists()) 
+		if (!f.exists()) 
 		{
-		    try
-		    {
-				FileInputStream fstream = new FileInputStream(f.getAbsolutePath());
-				DataInputStream in = new DataInputStream(fstream);
-				BufferedReader br = new BufferedReader(new InputStreamReader(in));
-				String strLine;
-				while ((strLine = br.readLine()) != null) 
-				{
-					wcmd.addCommand(strLine);
-				}
-				br.close();
-				in.close();
-				fstream.close();
-	        }
-		    catch (Exception e)
-	        {
-	            getLogger().severe("Error loading whitelisted commands: " + e.getMessage());
-	        }
+			getLogger().info("Whitelisted commands file not found! Generating you a new one!");
+			fileHelper.generateWhitelistedCmds();
+			
 		}
-		else
+		
+		try
 		{
-			getLogger().warning("No Whitelisted Commands file!");
+			FileInputStream fstream = new FileInputStream(f.getAbsolutePath());
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			while ((strLine = br.readLine()) != null) 
+			{
+				wcmd.addCommand(strLine);
+			}
+			br.close();
+			in.close();
+			fstream.close();
+		}
+		catch (Exception e)
+		{
+			getLogger().severe("Error loading whitelisted commands: " + e.getMessage());
 		}
 	}
 	
@@ -254,32 +421,41 @@ public class UltimateArena extends JavaPlugin
 	{
 		String path = getRoot().getAbsolutePath() + "/" + str + "CONFIG.txt";
 		File f = new File(path);
-		if (f.exists()) 
+		if (!f.exists())
 		{
-			ArenaConfig a = new ArenaConfig(this, str, f);
-			configs.add(a);
-			getLogger().info("Loaded configuration for arena type: " + str);
+			getLogger().info("Arena config for \"" + str + "\" not found! Generating you a new one!");
+			fileHelper.generateArenaConfig(str);
 		}
-		else
-		{
-			getLogger().log(Level.WARNING, "Failed to load configuration for arena type: " + str);
-		}
+		
+		ArenaConfig a = new ArenaConfig(this, str, f);
+		configs.add(a);
+		getLogger().info("Loaded configuration for arena type: " + str);
 	}
 	
 	public void loadClasses() 
 	{
 		String path = getRoot().getAbsolutePath() + "/classes";
 		File dir = new File(path);
-		String[] children = dir.list();
-		if (children != null) 
+		if (!dir.exists())
 		{
-		    for (int i=0; i<children.length; i++) 
-		    {
-		        String filename = children[i];
-		        ArenaClass ac = new ArenaClass(this, new File(path + "/" + filename));
-		        ac.name = filename;
-		        this.classes.add(ac);
-		    }
+			dir.mkdir();
+		}
+		
+		String[] children = dir.list();
+		if (children.length == 0)
+		{
+			fileHelper.generateStockClasses();
+			getLogger().info("No classes found! Generating stock classes!");
+		}
+		
+		dir = new File(path);
+		children = dir.list();
+		
+		for (String filename : children)
+		{
+			ArenaClass ac = new ArenaClass(this, new File(path + "/" + filename));
+	        ac.name = filename;
+	        this.classes.add(ac);
 		}
 	}
 	
@@ -793,115 +969,8 @@ public class UltimateArena extends JavaPlugin
 		}
 		catch(Exception e)
 		{
-			//
+			getLogger().severe("Error normalizing player ("+p.getName()+"): " + e);
 		}
-	}
-
-	@Override
-	public void onEnable()
-	{
-		long start = System.currentTimeMillis();
- 
-		File dir = getDataFolder();
-		if (!dir.exists()) 
-		{
-			dir.mkdir();
-		}
-		
-		File dir2 = new File(getDataFolder().getAbsolutePath() + "/arenas");
-		if (!dir2.exists())
-		{
-			dir2.mkdir();
-		}
-		
-		saveDefaultConfig();
-		
-		//Add fields
-		fieldTypes.add("pvp");
-		fieldTypes.add("mob");
-		fieldTypes.add("cq");
-		fieldTypes.add("koth");
-		fieldTypes.add("bomb");
-		fieldTypes.add("ffa");
-		fieldTypes.add("spleef");
-		fieldTypes.add("infect");
-		fieldTypes.add("ctf");
-		fieldTypes.add("hunger");
-
-		//Add Commands
-		commands.add(new PCommandHelp(this));
-		commands.add(new PCommandInfo(this));
-		commands.add(new PCommandList(this));
-		commands.add(new PCommandJoin(this));
-		commands.add(new PCommandLeave(this));
-		commands.add(new PCommandStats(this));
-		commands.add(new PCommandLike(this));
-		commands.add(new PCommandDislike(this));
-		
-		commands.add(new PCommandCreate(this));
-		commands.add(new PCommandSetPoint(this));
-		commands.add(new PCommandSetDone(this));
-		commands.add(new PCommandDelete(this));
-		commands.add(new PCommandStop(this));
-		
-		commands.add(new PCommandForceStop(this));
-		commands.add(new PCommandRefresh(this));
-		commands.add(new PCommandForceJoin(this));
-		commands.add(new PCommandDisable(this));
-		commands.add(new PCommandEnable(this));
-		commands.add(new PCommandKick(this));
-		commands.add(new PCommandStart(this));
-		commands.add(new PCommandPause(this));
-		
-		commands.add(new PCommandClasses(this));
-		
-		if (!loaded)
-		{
-			loaded = true;
-			PluginManager pm = getServer().getPluginManager();
-			if (pm.isPluginEnabled("PVPGunPlus"))
-				pm.registerEvents(new PVPGunPlusListener (this), this);
-			
-			pm.registerEvents(entityListener, this);
-			pm.registerEvents(blockListener, this);
-			pm.registerEvents(playerListener, this);
-
-			Util.Initialize(this);
- 
-			new ArenaUpdater().runTaskTimer(this, 2L, 20L);
-			
-			checkVault(pm);
-		}
-		loadFiles();
-		
-		long finish = System.currentTimeMillis();
-		getLogger().info(getDescription().getFullName() + " has been enabled ("+(finish-start)+"ms)");
-	}
-
-	@Override
-	public void onDisable()
-	{
-		long start = System.currentTimeMillis();
-		
-		for (Arena arena : activeArena)
-		{
-			try
-			{
-				arena.stop();
-			}
-			catch (Exception e)
-			{
-				getLogger().severe("Error while stopping arena " + arena.name + ". (" + e.getMessage()+")");
-			}
-		}
-		
-		getServer().getServicesManager().unregisterAll(this);
-		getServer().getScheduler().cancelTasks(this);
-		
-		clearMemory();
-		
-		long finish = System.currentTimeMillis();
-		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
 	}
 
 	public void loadFiles() 
@@ -929,17 +998,17 @@ public class UltimateArena extends JavaPlugin
 	{
 		public void run()
 		{
-			for (Arena arena : activeArena)
+			for (int i = 0; i < activeArena.size(); i++) 
 			{
 				try
 				{
-					arena.stop();
+					activeArena.get(i).step();
 				}
-				catch (Exception e)
+				catch(Exception e) 
 				{
-					getLogger().severe("Error while stopping arena " + arena.name + ". (" + e.getMessage()+")");
+					//fuck you
 				}
-			}
+			} 
 		}
 	}
 	
@@ -990,5 +1059,34 @@ public class UltimateArena extends JavaPlugin
 		}
  
 		return economy != null;
+	}
+    
+	public void updateSign(Sign sign, Arena arena)
+	{
+		sign.setLine(0, "[UltimateArena]");
+		sign.setLine(1, arena.name);
+		String line3 = null;
+		if (arena.disabled)
+		{
+			line3 = ChatColor.RED + "DISABLED";
+		}
+		if (arena.stopped)
+		{
+			line3 = ChatColor.RED + "STOPPED";
+		}
+		if (arena.starttimer > 0)
+		{
+			line3 = ChatColor.GREEN + "LOBBY";
+		}
+		if (arena.starttimer > 0)
+		{
+			line3 = ChatColor.GREEN + "INGAME";
+		}
+		sign.setLine(2, line3);
+		
+		int amt = arena.amtPlayersInArena;
+		int tot = arena.amtPlayersStartingInArena;
+		int max = arena.spawns.size();
+		sign.setLine(3, amt + "/" + tot + "/" + max);
 	}
 }

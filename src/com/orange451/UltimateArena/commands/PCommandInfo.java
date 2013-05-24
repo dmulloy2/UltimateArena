@@ -1,6 +1,6 @@
 package com.orange451.UltimateArena.commands;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 
@@ -33,7 +33,7 @@ public class PCommandInfo extends PBaseCommand {
 						}
 						sendMessage(ChatColor.GRAY + "YOU ARE: " + out);
 					}
-					ArrayList<ArenaPlayer> arr = ar.arenaplayers;
+					List<ArenaPlayer> arr = ar.arenaplayers;
 					for (int i = 0; i < arr.size(); i++) {
 						try{
 							if (arr.get(i).out != true) {
@@ -58,7 +58,7 @@ public class PCommandInfo extends PBaseCommand {
 					sendMessage(ChatColor.GRAY + "Arena: " + ChatColor.GOLD + arenaname);
 					sendMessage(ChatColor.GRAY + "Type: " + ChatColor.GOLD + ar.az.arenaType);
 					sendMessage(ChatColor.GRAY + "Players:");
-					ArrayList<ArenaPlayer> arr = ar.arenaplayers;
+					List<ArenaPlayer> arr = ar.arenaplayers;
 					if (arr.size() > 0) {
 						for (int i = 0; i < arr.size(); i++) {
 							try{

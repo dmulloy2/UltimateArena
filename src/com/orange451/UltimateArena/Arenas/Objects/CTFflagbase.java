@@ -1,6 +1,6 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -44,7 +44,7 @@ public class CTFflagbase extends flagBase {
 	}
 	
 	@Override
-	public void checkNear(ArrayList<ArenaPlayer> arenaplayers) {
+	public void checkNear(List<ArenaPlayer> arenaplayers) {
 		flag.checkNear(arenaplayers);
 		if (!enemyflag.pickedUp) 
 			return;

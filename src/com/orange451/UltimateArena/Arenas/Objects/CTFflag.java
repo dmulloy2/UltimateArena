@@ -1,6 +1,6 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -124,7 +124,7 @@ public class CTFflag {
 		});
 	}
 	
-	public void checkNear(ArrayList<ArenaPlayer> arenaplayers) {
+	public void checkNear(List<ArenaPlayer> arenaplayers) {
 		if (stopped)
 			return;
 		

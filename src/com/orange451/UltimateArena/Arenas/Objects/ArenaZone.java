@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -202,7 +201,7 @@ public class ArenaZone {
 	}
 	
 	public World getWorldFromString(String str) {
-		return str == null ? null : Bukkit.getServer().getWorld(str);
+		return str == null ? null : plugin.getServer().getWorld(str);
 	}
 	
 	public void loadArena() {

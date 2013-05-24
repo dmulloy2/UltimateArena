@@ -19,7 +19,7 @@ import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
 public class PluginBlockListener implements Listener 
 {
-	UltimateArena plugin;
+	public UltimateArena plugin;
 	public PluginBlockListener(UltimateArena plugin) 
 	{
 		this.plugin = plugin;

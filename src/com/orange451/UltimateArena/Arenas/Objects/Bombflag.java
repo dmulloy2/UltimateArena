@@ -1,6 +1,7 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -23,7 +24,7 @@ public class Bombflag extends ArenaFlag{
 	}
 	
 	@Override
-	public void checkNear(ArrayList<ArenaPlayer> arenaplayers) {
+	public void checkNear(List<ArenaPlayer> arenaplayers) {
 		if (fused) {
 			timer--;
 			Util.playEffect(Effect.STEP_SOUND, this.getLoc(), 4);

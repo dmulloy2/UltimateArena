@@ -1,6 +1,7 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -56,10 +57,10 @@ public class ArenaFlag extends flagBase {
 	}
 	
 	@Override
-	public synchronized void checkNear(ArrayList<ArenaPlayer> arenaplayers) {
+	public synchronized void checkNear(List<ArenaPlayer> arenaplayers) {
 		int team1 = 0;
 		int team2 = 0;
-		ArrayList<Player> players = new ArrayList<Player>();
+		List<Player> players = new ArrayList<Player>();
 		synchronized(players) {
 			for (int i = 0; i < arenaplayers.size(); i++) {
 				Player pl = arenaplayers.get(i).player;
