@@ -206,6 +206,8 @@ public class UltimateArena extends JavaPlugin
 			testAPI tt = new testAPI();
 			if (sender instanceof Player)
 				tt.test((Player)sender);
+			else
+				getLogger().warning("This can only be used by players!");
 			return false;
 		}
 		
