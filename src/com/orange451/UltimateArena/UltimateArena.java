@@ -18,7 +18,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -1061,34 +1060,5 @@ public class UltimateArena extends JavaPlugin
 		}
  
 		return economy != null;
-	}
-    
-	public void updateSign(Sign sign, Arena arena)
-	{
-		sign.setLine(0, "[UltimateArena]");
-		sign.setLine(1, arena.name);
-		String line3 = null;
-		if (arena.disabled)
-		{
-			line3 = ChatColor.RED + "DISABLED";
-		}
-		if (arena.stopped)
-		{
-			line3 = ChatColor.RED + "STOPPED";
-		}
-		if (arena.starttimer > 0)
-		{
-			line3 = ChatColor.GREEN + "LOBBY";
-		}
-		if (arena.starttimer > 0)
-		{
-			line3 = ChatColor.GREEN + "INGAME";
-		}
-		sign.setLine(2, line3);
-		
-		int amt = arena.amtPlayersInArena;
-		int tot = arena.amtPlayersStartingInArena;
-		int max = arena.spawns.size();
-		sign.setLine(3, amt + "/" + tot + "/" + max);
 	}
 }

@@ -3,7 +3,6 @@ package com.orange451.UltimateArena.listeners;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,19 +23,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.orange451.UltimateArena.Field3D;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
-import com.orange451.UltimateArena.Arenas.BOMBArena;
-import com.orange451.UltimateArena.Arenas.CONQUESTArena;
-import com.orange451.UltimateArena.Arenas.CTFArena;
-import com.orange451.UltimateArena.Arenas.FFAArena;
-import com.orange451.UltimateArena.Arenas.HUNGERArena;
-import com.orange451.UltimateArena.Arenas.INFECTArena;
-import com.orange451.UltimateArena.Arenas.KOTHArena;
-import com.orange451.UltimateArena.Arenas.MOBArena;
-import com.orange451.UltimateArena.Arenas.PVPArena;
 import com.orange451.UltimateArena.Arenas.SPLEEFArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
-import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
 public class PluginPlayerListener implements Listener {
 	private UltimateArena plugin;
@@ -163,144 +152,7 @@ public class PluginPlayerListener implements Listener {
 			}
 		}
 	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onSignInteract(PlayerInteractEvent event)
-	{
-		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
-		if (!event.hasBlock())
-			return;
-		
-		Block block = event.getClickedBlock();
-		if (block == null)
-			return;
-		
-		BlockState state = block.getState();
-		if (state == null)
-			return;
-		
-		if (state instanceof Sign)
-		{
-			Sign sign = (Sign)state;
-			String line1 = sign.getLine(0);
-			if (line1.isEmpty())
-				return;
-			
-			if (line1.equalsIgnoreCase("[UltimateArena]"))
-			{
-				String line2 = sign.getLine(1);
-				if (line2.isEmpty())
-					return;
-				
-				joinArenaBySign(player, line1, sign);
-			}
-		}
-	}
-	
-	public void joinArenaBySign(Player player, String name, Sign sign)
-	{
-		ArenaZone a = plugin.getArenaZone(name);
-		if (plugin.getArena(name) != null)
-		{
-			plugin.updateSign(sign, plugin.getArena(name));
-			if (plugin.getArena(name).starttimer < 1) 
-			{
-				player.sendMessage(ChatColor.RED + "This arena has already started!");
-			}
-			else
-			{
-				Arena tojoin = plugin.getArena(name);
-				int maxplayers = tojoin.az.maxPlayers;
-				int players = tojoin.amtPlayersInArena;
-				if (players + 1 <= maxplayers)
-				{
-					plugin.getArena(name).addPlayer(player);
-				}
-				else
-				{
-					player.sendMessage(ChatColor.RED + "This arena is full, sorry!");
-				}
-			}
-		}
-		else
-		{
-			Arena ar = null;
-			boolean disabled = false;
-			for (Arena aar : plugin.activeArena)
-			{
-				if (aar.disabled && aar.az.equals(a))
-				{
-					disabled = true;
-				}
-			}
-			for (ArenaZone aaz : plugin.loadedArena)
-			{
-				if (aaz.disabled && aaz.equals(a))
-				{
-					disabled = true;
-				}
-			}
-			
-			if (!disabled)
-			{
-				String arenaType = a.arenaType.toLowerCase();
-				if (arenaType.equals("pvp"))
-				{
-					ar = new PVPArena(a);
-				}
-				else if (arenaType.equals("mob")) 
-				{
-					ar = new MOBArena(a);
-				}
-				else if (arenaType.equals("cq"))
-				{
-					ar = new CONQUESTArena(a);
-				}
-				else if (arenaType.equals("koth")) 
-				{
-					ar = new KOTHArena(a);
-				}
-				else if (arenaType.equals("bomb")) 
-				{
-					ar = new BOMBArena(a);
-				}
-				else if (arenaType.equals("ffa"))
-				{
-					ar = new FFAArena(a);
-				}
-				else if (arenaType.equals("hunger")) 
-				{
-					ar = new HUNGERArena(a);
-				}
-				else if (arenaType.equals("spleef")) 
-				{
-					ar = new SPLEEFArena(a);
-				}
-				else if (arenaType.equals("infect"))
-				{
-					ar = new INFECTArena(a);
-				}
-				else if (arenaType.equals("ctf"))
-				{	
-					ar = new CTFArena(a);
-				}
-				if (ar != null) 
-				{
-					plugin.activeArena.add(ar);
-					ar.addPlayer(player);
-					ar.announce();
-				}
-			}
-			else
-			{
-				player.sendMessage(ChatColor.RED + "Error, This arena is disabled!");
-			}
-		}
-	}
-		
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player pl = event.getPlayer();
