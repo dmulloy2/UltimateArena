@@ -5,6 +5,10 @@
   <version>2.2.1</version>
   <name>UltimateArena</name>
   
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
   <repositories>
     <repository>
       <id>bukkit-repo</id>
