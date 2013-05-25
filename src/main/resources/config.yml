@@ -1,0 +1,5 @@
+# Ultimate Arena Global Configuration
+# By dmulloy2
+
+moneyrewards: true
+# Enable/disable money rewards for completing arenas (Requires changing of arena configurations)
