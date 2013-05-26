@@ -813,16 +813,17 @@ public class UltimateArena extends JavaPlugin
 	{
 		for (Arena ac : activeArena)
 		{
-			try
+			ArenaPlayer ap = ac.getArenaPlayer(player);
+			if (ap != null)
 			{
-				if (ac.getArenaPlayer(player).player.getName().equals(player.getName()))
+				Player pl = Util.matchPlayer(ap.player.getName());
+				if (pl != null && pl.isOnline())
 				{
-					return ac;
+					if (pl.getName() == player.getName())
+					{
+						return ac;
+					}
 				}
-			}
-			catch(Exception e)
-			{
-				getLogger().severe("Error while getting arena: " + e.getMessage());
 			}
 		}
 		return null;
