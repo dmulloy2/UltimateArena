@@ -581,13 +581,14 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (player != null) 
 		{
-			for (Arena ac : activeArena)
+			for (int i=0; i<activeArena.size(); i++)
 			{
-				ac.startingAmount--;
-				ArenaPlayer ap = ac.getArenaPlayer(player);
+				Arena a = activeArena.get(i);
+				a.startingAmount--;
+				ArenaPlayer ap = a.getArenaPlayer(player);
 				if (ap != null) 
 				{
-					ac.arenaplayers.remove(ap);
+					a.arenaplayers.remove(ap);
 				}
 			}
 		}
@@ -595,15 +596,21 @@ public class UltimateArena extends JavaPlugin
 	
 	public void removeFromArena(String str) 
 	{
-		for (Arena ac : activeArena)
+		for (int i=0; i<activeArena.size(); i++)
 		{
-			for (ArenaPlayer ap : ac.arenaplayers)
+			Arena a = activeArena.get(i);
+			for (int ii=0; i<a.arenaplayers.size(); ii++)
 			{
+				ArenaPlayer ap = a.arenaplayers.get(ii);
 				if (ap != null)
 				{
-					if (ap.player.getName().equals(str))
+					Player player = Util.matchPlayer(ap.player.getName());
+					if (player != null)
 					{
-						ac.arenaplayers.remove(ap);
+						if (player.getName().equals(str))
+						{
+							a.arenaplayers.remove(ap);
+						}
 					}
 				}
 			}
@@ -612,26 +619,20 @@ public class UltimateArena extends JavaPlugin
 
 	public ArenaPlayer getArenaPlayer(Player player) 
 	{
-		try
+		for (int i=0; i<activeArena.size(); i++)
 		{
-			for (Arena ac : activeArena)
+			Arena a = activeArena.get(i);
+			ArenaPlayer ap = a.getArenaPlayer(player);
+			if (ap != null)
 			{
-				ArenaPlayer ap = ac.getArenaPlayer(player);
-				if (ap != null)
+				if (!ap.out) 
 				{
-					if (!ap.out) 
+					if (ap.player.getName().equals(player.getName())) 
 					{
-						if (ap.player.getName().equals(player.getName())) 
-						{
-							return ap;
-						}
+						return ap;
 					}
 				}
 			}
-		}
-		catch(Exception e)
-		{
-			getLogger().severe("Error getting arena player: " + e.getMessage());
 		}
 		return null;
 	}
