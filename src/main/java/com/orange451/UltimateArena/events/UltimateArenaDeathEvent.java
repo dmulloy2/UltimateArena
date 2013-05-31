@@ -51,6 +51,11 @@ public class UltimateArenaDeathEvent extends Event
 		return arenaPlayer.mclass;
 	}
 	
+	public int getDeaths()
+	{
+		return arenaPlayer.deaths;
+	}
+	
 	@Override
 	public HandlerList getHandlers()
 	{
