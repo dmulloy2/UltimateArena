@@ -6,6 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.orange451.UltimateArena.Arenas.Arena;
+import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 
@@ -52,6 +53,11 @@ public class UltimateArenaSpawnEvent extends Event
 	public Location getArenaSpawnAsLocation()
 	{
 		return spawn.getLocation();
+	}
+	
+	public ArenaClass getArenaClass()
+	{
+		return arenaPlayer.mclass;
 	}
 	
 	@Override
