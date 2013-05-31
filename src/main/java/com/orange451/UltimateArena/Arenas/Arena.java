@@ -27,6 +27,7 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaFlag;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
+import com.orange451.UltimateArena.events.*;
 import com.orange451.UltimateArena.util.Util;
 
 /**
@@ -133,6 +134,10 @@ public abstract class Arena
 		}
 		plugin.removePotions(player);
 		updatedTeams = true;
+		
+		// Call ArenaJoinEvent
+		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
+		plugin.getServer().getPluginManager().callEvent(joinEvent);
 	}
 	
 	public int getTeam() 
@@ -327,6 +332,11 @@ public abstract class Arena
 												}
 											}
 											new TeleportTask().runTask(plugin);
+											
+											// Call spawn event
+											ArenaSpawn aSpawn = new ArenaSpawn(nloc.getWorld(), nloc.getBlockX(), nloc.getBlockY(), nloc.getBlockZ());
+											UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, aSpawn);
+											plugin.getServer().getPluginManager().callEvent(spawnEvent);
 										}
 										ap.spawn();
 										if (!alreadyspawned)
@@ -756,6 +766,10 @@ public abstract class Arena
 					}
 				}
 				new EndPlayerThread().runTask(plugin);
+				
+				// Call Arena leave event
+				UltimateArenaLeaveEvent leaveEvent = new UltimateArenaLeaveEvent(ap, this);
+				plugin.getServer().getPluginManager().callEvent(leaveEvent);
 
 				ap.out = true;
 				updatedTeams = true;
