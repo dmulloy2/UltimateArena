@@ -18,6 +18,12 @@ public class UltimateArenaSpawnEvent extends Event
 	public final Arena arena;
 	public final ArenaSpawn spawn;
 	
+	/**
+	 * Called when a player spawns in an arena
+	 * @param arenaPlayer - The ArenaPlayer that spawned
+	 * @param arena - The Arena the player spawned in
+	 * @param spawn - The spawn location
+	 */
 	public UltimateArenaSpawnEvent(final ArenaPlayer arenaPlayer, final Arena arena, final ArenaSpawn spawn)
 	{
 		this.arenaPlayer = arenaPlayer;

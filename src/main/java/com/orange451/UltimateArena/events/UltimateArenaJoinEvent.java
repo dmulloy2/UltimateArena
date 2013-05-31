@@ -14,6 +14,11 @@ public class UltimateArenaJoinEvent extends Event
 	public final ArenaPlayer arenaPlayer;
 	public final Arena arena;
 	
+	/**
+	 * Called when a player joins an arena
+	 * @param arenaPlayer - The ArenaPlayer that joined
+	 * @param arena - The Arena the player joined
+	 */
 	public UltimateArenaJoinEvent(final ArenaPlayer arenaPlayer, final Arena arena)
 	{
 		this.arenaPlayer = arenaPlayer;

@@ -366,6 +366,10 @@ public abstract class Arena
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
 		pl.amtkicked = 0;
+		
+		// Call ArenaDeathEvent
+		UltimateArenaDeathEvent deathEvent = new UltimateArenaDeathEvent(pl, this);
+		plugin.getServer().getPluginManager().callEvent(deathEvent);
 	}
 	
 	public void reward(ArenaPlayer ap, Player player, boolean half)
