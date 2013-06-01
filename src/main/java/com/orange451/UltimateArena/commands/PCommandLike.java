@@ -5,8 +5,8 @@ import org.bukkit.ChatColor;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
-public class PCommandLike extends PBaseCommand {
-	
+public class PCommandLike extends UltimateArenaCommand
+{	
 	public PCommandLike(UltimateArena plugin) {
 		this.plugin = plugin;
 		aliases.add("like");

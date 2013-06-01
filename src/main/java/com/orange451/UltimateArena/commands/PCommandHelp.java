@@ -4,8 +4,8 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import com.orange451.UltimateArena.UltimateArena;
 
-public class PCommandHelp extends PBaseCommand {
-	
+public class PCommandHelp extends UltimateArenaCommand
+{	
 	public PCommandHelp(UltimateArena plugin) {
 		this.plugin = plugin;
 		aliases.add("help");
@@ -22,7 +22,7 @@ public class PCommandHelp extends PBaseCommand {
 			mmode = parameters.get(1);
 		}
 		sendMessage(ChatColor.DARK_RED + "==== " + ChatColor.GOLD + plugin.getDescription().getFullName() + ChatColor.DARK_RED + " ====");
-		List<PBaseCommand> commands = plugin.getCommands();
+		List<UltimateArenaCommand> commands = plugin.getCommands();
 		for (int i = 0; i < commands.size(); i++) {
 			if (commands.get(i).mode.equals(mmode)) {
 				String str = "";

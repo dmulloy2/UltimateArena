@@ -3,9 +3,9 @@ package com.orange451.UltimateArena.commands;
 import org.bukkit.ChatColor;
 
 import com.orange451.UltimateArena.UltimateArena;
-import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
+import com.orange451.UltimateArena.permissions.PermissionType;
 
-public class PCommandRefresh extends PBaseCommand 
+public class PCommandRefresh extends UltimateArenaCommand
 {
 	public PCommandRefresh(UltimateArena plugin) 
 	{
@@ -16,28 +16,23 @@ public class PCommandRefresh extends PBaseCommand
 		mode = "admin";
 		
 		desc = ChatColor.YELLOW + " reload UltimateArena";
+		
+		this.permission = PermissionType.CMD_REFRESH.permission;
 	}
 	
 	@Override
 	public void perform()
 	{
-		if (PermissionInterface.checkPermission(player, plugin.uaAdmin))
+		try
 		{
-			try
-			{
-				plugin.forceStop();
-				plugin.clearMemory();
-				plugin.onEnable();
-				player.sendMessage(ChatColor.GREEN + "Reloaded UltimateArena!");
-			}
-			catch(Exception e) 
-			{
-				plugin.getLogger().severe("Error while reloading: " + e.getMessage());
-			}
+			plugin.forceStop();
+			plugin.clearMemory();
+			plugin.onEnable();
+			player.sendMessage(ChatColor.GREEN + "Reloaded UltimateArena!");
 		}
-		else
+		catch(Exception e) 
 		{
-			player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+			plugin.getLogger().severe("Error while reloading: " + e.getMessage());
 		}
 	}
 }

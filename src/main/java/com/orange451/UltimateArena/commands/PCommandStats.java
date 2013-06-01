@@ -6,8 +6,8 @@ import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaStatistics;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
-public class PCommandStats extends PBaseCommand {
-	
+public class PCommandStats extends UltimateArenaCommand
+{	
 	public PCommandStats(UltimateArena plugin) {
 		this.plugin = plugin;
 		aliases.add("stats");

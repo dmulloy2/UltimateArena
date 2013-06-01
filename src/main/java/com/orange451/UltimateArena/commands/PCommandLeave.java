@@ -4,8 +4,8 @@ import org.bukkit.ChatColor;
 
 import com.orange451.UltimateArena.UltimateArena;
 
-public class PCommandLeave extends PBaseCommand {
-	
+public class PCommandLeave extends UltimateArenaCommand
+{	
 	public PCommandLeave(UltimateArena plugin) {
 		this.plugin = plugin;
 		aliases.add("leave");

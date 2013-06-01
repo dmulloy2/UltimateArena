@@ -5,8 +5,8 @@ import org.bukkit.ChatColor;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
-public class PCommandDislike extends PBaseCommand {
-	
+public class PCommandDislike extends UltimateArenaCommand
+{	
 	public PCommandDislike(UltimateArena plugin) {
 		this.plugin = plugin;
 		aliases.add("dislike");

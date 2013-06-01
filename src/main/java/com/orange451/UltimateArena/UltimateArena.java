@@ -48,14 +48,16 @@ import com.orange451.UltimateArena.Arenas.*;
 import com.orange451.UltimateArena.Arenas.Objects.*;
 import com.orange451.UltimateArena.commands.*;
 import com.orange451.UltimateArena.listeners.*;
+import com.orange451.UltimateArena.permissions.PermissionHandler;
 import com.orange451.UltimateArena.util.Util;
 
 public class UltimateArena extends JavaPlugin
 {
 	private @Getter Economy economy;
 	private @Getter FileHelper fileHelper;
+	private @Getter PermissionHandler permissionHandler;
 	
-	private List<PBaseCommand> commands = new ArrayList<PBaseCommand>();
+	private List<UltimateArenaCommand> commands = new ArrayList<UltimateArenaCommand>();
 	public int maxArenasRunning = 1024;
 	public int arenasPlayed = 0;
 	public String uaAdmin = "ultimatearena.admin";
@@ -77,6 +79,8 @@ public class UltimateArena extends JavaPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
+		
+		permissionHandler =  new PermissionHandler(this);
  
 		File dir = getDataFolder();
 		if (!dir.exists()) 
@@ -241,11 +245,11 @@ public class UltimateArena extends JavaPlugin
 		
 		String commandName = parameters.get(0).toLowerCase();
 		
-		for (PBaseCommand fcommand : this.commands) 
+		for (UltimateArenaCommand command : this.commands) 
 		{
-			if (fcommand.getAliases().contains(commandName)) 
+			if (command.getAliases().contains(commandName)) 
 			{
-				fcommand.execute(sender, parameters);
+				command.execute(sender, parameters);
 				return;
 			}
 		}
@@ -253,7 +257,7 @@ public class UltimateArena extends JavaPlugin
 		sender.sendMessage(ChatColor.YELLOW + "Unknown UltimateArena command \""+commandName+"\". Try /ua help");
 	}
 	
-	public List<PBaseCommand> getCommands() 
+	public List<UltimateArenaCommand> getCommands() 
 	{
 		return commands;
 	}

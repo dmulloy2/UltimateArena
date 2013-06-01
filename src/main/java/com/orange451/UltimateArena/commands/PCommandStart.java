@@ -4,11 +4,11 @@ import org.bukkit.ChatColor;
 
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
-import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
-public class PCommandStart extends PBaseCommand {
-
-	public PCommandStart(UltimateArena plugin) {
+public class PCommandStart extends UltimateArenaCommand
+{
+	public PCommandStart(UltimateArena plugin) 
+	{
 		this.plugin = plugin;
 		aliases.add("start");
 		
@@ -18,23 +18,25 @@ public class PCommandStart extends PBaseCommand {
 	}
 	
 	@Override
-	public void perform() {
-		if (parameters.size() == 2) {
-			if (PermissionInterface.checkPermission(player, plugin.uaAdmin)) {
-				String name = parameters.get(1);
-				Arena arena = plugin.getArena(name);
-				if (arena == null) {
-					player.sendMessage(ChatColor.GOLD + "No arena with that name...");
-					return;
-				}
-				
-				arena.start();
-				player.sendMessage(ChatColor.GOLD + "Starting arena.. " + ChatColor.AQUA + arena.name );
+	public void perform() 
+	{
+		if (parameters.size() == 2) 
+		{
+			String name = parameters.get(1);
+			Arena arena = plugin.getArena(name);
+			if (arena == null)
+			{
+				player.sendMessage(ChatColor.GOLD + "No arena with that name...");
+				return;
 			}
-		} else {
+				
+			arena.start();
+			player.sendMessage(ChatColor.GOLD + "Starting arena.. " + ChatColor.AQUA + arena.name );
+		}
+		else 
+		{
 			player.sendMessage(ChatColor.RED + "Incorrect use of /ua start");
 			player.sendMessage(ChatColor.GOLD + "/ua start [arena]");
-		}
+		}	
 	}
-	
 }

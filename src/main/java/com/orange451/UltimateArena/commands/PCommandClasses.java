@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 
-public class PCommandClasses extends PBaseCommand
+public class PCommandClasses extends UltimateArenaCommand
 {
 	public PCommandClasses(UltimateArena plugin)
 	{

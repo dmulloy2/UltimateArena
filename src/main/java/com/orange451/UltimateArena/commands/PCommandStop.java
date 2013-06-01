@@ -3,11 +3,12 @@ package com.orange451.UltimateArena.commands;
 import org.bukkit.ChatColor;
 
 import com.orange451.UltimateArena.UltimateArena;
-import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
+import com.orange451.UltimateArena.permissions.PermissionType;
 
-public class PCommandStop extends PBaseCommand {
-	
-	public PCommandStop(UltimateArena plugin) {
+public class PCommandStop extends UltimateArenaCommand
+{
+	public PCommandStop(UltimateArena plugin) 
+	{
 		this.plugin = plugin;
 		aliases.add("stop");
 		aliases.add("s");
@@ -15,15 +16,16 @@ public class PCommandStop extends PBaseCommand {
 		mode = "build";
 		
 		desc = ChatColor.YELLOW + " stop building an arena";
+		
+		this.permission = PermissionType.CMD_STOP.permission;
 	}
 	
 	@Override
-	public void perform() {
-		//plugin.leaveArena(player);
-		if (PermissionInterface.checkPermission(player, plugin.uaBuilder) || PermissionInterface.checkPermission(player, plugin.uaAdmin)) {
-			if (plugin.isPlayerCreatingArena(player)) {
-				plugin.stopCreatingArena(player);
-			}
+	public void perform() 
+	{
+		if (plugin.isPlayerCreatingArena(player)) 
+		{
+			plugin.stopCreatingArena(player);
 		}
 	}
 }

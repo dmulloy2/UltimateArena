@@ -6,18 +6,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.UltimateArena;
-import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
-public class ArenaClass {
+public class ArenaClass 
+{
 	public String name;
 	public String permissionNode = "";
+	
 	public int armor1 = 0;
 	public int armor2 = 0;
 	public int armor3 = 0;
+	
 	public int weapon1 = 0;
 	public int weapon2 = 0;
 	public int weapon3 = 0;
@@ -27,6 +30,7 @@ public class ArenaClass {
 	public int weapon7 = 0;
 	public int weapon8 = 0;
 	public int weapon9 = 0;
+	
 	public int amt1 = 1;
 	public int amt2 = 1;
 	public int amt3 = 1;
@@ -36,6 +40,7 @@ public class ArenaClass {
 	public int amt7 = 1;
 	public int amt8 = 1;
 	public int amt9 = 1;
+	
 	public byte special1 = 0;
 	public byte special2 = 0;
 	public byte special3 = 0;
@@ -45,101 +50,139 @@ public class ArenaClass {
 	public byte special7 = 0;
 	public byte special8 = 0;
 	public byte special9 = 0;
+	
+	public List<Enchantment> enchant1 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant2 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant3 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant4 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant5 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant6 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant7 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant8 = new ArrayList<Enchantment>();
+	public List<Enchantment> enchant9 = new ArrayList<Enchantment>();
+	
 	public boolean loaded = true;
 	public boolean helmet = true;
+	
 	public UltimateArena plugin;
 	public File file;
 	
-	public ArenaClass(UltimateArena plugin, File file) {
+	public ArenaClass(UltimateArena plugin, File file)
+	{
 		this.plugin = plugin;
 		this.file = file;
 		this.load();
 	}
 	
-	public void load() {
+	public void load()
+	{
 		name = file.getName();
 		ArrayList<String> file = new ArrayList<String>();
-	    try{
+	    try
+	    {
 			FileInputStream fstream = new FileInputStream(this.file.getAbsolutePath());
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
-			while ((strLine = br.readLine()) != null) {
+			while ((strLine = br.readLine()) != null) 
+			{
 				file.add(strLine);
 			}
 			br.close();
 			in.close();
 			fstream.close();
-        }catch (Exception e){
+        }
+	    catch (Exception e)
+	    {
             plugin.getLogger().severe("Error: " + e.getMessage());
         }
 	    
-	    for (int i= 0; i < file.size(); i++) {
+	    for (int i= 0; i < file.size(); i++)
+	    {
 	    	computeData(file.get(i));
 	    }
-	    if (loaded) {
+	    if (loaded) 
+	    {
 	    	plugin.getLogger().info("Class loaded: " + name);
-	    }else{
+	    }
+	    else
+	    {
 	    	plugin.getLogger().severe("Error loading class: " + name);
 	    }
 	}
 	
-	public int readWep(String str) {
+	public int readWep(String str) 
+	{
 		int ret = 0;
-		if (str.contains(",")) {
+		if (str.contains(","))
+		{
 			str = str.substring(0, str.indexOf(","));
 		}
 		try{ ret = Integer.parseInt(str); }catch(Exception e) { }
-		if (str.contains(":")) {
+		if (str.contains(":"))
+		{
 			str = str.substring(0, str.indexOf(":"));
 			ret = Integer.parseInt(str);
 		}
 		return ret;
 	}
 	
-	public int readSpec(String str) {
+	public int readSpec(String str)
+	{
 		int ret = 0;
-		if (str.contains(",")) {
+		if (str.contains(",")) 
+		{
 			str = str.substring(0, str.indexOf(","));
 		}
 		try{ ret = Integer.parseInt(str); }catch(Exception e) { }
-		if (str.contains(":")) {
+		if (str.contains(":")) 
+		{
 			str = str.substring(str.indexOf(":") + 1);
 			ret = Integer.parseInt(str);
 		}
 		return ret;
 	}
 	
-	public int readAmt(String str) {
+	public int readAmt(String str) 
+	{
 		int ret = 1;
-		if (str.contains(",")) {
+		if (str.contains(",")) 
+		{
 			str = str.substring(str.indexOf(",") + 1);
 			try{ ret = Integer.parseInt(str); }catch(Exception e) { }
 		}
 		return ret;
 	}
 	
-	public void computeData(String str) {
-		try{
-			if (str.indexOf("=") >=1 ) {
+	public void computeData(String str) 
+	{
+		try
+		{
+			if (str.indexOf("=") >=1 ) 
+			{
 				String str2 = str.substring(0, str.indexOf("="));
-				if (str2.equalsIgnoreCase("chestplate")) {
+				if (str2.equalsIgnoreCase("chestplate")) 
+				{
 					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
 					armor1 = value;
 				}
-				if (str2.equalsIgnoreCase("leggings")) {
+				if (str2.equalsIgnoreCase("leggings")) 
+				{
 					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
 					armor2 = value;
 				}
-				if (str2.equalsIgnoreCase("boots")) {
+				if (str2.equalsIgnoreCase("boots"))
+				{
 					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
 					armor3 = value;
 				}
-				if (str2.equalsIgnoreCase("node")) {
+				if (str2.equalsIgnoreCase("node"))
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					permissionNode = line;
 				}
-				if (str2.equalsIgnoreCase("tool1")) {
+				if (str2.equalsIgnoreCase("tool1"))
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -148,7 +191,8 @@ public class ArenaClass {
 					special1 = (byte) value2;
 					amt1 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool2")) {
+				if (str2.equalsIgnoreCase("tool2"))
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -157,7 +201,8 @@ public class ArenaClass {
 					special2 = (byte) value2;
 					amt2 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool3")) {
+				if (str2.equalsIgnoreCase("tool3")) 
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -166,7 +211,8 @@ public class ArenaClass {
 					special3 = (byte) value2;
 					amt3 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool4")) {
+				if (str2.equalsIgnoreCase("tool4")) 
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -175,7 +221,8 @@ public class ArenaClass {
 					special4 = (byte) value2;
 					amt4 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool5")) {
+				if (str2.equalsIgnoreCase("tool5")) 
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -184,7 +231,8 @@ public class ArenaClass {
 					special5 = (byte) value2;
 					amt5 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool6")) {
+				if (str2.equalsIgnoreCase("tool6")) 
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -193,7 +241,8 @@ public class ArenaClass {
 					special6 = (byte) value2;
 					amt6 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool7")) {
+				if (str2.equalsIgnoreCase("tool7"))
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -202,7 +251,8 @@ public class ArenaClass {
 					special7 = (byte) value2;
 					amt7 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool8")) {
+				if (str2.equalsIgnoreCase("tool8"))
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -211,7 +261,8 @@ public class ArenaClass {
 					special8 = (byte) value2;
 					amt8 = value3;
 				}
-				if (str2.equalsIgnoreCase("tool9")) {
+				if (str2.equalsIgnoreCase("tool9")) 
+				{
 					String line = str.substring(str.indexOf("=")+1);
 					int value = readWep(line);
 					int value2 = readSpec(line);
@@ -220,27 +271,32 @@ public class ArenaClass {
 					special9 = (byte) value2;
 					amt9 = value3;
 				}
-				if (str2.equalsIgnoreCase("helmet")) {
+				if (str2.equalsIgnoreCase("helmet")) 
+				{
 					String line = str.substring(str.indexOf("=")+1);
-					if (line.equalsIgnoreCase("true")) {
+					if (line.equalsIgnoreCase("true"))
+					{
 						helmet = true;
 					}
-					else if (line.equalsIgnoreCase("false")) {
+					else if (line.equalsIgnoreCase("false"))
+					{
 						helmet = false;
 					}
 				}
 			}
-		}catch(Exception e) {
+		}
+		catch(Exception e)
+		{
 			//problem loading the class
 			loaded = false;
 		}
 	}
 
-	public boolean checkPermission(Player player) {
-		if (permissionNode.equals("")) {
+	public boolean checkPermission(Player player)
+	{
+		if (permissionNode.equals(""))
 			return true;
-		}else{
-			return PermissionInterface.checkPermission(player, permissionNode);
-		}
+			
+		return player.hasPermission(permissionNode);
 	}	
 }

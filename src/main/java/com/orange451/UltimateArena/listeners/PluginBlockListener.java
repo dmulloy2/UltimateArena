@@ -11,7 +11,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
-import com.orange451.UltimateArena.PermissionInterface.PermissionInterface;
 
 /**
  * @author dmulloy2
@@ -68,7 +67,7 @@ public class PluginBlockListener implements Listener
 				else
 				{
 					/**If the player has correct perms, allow them to build**/
-					if (PermissionInterface.checkPermission(player, plugin.uaAdmin)) 
+					if (player.hasPermission("ultimatearena.admin"))
 					{
 						event.setCancelled(false);
 					}
@@ -125,7 +124,7 @@ public class PluginBlockListener implements Listener
 				else
 				{
 					/**If the player has correct perms, allow them to build**/
-					if (PermissionInterface.checkPermission(player, plugin.uaAdmin)) 
+					if (player.hasPermission("ultimatearena.admin"))
 					{
 						event.setCancelled(false);
 					}

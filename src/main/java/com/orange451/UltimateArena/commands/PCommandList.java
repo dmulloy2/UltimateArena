@@ -8,8 +8,8 @@ import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
-public class PCommandList extends PBaseCommand {
-	
+public class PCommandList extends UltimateArenaCommand
+{
 	public PCommandList(UltimateArena plugin) {
 		this.plugin = plugin;
 		aliases.add("list");

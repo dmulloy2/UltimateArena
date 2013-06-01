@@ -18,6 +18,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
+import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
+import com.orange451.UltimateArena.events.UltimateArenaKillEvent;
 
 public class PluginEntityListener implements Listener
 {
@@ -205,14 +207,16 @@ public class PluginEntityListener implements Listener
 										attackerName = ((Player)damager).getName();
 									}
 									event.getDrops().clear();
-									plugin.getArenaPlayer(dead).killstreak = 0;
-
-									plugin.getArenaPlayer(dead).deaths++;
+									
+									ArenaPlayer dp = plugin.getArenaPlayer(dead);
+									dp.killstreak = 0;
+									dp.deaths++;
+									
 									String line1 = ChatColor.GREEN + attackerName + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getName();
 									String line2 = ChatColor.RED + dead.getName() + " You have been killed by " + attackerName;
 									String line3 = ChatColor.RED + "----------------------------";
-									String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(dead).kills;
-									String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(dead).deaths;
+									String line4 = ChatColor.RED + "Kills: " + dp.kills;
+									String line5 = ChatColor.RED + "Deaths: " + dp.deaths;
 									String line6 = ChatColor.RED + "----------------------------";
 									
 									dead.sendMessage(line1);
@@ -227,9 +231,11 @@ public class PluginEntityListener implements Listener
 										Player attacker = (Player)((EntityDamageByEntityEvent)dev).getDamager();
 										if (plugin.isInArena(attacker))
 										{
-											plugin.getArenaPlayer(attacker).kills++;
-											plugin.getArenaPlayer(attacker).killstreak++;
-											plugin.getArenaPlayer(attacker).XP += 100;
+											ArenaPlayer ap = plugin.getArenaPlayer(attacker);
+											ap.kills++;
+											ap.killstreak++;
+											ap.XP += 100;
+											
 											line2  = ChatColor.RED + "killed " + dead.getName() + " +100 XP";
 											line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).kills;
 											line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).deaths;
@@ -242,6 +248,10 @@ public class PluginEntityListener implements Listener
 											attacker.sendMessage(line6);
 											Arena ar = plugin.getArena(attacker);
 											ar.doKillStreak(plugin.getArenaPlayer(attacker));
+											
+											// Call kill event
+											UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, ap, ar);
+											plugin.getServer().getPluginManager().callEvent(killEvent);
 										}
 									}
 								}
@@ -256,7 +266,7 @@ public class PluginEntityListener implements Listener
 										if (((Snowball)((EntityDamageByEntityEvent)dev).getDamager()).getShooter() instanceof Player) 
 										{
 											Player gunner = (Player) ((Snowball)((EntityDamageByEntityEvent)dev).getDamager()).getShooter();
-											if (gunner != null)
+											if (gunner != null && plugin.isInArena(gunner))
 											{
 												String gunnerp = gunner.getName();
 												event.getDrops().clear();
@@ -267,8 +277,11 @@ public class PluginEntityListener implements Listener
 													if (plugin.isInArena(dead.getLocation()))
 													{
 														Player deadplayer = (Player)dead;
-														plugin.getArenaPlayer(deadplayer).killstreak = 0;
-														plugin.getArenaPlayer(deadplayer).deaths++;
+														ArenaPlayer dp = plugin.getArenaPlayer(deadplayer);
+														
+														dp.killstreak = 0;
+														dp.deaths++;
+														
 														String line1 = ChatColor.GREEN + deadplayer.getName() + ChatColor.WHITE + " has been killed by " + ChatColor.RED + gunnerp;
 														String line2 = ChatColor.RED + "----------------------------";
 														String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(deadplayer).kills;
@@ -396,6 +409,19 @@ public class PluginEntityListener implements Listener
 														gunner.sendMessage(line3);
 														gunner.sendMessage(line4);
 														gunner.sendMessage(line5);
+													}
+												}
+												
+												if ((gunner instanceof Player) && (dead instanceof Player))
+												{
+													if ((gunner != null) && (dead != null))
+													{
+														ArenaPlayer ag = plugin.getArenaPlayer(gunner);
+														ArenaPlayer ad = plugin.getArenaPlayer((Player)dead);
+														Arena ar = plugin.getArena(gunner);
+														
+														UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(ad, ag, ar);
+														plugin.getServer().getPluginManager().callEvent(killEvent);
 													}
 												}
 											}
