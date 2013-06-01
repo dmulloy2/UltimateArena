@@ -2,6 +2,7 @@ package com.orange451.UltimateArena.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -38,9 +39,14 @@ public abstract class UltimateArenaCommand
 		}
 		
 		if (hasPermission())
+		{
 			perform();
+		}
 		else
+		{
 			sendMessage("&cYou do not have permission to do this!");
+			log(Level.WARNING, sender.getName() + " was denied access to a command!");
+		}
 	}
 	
 	private final boolean hasPermission()
@@ -68,9 +74,19 @@ public abstract class UltimateArenaCommand
 	
 	public void sendMessage(List<String> messages)
 	{
-		for(String message : messages) 
+		for (String message : messages) 
 		{
 			this.sendMessage(message);
 		}
+	}
+	
+	public void log(Level level, String string)
+	{
+		plugin.getLogger().log(level, string);
+	}
+	
+	public void log(String string)
+	{
+		plugin.getLogger().info(string);
 	}
 }

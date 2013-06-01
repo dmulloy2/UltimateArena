@@ -1,5 +1,7 @@
 package com.orange451.UltimateArena.commands;
 
+import java.util.logging.Level;
+
 import org.bukkit.ChatColor;
 
 import com.orange451.UltimateArena.UltimateArena;
@@ -32,7 +34,7 @@ public class PCommandRefresh extends UltimateArenaCommand
 		}
 		catch(Exception e) 
 		{
-			plugin.getLogger().severe("Error while reloading: " + e.getMessage());
+			log(Level.SEVERE, "Error while reloading: " + e.getMessage());
 		}
 	}
 }

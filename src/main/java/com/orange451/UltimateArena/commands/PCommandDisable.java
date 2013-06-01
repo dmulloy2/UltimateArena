@@ -34,7 +34,7 @@ public class PCommandDisable extends UltimateArenaCommand
 				if (aa.name.equals(at)) 
 				{
 					aa.onDisable();
-					player.sendMessage(ChatColor.GRAY + "[UltimateArena] Disabled " + at);
+					player.sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
 				else if (aa.az.arenaType.equals(at)) 
 				{
@@ -53,7 +53,7 @@ public class PCommandDisable extends UltimateArenaCommand
 				else if (aa.arenaName.equals(at)) 
 				{
 					aa.disabled = true;
-					player.sendMessage(ChatColor.GRAY + "[UltimateArena] Disabled " + at);
+					player.sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
 			}
 		}
@@ -63,7 +63,7 @@ public class PCommandDisable extends UltimateArenaCommand
 				plugin.activeArena.get(ii).onDisable();
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
 				plugin.loadedArena.get(ii).disabled = true;
-			player.sendMessage(ChatColor.GRAY + "[UltimateArena] Disabled ALL arenas");
+			player.sendMessage(ChatColor.GRAY + "Disabled ALL arenas");
 		}
 	}
 }
