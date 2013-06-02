@@ -1,39 +1,36 @@
 package com.orange451.UltimateArena.commands;
 
 import java.util.List;
-import org.bukkit.ChatColor;
+
 import com.orange451.UltimateArena.UltimateArena;
 
 public class PCommandHelp extends UltimateArenaCommand
 {	
-	public PCommandHelp(UltimateArena plugin) {
-		this.plugin = plugin;
-		aliases.add("help");
-		aliases.add("h");
-		aliases.add("?");
-		
-		desc = ChatColor.DARK_RED + "<build/admin>" + ChatColor.YELLOW + " display UA help";
+	public PCommandHelp(UltimateArena plugin)
+	{
+		super(plugin);
+		this.name = "help";
+		this.aliases.add("h");
+		this.aliases.add("?");
+		this.optionalArgs.add("build/admin");
+		this.description = "display UA help";
 	}
 	
 	@Override
-	public void perform() {
+	public void perform()
+	{
 		String mmode = "";
-		if (parameters.size() == 2) {
-			mmode = parameters.get(1);
+		if (args.length == 1) 
+		{
+			mmode = args[0];
 		}
-		sendMessage(ChatColor.DARK_RED + "==== " + ChatColor.GOLD + plugin.getDescription().getFullName() + ChatColor.DARK_RED + " ====");
-		List<UltimateArenaCommand> commands = plugin.getCommands();
-		for (int i = 0; i < commands.size(); i++) {
-			if (commands.get(i).mode.equals(mmode)) {
-				String str = "";
-				List<String> aliases = commands.get(i).getAliases();
-				for (int ii = 0; ii < aliases.size(); ii++) {
-					str += ChatColor.GOLD + aliases.get(ii);
-					if (aliases.size() - ii > 1) {
-						str += ChatColor.DARK_RED + ", ";
-					}
-				}
-				sendMessage(ChatColor.RED + "/ua " + ChatColor.DARK_RED + str + " " + ChatColor.RESET + commands.get(i).getdesc());
+		sendMessage("&4==== &6{0} &4====", plugin.getDescription().getFullName());
+		List<UltimateArenaCommand> commands = plugin.getCommandHandler().getRegisteredCommands();
+		for (UltimateArenaCommand command : commands)
+		{
+			if (command.mode == mmode)
+			{
+				sendMessage(command.getUsageTemplate(true));
 			}
 		}
 	}

@@ -11,23 +11,21 @@ public class PCommandDisable extends UltimateArenaCommand
 {
 	public PCommandDisable(UltimateArena plugin)
 	{
-		this.plugin = plugin;
-		aliases.add("disable");
-		aliases.add("di");
-		
-		mode = "admin";
-		
-		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " disable an arena";
-		
+		super(plugin);
+		this.name = "disable";
+		this.aliases.add("di");
+		this.optionalArgs.add("arena");
+		this.mode = "admin";
+		this.description = "disable an arena";
 		this.permission = PermissionType.CMD_DISABLE.permission;
 	}
 	
 	@Override
 	public void perform()
 	{
-		if (parameters.size() == 2)
+		if (args.length == 1)
 		{
-			String at = parameters.get(1);
+			String at = args[0];
 			for (int ii = 0; ii < plugin.activeArena.size(); ii++)
 			{		
 				Arena aa = plugin.activeArena.get(ii);

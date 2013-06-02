@@ -1,32 +1,24 @@
 package com.orange451.UltimateArena.commands;
 
-import org.bukkit.ChatColor;
-
 import com.orange451.UltimateArena.UltimateArena;
 
 public class PCommandJoin extends UltimateArenaCommand
 {
 	public PCommandJoin(UltimateArena plugin) 
 	{
-		this.plugin = plugin;
-		aliases.add("join");
-		aliases.add("j");
+		super(plugin);
+		this.name = "join";
+		this.aliases.add("j");
+		this.requiredArgs.add("arena");
+		this.description = "join/start an UltimateArena";
 		
-		desc = ChatColor.DARK_RED + "<arena> " + ChatColor.YELLOW + " join/start an UltimateArena";
+		this.mustBePlayer = true;
 	}
 	
 	@Override
 	public void perform() 
 	{
-		if (parameters.size() == 2)
-		{
-			String name = parameters.get(1);
-			plugin.fight(player, name);
-		}
-		else
-		{
-			player.sendMessage(ChatColor.RED + "Incorrect use of /ua join");
-			player.sendMessage(ChatColor.GOLD + "/ua join [arena]");
-		}
+		String name = args[0];
+		plugin.fight(player, name);
 	}
 }

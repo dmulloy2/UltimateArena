@@ -11,23 +11,21 @@ public class PCommandEnable extends UltimateArenaCommand
 {	
 	public PCommandEnable(UltimateArena plugin) 
 	{
-		this.plugin = plugin;
-		aliases.add("enable");
-		aliases.add("en");
-		
-		mode = "admin";
-		
-		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " enable an arena";
-		
+		super(plugin);
+		this.name = "enable";
+		this.aliases.add("en");
+		this.optionalArgs.add("arena");
+		this.mode = "admin";
+		this.description = "enable an arena";
 		this.permission = PermissionType.CMD_ENABLE.permission;
 	}
 	
 	@Override
 	public void perform()
 	{
-		if (parameters.size() == 2)
+		if (args.length == 1)
 		{
-			String at = parameters.get(1);
+			String at = args[0];
 			for (int ii = 0; ii < plugin.activeArena.size(); ii++) 
 			{
 				Arena aa = plugin.activeArena.get(ii);

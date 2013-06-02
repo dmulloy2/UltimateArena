@@ -16,8 +16,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.orange451.UltimateArena.InventoryHelper;
 import com.orange451.UltimateArena.UltimateArena;
+import com.orange451.UltimateArena.util.InventoryHelper;
 
 public class ArenaConfig
 {

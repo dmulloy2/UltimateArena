@@ -1,21 +1,20 @@
 package com.orange451.UltimateArena.commands;
 
-import org.bukkit.ChatColor;
-
 import com.orange451.UltimateArena.UltimateArena;
 
 public class PCommandLeave extends UltimateArenaCommand
 {	
-	public PCommandLeave(UltimateArena plugin) {
-		this.plugin = plugin;
-		aliases.add("leave");
-		aliases.add("l");
-		
-		desc = ChatColor.YELLOW + "leave an arena";
+	public PCommandLeave(UltimateArena plugin)
+	{
+		super(plugin);
+		this.name = "leave";
+		this.aliases.add("l");
+		this.description = "leave an arena";
 	}
 	
 	@Override
-	public void perform() {
+	public void perform() 
+	{
 		plugin.leaveArena(player);
 	}
 }

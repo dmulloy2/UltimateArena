@@ -9,30 +9,20 @@ public class PCommandForceJoin extends UltimateArenaCommand
 {
 	public PCommandForceJoin(UltimateArena plugin)
 	{
-		this.plugin = plugin;
-		aliases.add("forcejoin");
-		aliases.add("fj");
-		
-		mode = "admin";
-		
-		desc = ChatColor.DARK_RED + "<arena>" + ChatColor.YELLOW + " force join an arena";
-		
+		super(plugin);
+		this.name = "forcejoin";
+		this.aliases.add("fj");
+		this.requiredArgs.add("arena");
+		this.mode = "admin";
+		this.description = "force join an arena";
 		this.permission = PermissionType.CMD_FORCE_JOIN.permission;
 	}
 	
 	@Override
 	public void perform() 
 	{
-		if (parameters.size() == 2) 
-		{
-			String name = parameters.get(1);
-			player.sendMessage(ChatColor.GOLD + "Attempthing to join arena: " + name);
-			plugin.joinBattle(true, player, name);
-		}
-		else
-		{
-			player.sendMessage(ChatColor.RED + "Incorrect use of /ua fj");
-			player.sendMessage(ChatColor.GOLD + "/ua fj [arena]");
-		}
+		String name = args[0];
+		player.sendMessage(ChatColor.GOLD + "Attempthing to join arena: " + name);
+		plugin.joinBattle(true, player, name);
 	}
 }

@@ -20,7 +20,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
-import com.orange451.UltimateArena.InventoryHelper;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaConfig;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaFlag;
@@ -28,6 +27,7 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.events.*;
+import com.orange451.UltimateArena.util.InventoryHelper;
 import com.orange451.UltimateArena.util.Util;
 
 /**

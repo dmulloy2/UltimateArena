@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -35,8 +34,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -49,6 +46,7 @@ import com.orange451.UltimateArena.Arenas.Objects.*;
 import com.orange451.UltimateArena.commands.*;
 import com.orange451.UltimateArena.listeners.*;
 import com.orange451.UltimateArena.permissions.PermissionHandler;
+import com.orange451.UltimateArena.util.InventoryHelper;
 import com.orange451.UltimateArena.util.Util;
 
 public class UltimateArena extends JavaPlugin
@@ -56,8 +54,8 @@ public class UltimateArena extends JavaPlugin
 	private @Getter Economy economy;
 	private @Getter FileHelper fileHelper;
 	private @Getter PermissionHandler permissionHandler;
+	private @Getter CommandHandler commandHandler;
 	
-	private List<UltimateArenaCommand> commands = new ArrayList<UltimateArenaCommand>();
 	public int maxArenasRunning = 1024;
 	public int arenasPlayed = 0;
 	public String uaAdmin = "ultimatearena.admin";
@@ -81,6 +79,7 @@ public class UltimateArena extends JavaPlugin
 		long start = System.currentTimeMillis();
 		
 		permissionHandler =  new PermissionHandler(this);
+		commandHandler = new CommandHandler(this);
  
 		File dir = getDataFolder();
 		if (!dir.exists()) 
@@ -109,31 +108,34 @@ public class UltimateArena extends JavaPlugin
 		fieldTypes.add("hunger");
 
 		//Add Commands
-		commands.add(new PCommandHelp(this));
-		commands.add(new PCommandInfo(this));
-		commands.add(new PCommandList(this));
-		commands.add(new PCommandJoin(this));
-		commands.add(new PCommandLeave(this));
-		commands.add(new PCommandStats(this));
-		commands.add(new PCommandLike(this));
-		commands.add(new PCommandDislike(this));
+		getCommand("ua").setExecutor(commandHandler);
 		
-		commands.add(new PCommandCreate(this));
-		commands.add(new PCommandSetPoint(this));
-		commands.add(new PCommandSetDone(this));
-		commands.add(new PCommandDelete(this));
-		commands.add(new PCommandStop(this));
+		commandHandler.setCommandPrefix("ua");
+		commandHandler.registerCommand(new PCommandHelp(this));
+		commandHandler.registerCommand(new PCommandInfo(this));
+		commandHandler.registerCommand(new PCommandList(this));
+		commandHandler.registerCommand(new PCommandJoin(this));
+		commandHandler.registerCommand(new PCommandLeave(this));
+		commandHandler.registerCommand(new PCommandStats(this));
+		commandHandler.registerCommand(new PCommandLike(this));
+		commandHandler.registerCommand(new PCommandDislike(this));
 		
-		commands.add(new PCommandForceStop(this));
-		commands.add(new PCommandRefresh(this));
-		commands.add(new PCommandForceJoin(this));
-		commands.add(new PCommandDisable(this));
-		commands.add(new PCommandEnable(this));
-		commands.add(new PCommandKick(this));
-		commands.add(new PCommandStart(this));
-		commands.add(new PCommandPause(this));
+		commandHandler.registerCommand(new PCommandCreate(this));
+		commandHandler.registerCommand(new PCommandSetPoint(this));
+		commandHandler.registerCommand(new PCommandSetDone(this));
+		commandHandler.registerCommand(new PCommandDelete(this));
+		commandHandler.registerCommand(new PCommandStop(this));
 		
-		commands.add(new PCommandClasses(this));
+		commandHandler.registerCommand(new PCommandForceStop(this));
+		commandHandler.registerCommand(new PCommandRefresh(this));
+		commandHandler.registerCommand(new PCommandForceJoin(this));
+		commandHandler.registerCommand(new PCommandDisable(this));
+		commandHandler.registerCommand(new PCommandEnable(this));
+		commandHandler.registerCommand(new PCommandKick(this));
+		commandHandler.registerCommand(new PCommandStart(this));
+		commandHandler.registerCommand(new PCommandPause(this));
+		
+		commandHandler.registerCommand(new PCommandClasses(this));
 		
 		fileHelper = new FileHelper(this);
 		
@@ -216,6 +218,7 @@ public class UltimateArena extends JavaPlugin
 		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
 	}
 	
+	/**
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
 	{
@@ -261,6 +264,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		return commands;
 	}
+	*/
 	
 	public File getRoot() 
 	{
@@ -1006,7 +1010,6 @@ public class UltimateArena extends JavaPlugin
 	
 	public void clearMemory()
 	{
-		commands.clear();
 		loadedArena.clear();
 		activeArena.clear();
 		makingArena.clear();

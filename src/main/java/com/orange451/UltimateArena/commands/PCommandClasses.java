@@ -14,11 +14,10 @@ public class PCommandClasses extends UltimateArenaCommand
 {
 	public PCommandClasses(UltimateArena plugin)
 	{
-		this.plugin = plugin;
-		this.aliases.add("classes");
+		super(plugin);
+		this.name = "classes";
 		this.aliases.add("cl");
-		
-		desc = ChatColor.YELLOW + "List UltimateArena classes";
+		this.description = "List UltimateArena classes";
 	}
 	
 	@Override

@@ -2,8 +2,6 @@ package com.orange451.UltimateArena.commands;
 
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
-
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.permissions.PermissionType;
 
@@ -11,14 +9,11 @@ public class PCommandRefresh extends UltimateArenaCommand
 {
 	public PCommandRefresh(UltimateArena plugin) 
 	{
-		this.plugin = plugin;
-		aliases.add("refresh");
-		aliases.add("r");
-		
-		mode = "admin";
-		
-		desc = ChatColor.YELLOW + " reload UltimateArena";
-		
+		super(plugin);
+		this.name = "refresh";
+		this.aliases.add("r");
+		this.mode = "admin";
+		this.description = "reload UltimateArena";
 		this.permission = PermissionType.CMD_REFRESH.permission;
 	}
 	
@@ -27,10 +22,11 @@ public class PCommandRefresh extends UltimateArenaCommand
 	{
 		try
 		{
+			sendMessage("&aReloading UltimateArena...");
 			plugin.forceStop();
 			plugin.clearMemory();
 			plugin.onEnable();
-			player.sendMessage(ChatColor.GREEN + "Reloaded UltimateArena!");
+			player.sendMessage("&aReload Complete!");
 		}
 		catch(Exception e) 
 		{

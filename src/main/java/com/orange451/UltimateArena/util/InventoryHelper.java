@@ -1,4 +1,4 @@
-package com.orange451.UltimateArena;
+package com.orange451.UltimateArena.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
