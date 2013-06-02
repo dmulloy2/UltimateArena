@@ -6,7 +6,7 @@ package com.orange451.UltimateArena.permissions;
 
 public enum PermissionType 
 {
-	CMD_CREATE("delete"),
+	CMD_CREATE("create"),
 	CMD_DELETE("delete"),
 	CMD_DISABLE("disable"),
 	CMD_ENABLE("enable"),
@@ -18,7 +18,8 @@ public enum PermissionType
 	CMD_SET_DONE("setdone"),
 	CMD_SET_POINT("setpoint"),
 	CMD_START("start"),
-	CMD_STOP("stop");
+	CMD_STOP("stop"),
+	ARENA_BUILD("build");
 	
 	public final Permission permission;
 	
