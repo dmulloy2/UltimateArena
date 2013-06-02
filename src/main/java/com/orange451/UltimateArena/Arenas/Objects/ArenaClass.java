@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.UltimateArena;
@@ -51,15 +52,15 @@ public class ArenaClass
 	public byte special8 = 0;
 	public byte special9 = 0;
 	
-	public List<Enchantment> enchant1 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant2 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant3 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant4 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant5 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant6 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant7 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant8 = new ArrayList<Enchantment>();
-	public List<Enchantment> enchant9 = new ArrayList<Enchantment>();
+	public List<CompositeEnchantment> enchant1 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant2 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant3 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant4 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant5 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant6 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant7 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant8 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> enchant9 = new ArrayList<CompositeEnchantment>();
 	
 	public boolean loaded = true;
 	public boolean helmet = true;
@@ -154,6 +155,39 @@ public class ArenaClass
 		return ret;
 	}
 	
+	public List<CompositeEnchantment> readEnchantments(String str)
+	{
+		List<CompositeEnchantment> enchants = new ArrayList<CompositeEnchantment>();
+		if (str.contains(","))
+		{
+			str = str.substring(str.indexOf(",") + 2);
+			String[] split = str.split(",");
+			if (split.length > 0)
+			{
+				for (String s : split)
+				{
+					if (s.contains(":"))
+					{
+						String[] split2 = s.split(":");
+						Enchantment enchantment = null;
+						try { enchantment = EnchantmentType.toEnchantment(split2[0]); }
+						catch (Exception e) { enchantment = Enchantment.getByName(split2[0].toUpperCase()); }
+						
+						int level = 0;
+						try { level = Integer.parseInt(split2[1]); }
+						catch (Exception e) {}
+						
+						if (enchantment != null && level > 0)
+						{
+							enchants.add(new CompositeEnchantment(enchantment, level));
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
 	public void computeData(String str) 
 	{
 		try
@@ -187,9 +221,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon1 = value;
 					special1 = (byte) value2;
 					amt1 = value3;
+					enchant1 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool2"))
 				{
@@ -197,9 +233,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon2 = value;
 					special2 = (byte) value2;
 					amt2 = value3;
+					enchant2 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool3")) 
 				{
@@ -207,9 +245,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon3 = value;
 					special3 = (byte) value2;
 					amt3 = value3;
+					enchant3 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool4")) 
 				{
@@ -217,9 +257,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon4 = value;
 					special4 = (byte) value2;
 					amt4 = value3;
+					enchant4 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool5")) 
 				{
@@ -227,9 +269,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon5 = value;
 					special5 = (byte) value2;
 					amt5 = value3;
+					enchant5 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool6")) 
 				{
@@ -237,9 +281,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon6 = value;
 					special6 = (byte) value2;
 					amt6 = value3;
+					enchant6 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool7"))
 				{
@@ -247,9 +293,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon7 = value;
 					special7 = (byte) value2;
 					amt7 = value3;
+					enchant7 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool8"))
 				{
@@ -267,9 +315,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon9 = value;
 					special9 = (byte) value2;
 					amt9 = value3;
+					enchant9 = value4;
 				}
 				if (str2.equalsIgnoreCase("helmet")) 
 				{
@@ -297,6 +347,6 @@ public class ArenaClass
 		if (permissionNode.equals(""))
 			return true;
 			
-		return player.hasPermission(permissionNode);
+		return plugin.getPermissionHandler().hasPermission(player, permissionNode);
 	}	
 }

@@ -4,11 +4,11 @@ import org.bukkit.entity.Player;
 
 public class testAPI 
 {
-	UltimateArenaAPI ua;
+	public UltimateArenaAPI ua;
 	
 	public void test(Player p)
 	{
-		//returns whether or not a player is IN an arena
+		/**Returns whether or not a player is IN an arena**/
 		UltimateArenaAPI ua = UltimateArenaAPI.hookIntoUA();
 		if (ua != null) 
 		{

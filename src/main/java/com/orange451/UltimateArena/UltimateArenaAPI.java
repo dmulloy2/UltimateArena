@@ -7,59 +7,72 @@ import org.bukkit.plugin.Plugin;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 
-public class UltimateArenaAPI {
-	
+public class UltimateArenaAPI 
+{
 	public UltimateArena plugin;
 
-	public UltimateArenaAPI(Plugin p) {
+	public UltimateArenaAPI(Plugin p)
+	{
 		this.plugin = (UltimateArena)p;
 	}
 
-	public boolean isPlayerPlayingArena(Player p) {
+	public boolean isPlayerPlayingArena(Player p)
+	{
 		return plugin.isInArena(p);
 	}
 	
-	public boolean isPlayerInArenaLocation(Player p) {
+	public boolean isPlayerInArenaLocation(Player p)
+	{
 		return plugin.isInArena(p.getLocation());
 	}
 	
-	public ArenaPlayer getArenaPlayer(Player p) {
+	public ArenaPlayer getArenaPlayer(Player p)
+	{
 		return plugin.getArenaPlayer(p);
 	}
 	
-	public boolean isLocationInArena(Location loc) {
+	public boolean isLocationInArena(Location loc)
+	{
 		return plugin.isInArena(loc);
 	}
 
-	public int getKills(ArenaPlayer a) {
+	public int getKills(ArenaPlayer a)
+	{
 		return a.kills;
 	}
 	
-	public int getDeaths(ArenaPlayer a) {
+	public int getDeaths(ArenaPlayer a)
+	{
 		return a.deaths;
 	}
 	
-	public int getTeam(ArenaPlayer a) {
+	public int getTeam(ArenaPlayer a)
+	{
 		return a.team;
 	}
 	
-	public int getKillStreak(ArenaPlayer a) {
+	public int getKillStreak(ArenaPlayer a)
+	{
 		return a.killstreak;
 	}
 	
-	public UltimateArena getPlugin() {
+	public UltimateArena getPlugin()
+	{
 		return plugin;
 	}
 	
-	public static UltimateArenaAPI hookIntoUA() { //this method finds the UA plugin, and hooks into its API
+	/**Find the UltimateArena plugin and hook into its API**/
+	public static UltimateArenaAPI hookIntoUA()
+	{
 		Plugin p = Bukkit.getPluginManager().getPlugin("UltimateArena");
-		if (p != null) {
-			//found the UA plugin;
+		if (p != null)
+		{
 			return new UltimateArenaAPI(p);
-		}else{
-			System.out.println("Could not hook into UltimateArena! Is it installed?");
+		}
+		else
+		{
+			Bukkit.getLogger().severe("Could not hook into UltimateArena! Is it installed?");
 		}
 		return null;
 	}
-
 }

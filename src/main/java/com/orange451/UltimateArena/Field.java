@@ -3,7 +3,8 @@ package com.orange451.UltimateArena;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class Field {
+public class Field
+{
 	public int minx;
 	public int miny;
 	public int maxx;

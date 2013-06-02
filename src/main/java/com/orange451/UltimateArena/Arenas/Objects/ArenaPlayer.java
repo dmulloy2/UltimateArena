@@ -3,6 +3,7 @@ package com.orange451.UltimateArena.Arenas.Objects;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -59,7 +60,7 @@ public class ArenaPlayer
 		}
 	}
 	
-	public void giveItem(Player p, int weapon1, byte dat, int amt, int slot)
+	public void giveItem(Player p, int weapon1, byte dat, int amt, int slot, CompositeEnchantment...enchantments)
 	{
 		if (weapon1 > 0)
 		{
@@ -68,11 +69,23 @@ public class ArenaPlayer
 			{
 				if (!mat.equals(Material.AIR)) 
 				{
+					ItemStack itemStack = new ItemStack(mat, amt);
+					if (enchantments.length > 0)
+					{
+						for (CompositeEnchantment enchantment : enchantments)
+						{
+							Enchantment ench = enchantment.getType();
+							int level = enchantment.getLevel();
+							try { itemStack.addUnsafeEnchantment(ench, level); }
+							catch (Exception e) {}
+						}
+					}
 					if (dat == 0)
-						p.getInventory().addItem(new ItemStack(mat, amt));
+					{
+						p.getInventory().addItem(itemStack);
+					}
 					else
 					{
-						ItemStack itemStack = new ItemStack(mat, amt);
 						if (itemStack.getType() == Material.POTION)
 						{
 							PotionMeta meta = (PotionMeta)itemStack.getItemMeta();
