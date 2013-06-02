@@ -14,6 +14,8 @@ public class PCommandForceStop extends UltimateArenaCommand
 		this.mode = "admin";
 		this.description = "force stop an arena";
 		this.permission = PermissionType.CMD_FORCE_STOP.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override

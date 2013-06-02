@@ -16,6 +16,8 @@ public class PCommandList extends UltimateArenaCommand
 		this.name = "list";
 		this.aliases.add("li");
 		this.description = "view all the UltimateArenas";
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override

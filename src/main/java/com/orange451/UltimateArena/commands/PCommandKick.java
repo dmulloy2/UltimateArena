@@ -20,6 +20,8 @@ public class PCommandKick extends UltimateArenaCommand
 		this.mode = "admin";
 		this.description = "kick a player from an arena";
 		this.permission = PermissionType.CMD_KICK.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override
@@ -40,17 +42,17 @@ public class PCommandKick extends UltimateArenaCommand
 					ap.points = 0;
 					ap.kills = 0;
 					ap.XP = 0;
-					player.sendMessage(ChatColor.GRAY + "Kicked player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " from arena: " + ChatColor.GOLD + a.name);
+					sendMessage(ChatColor.GRAY + "Kicked player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " from arena: " + ChatColor.GOLD + a.name);
 				}
 			}
 			else
 			{
-				player.sendMessage(ChatColor.GRAY + "Player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " is not in an Arena");
+				sendMessage(ChatColor.GRAY + "Player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " is not in an Arena");
 			}
 		}
 		else
 		{
-			player.sendMessage(ChatColor.GRAY + "Player: \"" + ChatColor.GOLD + args[0] + ChatColor.GRAY + "\" is not online");
+			sendMessage(ChatColor.GRAY + "Player: \"" + ChatColor.GOLD + args[0] + ChatColor.GRAY + "\" is not online");
 		}
 	}
 }

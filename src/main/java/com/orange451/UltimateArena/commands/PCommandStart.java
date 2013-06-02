@@ -16,6 +16,8 @@ public class PCommandStart extends UltimateArenaCommand
 		this.mode = "admin";
 		this.description = "force start an arena";
 		this.permission = PermissionType.CMD_START.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override

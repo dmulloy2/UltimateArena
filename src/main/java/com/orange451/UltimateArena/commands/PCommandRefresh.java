@@ -15,6 +15,8 @@ public class PCommandRefresh extends UltimateArenaCommand
 		this.mode = "admin";
 		this.description = "reload UltimateArena";
 		this.permission = PermissionType.CMD_REFRESH.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override

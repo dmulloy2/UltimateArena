@@ -14,6 +14,8 @@ public class PCommandHelp extends UltimateArenaCommand
 		this.aliases.add("?");
 		this.optionalArgs.add("build/admin");
 		this.description = "display UA help";
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override

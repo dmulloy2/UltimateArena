@@ -27,7 +27,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	
 	protected Permission permission;
 	
-	protected boolean mustBePlayer;
+	protected boolean mustBePlayer = true;
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
 	protected List<String> aliases;

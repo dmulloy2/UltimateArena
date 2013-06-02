@@ -18,6 +18,8 @@ public class PCommandDisable extends UltimateArenaCommand
 		this.mode = "admin";
 		this.description = "disable an arena";
 		this.permission = PermissionType.CMD_DISABLE.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override
@@ -32,12 +34,12 @@ public class PCommandDisable extends UltimateArenaCommand
 				if (aa.name.equals(at)) 
 				{
 					aa.onDisable();
-					player.sendMessage(ChatColor.GRAY + "Disabled " + at);
+					sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
 				else if (aa.az.arenaType.equals(at)) 
 				{
 					aa.onDisable();
-					player.sendMessage(ChatColor.GRAY + " Disabled " + at);
+					sendMessage(ChatColor.GRAY + " Disabled " + at);
 				}
 			}
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++) 
@@ -46,12 +48,12 @@ public class PCommandDisable extends UltimateArenaCommand
 				if (aa.arenaType.equals(at))
 				{
 					aa.disabled = true;
-					player.sendMessage(ChatColor.GRAY + "Disabled " + at);
+					sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
 				else if (aa.arenaName.equals(at)) 
 				{
 					aa.disabled = true;
-					player.sendMessage(ChatColor.GRAY + "Disabled " + at);
+					sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
 			}
 		}
@@ -61,7 +63,7 @@ public class PCommandDisable extends UltimateArenaCommand
 				plugin.activeArena.get(ii).onDisable();
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
 				plugin.loadedArena.get(ii).disabled = true;
-			player.sendMessage(ChatColor.GRAY + "Disabled ALL arenas");
+			sendMessage(ChatColor.GRAY + "Disabled ALL arenas");
 		}
 	}
 }

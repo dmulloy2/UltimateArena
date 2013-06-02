@@ -18,6 +18,8 @@ public class PCommandClasses extends UltimateArenaCommand
 		this.name = "classes";
 		this.aliases.add("cl");
 		this.description = "List UltimateArena classes";
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override
