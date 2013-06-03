@@ -8,12 +8,14 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.Arenas.Objects.Bombflag;
 import com.orange451.UltimateArena.util.Util;
 
-public class BOMBArena extends Arena {
+public class BOMBArena extends Arena 
+{
 	public int REDTEAMPOWER = 100;
 	public Bombflag bomb1;
 	public Bombflag bomb2;
 	
-	public BOMBArena(ArenaZone az) {
+	public BOMBArena(ArenaZone az) 
+	{
 		super(az);
 		
 		type = "Bomb";
@@ -29,34 +31,45 @@ public class BOMBArena extends Arena {
 	}
 	
 	@Override
-	public void onStart() {
+	public void onStart()
+	{
 		super.onStart();
 		this.REDTEAMPOWER = amtPlayersInArena * 3;
-		if (REDTEAMPOWER < 10) {
+		if (REDTEAMPOWER < 10)
+		{
 			REDTEAMPOWER = 10;
 		}
-		if (REDTEAMPOWER > 150) {
+		if (REDTEAMPOWER > 150) 
+		{
 			REDTEAMPOWER = 150;
 		}
 	}
 	
 	@Override
-	public void onOutOfTime() {
+	public void onOutOfTime() 
+	{
 		setWinningTeam(2);
 		rewardTeam(2, ChatColor.BLUE + "You won!", false);
 	}
 	
-	public synchronized void onPlayerDeath(ArenaPlayer pl) {
+	public synchronized void onPlayerDeath(ArenaPlayer pl)
+	{
 		az.plugin.getLogger().info("Bomb: Player("+pl.player.getName()+") has died!");
-		if (pl.team == 1) {
+		if (pl.team == 1) 
+		{
 			REDTEAMPOWER--;
-			for (int i = 0; i < arenaplayers.size(); i++) {
-				if (!arenaplayers.get(i).out){ 
+			for (int i = 0; i < arenaplayers.size(); i++) 
+			{
+				if (!arenaplayers.get(i).out)
+				{ 
 					Player pl1 = arenaplayers.get(i).player;
 					if (pl1 != null) {
-						if (arenaplayers.get(i).team == 1) {
+						if (arenaplayers.get(i).team == 1) 
+						{
 							pl1.sendMessage(ChatColor.RED + "Your power is now: " + ChatColor.GOLD + REDTEAMPOWER);
-						}else{
+						}
+						else
+						{
 							pl1.sendMessage(ChatColor.RED + "Other teams' power is now: " + ChatColor.GOLD + REDTEAMPOWER);
 						}
 					}
@@ -66,19 +79,23 @@ public class BOMBArena extends Arena {
 	}
 	
 	@Override
-	public int getTeam() {
+	public int getTeam() 
+	{
 		return getBalancedTeam();
 	}
 
 	@Override
-	public void check() {
-		if (starttimer <= 0) {
+	public void check() 
+	{
+		if (starttimer <= 0) 
+		{
 			simpleTeamCheck(true);
 		}
 		bomb1.checkNear(arenaplayers);
 		bomb2.checkNear(arenaplayers);
 		
-		if (bomb1.exploded && bomb2.exploded) {
+		if (bomb1.exploded && bomb2.exploded)
+		{
 			setWinningTeam(1);
 			tellPlayers(ChatColor.GRAY + "Red team won!");
 			stop();
@@ -86,17 +103,21 @@ public class BOMBArena extends Arena {
 			return;
 		}
 		
-		if (REDTEAMPOWER <= 0) {
+		if (REDTEAMPOWER <= 0) 
+		{
 			setWinningTeam(2);
 			tellPlayers(ChatColor.GRAY + "Blue team won!");
-			for (int i = 0; i < arenaplayers.size(); i++) {
+			for (int i = 0; i < arenaplayers.size(); i++)
+			{
 				ArenaPlayer ap = arenaplayers.get(i);
 				if (!ap.out) {
-					if (ap.team == 1) {
+					if (ap.team == 1)
+					{
 						ap.out = true;
 						updatedTeams = true;
 						Player p = Util.matchPlayer(ap.player.getName());
-						if (p != null) {
+						if (p != null) 
+						{
 							p.sendMessage(ChatColor.RED + "Your team lost! :(");
 							endPlayer(ap, false);
 						}
@@ -107,5 +128,4 @@ public class BOMBArena extends Arena {
 			rewardTeam(2, ChatColor.BLUE + "You won!", false);
 		}
 	}
-	
 }

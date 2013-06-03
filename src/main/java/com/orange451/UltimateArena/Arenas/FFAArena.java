@@ -12,9 +12,10 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.util.Util;
 
-public class FFAArena extends Arena {
-
-	public FFAArena(ArenaZone az) {
+public class FFAArena extends Arena 
+{
+	public FFAArena(ArenaZone az)
+	{
 		super(az);
 		
 		type = "Ffa";
@@ -23,7 +24,8 @@ public class FFAArena extends Arena {
 		maxDeaths = 4;
 		allowTeamKilling = true;
 		
-		for (int i = 0; i < this.az.spawns.size(); i++) {
+		for (int i = 0; i < this.az.spawns.size(); i++) 
+		{
 			this.spawns.add( new ArenaSpawn(this.az.spawns.get(i).getWorld(), this.az.spawns.get(i).getBlockX(), this.az.spawns.get(i).getBlockY(), this.az.spawns.get(i).getBlockZ()) );
 		}
 	}
@@ -67,18 +69,26 @@ public class FFAArena extends Arena {
 	}
 
 	@Override
-	public void check() {
-		if (starttimer <= 0) {
-			if (isEmpty()) {
-				if (amtPlayersInArena == 1) {
+	public void check()
+	{
+		if (starttimer <= 0) 
+		{
+			if (isEmpty())
+			{
+				if (amtPlayersInArena == 1) 
+				{
 					this.setWinningTeam(-1);
 					stop();
-					for (int i = 0; i < arenaplayers.size(); i++) {
+					for (int i = 0; i < arenaplayers.size(); i++) 
+					{
 						spawn(arenaplayers.get(i).username, false);
 					}
-					if (this.amtPlayersStartingInArena > 1) {
+					if (this.amtPlayersStartingInArena > 1) 
+					{
 						this.rewardTeam(winningTeam, ChatColor.BLUE + "You won!", false);
-					}else{
+					}
+					else
+					{
 						this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
 					}
 				}

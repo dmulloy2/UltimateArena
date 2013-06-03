@@ -4,9 +4,10 @@ import org.bukkit.ChatColor;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
-public class PVPArena extends Arena {
-
-	public PVPArena(ArenaZone az) {
+public class PVPArena extends Arena 
+{
+	public PVPArena(ArenaZone az) 
+	{
 		super(az);
 		
 		type = "Pvp";
@@ -17,19 +18,22 @@ public class PVPArena extends Arena {
 	}
 	
 	@Override
-	public int getTeam() {
+	public int getTeam() 
+	{
 		return getBalancedTeam();
 	}
 
 	@Override
-	public void check() {
-		if (starttimer <= 0) {
-			if (!simpleTeamCheck(false)) {
+	public void check() 
+	{
+		if (starttimer <= 0)
+		{
+			if (!simpleTeamCheck(false)) 
+			{
 				this.setWinningTeam(-1);
 				this.stop();
 				this.rewardTeam(-1, ChatColor.BLUE + "You won!", false);
 			}
 		}
 	}
-	
 }
