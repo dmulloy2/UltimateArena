@@ -30,6 +30,6 @@ public class PCommandPause extends UltimateArenaCommand
 		}		
 		
 		arena.pauseStartTimer = !arena.pauseStartTimer;
-		player.sendMessage(ChatColor.GOLD + "Start timer for arena " + ChatColor.AQUA + arena.name + ChatColor.GOLD + "is now " + (arena.pauseStartTimer ? "paused" : "unpaused"));
+		player.sendMessage(ChatColor.GOLD + "Start timer for arena " + ChatColor.AQUA + arena.name + ChatColor.GOLD + " is now " + (arena.pauseStartTimer ? "paused" : "unpaused"));
 	}	
 }

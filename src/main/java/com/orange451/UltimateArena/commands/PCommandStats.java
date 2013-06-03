@@ -14,7 +14,7 @@ public class PCommandStats extends UltimateArenaCommand
 		this.name = "stats";
 		this.aliases.add("stat");
 		this.requiredArgs.add("arena");
-		this.description = "view an arena's stats";
+		this.description = "view an arena''s stats";
 	}
 	
 	@Override

@@ -15,7 +15,7 @@ public class PCommandInfo extends UltimateArenaCommand
 		super(plugin);
 		this.name = "info";
 		this.optionalArgs.add("arena");
-		this.description = "view info on the arena you're in";
+		this.description = "view info on the arena you''re in";
 		
 		this.mustBePlayer = true;
 	}

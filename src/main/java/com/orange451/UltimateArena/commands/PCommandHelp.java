@@ -22,15 +22,23 @@ public class PCommandHelp extends UltimateArenaCommand
 	public void perform()
 	{
 		String mmode = "";
-		if (args.length == 1) 
+		if (args.length >= 1) 
 		{
 			mmode = args[0];
+			if (!mmode.equalsIgnoreCase("admin") && !mmode.equalsIgnoreCase("build"))
+			{
+				sendMessage("&cInvalid mode! Try: " + getUsageTemplate(false));
+				return;
+			}
 		}
-		sendMessage("&4==== &6{0} &4====", plugin.getDescription().getFullName());
+		sendMessage("&4==== &6{0} Help &4====", plugin.getName());
 		List<UltimateArenaCommand> commands = plugin.getCommandHandler().getRegisteredCommands();
-		for (UltimateArenaCommand command : commands)
+		for (int i=0; i<commands.size(); i++)
 		{
-			if (command.mode == mmode)
+			UltimateArenaCommand command;
+			command = commands.get(i);
+			
+			if (command.getMode().equalsIgnoreCase(mmode))
 			{
 				sendMessage(command.getUsageTemplate(true));
 			}

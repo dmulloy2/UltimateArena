@@ -11,7 +11,8 @@ public class PCommandRefresh extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "refresh";
-		this.aliases.add("r");
+		this.aliases.add("reload");
+		this.aliases.add("rl");
 		this.mode = "admin";
 		this.description = "reload UltimateArena";
 		this.permission = PermissionType.CMD_REFRESH.permission;
@@ -28,7 +29,7 @@ public class PCommandRefresh extends UltimateArenaCommand
 			plugin.forceStop();
 			plugin.clearMemory();
 			plugin.onEnable();
-			player.sendMessage("&aReload Complete!");
+			sendMessage("&aReload Complete!");
 		}
 		catch(Exception e) 
 		{

@@ -23,7 +23,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	
 	protected String name;
 	protected String description;
-	protected String mode;
+	protected String mode = "";
 	
 	protected Permission permission;
 	
@@ -109,7 +109,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	public final String getUsageTemplate(final boolean displayHelp)
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("&c/ua");
+		ret.append("&c/ua ");
 
 		ret.append(name);
 
