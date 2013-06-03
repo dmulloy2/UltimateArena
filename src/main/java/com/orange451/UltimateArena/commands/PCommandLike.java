@@ -11,6 +11,7 @@ public class PCommandLike extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "like";
+		this.requiredArgs.add("arena");
 		this.description = "like an arena";
 	}
 	
@@ -23,6 +24,8 @@ public class PCommandLike extends UltimateArenaCommand
 		{
 			if (az.canLike(player)) 
 			{
+				sendMessage("&aYou have voted for: {0}!", az.arenaName);
+				
 				az.liked++;
 				az.voted.add(player.getName());
 			}

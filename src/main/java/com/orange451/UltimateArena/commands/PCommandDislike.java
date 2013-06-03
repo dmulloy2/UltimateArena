@@ -25,6 +25,8 @@ public class PCommandDislike extends UltimateArenaCommand
 		{
 			if (az.canLike(player))
 			{
+				sendMessage("&cYou have disliked: " + az.arenaName);
+				
 				az.disliked++;
 				az.voted.add(player.getName());
 			}

@@ -107,8 +107,8 @@ public class ArenaPlayer
 	
 	public void spawn()
 	{
-//		try
-//		{
+		try
+		{
 			if (this.amtkicked > 10)
 			{
 				this.inArena.az.plugin.leaveArena(this.player);
@@ -127,8 +127,8 @@ public class ArenaPlayer
 				}
 				else
 				{
-//					try
-//					{
+					try
+					{
 						if (mclass.armor1 > 0) { p.getInventory().setChestplate(new ItemStack(Material.getMaterial(mclass.armor1), 1)); }
 						if (mclass.armor2 > 0) { p.getInventory().setLeggings(new ItemStack(Material.getMaterial(mclass.armor2), 1)); }
 						if (mclass.armor3 > 0) { p.getInventory().setBoots(new ItemStack(Material.getMaterial(mclass.armor3), 1)); }
@@ -143,17 +143,17 @@ public class ArenaPlayer
 						giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
 						giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
 						giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
-//					}
-//					catch(Exception e) 
-//					{
-//						inArena.az.plugin.getLogger().severe("Error giving player class items!");
-//					}
+					}
+					catch(Exception e) 
+					{
+						inArena.az.plugin.getLogger().severe("Error giving player class items!");
+					}
 				}
 			}
-//		}
-//		catch(Exception e)
-//		{
-//			inArena.az.plugin.getLogger().severe("Error spawning: " + e.getMessage());
-//		}
+		}
+		catch(Exception e)
+		{
+			inArena.az.plugin.getLogger().severe("Error spawning: " + e.getMessage());
+		}
 	}
 }

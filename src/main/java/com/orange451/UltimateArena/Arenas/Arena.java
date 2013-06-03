@@ -242,8 +242,8 @@ public abstract class Arena
 				// Spawns every player
 				for (int i = 0; i < arenaplayers.size(); i++)
 				{
-//					try
-//					{
+					try
+					{
 						ArenaPlayer ap = arenaplayers.get(i);
 						if (ap != null)
 						{
@@ -252,11 +252,11 @@ public abstract class Arena
 								spawn(ap.player.getName(), false);
 							}
 						}
-//					}
-//					catch(Exception e) 
-//					{
-//						plugin.getLogger().severe("Error spawning all players: " + e.getMessage());
-//					}
+					}
+					catch(Exception e) 
+					{
+						plugin.getLogger().severe("Error spawning all players: " + e.getMessage());
+					}
 				}
 			}
 		}
@@ -304,8 +304,8 @@ public abstract class Arena
 		// Spawns the player to THEIR team spawn, and gives them their class
 		if (!stopped)
 		{
-//			try
-//			{
+			try
+			{
 				final Player p = Util.matchPlayer(name);
 				if (p != null) 
 				{
@@ -353,11 +353,11 @@ public abstract class Arena
 						}
 					}
 				}
-//			}
-//			catch (Exception e)
-//			{
-//				plugin.getLogger().severe("Error spawning: " + e.getMessage());
-//			}
+			}
+			catch (Exception e)
+			{
+				plugin.getLogger().severe("Error spawning: " + e.getMessage());
+			}
 		}
 	}
 	
