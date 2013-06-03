@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 
 import com.orange451.UltimateArena.UltimateArena;
 
@@ -27,18 +26,10 @@ public class CommandHandler implements CommandExecutor
 		registeredCommands = new ArrayList<UltimateArenaCommand>();
 	}
 	
-	public void registerCommand(UltimateArenaCommand command) 
+	public void registerCommand(UltimateArenaCommand command)
 	{
-		PluginCommand pluginCommand = plugin.getCommand(command.getName());
-		if (pluginCommand != null)
-		{
-			pluginCommand.setExecutor(command);
+		if (commandPrefix != null)
 			registeredCommands.add(command);
-		} 
-		else
-		{
-			plugin.getLogger().warning("Entry for command \"" + command.getName() + "\" is missing in plugin.yml");
-		}
 	}
 
 	public List<UltimateArenaCommand> getRegisteredCommands() 
