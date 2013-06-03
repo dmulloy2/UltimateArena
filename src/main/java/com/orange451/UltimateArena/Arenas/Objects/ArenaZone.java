@@ -17,7 +17,8 @@ import org.bukkit.entity.Player;
 import com.orange451.UltimateArena.Field;
 import com.orange451.UltimateArena.UltimateArena;
 
-public class ArenaZone {
+public class ArenaZone 
+{
 	public int amtLobbys = 2;
 	public int amtSpawnpoints = 2;
 	public int stepnum;
@@ -52,43 +53,54 @@ public class ArenaZone {
 	public World world;
 	public UltimateArena plugin;
 	
-	public ArenaZone(UltimateArena plugin, 	File f) {
+	public ArenaZone(UltimateArena plugin, 	File f)
+	{
 		this.arenaName = f.getName();
 		this.plugin = plugin;
 		this.lobby = new Field();
 		this.arena = new Field();
 		
-		try{
+		try
+		{
 			this.defaultClass = plugin.classes.get(0).name;
-		}catch(Exception e) {
+		}
+		catch(Exception e) 
+		{	
 			//
 		}
 		
 		loadArena();
 		
-		if (!loaded) {
+		if (!loaded)
+		{
 			plugin.getLogger().warning("Arena: " + arenaName + " has failed to load!");
-		}else{
+		}
+		else
+		{
 			lobby.setParam(lobby1.getWorld(), lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
 			arena.setParam(arena1.getWorld(), arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
 		}
 		
 	}
 	
-	public ArenaZone(UltimateArena plugin, String str) {
+	public ArenaZone(UltimateArena plugin, String str) 
+	{
 		this.arenaName = str;
 		this.plugin = plugin;
 	}
 	
-	public boolean checkLocation(Location loc) {
+	public boolean checkLocation(Location loc) 
+	{
 		return lobby.isInside(loc) || arena.isInside(loc);
 	}
 	
-	public void save() {
+	public void save() 
+	{
 		String path = plugin.getRoot().getAbsolutePath() + "/arenas/" + arenaName;
         FileWriter outFile = null;
         PrintWriter out = null;
-		try {
+		try 
+		{
 			outFile = new FileWriter(path);
 			out = new PrintWriter(outFile);
 			out.println(arenaType);
@@ -97,57 +109,69 @@ public class ArenaZone {
 			out.println(lobby2.getBlockX() + "," + lobby2.getBlockZ());
 			out.println(arena1.getBlockX() + "," + arena1.getBlockZ());
 			out.println(arena2.getBlockX() + "," + arena2.getBlockZ());
-			if (arenaType.equals("pvp")) {
+			if (arenaType.equals("pvp"))
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(lobbyBLUspawn.getBlockX() + "," + lobbyBLUspawn.getBlockY() + "," + lobbyBLUspawn.getBlockZ());
 				out.println(team1spawn.getBlockX() + "," + team1spawn.getBlockY() + "," + team1spawn.getBlockZ());
 				out.println(team2spawn.getBlockX() + "," + team2spawn.getBlockY() + "," + team2spawn.getBlockZ());
 			}
-			if (arenaType.equals("mob")) {
+			if (arenaType.equals("mob"))
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(team1spawn.getBlockX() + "," + team1spawn.getBlockY() + "," + team1spawn.getBlockZ());
 				out.println(spawns.size());
-				for (int i = 0; i < spawns.size(); i++) {
+				for (int i = 0; i < spawns.size(); i++) 
+				{
 					Location loc1 = spawns.get(i);
 					out.println(loc1.getBlockX() + "," + loc1.getBlockY() + "," + loc1.getBlockZ());
 				}
 			}
-			if (arenaType.equals("cq")) {
+			if (arenaType.equals("cq")) 
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(lobbyBLUspawn.getBlockX() + "," + lobbyBLUspawn.getBlockY() + "," + lobbyBLUspawn.getBlockZ());
 				out.println(team1spawn.getBlockX() + "," + team1spawn.getBlockY() + "," + team1spawn.getBlockZ());
 				out.println(team2spawn.getBlockX() + "," + team2spawn.getBlockY() + "," + team2spawn.getBlockZ());
 				out.println(flags.size());
-				for (int i = 0; i < flags.size(); i++) {
+				for (int i = 0; i < flags.size(); i++) 
+				{
 					Location loc1 = flags.get(i);
 					out.println(loc1.getBlockX() + "," + loc1.getBlockY() + "," + loc1.getBlockZ());
 				}
 			}
-			if (arenaType.equals("koth")) {
+			if (arenaType.equals("koth"))
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(spawns.size());
-				for (int i = 0; i < spawns.size(); i++) {
+				for (int i = 0; i < spawns.size(); i++) 
+				{
 					Location loc1 = spawns.get(i);
 					out.println(loc1.getBlockX() + "," + loc1.getBlockY() + "," + loc1.getBlockZ());
 				}
 				out.println(flags.get(0).getBlockX() + "," + flags.get(0).getBlockY() + "," + flags.get(0).getBlockZ());
 			}
-			if (arenaType.equals("ffa") || arenaType.equals("hunger")) {
+			if (arenaType.equals("ffa") || arenaType.equals("hunger"))
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(spawns.size());
-				for (int i = 0; i < spawns.size(); i++) {
+				for (int i = 0; i < spawns.size(); i++) 
+				{
 					Location loc1 = spawns.get(i);
 					out.println(loc1.getBlockX() + "," + loc1.getBlockY() + "," + loc1.getBlockZ());
 				}
 			}
-			if (arenaType.equals("spleef")) {
+			if (arenaType.equals("spleef"))
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(80);
-				for (int i = 0; i < 4; i++) {
+				for (int i = 0; i < 4; i++) 
+				{
 					out.println(flags.get(i).getBlockX() + "," + flags.get(i).getBlockY() + "," + flags.get(i).getBlockZ());
 				}
 			}
-			if (arenaType.equals("bomb")) {
+			if (arenaType.equals("bomb"))
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(lobbyBLUspawn.getBlockX() + "," + lobbyBLUspawn.getBlockY() + "," + lobbyBLUspawn.getBlockZ());
 				out.println(team1spawn.getBlockX() + "," + team1spawn.getBlockY() + "," + team1spawn.getBlockZ());
@@ -155,7 +179,8 @@ public class ArenaZone {
 				out.println(flags.get(0).getBlockX() + "," + flags.get(0).getBlockY() + "," + flags.get(0).getBlockZ());
 				out.println(flags.get(1).getBlockX() + "," + flags.get(1).getBlockY() + "," + flags.get(1).getBlockZ());
 			}
-			if (arenaType.equals("ctf")) {
+			if (arenaType.equals("ctf")) 
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(lobbyBLUspawn.getBlockX() + "," + lobbyBLUspawn.getBlockY() + "," + lobbyBLUspawn.getBlockZ());
 				out.println(team1spawn.getBlockX() + "," + team1spawn.getBlockY() + "," + team1spawn.getBlockZ());
@@ -163,7 +188,8 @@ public class ArenaZone {
 				out.println(flags.get(0).getBlockX() + "," + flags.get(0).getBlockY() + "," + flags.get(0).getBlockZ());
 				out.println(flags.get(1).getBlockX() + "," + flags.get(1).getBlockY() + "," + flags.get(1).getBlockZ());
 			}
-			if (arenaType.equals("infect")) {
+			if (arenaType.equals("infect"))
+			{
 				out.println(lobbyREDspawn.getBlockX() + "," + lobbyREDspawn.getBlockY() + "," + lobbyREDspawn.getBlockZ());
 				out.println(lobbyBLUspawn.getBlockX() + "," + lobbyBLUspawn.getBlockY() + "," + lobbyBLUspawn.getBlockZ());
 				out.println(team1spawn.getBlockX() + "," + team1spawn.getBlockY() + "," + team1spawn.getBlockZ());
@@ -173,14 +199,19 @@ public class ArenaZone {
 			out.println("maxPlayers=24");
 			out.println("defaultClass=" + plugin.classes.get(0).name);
 			//out.println();
-		} catch (IOException e1) {
-			//uh oh!
 		}
-		try{
+		catch (IOException e1)
+		{
+			//
+		}
+		try
+		{
 	        out.close();
 	        outFile.close();
-		}catch(Exception e) {
-			
+		}
+		catch(Exception e) 
+		{
+			//
 		}
 		
 		this.lobby = new Field();
@@ -190,26 +221,33 @@ public class ArenaZone {
 		arena.setParam(arena1.getWorld(), arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
 	}
 	
-	public Location getLocationFromString(String str) {
+	public Location getLocationFromString(String str) 
+	{
 		String[] arr = str.split(",");
-		if (arr.length == 2) {
+		if (arr.length == 2) 
+		{
 			return new Location(world, Integer.parseInt(arr[0]), 0, Integer.parseInt(arr[1]));
-		}else if (arr.length == 3) {
+		}
+		else if (arr.length == 3) 
+		{
 			return new Location(world, Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
 		}
 		return null;
 	}
 	
-	public World getWorldFromString(String str) {
+	public World getWorldFromString(String str)
+	{
 		return str == null ? null : plugin.getServer().getWorld(str);
 	}
 	
-	public void loadArena() {
+	public void loadArena() 
+	{
 		String path = plugin.getRoot().getAbsolutePath() + "/arenas/" + arenaName;
 		FileInputStream fstream = null;
 		DataInputStream in = null;
 		BufferedReader br = null;
-		try {
+		try
+		{
 			fstream = new FileInputStream(path);
 			in = new DataInputStream(fstream);
 			br = new BufferedReader(new InputStreamReader(in));
@@ -218,29 +256,47 @@ public class ArenaZone {
 			this.arenaType = strLine.toLowerCase();
 			strLine = br.readLine();
 			this.world = getWorldFromString(strLine);
-			if (this.world == null) {
+			if (this.world == null)
+			{
 				this.world = plugin.getServer().getWorlds().get(0);
 				try {br.close();} catch (Exception ex) {}
 				br = new BufferedReader(new InputStreamReader(in));
 				br.readLine();
 			}
-			if (arenaType.equalsIgnoreCase("pvp")) {
+			if (arenaType.equalsIgnoreCase("pvp"))
+			{
 				readPVP(br);
-			}else if (arenaType.equalsIgnoreCase("mob")) {
+			}
+			else if (arenaType.equalsIgnoreCase("mob"))
+			{
 				readMOB(br);
-			}else if (arenaType.equalsIgnoreCase("cq")) {
+			}
+			else if (arenaType.equalsIgnoreCase("cq")) 
+			{
 				readCONQUEST(br);
-			}else if (arenaType.equalsIgnoreCase("koth")) {
+			}
+			else if (arenaType.equalsIgnoreCase("koth"))
+			{
 				readKOTH(br);
-			}else if (arenaType.equalsIgnoreCase("bomb")) {
+			}
+			else if (arenaType.equalsIgnoreCase("bomb"))
+			{
 				readBOMB(br);
-			}else if (arenaType.equalsIgnoreCase("ffa")||arenaType.equalsIgnoreCase("hunger")) {
+			}
+			else if (arenaType.equalsIgnoreCase("ffa")||arenaType.equalsIgnoreCase("hunger")) 
+			{
 				readFFA(br);
-			}else if (arenaType.equalsIgnoreCase("spleef")) {
+			}
+			else if (arenaType.equalsIgnoreCase("spleef"))
+			{
 				readSPLEEF(br);
-			}else if (arenaType.equalsIgnoreCase("infect")) {
+			}
+			else if (arenaType.equalsIgnoreCase("infect")) 
+			{
 				readINFECT(br);
-			}else if (arenaType.equalsIgnoreCase("ctf")) {
+			}
+			else if (arenaType.equalsIgnoreCase("ctf"))
+			{
 				readCTF(br);
 			}
 		} 
@@ -249,47 +305,61 @@ public class ArenaZone {
 			plugin.getLogger().severe("Error loading arena " + arenaType + ": " + e.getMessage());
 		}
 		loadConfig(br);
-		try{ br.close(); }catch(Exception e) { }
-		try{ in.close(); }catch(Exception e) { }
-		try{ fstream.close(); }catch(Exception e) { }
+		try { br.close(); } catch(Exception e) { }
+		try { in.close(); } catch(Exception e) { }
+		try { fstream.close(); } catch(Exception e) { }
 	}
 	
-	private void loadConfig(BufferedReader br) {
+	private void loadConfig(BufferedReader br) 
+	{
 		ArrayList<String> file = new ArrayList<String>();
 		String strLine;
-		try {
+		try
+		{
 			String str;
-			while ((str = br.readLine()) != null) {
-				if (str.equals("--config--")) {
-					while ((strLine = br.readLine()) != null) {
+			while ((str = br.readLine()) != null) 
+			{
+				if (str.equals("--config--"))
+				{
+					while ((strLine = br.readLine()) != null) 
+					{
 						file.add(strLine);
 					}
-					for (int i = 0; i < file.size(); i++) {
+					for (int i = 0; i < file.size(); i++) 
+					{
 				    	computeConfigData(file.get(i));
 				    }
 				}
 			}
-		}catch (IOException e) {
+		}
+		catch (IOException e) 
+		{
 			//
 		}
 	}
 	
-	private void computeConfigData(String str) {
-		if (str.indexOf("=") > 0 ) {
+	private void computeConfigData(String str)
+	{
+		if (str.indexOf("=") > 0 )
+		{
 			String str2 = str.substring(0, str.indexOf("="));
-			if (str2.equalsIgnoreCase("maxPlayers")) {
+			if (str2.equalsIgnoreCase("maxPlayers"))
+			{
 				int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
 				maxPlayers = value;
 			}
-			if (str2.equalsIgnoreCase("defaultClass")) {
+			if (str2.equalsIgnoreCase("defaultClass")) 
+			{
 				String value = str.substring(str.indexOf("=")+1);
 				defaultClass = value;
 			}
 		}
 	}
 
-	public void readPVP(BufferedReader br) {
-		try {
+	public void readPVP(BufferedReader br)
+	{
+		try 
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
@@ -300,12 +370,17 @@ public class ArenaZone {
 			this.team2spawn = getLocationFromString(br.readLine());
 			plugin.getLogger().info("PvP arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
+			//
 		}
 	}
 	
-	public void readINFECT(BufferedReader br) {
-		try {
+	public void readINFECT(BufferedReader br) 
+	{
+		try 
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
@@ -316,12 +391,17 @@ public class ArenaZone {
 			this.team2spawn = getLocationFromString(br.readLine());
 			plugin.getLogger().info("Infect arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) 
+		{
+			//
 		}
 	}
 	
-	public void readCONQUEST(BufferedReader br) {
-		try {
+	public void readCONQUEST(BufferedReader br) 
+	{
+		try 
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
@@ -331,69 +411,93 @@ public class ArenaZone {
 			this.team1spawn = getLocationFromString(br.readLine());
 			this.team2spawn = getLocationFromString(br.readLine());
 			int amtSpawns = Integer.parseInt(br.readLine());
-			for (int i = 0; i < amtSpawns; i++) {
+			for (int i = 0; i < amtSpawns; i++)
+			{
 				this.flags.add(getLocationFromString(br.readLine()));
 			}
 			plugin.getLogger().info("Conquest arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		} 
+		catch (IOException e)
+		{
+			//
 		}
 	}
 
-	public void readKOTH(BufferedReader br) {
-		try {
+	public void readKOTH(BufferedReader br) 
+	{
+		try
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
 			this.arena2 = getLocationFromString(br.readLine());
 			this.lobbyREDspawn = getLocationFromString(br.readLine());
 			int amtSpawns = Integer.parseInt(br.readLine());
-			for (int i = 0; i < amtSpawns; i++) {
+			for (int i = 0; i < amtSpawns; i++)
+			{
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
 			this.flags.add(getLocationFromString(br.readLine()));
 			plugin.getLogger().info("KOTH arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
+			//
 		}
 	}
 	
-	public void readFFA(BufferedReader br) {
-		try {
+	public void readFFA(BufferedReader br)
+	{
+		try
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
 			this.arena2 = getLocationFromString(br.readLine());
 			this.lobbyREDspawn = getLocationFromString(br.readLine());
 			int amtSpawns = Integer.parseInt(br.readLine());
-			for (int i = 0; i < amtSpawns; i++) {
+			for (int i = 0; i < amtSpawns; i++)
+			{
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
 			plugin.getLogger().info("FFA arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
+			//
 		}
 	}
 	
-	public void readSPLEEF(BufferedReader br) {
-		try {
+	public void readSPLEEF(BufferedReader br)
+	{
+		try
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
 			this.arena2 = getLocationFromString(br.readLine());
 			this.lobbyREDspawn = getLocationFromString(br.readLine());
 			this.specialType = Integer.parseInt(br.readLine());
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 4; i++) 
+			{
 				this.flags.add(getLocationFromString(br.readLine()));
 			}
 			plugin.getLogger().info("Spleef arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) 
+		{
+			//
 		}
 	}
 	
-	public void readBOMB(BufferedReader br) {
-		try {
+	public void readBOMB(BufferedReader br)
+	{
+		try
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
@@ -408,12 +512,17 @@ public class ArenaZone {
 
 			plugin.getLogger().info("Bomb arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) 
+		{
+			//
 		}
 	}
 	
-	public void readCTF(BufferedReader br) {
-		try {
+	public void readCTF(BufferedReader br)
+	{
+		try 
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
@@ -428,12 +537,17 @@ public class ArenaZone {
 
 			plugin.getLogger().info("CTF arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
+			//
 		}
 	}
 	
-	public void readMOB(BufferedReader br) {
-		try {
+	public void readMOB(BufferedReader br)
+	{
+		try
+		{
 			this.lobby1 = getLocationFromString(br.readLine());
 			this.lobby2 = getLocationFromString(br.readLine());
 			this.arena1 = getLocationFromString(br.readLine());
@@ -441,19 +555,26 @@ public class ArenaZone {
 			this.lobbyREDspawn = getLocationFromString(br.readLine());
 			this.team1spawn = getLocationFromString(br.readLine());
 			int amtSpawns = Integer.parseInt(br.readLine());
-			for (int i = 0; i < amtSpawns; i++) {
+			for (int i = 0; i < amtSpawns; i++) 
+			{
 				this.spawns.add(getLocationFromString(br.readLine()));
 			}
 
 			plugin.getLogger().info("Mob arena loaded: " + arenaName);
 			loaded = true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) 
+		{
+			//
 		}
 	}
 
-	public boolean canLike(Player player) {
-		for (int i = 0; i < voted.size(); i++) {
-			if (voted.get(i).equals(player.getName())) {
+	public boolean canLike(Player player)
+	{
+		for (int i = 0; i < voted.size(); i++)
+		{
+			if (voted.get(i).equals(player.getName())) 
+			{
 				return false;
 			}
 		}

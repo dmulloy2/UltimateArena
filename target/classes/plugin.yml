@@ -1,6 +1,6 @@
 name: UltimateArena
 main: com.orange451.UltimateArena.UltimateArena
-version: "2.4-SNAPSHOT"
+version: "2.3"
 authors: [dmulloy2, orange451]
 softdepend: [PVPGunPlus, Vault]
 description: The Ultimate in Minecraft death sports and spleef!

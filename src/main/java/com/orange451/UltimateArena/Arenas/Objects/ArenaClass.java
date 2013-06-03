@@ -159,32 +159,24 @@ public class ArenaClass
 		return ret;
 	}
 	
-	public List<CompositeEnchantment> readArmorEnchantments(String str)
+	public List<CompositeEnchantment> readArmorEnchantments(String string)
 	{
 		List<CompositeEnchantment> enchants = new ArrayList<CompositeEnchantment>();
-		if (str.contains(","))
+		if (string.contains(":"))
 		{
-			String[] split = str.split(",");
-			for (int i=1; i<split.length; i++)
+			String[] split2 = string.split(":");
+					
+			Enchantment enchantment = null;
+			try { enchantment = EnchantmentType.toEnchantment(split2[0]); }
+			catch (Exception e) { enchantment = Enchantment.getByName(split2[0].toUpperCase()); }
+					
+			int level = 0;
+			try { level = Integer.parseInt(split2[1]); }
+			catch (Exception e) {}
+					
+			if (enchantment != null && level > 0)
 			{
-				String string = split[i];
-				if (string.contains(":"))
-				{
-					String[] split2 = string.split(":");
-					
-					Enchantment enchantment = null;
-					try { enchantment = EnchantmentType.toEnchantment(split2[0]); }
-					catch (Exception e) { enchantment = Enchantment.getByName(split2[0].toUpperCase()); }
-					
-					int level = 0;
-					try { level = Integer.parseInt(split2[1]); }
-					catch (Exception e) {}
-					
-					if (enchantment != null && level > 0)
-					{
-						enchants.add(new CompositeEnchantment(enchantment, level));
-					}
-				}
+				enchants.add(new CompositeEnchantment(enchantment, level));
 			}
 		}
 		return enchants;
@@ -232,24 +224,48 @@ public class ArenaClass
 				String str2 = str.substring(0, str.indexOf("="));
 				if (str2.equalsIgnoreCase("chestplate")) 
 				{
-					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-					armor1 = value;
+					String line = str.substring(str.indexOf("=")+1);
+					String[] split = line.split(",");
 					
-					armorenchant1 = readArmorEnchantments(str.substring(str.indexOf("=")+1));
+					if (split.length > 1)
+					{
+						armor1 = Integer.parseInt(split[0]);
+						armorenchant1 = readArmorEnchantments(split[1]);
+					}
+					else
+					{
+						armor1 = Integer.parseInt(line);
+					}
 				}
 				if (str2.equalsIgnoreCase("leggings")) 
 				{
-					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-					armor2 = value;
+					String line = str.substring(str.indexOf("=")+1);
+					String[] split = line.split(",");
 					
-					armorenchant2 = readArmorEnchantments(str.substring(str.indexOf("=")+1));
+					if (split.length > 1)
+					{
+						armor2 = Integer.parseInt(split[0]);
+						armorenchant2 = readArmorEnchantments(split[1]);
+					}
+					else
+					{
+						armor2 = Integer.parseInt(line);
+					}
 				}
 				if (str2.equalsIgnoreCase("boots"))
 				{
-					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-					armor3 = value;
+					String line = str.substring(str.indexOf("=")+1);
+					String[] split = line.split(",");
 					
-					armorenchant3 = readArmorEnchantments(str.substring(str.indexOf("=")+1));
+					if (split.length > 1)
+					{
+						armor3 = Integer.parseInt(split[0]);
+						armorenchant3 = readArmorEnchantments(split[1]);
+					}
+					else
+					{
+						armor3 = Integer.parseInt(line);
+					}
 				}
 				if (str2.equalsIgnoreCase("node"))
 				{
