@@ -22,6 +22,10 @@ public class ArenaClass
 	public int armor2 = 0;
 	public int armor3 = 0;
 	
+	public List<CompositeEnchantment> armorenchant1 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> armorenchant2 = new ArrayList<CompositeEnchantment>();
+	public List<CompositeEnchantment> armorenchant3 = new ArrayList<CompositeEnchantment>();
+	
 	public int weapon1 = 0;
 	public int weapon2 = 0;
 	public int weapon3 = 0;
@@ -155,7 +159,38 @@ public class ArenaClass
 		return ret;
 	}
 	
-	public List<CompositeEnchantment> readEnchantments(String str)
+	public List<CompositeEnchantment> readArmorEnchantments(String str)
+	{
+		List<CompositeEnchantment> enchants = new ArrayList<CompositeEnchantment>();
+		if (str.contains(","))
+		{
+			String[] split = str.split(",");
+			for (int i=1; i<split.length; i++)
+			{
+				String string = split[i];
+				if (string.contains(":"))
+				{
+					String[] split2 = string.split(":");
+					
+					Enchantment enchantment = null;
+					try { enchantment = EnchantmentType.toEnchantment(split2[0]); }
+					catch (Exception e) { enchantment = Enchantment.getByName(split2[0].toUpperCase()); }
+					
+					int level = 0;
+					try { level = Integer.parseInt(split2[1]); }
+					catch (Exception e) {}
+					
+					if (enchantment != null && level > 0)
+					{
+						enchants.add(new CompositeEnchantment(enchantment, level));
+					}
+				}
+			}
+		}
+		return enchants;
+	}
+	
+	public List<CompositeEnchantment> readToolEnchantments(String str)
 	{
 		List<CompositeEnchantment> enchants = new ArrayList<CompositeEnchantment>();
 		if (str.contains(","))
@@ -199,16 +234,22 @@ public class ArenaClass
 				{
 					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
 					armor1 = value;
+					
+					armorenchant1 = readArmorEnchantments(str.substring(str.indexOf("=")+1));
 				}
 				if (str2.equalsIgnoreCase("leggings")) 
 				{
 					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
 					armor2 = value;
+					
+					armorenchant2 = readArmorEnchantments(str.substring(str.indexOf("=")+1));
 				}
 				if (str2.equalsIgnoreCase("boots"))
 				{
 					int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
 					armor3 = value;
+					
+					armorenchant3 = readArmorEnchantments(str.substring(str.indexOf("=")+1));
 				}
 				if (str2.equalsIgnoreCase("node"))
 				{
@@ -221,7 +262,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon1 = value;
 					special1 = (byte) value2;
 					amt1 = value3;
@@ -233,7 +274,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon2 = value;
 					special2 = (byte) value2;
 					amt2 = value3;
@@ -245,7 +286,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon3 = value;
 					special3 = (byte) value2;
 					amt3 = value3;
@@ -257,7 +298,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon4 = value;
 					special4 = (byte) value2;
 					amt4 = value3;
@@ -269,7 +310,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon5 = value;
 					special5 = (byte) value2;
 					amt5 = value3;
@@ -281,7 +322,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon6 = value;
 					special6 = (byte) value2;
 					amt6 = value3;
@@ -293,7 +334,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon7 = value;
 					special7 = (byte) value2;
 					amt7 = value3;
@@ -305,7 +346,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon8 = value;
 					special8 = (byte) value2;
 					amt8 = value3;
@@ -317,7 +358,7 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readEnchantments(line);
+					List<CompositeEnchantment> value4 = readToolEnchantments(line);
 					weapon9 = value;
 					special9 = (byte) value2;
 					amt9 = value3;

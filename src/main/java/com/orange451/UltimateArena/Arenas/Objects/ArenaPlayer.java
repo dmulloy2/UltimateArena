@@ -105,6 +105,37 @@ public class ArenaPlayer
 		}
 	}
 	
+	public void giveArmor(Player p, int type, int slot, List<CompositeEnchantment> enchants)
+	{
+		Material mat = Material.getMaterial(type);
+		if (mat != null)
+		{
+			ItemStack itemStack = new ItemStack(mat, 1);
+			if (enchants != null && enchants.size() > 0)
+			{
+				for (CompositeEnchantment enchantment : enchants)
+				{
+					Enchantment ench = enchantment.getType();
+					int level = enchantment.getLevel();
+					try { itemStack.addUnsafeEnchantment(ench, level); }
+					catch (Exception e) {}
+				}
+			}
+			if (slot == 0)
+			{
+				p.getInventory().setChestplate(itemStack);
+			}
+			if (slot == 1)
+			{
+				p.getInventory().setLeggings(itemStack);
+			}
+			if (slot == 2)
+			{
+				p.getInventory().setBoots(itemStack);
+			}
+		}
+	}
+	
 	public void spawn()
 	{
 		try
@@ -129,9 +160,9 @@ public class ArenaPlayer
 				{
 					try
 					{
-						if (mclass.armor1 > 0) { p.getInventory().setChestplate(new ItemStack(Material.getMaterial(mclass.armor1), 1)); }
-						if (mclass.armor2 > 0) { p.getInventory().setLeggings(new ItemStack(Material.getMaterial(mclass.armor2), 1)); }
-						if (mclass.armor3 > 0) { p.getInventory().setBoots(new ItemStack(Material.getMaterial(mclass.armor3), 1)); }
+						if (mclass.armor1 > 0) { giveArmor(p, mclass.armor1, 0, mclass.armorenchant1); }
+						if (mclass.armor2 > 0) { giveArmor(p, mclass.armor2, 1, mclass.armorenchant2); }
+						if (mclass.armor3 > 0) { giveArmor(p, mclass.armor3, 2, mclass.armorenchant3); }
 						if (mclass.helmet == false) { p.getInventory().setHelmet(null); }
 						
 						giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
