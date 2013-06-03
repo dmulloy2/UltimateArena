@@ -11,12 +11,13 @@ import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.UltimateArena;
 
-public class Util {
-
+public class Util
+{
 	public static UltimateArena plugin;
 	public static Server server;
 
-	public static void Initialize(UltimateArena plugin) {
+	public static void Initialize(UltimateArena plugin) 
+	{
 		Util.plugin = plugin;
 		Util.server = plugin.getServer();
 	}
@@ -45,76 +46,91 @@ public class Util {
 		return null;
 	}
 
-	public static void playEffect(Effect e, Location l, int num) {
-		for (int i = 0; i < server.getOnlinePlayers().length; i++) {
+	public static void playEffect(Effect e, Location l, int num)
+	{
+		for (int i = 0; i < server.getOnlinePlayers().length; i++) 
+		{
 			server.getOnlinePlayers()[i].playEffect(l, e, num);
 		}
 	}
 
-	public static double point_distance(Location loc1, Location loc2) {
-		double p1x = loc1.getX();
-		double p1y = loc1.getY();
-		double p1z = loc1.getZ();
-
-		double p2x = loc2.getX();
-		double p2y = loc2.getY();
-		double p2z = loc2.getZ();
-		double xdist = (p1x - p2x);
-		double ydist = (p1y - p2y);
-		double zdist = (p1z - p2z);
-		return Math.sqrt((xdist * xdist) + (ydist * ydist) + (zdist * zdist));
+	public static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2) 
+	{
+		int xdist = x1 - x2;
+		int ydist = y1 - y2;
+		int zdist = z1 - z2;
+		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist);
 	}
-	
-    public static int random(int x) {
-    	Random rand = new Random();
-    	return rand.nextInt(x);
-    }
-    
-    public static double lengthdir_x(double len, double dir) {
-        return len * Math.cos(Math.toRadians(dir));
-    }
 
-    public static double lengthdir_y(double len, double dir) {
-        return -len * Math.sin(Math.toRadians(dir));
-    }
-    
-    public static double point_direction(double x1, double y1, double x2, double y2){
+	public static int point_distance(Location loc1, Location loc2)
+	{
+		int p1x = (int)loc1.getX();
+		int p1y = (int)loc1.getY();
+		int p1z = (int)loc1.getZ();
+
+		int p2x = (int)loc2.getX();
+		int p2y = (int)loc2.getY();
+		int p2z = (int)loc2.getZ();
+		return (int)magnitude(p1x, p1y, p1z, p2x, p2y, p2z);
+	 }
+
+	public static int random(int x)
+	{
+		Random rand = new Random();
+		return rand.nextInt(x);
+	}
+
+	public static double lengthdir_x(double len, double dir)
+	{
+		return len * Math.cos(Math.toRadians(dir));
+	}
+
+	public static double lengthdir_y(double len, double dir)
+	{
+		return -len * Math.sin(Math.toRadians(dir));
+	}
+
+	public static double point_direction(double x1, double y1, double x2, double y2)
+	{
 		double d;
-		try{
-			d = Math.toDegrees(Math.atan((y2-y1)/(x2-x1)));
-		}catch(Exception e) {
-			d = 0;
-		}
-		if (x1 > x2 && y1 > y2)
+		try 
 		{
-			return -d+180;
+			d = Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
 		}
-		if (x1 < x2 && y1 > y2)
+		catch (Exception e)
+		{
+			d = 0.0D;
+		}
+		if ((x1 > x2) && (y1 > y2))
+		{
+			return -d + 180.0D;
+		}
+		if ((x1 < x2) && (y1 > y2))
 		{
 			return -d;
 		}
 		if (x1 == x2)
 		{
 			if (y1 > y2)
-				return 90;
+				return 90.0D;
 			if (y1 < y2)
-				return 270;
+				return 270.0D;
 		}
-		if (x1 > x2 && y1 < y2)
+		if ((x1 > x2) && (y1 < y2))
 		{
-			return -d+180;
+			return -d + 180.0D;
 		}
-		if (x1 < x2 && y1 < y2)
+		if ((x1 < x2) && (y1 < y2))
 		{
-			return -d+360;
+			return -d + 360.0D;
 		}
 		if (y1 == y2)
 		{
 			if (x1 > x2)
-				return 180;
+				return 180.0D;
 			if (x1 < x2)
-				return 0;
+				return 0.0D;
 		}
-		return 0;
-    }
+		return 0.0D;
+	}
 }
