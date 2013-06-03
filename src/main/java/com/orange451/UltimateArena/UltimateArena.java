@@ -499,16 +499,13 @@ public class UltimateArena extends JavaPlugin
 
 	public void forceStop()
 	{
-		for (Arena arena : activeArena)
+		for (int i=0; i<activeArena.size(); i++)
 		{
-			try
+			Arena arena = activeArena.get(i);
+			if (arena != null)
 			{
 				arena.startingAmount = 0;
 				arena.stop();
-			}
-			catch (Exception e)
-			{
-				getLogger().severe("Error forcing stop: " + e.getMessage());
 			}
 		}
 		activeArena.clear();
@@ -516,19 +513,14 @@ public class UltimateArena extends JavaPlugin
 	
 	public void forceStop(String str)
 	{
-		Arena a = null;
-		for (Arena arena : activeArena)
+		for (int i=0; i<activeArena.size(); i++)
 		{
-			if (arena.name.equalsIgnoreCase(str))
+			Arena arena = activeArena.get(i);
+			if (arena != null)
 			{
-				a = arena;
+				arena.forceStop = true;
+				arena.stop();
 			}
-		}
-		
-		if (a != null) 
-		{
-			a.forceStop = true;
-			a.stop();
 		}
 	}
 	

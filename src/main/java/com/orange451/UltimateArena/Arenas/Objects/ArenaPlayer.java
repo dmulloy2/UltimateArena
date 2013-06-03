@@ -1,5 +1,7 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
+import java.util.List;
+
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,7 +62,7 @@ public class ArenaPlayer
 		}
 	}
 	
-	public void giveItem(Player p, int weapon1, byte dat, int amt, int slot, CompositeEnchantment...enchantments)
+	public void giveItem(Player p, int weapon1, byte dat, int amt, int slot, List<CompositeEnchantment> enchants)
 	{
 		if (weapon1 > 0)
 		{
@@ -70,9 +72,9 @@ public class ArenaPlayer
 				if (!mat.equals(Material.AIR)) 
 				{
 					ItemStack itemStack = new ItemStack(mat, amt);
-					if (enchantments.length > 0)
+					if (enchants != null && enchants.size() > 0)
 					{
-						for (CompositeEnchantment enchantment : enchantments)
+						for (CompositeEnchantment enchantment : enchants)
 						{
 							Enchantment ench = enchantment.getType();
 							int level = enchantment.getLevel();
@@ -105,8 +107,8 @@ public class ArenaPlayer
 	
 	public void spawn()
 	{
-		try
-		{
+//		try
+//		{
 			if (this.amtkicked > 10)
 			{
 				this.inArena.az.plugin.leaveArena(this.player);
@@ -125,33 +127,33 @@ public class ArenaPlayer
 				}
 				else
 				{
-					try
-					{
+//					try
+//					{
 						if (mclass.armor1 > 0) { p.getInventory().setChestplate(new ItemStack(Material.getMaterial(mclass.armor1), 1)); }
 						if (mclass.armor2 > 0) { p.getInventory().setLeggings(new ItemStack(Material.getMaterial(mclass.armor2), 1)); }
 						if (mclass.armor3 > 0) { p.getInventory().setBoots(new ItemStack(Material.getMaterial(mclass.armor3), 1)); }
 						if (mclass.helmet == false) { p.getInventory().setHelmet(null); }
 						
-						giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0);
-						giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1);
-						giveItem(p, mclass.weapon3, mclass.special3, mclass.amt3, 2);
-						giveItem(p, mclass.weapon4, mclass.special4, mclass.amt4, 3);
-						giveItem(p, mclass.weapon5, mclass.special5, mclass.amt5, 4);
-						giveItem(p, mclass.weapon6, mclass.special6, mclass.amt6, 5);
-						giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6);
-						giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7);
-						giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8);
-					}
-					catch(Exception e) 
-					{
-						inArena.az.plugin.getLogger().severe("Error giving player class items!");
-					}
+						giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
+						giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1, mclass.enchant2);
+						giveItem(p, mclass.weapon3, mclass.special3, mclass.amt3, 2, mclass.enchant3);
+						giveItem(p, mclass.weapon4, mclass.special4, mclass.amt4, 3, mclass.enchant4);
+						giveItem(p, mclass.weapon5, mclass.special5, mclass.amt5, 4, mclass.enchant5);
+						giveItem(p, mclass.weapon6, mclass.special6, mclass.amt6, 5, mclass.enchant6);
+						giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
+						giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
+						giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
+//					}
+//					catch(Exception e) 
+//					{
+//						inArena.az.plugin.getLogger().severe("Error giving player class items!");
+//					}
 				}
 			}
-		}
-		catch(Exception e)
-		{
-			inArena.az.plugin.getLogger().severe("Error spawning: " + e.getMessage());
-		}
+//		}
+//		catch(Exception e)
+//		{
+//			inArena.az.plugin.getLogger().severe("Error spawning: " + e.getMessage());
+//		}
 	}
 }

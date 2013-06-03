@@ -160,12 +160,12 @@ public class ArenaClass
 		List<CompositeEnchantment> enchants = new ArrayList<CompositeEnchantment>();
 		if (str.contains(","))
 		{
-			str = str.substring(str.indexOf(",") + 2);
 			String[] split = str.split(",");
-			if (split.length > 0)
+			if (split.length > 2)
 			{
-				for (String s : split)
+				for (int i=2; i<split.length; i++)
 				{
+					String s = split[i];
 					if (s.contains(":"))
 					{
 						String[] split2 = s.split(":");
@@ -185,7 +185,7 @@ public class ArenaClass
 				}
 			}
 		}
-		return null;
+		return enchants;
 	}
 	
 	public void computeData(String str) 
@@ -305,9 +305,11 @@ public class ArenaClass
 					int value = readWep(line);
 					int value2 = readSpec(line);
 					int value3 = readAmt(line);
+					List<CompositeEnchantment> value4 = readEnchantments(line);
 					weapon8 = value;
 					special8 = (byte) value2;
 					amt8 = value3;
+					enchant8 = value4;
 				}
 				if (str2.equalsIgnoreCase("tool9")) 
 				{

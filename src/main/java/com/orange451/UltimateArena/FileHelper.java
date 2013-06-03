@@ -399,7 +399,7 @@ public class FileHelper
 			words.add("tool2=318,7070");
 			words.add("tool3=341,24");
 			words.add("tool4=322,2");
-			words.add("tool5=267,1,SHARPNESS:1");
+			words.add("tool5=267,1,sharp:1");
 		}
 		
 		if (type.equals("healer"))
