@@ -23,8 +23,7 @@ import com.orange451.UltimateArena.events.UltimateArenaKillEvent;
 
 public class PluginEntityListener implements Listener
 {
-	UltimateArena plugin;
-	
+	public UltimateArena plugin;
 	public PluginEntityListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -97,8 +96,10 @@ public class PluginEntityListener implements Listener
 							{
 								shooter.getItemInHand().setDurability((short) 0);
 							}
-							if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(shooter).team) {
-								if (!a.allowTeamKilling) {
+							if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(shooter).team) 
+							{
+								if (!a.allowTeamKilling) 
+								{
 									event.setCancelled(true);
 									shooter.sendMessage(ChatColor.RED + "You cannot hurt your teammate!");
 								}
@@ -121,8 +122,10 @@ public class PluginEntityListener implements Listener
 						{
 							event.setCancelled(false);
 							Arena a = plugin.getArena(defender);
-							if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(shooter).team) {
-								if (!a.allowTeamKilling) {
+							if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(shooter).team)
+							{
+								if (!a.allowTeamKilling) 
+								{
 									event.setCancelled(true);
 									shooter.sendMessage(ChatColor.RED + "You cannot hurt your teammate!");
 								}
@@ -147,7 +150,8 @@ public class PluginEntityListener implements Listener
 					event.setCancelled(true);
 					return;
 				}
-				if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(attacker).team) {
+				if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(attacker).team) 
+				{
 					if (!a.allowTeamKilling)
 					{
 						event.setCancelled(true);
