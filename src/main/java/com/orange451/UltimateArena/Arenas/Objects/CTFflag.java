@@ -9,12 +9,14 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.util.Util;
 
-public class CTFflag {
+public class CTFflag
+{
 	public UltimateArena plugin;
 	public Arena arena;
 	public Player riding;
@@ -31,7 +33,8 @@ public class CTFflag {
 	public byte color;
 	public byte lastBlockDat;
 	
-	public CTFflag(Arena a, Location loc, int team) {
+	public CTFflag(Arena a, Location loc, int team)
+	{
 		this.team = team;
 		this.arena = a;
 		this.plugin = arena.az.plugin;
@@ -46,15 +49,20 @@ public class CTFflag {
 		setup();
 	}
 	
-	public void respawn() {
-		try{
+	public void respawn() 
+	{
+		try
+		{
 			timer = 15;
 			pickedUp = false;
 			riding = null;
 			toloc = returnto.clone();
 			myloc = toloc.clone();
 			setFlag();
-		}catch(Exception e) {
+		}
+		catch(Exception e) 
+		{
+			plugin.getLogger().severe("Error respawning flag:");
 			e.printStackTrace();
 		}
 	}
@@ -65,53 +73,74 @@ public class CTFflag {
 		}
 	}
 	
-	public void sayTimeLeft() {
-		arena.tellPlayers(ChatColor.LIGHT_PURPLE + Integer.toString(timer) + ChatColor.GRAY + " seconds until " + flagType + ChatColor.GRAY + " flag returns!");
+	public void sayTimeLeft() 
+	{
+		arena.tellPlayers("&d{0} &7seconds left until &6{1} &7flag returns!", timer, flagType);
 	}
 	
-	public void setup() {
+	public void setup()
+	{
 		final Block current = myloc.getBlock();
 		lastBlockDat = current.getData();
 		lastBlockType = current.getTypeId();
 		colorize();
 	}
 	
-	public void colorize() {
+	public void colorize() 
+	{
 		final Block current = myloc.getBlock();
-		if (team == 1) {
+		if (team == 1) 
+		{
 			color = 14; // red team
 			flagType = ChatColor.RED + "RED";
-		}else{
+		}
+		else
+		{
 			color = 11; //blue team
 			flagType = ChatColor.BLUE + "BLUE";
 		}
 		
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-		    public void run() {
-		    	setFlagBlock(current);
-		    }
-		});
+		class ColorizeTask extends BukkitRunnable
+		{
+			@Override
+			public void run()
+			{
+				setFlagBlock(current);
+			}
+		}
+		
+		new ColorizeTask().runTask(plugin);
 	}
 	
-	public void fall() {
-		arena.tellPlayers(ChatColor.AQUA + riding.getName() + ChatColor.GRAY + " dropped up the " + flagType + ChatColor.GRAY + " flag!");
+	public void fall() 
+	{
+		arena.tellPlayers("&b{0} &7has dropped the &6{0} &7flag!", riding.getName(), flagType);
 		timer = 15;
 		toloc = riding.getLocation();
 		pickedUp = false;
 		riding = null;
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-		    public void run() {
-	    		myloc = toloc.clone();
+		
+		class FallTask extends BukkitRunnable
+		{
+			@Override
+			public void run()
+			{
+				myloc = toloc.clone();
 	    		
 	    		int count = 0;
 	    		boolean can = true;
-	    		for (int i = 1; i < 128; i++) {
-	    			if (can) {
+	    		for (int i = 1; i < 128; i++) 
+	    		{
+	    			if (can) 
+	    			{
 	    				Block BlockUnder = ((myloc.clone()).subtract(0,i,0)).getBlock(); 
-	    				if (BlockUnder != null) {
+	    				if (BlockUnder != null) 
+	    				{
 	    					if (BlockUnder.getType().equals(Material.AIR) || BlockUnder.getType().equals(Material.WATER)) {
 	    						count++;
-	    					}else{
+	    					}
+	    					else
+	    					{
 	    						can = false; 
 	    					}
 	    				}
@@ -120,32 +149,46 @@ public class CTFflag {
 	    		
 	    		toloc = myloc.clone().subtract(0, count, 0);
 	    		setFlag();
-		    }
-		});
+			}
+		}
+		
+		new FallTask().runTask(plugin);
 	}
 	
-	public void checkNear(List<ArenaPlayer> arenaplayers) {
+	public void checkNear(List<ArenaPlayer> arenaplayers)
+	{
 		if (stopped)
 			return;
 		
-		if (!pickedUp) {
-			for (int i = 0; i < arenaplayers.size(); i++) {
+		if (!pickedUp) 
+		{
+			for (int i = 0; i < arenaplayers.size(); i++)
+			{
 				Player pl = arenaplayers.get(i).player;
-				if (pl != null) {
-					if (Util.point_distance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0) {
-						if (!arenaplayers.get(i).out) {
-							if (arenaplayers.get(i).team != team) { //if the guy is on the other team
+				if (pl != null)
+				{
+					if (Util.point_distance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0)
+					{
+						if (!arenaplayers.get(i).out)
+						{
+							if (arenaplayers.get(i).team != team) 
+							{
+								//if the guy is on the other team
 								pickedUp = true;
 								riding = pl;
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-								arena.tellPlayers(ChatColor.AQUA + arenaplayers.get(i).player.getName() + ChatColor.GRAY + " picked up the " + flagType + ChatColor.GRAY + " flag!");
+								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", arenaplayers.get(i).player.getName(), flagType);
 								return;
-							}else{
-								if (!myloc.equals(returnto)) { //if the flag is not at its flagstand
+							}
+							else
+							{
+								if (!myloc.equals(returnto)) 
+								{ 
+									//if the flag is not at its flagstand
 									pl.sendMessage(ChatColor.GRAY + "Flag Returned! " + ChatColor.RED + " +50 XP");
 									arenaplayers.get(i).XP += 50;
-									arena.tellPlayers(ChatColor.GREEN + pl.getName() + ChatColor.GRAY + " returned the " + this.flagType + ChatColor.GRAY + " flag");
+									arena.tellPlayers("&b{0} &7returned the &6{1} &7flag!", pl.getName(), flagType);
 									respawn();
 									return;
 								}
@@ -155,14 +198,22 @@ public class CTFflag {
 				}
 			}
 		}
-		if (pickedUp) {
-			if (riding.isOnline()) {
-				if (!riding.isDead()) { //if player is alive
+		if (pickedUp)
+		{
+			if (riding.isOnline()) 
+			{
+				if (!riding.isDead())
+				{ 
+					//if player is alive
 					toloc = riding.getLocation().clone().add(0, 3, 0);
-				}else{
+				}
+				else
+				{
 					fall();
 				}
-			}else{
+			}
+			else
+			{
 				fall();
 			}
 			
@@ -171,42 +222,59 @@ public class CTFflag {
 		}
 	}
 	
-	public void despawn() {
+	public void despawn() 
+	{
 		stopped = true;
 		final Block last = lastloc.getBlock();
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-		    public void run() {
-		    	last.setTypeIdAndData(lastBlockType, lastBlockDat, false);
-		    }
-		});
+		class DespawnTask extends BukkitRunnable
+		{
+			@Override
+			public void run()
+			{
+				last.setTypeIdAndData(lastBlockType, lastBlockDat, false);
+			}
+		}
+		
+		new DespawnTask().runTask(plugin);
 	}
 	
-	public void tick() {
+	public void tick()
+	{
 		if (stopped)
 			return;
 		
-		if (!pickedUp) {
-			if (!myloc.equals(returnto)) { //if the flag is not at its flagstand
+		if (!pickedUp) 
+		{
+			if (!myloc.equals(returnto)) 
+			{
+				//if the flag is not at its flagstand
 				timer--;
-				if (timer <= 0) {
+				if (timer <= 0) 
+				{
 					respawn();
-				}else{
+				}
+				else
+				{
 					notifyTime();
 				}
 			}
 		}
 	}
 	
-	public void setFlag() {
+	public void setFlag() 
+	{
 		if (stopped)
 			return;
 		
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
 		
-    	if (locequals(lastloc, myloc)) {
+    	if (locequals(lastloc, myloc))
+    	{
     		//
-    	}else{
+    	}
+    	else
+    	{
 	    	last.setTypeIdAndData(lastBlockType, lastBlockDat, true);
 	    	lastBlockDat = current.getData();
 			lastBlockType = current.getTypeId();
@@ -216,18 +284,21 @@ public class CTFflag {
     	}
 	}
 	
-	private void setFlagBlock(Block c) {
+	private void setFlagBlock(Block c) 
+	{
 		if (color == 11)
 			c.setTypeIdAndData(Material.LAPIS_BLOCK.getId(), (byte)0, true);
 		if (color == 14)
 			c.setTypeIdAndData(Material.NETHERRACK.getId(), (byte)0, true);
 	}
 
-	public boolean locequals(Location loc, Location loc2) {
+	public boolean locequals(Location loc, Location loc2) 
+	{
 		if (loc.getBlockX() == loc2.getBlockX() &&
 			loc.getBlockY() == loc2.getBlockY() &&
 			loc.getBlockZ() == loc2.getBlockZ() &&
-			loc.getWorld().equals(loc2.getWorld())) {
+			loc.getWorld().equals(loc2.getWorld()))
+		{
 			return true;
 		}
 		

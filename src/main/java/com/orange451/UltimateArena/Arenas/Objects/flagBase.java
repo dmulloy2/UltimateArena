@@ -59,7 +59,7 @@ public class flagBase
 		}
 		catch(Exception e) 
 		{
-			plugin.getLogger().severe("Error setting up flag for arena \""+ arena.name + "\" Error: " + e.getMessage());
+			plugin.getLogger().severe("Error setting up flag for arena \""+ arena.name + "\": " + e.getMessage());
 		}
 	}
 	

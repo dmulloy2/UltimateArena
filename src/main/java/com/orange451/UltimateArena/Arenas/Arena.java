@@ -27,6 +27,7 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.events.*;
+import com.orange451.UltimateArena.util.FormatUtil;
 import com.orange451.UltimateArena.util.InventoryHelper;
 import com.orange451.UltimateArena.util.Util;
 
@@ -472,6 +473,26 @@ public abstract class Arena
 		return false;
 	}
 	
+	public void tellPlayers(String string, Object...objects) 
+	{
+		// Tells ALL players in the arena a message
+		for (ArenaPlayer ap : arenaplayers)
+		{
+			if (ap != null) 
+			{
+				if (!ap.out)
+				{
+					Player player = Util.matchPlayer(ap.player.getName());
+					if (player != null && player.isOnline())
+					{
+						string = FormatUtil.format(string, objects);
+						player.sendMessage(string);
+					}
+				}
+			}
+		}
+	}
+	
 	public void tellPlayers(String string) 
 	{
 		// Tells ALL players in the arena a message
@@ -484,7 +505,7 @@ public abstract class Arena
 					Player player = Util.matchPlayer(ap.player.getName());
 					if (player != null && player.isOnline())
 					{
-						string = ChatColor.translateAlternateColorCodes('&', string);
+						string = FormatUtil.format(string);
 						player.sendMessage(string);
 					}
 				}

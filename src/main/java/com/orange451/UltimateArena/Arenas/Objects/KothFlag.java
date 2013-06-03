@@ -9,22 +9,27 @@ import org.bukkit.entity.Player;
 import com.orange451.UltimateArena.Arenas.KOTHArena;
 import com.orange451.UltimateArena.util.Util;
 
-public class KothFlag extends ArenaFlag{
-	KOTHArena marena;
-	
-	public KothFlag(KOTHArena arena, Location loc) {
+public class KothFlag extends ArenaFlag
+{
+	public KOTHArena marena;
+	public KothFlag(KOTHArena arena, Location loc)
+	{
 		super(arena, loc);
 		this.marena = arena;
 	}
 	
-	public void checkNear(ArrayList<ArenaPlayer> arenaplayers) {
+	public void checkNear(ArrayList<ArenaPlayer> arenaplayers) 
+	{
 		int amt = 0;
 		ArenaPlayer capturer = null;
 		ArrayList<Player> players = new ArrayList<Player>();
-		for (int i = 0; i < arenaplayers.size(); i++) {
+		for (int i = 0; i < arenaplayers.size(); i++)
+		{
 			Player pl = arenaplayers.get(i).player;
-			if (pl != null) {
-				if (Util.point_distance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) {
+			if (pl != null)
+			{
+				if (Util.point_distance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) 
+				{
 					players.add(pl);
 					amt++;
 					capturer = arenaplayers.get(i);
@@ -32,13 +37,14 @@ public class KothFlag extends ArenaFlag{
 			}
 		}
 		
-		if (amt == 1) {
-			if (capturer != null) {
+		if (amt == 1) 
+		{
+			if (capturer != null) 
+			{
 				Player pl = capturer.player;
 				capturer.points++;
 				pl.sendMessage(ChatColor.GRAY + "You have capped for 1 point! " + ChatColor.LIGHT_PURPLE + capturer.points + " / " + marena.MAXPOWER);
 			}
 		}
 	}
-
 }
