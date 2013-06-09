@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.Arenas.*;
@@ -63,10 +63,9 @@ public class UltimateArena extends JavaPlugin
 	public List<RemindTask> waiting = new ArrayList<RemindTask>();
 	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	public List<String> fieldTypes = new ArrayList<String>();
-	public List<String> loggedOut = new ArrayList<String>();
-	public List<String> loggedOutInArena = new ArrayList<String>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
 	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
+	public List<SavedArenaPlayer> loggedOutPlayers = new ArrayList<SavedArenaPlayer>();
 	
 	@Override
 	public void onEnable()
@@ -182,7 +181,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 		
-		fileHelper.savePlayers(activeArena);
+		fileHelper.savePlayers(activeArena, loggedOutPlayers);
 		
 		for (int i=0; i<activeArena.size(); i++)
 		{
@@ -217,7 +216,7 @@ public class UltimateArena extends JavaPlugin
 			makingArena.remove(getArenaCreator(player));
 		}
 		
-		if (this.isInArena(player))
+		if (isInArena(player))
 		{
 			Arena ar = this.getArena(player);
 			ArenaPlayer ap = this.getArenaPlayer(player);
@@ -228,8 +227,11 @@ public class UltimateArena extends JavaPlugin
 				{
 					if (ar.starttimer > 0 && (!ap.out)) 
 					{
-						loggedOut.add(player.getName());
-						this.removeFromArena(player.getName());
+						int exp = Integer.valueOf(Math.round(ap.startxp));
+						SavedArenaPlayer loggedOut = new SavedArenaPlayer(player, exp, ap.spawnBack);
+						loggedOutPlayers.add(loggedOut);
+						
+						removeFromArena(player.getName());
 					}
 				}
 			}
@@ -238,6 +240,7 @@ public class UltimateArena extends JavaPlugin
 	
 	public void onJoin(Player player) 
 	{
+		/**Normalize Players from Shutdown**/
 		for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 		{
 			if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
@@ -255,57 +258,28 @@ public class UltimateArena extends JavaPlugin
 				savedPlayers.remove(savedArenaPlayer);
 			}
 		}
-		
-		if (!this.isInArena(player))
+
+		/**Normalize Players from Quit**/
+		for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
 		{
-			if (this.isInArena(player.getLocation())) 
+			if (loggedOutPlayer.getPlayer().getName().equals(player.getName()))
 			{
+				int exp = loggedOutPlayer.getExp();
+				Location loc = loggedOutPlayer.getLocation();
+				
 				normalize(player);
+				player.setExp(exp);
+				player.teleport(loc);
 				removePotions(player);
-			}
-		}
-		
-		boolean found = false;
-		for (int i = 0; i < loggedOut.size(); i++) 
-		{
-			if (loggedOut.get(i).equals(player.getName())) 
-			{
-				found = true;
-			}
-		}
-		
-		if (found) 
-		{
-			Arena ar = this.getArena(player);
-			if (ar == null)
-			{
-				loggedOut.remove(player.getName());
-				this.normalize(player);
-			}
-			else
-			{
-				if (ar.starttimer > 0) 
-				{
-					loggedOut.remove(player.getName());
-					ArenaPlayer ap = this.getArenaPlayer(player);
-					if (ap != null) 
-					{
-						ar.endPlayer(ap, true);
-					}
-					else
-					{
-						this.normalize(player);
-					}
-				}
 			}
 		}
 	}
 	
 	public void leaveArena(Player player)
 	{
-		if (this.isInArena(player))
+		if (isInArena(player))
 		{
-			Arena a = this.getArena(player);
+			Arena a = getArena(player);
 			a.endPlayer(getArenaPlayer(player), false);
 		}
 		else
@@ -327,7 +301,7 @@ public class UltimateArena extends JavaPlugin
 		        ArenaZone az = new ArenaZone(this, new File(path + "/" + filename));
 		        if (az.loaded) 
 		        {
-		        	this.loadedArena.add(az);
+		        	loadedArena.add(az);
 		        }
 		    }
 		}
@@ -930,13 +904,13 @@ public class UltimateArena extends JavaPlugin
 	
 	public void clearMemory()
 	{
+		loggedOutPlayers.clear();
+		savedPlayers.clear();
 		loadedArena.clear();
 		activeArena.clear();
 		makingArena.clear();
 		fieldTypes.clear();
 		classes.clear();
-		loggedOut.clear();
-		loggedOutInArena.clear();
 		configs.clear();
 		wcmd.clear();
 	}
@@ -981,12 +955,10 @@ public class UltimateArena extends JavaPlugin
 
 	public void removePotions(Player pl) 
 	{
-		pl.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-		pl.removePotionEffect(PotionEffectType.SPEED);
-		pl.removePotionEffect(PotionEffectType.SLOW);
-		pl.removePotionEffect(PotionEffectType.JUMP);
-		pl.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-		pl.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		for (PotionEffect effect : pl.getActivePotionEffects())
+		{
+			pl.removePotionEffect(effect.getType());
+		}
 	}
 	
     /**Vault Check**/
