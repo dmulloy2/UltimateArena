@@ -90,7 +90,7 @@ public class UltimateArena extends JavaPlugin
 		
 		saveDefaultConfig();
 		
-		//Add fields
+		// Add fields
 		fieldTypes.add("pvp");
 		fieldTypes.add("mob");
 		fieldTypes.add("cq");
@@ -102,7 +102,7 @@ public class UltimateArena extends JavaPlugin
 		fieldTypes.add("ctf");
 		fieldTypes.add("hunger");
 
-		//Add Commands
+		// Add Commands
 		getCommand("ua").setExecutor(commandHandler);
 		
 		commandHandler.setCommandPrefix("ua");
