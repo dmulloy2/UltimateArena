@@ -526,7 +526,7 @@ public abstract class Arena
 					if (player != null && player.isOnline())
 					{
 						Location ploc = player.getLocation();
-						if (Util.point_distance(loc, ploc) < rad)
+						if (Util.pointDistance(loc, ploc) < rad)
 						{
 							player.setHealth(0);
 						}

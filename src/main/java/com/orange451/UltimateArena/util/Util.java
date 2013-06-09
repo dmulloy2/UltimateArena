@@ -11,17 +11,14 @@ import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.UltimateArena;
 
-public class Util
+public class Util 
 {
-	public static UltimateArena plugin;
 	public static Server server;
-
-	public static void Initialize(UltimateArena plugin) 
+	public static void initialize(UltimateArena plugin)
 	{
-		Util.plugin = plugin;
 		Util.server = plugin.getServer();
 	}
-
+	
 	public static Player matchPlayer(String pl)
 	{
 		List<Player> players = server.matchPlayer(pl);
@@ -45,34 +42,16 @@ public class Util
 		
 		return null;
 	}
-
-	public static void playEffect(Effect e, Location l, int num)
+	
+	public static boolean isBanned(OfflinePlayer p)
 	{
-		for (int i = 0; i < server.getOnlinePlayers().length; i++) 
+		for (OfflinePlayer banned : server.getBannedPlayers()) 
 		{
-			server.getOnlinePlayers()[i].playEffect(l, e, num);
+			if (p.getName().equalsIgnoreCase(banned.getName()))
+				return true;
 		}
+		return false;
 	}
-
-	public static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2) 
-	{
-		int xdist = x1 - x2;
-		int ydist = y1 - y2;
-		int zdist = z1 - z2;
-		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist);
-	}
-
-	public static int point_distance(Location loc1, Location loc2)
-	{
-		int p1x = (int)loc1.getX();
-		int p1y = (int)loc1.getY();
-		int p1z = (int)loc1.getZ();
-
-		int p2x = (int)loc2.getX();
-		int p2y = (int)loc2.getY();
-		int p2z = (int)loc2.getZ();
-		return (int)magnitude(p1x, p1y, p1z, p2x, p2y, p2z);
-	 }
 
 	public static int random(int x)
 	{
@@ -80,57 +59,20 @@ public class Util
 		return rand.nextInt(x);
 	}
 
-	public static double lengthdir_x(double len, double dir)
+	public static double pointDistance(Location loc1, Location loc2)
 	{
-		return len * Math.cos(Math.toRadians(dir));
+		int xdist = loc1.getBlockX() - loc2.getBlockX();
+		int ydist = loc1.getBlockY() - loc2.getBlockY();
+		int zdist = loc2.getBlockY() - loc2.getBlockZ();
+		
+		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist);
 	}
 
-	public static double lengthdir_y(double len, double dir)
+	public static void playEffect(Effect effect, Location loc, int i) 
 	{
-		return -len * Math.sin(Math.toRadians(dir));
-	}
-
-	public static double point_direction(double x1, double y1, double x2, double y2)
-	{
-		double d;
-		try 
+		for (Player player : server.getOnlinePlayers())
 		{
-			d = Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
+			player.playEffect(loc, effect, i);
 		}
-		catch (Exception e)
-		{
-			d = 0.0D;
-		}
-		if ((x1 > x2) && (y1 > y2))
-		{
-			return -d + 180.0D;
-		}
-		if ((x1 < x2) && (y1 > y2))
-		{
-			return -d;
-		}
-		if (x1 == x2)
-		{
-			if (y1 > y2)
-				return 90.0D;
-			if (y1 < y2)
-				return 270.0D;
-		}
-		if ((x1 > x2) && (y1 < y2))
-		{
-			return -d + 180.0D;
-		}
-		if ((x1 < x2) && (y1 < y2))
-		{
-			return -d + 360.0D;
-		}
-		if (y1 == y2)
-		{
-			if (x1 > x2)
-				return 180.0D;
-			if (x1 < x2)
-				return 0.0D;
-		}
-		return 0.0D;
 	}
 }

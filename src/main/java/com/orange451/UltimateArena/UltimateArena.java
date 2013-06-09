@@ -32,6 +32,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,8 +55,8 @@ public class UltimateArena extends JavaPlugin
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	
-	public int maxArenasRunning = 1024;
 	public int arenasPlayed = 0;
+	
 	public List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	public List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	public List<ArenaZone> loadedArena = new ArrayList<ArenaZone>();
@@ -163,7 +164,7 @@ public class UltimateArena extends JavaPlugin
 		pm.registerEvents(new PluginBlockListener(this), this);
 		pm.registerEvents(new PluginPlayerListener(this), this);
 		
-		Util.Initialize(this);
+		Util.initialize(this);
  
 		new ArenaUpdater().runTaskTimer(this, 2L, 20L);
 			
@@ -201,6 +202,7 @@ public class UltimateArena extends JavaPlugin
 		clearMemory();
 		
 		long finish = System.currentTimeMillis();
+		
 		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
 	}
 	
@@ -386,7 +388,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			ArenaClass ac = new ArenaClass(this, new File(path + "/" + filename));
 	        ac.name = filename;
-	        this.classes.add(ac);
+	        classes.add(ac);
 		}
 	}
 	
@@ -447,18 +449,19 @@ public class UltimateArena extends JavaPlugin
 		{
 			String path = getRoot().getAbsolutePath() + "/arenas";
 			File f = new File(path + "/" + str);
-			if (f.exists()) 
-			{
-				f.delete();
-			}
+			if (f.exists()) f.delete();
+
 			forceStop(str);
-			this.loadedArena.remove(this.getArenaZone(str));
+			loadedArena.remove(this.getArenaZone(str));
 			player.sendMessage(ChatColor.YELLOW + "Deleted arena!");
 			getLogger().info("Deleted arena: " + str);
 		}
-		catch(Exception e) 
+		catch (Exception e) 
 		{
-			player.sendMessage(ChatColor.RED + "Failed to delete arena!");
+			getLogger().severe("Error while deleting arena:");
+			e.printStackTrace();
+			
+			player.sendMessage(ChatColor.RED + "Failed to delete arena! Check console!");
 		}
 	}
 	
@@ -557,68 +560,55 @@ public class UltimateArena extends JavaPlugin
 
 	public void fight(Player player, String name)
 	{
-		if (player != null) 
+		if (player == null)
+			return;
+		
+		if (isPlayerCreatingArena(player))
 		{
-			if (player.isOnline())
+			player.sendMessage(ChatColor.RED + "You are in the middle of making an arena!");
+			return;
+		}
+		
+		if (!InventoryHelper.isEmpty(player.getInventory()))
+		{
+			// TODO: Store inventories?
+			player.sendMessage(ChatColor.RED + "Please clear your inventory!");
+			return;
+		}
+		
+		ArenaZone a = getArenaZone(name);
+		if (a == null)
+		{
+			player.sendMessage(ChatColor.RED + "That arena doesn't exist!");
+			return;
+		}
+		
+		if (isInArena(player))
+		{
+			player.sendMessage(ChatColor.RED + "You're already in an arena!");
+			return;
+		}
+		
+		ArenaPlayer ap = getArenaPlayer(player);
+		if (ap != null)
+		{
+			player.sendMessage(ChatColor.RED + "You cannot leave and rejoin an arena!");
+			return;
+		}
+		
+		for (int i = 0; i < waiting.size(); i++)
+		{
+			if (waiting.get(i).player.getName().equals(player.getName()))
 			{
-				if (!(isPlayerCreatingArena(player)))
-				{
-					if (InventoryHelper.isEmpty(player.getInventory())) 
-					{
-						ArenaZone a = getArenaZone(name);
-						if (a != null)
-						{
-							if (!isInArena(player)) 
-							{
-								ArenaPlayer apl = this.getArenaPlayer(player);
-								if (apl == null) 
-								{
-									boolean found = false;
-									for (int i = 0; i < waiting.size(); i++)
-									{
-										if (waiting.get(i).player.getName().equals(player.getName()))
-										{
-											found = true;
-										}
-									}
-									if (!found)
-									{
-										RemindTask rmd = new RemindTask(player, name);
-										rmd.runTaskLater(this, 40L);
-										player.sendMessage(ChatColor.GOLD + "Please stand still for 2 seconds!");
-										this.waiting.add(rmd);				
-									}
-									else
-									{
-										player.sendMessage(ChatColor.RED + "You are already waiting!");
-									}
-								}
-								else
-								{
-									player.sendMessage(ChatColor.RED + "You cannot leave and rejoin an arena!");
-								}
-							}
-							else
-							{
-								player.sendMessage(ChatColor.RED + "You're already in an arena!");
-							}
-						}
-						else
-						{
-							player.sendMessage(ChatColor.RED + "That arena doesn't exist!");
-						}
-					}
-					else
-					{
-						player.sendMessage(ChatColor.RED + "Please clear your inventory!");
-					}
-				}
-			}
-			else
-			{
-				player.sendMessage(ChatColor.RED + "You are in the middle of making an arena!");
+				player.sendMessage(ChatColor.RED + "You are already waiting!");
+				return;
 			}
 		}
+		
+		RemindTask rmd = new RemindTask(player, name);
+		rmd.runTaskLater(this, 40L); // TODO: Make time configurable / essentials dependant?
+		player.sendMessage(ChatColor.GOLD + "Please stand still for 2 seconds!");
+		waiting.add(rmd);				
 	}
 	
 	public void joinBattle(boolean forced, Player player, String name) 
@@ -835,32 +825,22 @@ public class UltimateArena extends JavaPlugin
 	
 	public void createField(Player player, String name, String type)
 	{
-		if (!(isPlayerCreatingArena(player))) 
-		{
-			boolean found = false;
-			for (int i = 0; i < fieldTypes.size(); i++) 
-			{
-				if (fieldTypes.get(i).equalsIgnoreCase(type)) 
-				{
-					found = true;
-				}
-			}
-			if (found)
-			{
-				getLogger().info(player.getName() + " is making arena " + name + ". Arena type: " + type);
-				ArenaCreator ac = new ArenaCreator(this, player);
-				ac.setArena(name, type);
-				makingArena.add(ac);
-			}
-			else
-			{
-				player.sendMessage(ChatColor.RED + "This is not a valid field type!");
-			}
-		}
-		else
+		if (isPlayerCreatingArena(player))
 		{
 			player.sendMessage(ChatColor.RED + "You are already creating an arena!");
+			return;
 		}
+		
+		if (!fieldTypes.contains(type.toLowerCase()))
+		{
+			player.sendMessage(ChatColor.RED + "This is not a valid field type!");
+			return;
+		}
+		
+		getLogger().info(player.getName() + " is making arena " + name + ". Arena type: " + type);
+		ArenaCreator ac = new ArenaCreator(this, player);
+		ac.setArena(name, type);
+		makingArena.add(ac);
 	}
 	
 	public void normalizeAll()
@@ -879,20 +859,15 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 	
-	public void normalize(Player p)
+	public void normalize(Player player)
 	{
-		try
-		{
-			p.getInventory().clear();
-			p.getInventory().setHelmet(null);
-			p.getInventory().setChestplate(null);
-			p.getInventory().setLeggings(null);
-			p.getInventory().setBoots(null);
-		}
-		catch(Exception e)
-		{
-			getLogger().severe("Error normalizing player ("+p.getName()+"): " + e);
-		}
+		PlayerInventory inv = player.getInventory();
+		
+		inv.setHelmet(null);
+		inv.setChestplate(null);
+		inv.setLeggings(null);
+		inv.setBoots(null);
+		inv.clear();
 	}
 
 	public void loadFiles() 
@@ -917,6 +892,7 @@ public class UltimateArena extends JavaPlugin
 	
 	public class ArenaUpdater extends BukkitRunnable
 	{
+		@Override
 		public void run()
 		{
 			for (int i = 0; i < activeArena.size(); i++) 
@@ -945,6 +921,7 @@ public class UltimateArena extends JavaPlugin
 			this.name = name;
 		}
 
+		@Override
 		public void run() 
 		{
 			waiting.remove(this);

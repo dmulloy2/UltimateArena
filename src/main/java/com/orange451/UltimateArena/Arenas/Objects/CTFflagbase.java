@@ -75,7 +75,7 @@ public class CTFflagbase extends flagBase
 						if (enemyflag.riding.getName().equals(p.getName()))
 						{
 							//if the player selected is carrying the enemy flag
-							if (Util.point_distance(p.getLocation(), getLoc().clone().add(0, 1, 0)) < 2.75) 
+							if (Util.pointDistance(p.getLocation(), getLoc().clone().add(0, 1, 0)) < 2.75) 
 							{ 
 								//if hes close to my flag stand, REWARD!
 								enemyflag.respawn();

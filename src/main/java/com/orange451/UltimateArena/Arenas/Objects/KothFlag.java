@@ -28,7 +28,7 @@ public class KothFlag extends ArenaFlag
 			Player pl = arenaplayers.get(i).player;
 			if (pl != null)
 			{
-				if (Util.point_distance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) 
+				if (Util.pointDistance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) 
 				{
 					players.add(pl);
 					amt++;

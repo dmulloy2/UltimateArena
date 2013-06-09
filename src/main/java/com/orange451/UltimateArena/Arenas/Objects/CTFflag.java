@@ -167,7 +167,7 @@ public class CTFflag
 				Player pl = arenaplayers.get(i).player;
 				if (pl != null)
 				{
-					if (Util.point_distance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0)
+					if (Util.pointDistance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0)
 					{
 						if (!arenaplayers.get(i).out)
 						{

@@ -75,7 +75,7 @@ public class Bombflag extends ArenaFlag
 			Player pl = apl.player;
 			if (pl != null)
 			{
-				if (Util.point_distance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) 
+				if (Util.pointDistance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) 
 				{
 					players.add(pl);
 					capturer = apl;

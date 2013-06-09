@@ -95,7 +95,7 @@ public class ArenaFlag extends flagBase
 				Player pl = arenaplayers.get(i).player;
 				if (pl != null) 
 				{
-					if (Util.point_distance(pl.getLocation(), getLoc()) < 4.5 && pl.getHealth() > 0)
+					if (Util.pointDistance(pl.getLocation(), getLoc()) < 4.5 && pl.getHealth() > 0)
 					{
 						players.add(pl);
 						if (arenaplayers.get(i).team == 1)

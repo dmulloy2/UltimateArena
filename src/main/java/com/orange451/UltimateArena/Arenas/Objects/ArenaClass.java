@@ -7,10 +7,14 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
+import com.earth2me.essentials.IEssentials;
 import com.orange451.UltimateArena.UltimateArena;
 
 public class ArenaClass 
@@ -68,6 +72,9 @@ public class ArenaClass
 	
 	public boolean loaded = true;
 	public boolean helmet = true;
+	public boolean useEssentials = false;
+	
+	public Map<String, Object> essentialsKit;
 	
 	public UltimateArena plugin;
 	public File file;
@@ -382,14 +389,34 @@ public class ArenaClass
 				}
 				if (str2.equalsIgnoreCase("helmet")) 
 				{
-					String line = str.substring(str.indexOf("=")+1);
-					if (line.equalsIgnoreCase("true"))
-					{
-						helmet = true;
-					}
-					else if (line.equalsIgnoreCase("false"))
+					String line = str.substring(str.indexOf("=") + 1);
+					if (line.equalsIgnoreCase("false"))
 					{
 						helmet = false;
+					}
+				}
+				if (str2.equalsIgnoreCase("useEssentials"))
+				{
+					String line = str.substring(str.indexOf("=") + 1);
+					if (line.equalsIgnoreCase("true"))
+					{
+						useEssentials = true;
+					}
+				}
+				if (str2.equalsIgnoreCase("essentialsKit"))
+				{
+					String line = str.substring(str.indexOf("=") + 1);
+					// Initialize Essentials Hook
+					PluginManager pm = plugin.getServer().getPluginManager();
+					if (pm.isPluginEnabled("Essentials"))
+					{
+						Plugin essPlugin = pm.getPlugin("Essentials");
+						IEssentials ess = (IEssentials) essPlugin;
+						Map<String, Object> kit = ess.getSettings().getKit(line);
+						if (kit != null)
+						{
+							essentialsKit = kit;
+						}
 					}
 				}
 			}
