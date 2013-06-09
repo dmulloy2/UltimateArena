@@ -34,6 +34,6 @@ public class WhiteListCommands
 	
 	public void clear() 
 	{
-		this.allowedCommand.clear();
+		allowedCommand.clear();
 	}
 }

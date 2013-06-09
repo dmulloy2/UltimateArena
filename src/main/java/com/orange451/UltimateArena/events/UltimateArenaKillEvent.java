@@ -12,9 +12,9 @@ public class UltimateArenaKillEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
 	
-	public final ArenaPlayer killer;
-	public final ArenaPlayer killed;
-	public final Arena arena;
+	private final ArenaPlayer killer;
+	private final ArenaPlayer killed;
+	private final Arena arena;
 	
 	/**
 	 * Called when a player kills another player

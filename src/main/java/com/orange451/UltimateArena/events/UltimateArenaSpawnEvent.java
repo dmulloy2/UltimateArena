@@ -14,9 +14,9 @@ public class UltimateArenaSpawnEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
 	
-	public final ArenaPlayer arenaPlayer;
-	public final Arena arena;
-	public final ArenaSpawn spawn;
+	private final ArenaPlayer arenaPlayer;
+	private final Arena arena;
+	private final ArenaSpawn spawn;
 	
 	/**
 	 * Called when a player spawns in an arena

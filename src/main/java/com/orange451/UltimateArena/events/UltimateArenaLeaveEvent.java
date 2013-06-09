@@ -11,8 +11,8 @@ public class UltimateArenaLeaveEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
 	
-	public final ArenaPlayer arenaPlayer;
-	public final Arena arena;
+	private final ArenaPlayer arenaPlayer;
+	private final Arena arena;
 	
 	/**
 	 * Called when a player leaves an arena

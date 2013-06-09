@@ -110,12 +110,12 @@ public class CTFflagbase extends flagBase
 								if (team == 1)
 								{
 									ctf.redcap++;
-									arena.tellPlayers("&c{0} &7team has &a{0}&7/&a3 &7captures!", UAHelper.getTeam(team), ctf.redcap);
+									arena.tellPlayers("&c{0} &7team has &a{0}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.redcap);
 								}
 								if (team == 2) 
 								{
 									ctf.bluecap++;
-									arena.tellPlayers("&c{0} &7team has &a{0}&7/&a3 &7captures!", UAHelper.getTeam(team), ctf.bluecap);
+									arena.tellPlayers("&c{0} &7team has &a{0}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.bluecap);
 								}
 								return;
 							}
