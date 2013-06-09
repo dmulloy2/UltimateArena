@@ -903,7 +903,7 @@ public class UltimateArena extends JavaPlugin
 				}
 				catch(Exception e) 
 				{
-					//fuck you
+					//
 				}
 			} 
 		}
