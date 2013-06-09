@@ -9,16 +9,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
+import com.orange451.UltimateArena.Arenas.Objects.SavedArenaPlayer;
 import com.orange451.UltimateArena.util.Util;
 
 /**
@@ -468,72 +466,69 @@ public class FileHelper
 	}
 
 	/**Save players on disable**/
-	public void onDisable(List<Arena> activeArena) 
+	public void savePlayers(List<Arena> activeArena) 
 	{
-		HashMap<Player, HashMap<Integer, Location>> players = new HashMap<Player, HashMap<Integer, Location>>();
 		PrintStream ps = null;
 		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
 		File file = new File(path);
-		if (file.exists()) file.delete();
-		try 
+		if (!file.exists())
+			try 
 		{
 			file.createNewFile();
 		} 
 		catch (IOException e)
 		{
 			plugin.getLogger().severe("Error saving players file: " + e.getMessage());
+			return;
 		}
-		for (Arena a : activeArena)
+		
+		if (activeArena.size() == 0)
 		{
-			for (ArenaPlayer ap : a.arenaplayers)
+			return;
+		}
+		
+		for (int i=0; i<activeArena.size(); i++)
+		{
+			Arena a = activeArena.get(i);
+			for (int ii=0; ii<a.arenaplayers.size(); i++)
 			{
+				ArenaPlayer ap = a.arenaplayers.get(ii);
 				if (ap != null && !ap.out)
 				{
 					Player player = Util.matchPlayer(ap.player.getName());
-					if (player != null && player.isOnline())
+					if (player != null)
 					{
-						HashMap<Integer, Location> hashMap = new HashMap<Integer, Location>();
 						int exp = Integer.valueOf(Math.round(ap.startxp));
 						Location loc = ap.spawnBack;
-						hashMap.put(exp, loc);
 						
-						players.put(player, hashMap);
+						try { ps = new PrintStream(file); }
+						catch (Exception e) {}
+						
+						StringBuilder line = new StringBuilder();
+						line.append(player.getName() + ",");
+						
+						line.append(exp + ",");
+						
+						int x = loc.getBlockX();
+						int y = loc.getBlockY();
+						int z = loc.getBlockZ();
+						World world = loc.getWorld();
+						
+						line.append(x + "," + y + "," + z + "," + world.getName());
+						
+						ps.println(line.toString());
+						
+						ps.close();
 					}
 				}
 			}
 		}
-		
-		try { ps = new PrintStream(file); }
-		catch (FileNotFoundException e) {}
-		
-		for (Entry<Player, HashMap<Integer, Location>> entrySet : players.entrySet())
-		{
-			StringBuilder composite = new StringBuilder();
-			String player = entrySet.getKey().getName();
-			composite.append(player + ",");
-			HashMap<Integer, Location> hashMap = entrySet.getValue();
-			for (Entry<Integer, Location> entrySet2 : hashMap.entrySet())
-			{
-				int exp = entrySet2.getKey();
-				composite.append(exp + ",");
-				Location loc = entrySet2.getValue();
-				int x = loc.getBlockX();
-				int y = loc.getBlockY();
-				int z = loc.getBlockZ();
-				World world = loc.getWorld();
-				composite.append(x + "," + y + "," + z + "," + world.getName());
-				
-			}
-			ps.println(composite.toString());
-		}
-		
-		ps.close();
 	}
 	
 	/**Normalize Players on enable**/
-	public HashMap<Player, HashMap<Integer, Location>> savedPlayers()
+	public List<SavedArenaPlayer> getSavedPlayers()
 	{
-		HashMap<Player, HashMap<Integer, Location>> players = new HashMap<Player, HashMap<Integer, Location>>();
+		List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
 		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
 		File file = new File(path);
 		FileInputStream fstream = null;
@@ -543,14 +538,13 @@ public class FileHelper
 		{
 			try
 			{
-				String str;
 				for (int i=0; i<file.length(); i++)
 				{
 					fstream = new FileInputStream(path);
 					in = new DataInputStream(fstream);
 					br = new BufferedReader(new InputStreamReader(in));
 					
-					str = br.readLine();
+					String str = br.readLine();
 					String[] value = str.split(",");
 					Player player = Util.matchPlayer(value[0]);
 					int exp = Integer.parseInt(value[1]);
@@ -559,9 +553,9 @@ public class FileHelper
 					int z = Integer.parseInt(value[4]);
 					World world = plugin.getServer().getWorld(value[5]);
 					Location loc = new Location(world, x, y, z);
-					HashMap<Integer, Location> hashMap = new HashMap<Integer, Location>();
-					hashMap.put(exp, loc);
-					players.put(player, hashMap);
+
+					SavedArenaPlayer savedPlayer = new SavedArenaPlayer(player, exp, loc);
+					players.add(savedPlayer);
 					
 					br.close();
 				}
@@ -574,10 +568,56 @@ public class FileHelper
 		return players;
 	}
 	
-	public void deletePlayers()
+	/**Removes a player from the saved file**/
+	public void deletePlayer(Player player)
 	{
+		List<SavedArenaPlayer> savedPlayers = getSavedPlayers();
+		for (SavedArenaPlayer savedPlayer : savedPlayers)
+		{
+			if (savedPlayer.getPlayer().getName().equals(player.getName()))
+			{
+				savedPlayers.remove(savedPlayer);
+			}
+		}
+		
+		PrintStream ps = null;
 		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
 		File file = new File(path);
-		if (file.exists()) file.delete();
+		if (!file.exists()) file.delete();
+		
+		try 
+		{
+			file.createNewFile();
+		} 
+		catch (IOException e)
+		{
+			plugin.getLogger().severe("Error saving players file: " + e.getMessage());
+			return;
+		}
+		
+		for (SavedArenaPlayer savedPlayer1 : savedPlayers)
+		{
+			int exp = savedPlayer1.getExp();
+			Location loc = savedPlayer1.getLocation();
+			
+			StringBuilder line = new StringBuilder();
+			line.append(player.getName() + ",");
+						
+			line.append(exp + ",");
+			
+			int x = loc.getBlockX();
+			int y = loc.getBlockY();
+			int z = loc.getBlockZ();
+			World world = loc.getWorld();
+						
+			line.append(x + "," + y + "," + z + "," + world.getName());
+						
+			try { ps = new PrintStream(file); }
+			catch (Exception e) {}
+			
+			ps.println(line.toString());
+						
+			ps.close();
+		}
 	}
 }

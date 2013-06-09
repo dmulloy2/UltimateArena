@@ -23,12 +23,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import lombok.Getter;
-
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
@@ -46,6 +43,7 @@ import com.orange451.UltimateArena.Arenas.Objects.*;
 import com.orange451.UltimateArena.commands.*;
 import com.orange451.UltimateArena.listeners.*;
 import com.orange451.UltimateArena.permissions.PermissionHandler;
+import com.orange451.UltimateArena.util.FormatUtil;
 import com.orange451.UltimateArena.util.InventoryHelper;
 import com.orange451.UltimateArena.util.Util;
 
@@ -58,9 +56,6 @@ public class UltimateArena extends JavaPlugin
 	
 	public int maxArenasRunning = 1024;
 	public int arenasPlayed = 0;
-	public String uaAdmin = "ultimatearena.admin";
-	public String uaBuilder = "ultimatearena.builder";
-	public String uaUser = "ultimatearena.player";
 	public List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	public List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	public List<ArenaZone> loadedArena = new ArrayList<ArenaZone>();
@@ -71,7 +66,7 @@ public class UltimateArena extends JavaPlugin
 	public List<String> loggedOut = new ArrayList<String>();
 	public List<String> loggedOutInArena = new ArrayList<String>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
-	public HashMap<Player, HashMap<Integer, Location>> savedPlayers;
+	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
 	
 	@Override
 	public void onEnable()
@@ -139,32 +134,24 @@ public class UltimateArena extends JavaPlugin
 		
 		fileHelper = new FileHelper(this);
 		
-		savedPlayers = fileHelper.savedPlayers();
+		savedPlayers = fileHelper.getSavedPlayers();
 		for (Player player : getServer().getOnlinePlayers())
 		{
-			if (savedPlayers.containsKey(player))
+			for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 			{
-				for (Entry<Player, HashMap<Integer, Location>> entrySet : savedPlayers.entrySet())
+				if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
 				{
-					if (player.getName() == entrySet.getKey().getName())
-					{
-						if (player != null && player.isOnline())
-						{
-							int exp = 0;
-							Location loc = null;
-							HashMap<Integer, Location> hashMap = entrySet.getValue();
-							for (Entry<Integer, Location> entrySet2 : hashMap.entrySet())
-							{
-								exp = entrySet2.getKey();
-								loc = entrySet2.getValue();
-							}
-							
-							normalize(player);
-							player.setExp(exp);
-							player.teleport(loc);
-							removePotions(player);
-						}
-					}
+					int exp = savedArenaPlayer.getExp();
+					Location loc = savedArenaPlayer.getLocation();
+					
+					normalize(player);
+					player.setExp(exp);
+					player.teleport(loc);
+					removePotions(player);
+					
+					fileHelper.deletePlayer(player);
+					
+					savedPlayers.remove(savedArenaPlayer);
 				}
 			}
 		}
@@ -195,7 +182,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 		
-		fileHelper.onDisable(activeArena);
+		fileHelper.savePlayers(activeArena);
 		
 		for (int i=0; i<activeArena.size(); i++)
 		{
@@ -217,54 +204,6 @@ public class UltimateArena extends JavaPlugin
 		long finish = System.currentTimeMillis();
 		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
 	}
-	
-	/**
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
-	{
-		List<String> parameters = new ArrayList<String>(Arrays.asList(args));
-		
-		if (commandLabel.equals("tt"))
-		{
-			testAPI tt = new testAPI();
-			if (sender instanceof Player)
-				tt.test((Player)sender);
-			else
-				getLogger().warning("This can only be used by players!");
-			return false;
-		}
-		
-		this.handleCommand(sender, parameters);
-		return true;
-	}
-	
-	public void handleCommand(CommandSender sender, List<String> parameters) 
-	{
-		if (parameters.size() == 0)
-		{
-			this.commands.get(0).execute(sender, parameters);
-			return;
-		}
-		
-		String commandName = parameters.get(0).toLowerCase();
-		
-		for (UltimateArenaCommand command : this.commands) 
-		{
-			if (command.getAliases().contains(commandName)) 
-			{
-				command.execute(sender, parameters);
-				return;
-			}
-		}
-		
-		sender.sendMessage(ChatColor.YELLOW + "Unknown UltimateArena command \""+commandName+"\". Try /ua help");
-	}
-	
-	public List<UltimateArenaCommand> getCommands() 
-	{
-		return commands;
-	}
-	*/
 	
 	public File getRoot() 
 	{
@@ -299,29 +238,21 @@ public class UltimateArena extends JavaPlugin
 	
 	public void onJoin(Player player) 
 	{
-		if (savedPlayers.containsKey(player))
+		for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 		{
-			for (Entry<Player, HashMap<Integer, Location>> entrySet : savedPlayers.entrySet())
+			if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
 			{
-				if (player.getName() == entrySet.getKey().getName())
-				{
-					if (player != null && player.isOnline())
-					{
-						int exp = 0;
-						Location loc = null;
-						HashMap<Integer, Location> hashMap = entrySet.getValue();
-						for (Entry<Integer, Location> entrySet2 : hashMap.entrySet())
-						{
-							exp = entrySet2.getKey();
-							loc = entrySet2.getValue();
-						}
-						
-						normalize(player);
-						player.setExp(exp);
-						player.teleport(loc);
-						removePotions(player);
-					}
-				}
+				int exp = savedArenaPlayer.getExp();
+				Location loc = savedArenaPlayer.getLocation();
+				
+				normalize(player);
+				player.setExp(exp);
+				player.teleport(loc);
+				removePotions(player);
+				
+				fileHelper.deletePlayer(player);
+				
+				savedPlayers.remove(savedArenaPlayer);
 			}
 		}
 		
@@ -587,11 +518,7 @@ public class UltimateArena extends JavaPlugin
 	
 	public boolean isInArena(Player player) 
 	{
-		if (getArenaPlayer(player) != null) 
-		{
-			return true;
-		}
-		return false;
+		return (getArenaPlayer(player) != null);
 	}
 	
 	public void removeFromArena(Player player)
@@ -903,26 +830,27 @@ public class UltimateArena extends JavaPlugin
 	
 	public boolean isPlayerCreatingArena(Player player) 
 	{
-		if (getArenaCreator(player) != null) 
-		{
-			return true;
-		}
-		return false;
+		return (getArenaCreator(player) != null);
 	}
 	
 	public void stopCreatingArena(Player player)
 	{ 
-		for (ArenaCreator ac : makingArena)
+		for (int i=0; i<makingArena.size(); i++)
 		{
+			ArenaCreator ac = makingArena.get(i);
 			if (ac.player.equalsIgnoreCase(player.getName()))
+			{
 				makingArena.remove(ac);
+				player.sendMessage(FormatUtil.format("&eStopping the creation of {0}!", ac.arenaName));
+			}
 		}
 	}
 
 	public ArenaCreator getArenaCreator(Player player)
 	{
-		for (ArenaCreator ac : makingArena)
+		for (int i=0; i<makingArena.size(); i++)
 		{
+			ArenaCreator ac = makingArena.get(i);
 			if (ac.player.equalsIgnoreCase(player.getName()))
 			{
 				return ac;
