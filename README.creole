@@ -1,0 +1,105 @@
+==UltimateArena
+** This plugin allows people to create arenas in their world to fight in. Whether it is MobArena, a PvPArena, or HungerGames, you can fight 'till the death and be rewarded with gold!**
+----
+
+==Check out UltimateArena on BukkitDev!
+http://dev.bukkit.org/bukkit-mods/ultimatearena/
+
+==First-Time Installation==
+* Download the latest UltimateArena.jar
+* Put it in your plugins folder
+* Start your server (the files will generate automatically)
+* Enjoy the plugin!
+----
+
+==Features==
+* Ten arena types (CTF, MobArena, ConquestArena, King of The Hill arena, Bomb Arena, FFA arena, Spleef arena, PvPArena, Hunger arena, and Infect arena)
+* Rewards for playing the arenas (configurable)
+* Kill streaks in arenas
+----
+
+==Commands==
+<<center>>{{http://i.troll.ws/c7d2ff25.png}}<</center>>
+----
+
+==Arena Types==
+* **PvP **- (Like a TDM arena)
+* **Mob** - (Survive wave after wave of mobs)
+* **Conquest** - (Conquest styled game from Battlefield 3)
+* **King of the Hill (KOTH)** - (FFA King of the hill, you need to stand on a point for an accumulative 60 seconds to win)
+* ** Bomb** - (TDM arena, red team is attacking bomb points, blue team is defending them. To cap a point, stand on it for 10 second, to defend a point, stand on it for 10 seconds.
+* **FFA** - (Every one for themselves, in a stock FFA match, users have 4 lives, the last one alive wins)
+* **Spleef** - (Players attempt to break blocks below their opponents to kill them. Last one alive wins)
+* **Hunger** - (Based off of the popular book/movie, players spawn in a large arena and fight to the death using materials they find in the wild. Last player alive wins)
+* **Infect** - (1 player spawns as the "infected", their goal is to kill all the "living")
+* **CTF** - (Players are split into two teams. The goal is to capture the other team's flag and bring it back to their own base)
+----
+
+==[[Creating Arenas|Creating Arenas]]
+----
+
+==[[Tutorials|Video Tutorials]]==
+----
+
+==[[Customizing Classes|Classes]]==
+----
+
+==Permissions==
+* "ultimatearena.admin" - Gives access to all UA commands
+* "ultimatearena.builder" - Gives access to set up and build arenas
+* Individual nodes can be found [[https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/plugin.yml|here]] 
+----
+
+==Customization==
+# Open the config file for your class
+# Change the variables around 
+# The mobarena has a special variable, called "maxwave" it's default is set to 15
+==== Setting up Rewards ====
+* [ID]:[DAT],[AMT]
+* Such as: 35:4,2 (will give TWO wool with a color of 4)
+* Or: 46,4 (will give 4 TNT)
+* You can have up to "tool9" for a class and 4 armor slots.
+* Cash rewards (Requires vault) cashreward=cash
+----
+
+==Hooking into UA
+** There are a few different methods that can be used to hook into UltimateArena **
+===UltimateArenaAPI
+** By using the method UltimateArena.hookIntoUA(), you can hook into many different methods (about 10 of them) **
+===Events
+** You can also listen for the following events**
+* UltimateArenaJoinEvent - Called when a player joins an arena
+** Get the arena, arenaplayer, player, and arena type
+* UltimateArenaLeaveEvent - Called when a player leaves an arena
+** Get the arena, arenaplayer, player, arena type, and whether or not the player won
+* UltimateArenaSpawnEvent - Called when the player spawns
+** Get the arena, arenaplayer, player, arena type, spawn location, and their class
+* UltimateArenaDeathEvent - Called when the player dies in an arena
+** Get the arena, arenaplayer, player, arena type, their class, and their death count
+----
+
+==PVPGunPlus
+This plugin works great with PVPGunPlus!!!
+Found here: http://dev.bukkit.org/server-mods/pvpgun/
+----
+
+==Disclaimers
+* UltimateArena mobarena's and pvparena's are in no way associated with the other fight plugins, MobArena, and PVPArena.).
+* Our mob arena is designed to give a very simplistic "mob" arena, not to be confused with GarbageMules MobArena.
+----
+
+== Development Builds
+** Development Builds can be found at our Continuous Integration server. These builds are not approved by the BukkitDev staff and are to be used at your own risk **
+** http://ci.md-5.net/job/UltimateArena/ **
+----
+
+==Bug Reporting
+When reporting bugs, please follow this template:
+* Provide any relevant stack traces (Use pastie or pastebin)
+* Provide the version of both CraftBukkit/Spigot and UltimateArena (found with /version and /version UltimateArena, respectively)
+* Provide a detailed description of the problem and how it came about, as well as all (if any) steps taken to remedy the problem
+==== Notes
+* Support will not be given for any of the following: Offline Servers and Servers running ancient versions of either Bukkit/Spigot or Java.
+* UltimateArena has been fully tested (as well as built with) with the latest builds of both Java and Bukkit.
+* If you are getting an unsupported major/minor class version error, update your Java to solve the problem. 
+----
