@@ -135,23 +135,26 @@ public class UltimateArena extends JavaPlugin
 		fileHelper = new FileHelper(this);
 		
 		savedPlayers = fileHelper.getSavedPlayers();
-		for (Player player : getServer().getOnlinePlayers())
+		if (savedPlayers.size() > 0)
 		{
-			for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
+			for (Player player : getServer().getOnlinePlayers())
 			{
-				if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
+				for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 				{
-					int exp = savedArenaPlayer.getExp();
-					Location loc = savedArenaPlayer.getLocation();
-					
-					normalize(player);
-					player.setExp(exp);
-					player.teleport(loc);
-					removePotions(player);
-					
-					fileHelper.deletePlayer(player);
-					
-					savedPlayers.remove(savedArenaPlayer);
+					if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
+					{
+						int exp = savedArenaPlayer.getExp();
+						Location loc = savedArenaPlayer.getLocation();
+						
+						normalize(player);
+						player.setExp(exp);
+						player.teleport(loc);
+						removePotions(player);
+						
+						fileHelper.deletePlayer(player);
+						
+						savedPlayers.remove(savedArenaPlayer);
+					}
 				}
 			}
 		}
@@ -243,36 +246,42 @@ public class UltimateArena extends JavaPlugin
 	public void onJoin(Player player) 
 	{
 		/**Normalize Players from Shutdown**/
-		for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
+		if (savedPlayers.size() > 0)
 		{
-			if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
+			for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 			{
-				int exp = savedArenaPlayer.getExp();
-				Location loc = savedArenaPlayer.getLocation();
-				
-				normalize(player);
-				player.setExp(exp);
-				player.teleport(loc);
-				removePotions(player);
-				
-				fileHelper.deletePlayer(player);
-				
-				savedPlayers.remove(savedArenaPlayer);
+				if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
+				{
+					int exp = savedArenaPlayer.getExp();
+					Location loc = savedArenaPlayer.getLocation();
+					
+					normalize(player);
+					player.setExp(exp);
+					player.teleport(loc);
+					removePotions(player);
+					
+					fileHelper.deletePlayer(player);
+					
+					savedPlayers.remove(savedArenaPlayer);
+				}
 			}
 		}
 
 		/**Normalize Players from Quit**/
-		for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
+		if (loggedOutPlayers.size() > 0)
 		{
-			if (loggedOutPlayer.getPlayer().getName().equals(player.getName()))
+			for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
 			{
-				int exp = loggedOutPlayer.getExp();
-				Location loc = loggedOutPlayer.getLocation();
-				
-				normalize(player);
-				player.setExp(exp);
-				player.teleport(loc);
-				removePotions(player);
+				if (loggedOutPlayer.getPlayer().getName().equals(player.getName()))
+				{
+					int exp = loggedOutPlayer.getExp();
+					Location loc = loggedOutPlayer.getLocation();
+					
+					normalize(player);
+					player.setExp(exp);
+					player.teleport(loc);
+					removePotions(player);
+				}
 			}
 		}
 	}
