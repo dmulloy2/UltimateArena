@@ -19,7 +19,7 @@ http://dev.bukkit.org/bukkit-mods/ultimatearena/
 ----
 
 ==Commands==
-<<center>>{{http://i.troll.ws/c7d2ff25.png}}<</center>>
+{{http://i.troll.ws/c7d2ff25.png}}
 ----
 
 ==Arena Types==
@@ -33,15 +33,6 @@ http://dev.bukkit.org/bukkit-mods/ultimatearena/
 * **Hunger** - (Based off of the popular book/movie, players spawn in a large arena and fight to the death using materials they find in the wild. Last player alive wins)
 * **Infect** - (1 player spawns as the "infected", their goal is to kill all the "living")
 * **CTF** - (Players are split into two teams. The goal is to capture the other team's flag and bring it back to their own base)
-----
-
-==[[Creating Arenas|Creating Arenas]]
-----
-
-==[[Tutorials|Video Tutorials]]==
-----
-
-==[[Customizing Classes|Classes]]==
 ----
 
 ==Permissions==
