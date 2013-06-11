@@ -540,19 +540,19 @@ public class FileHelper
 	/**Normalize Players on enable**/
 	public List<SavedArenaPlayer> getSavedPlayers()
 	{
-		try
+		List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
+		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
+		File file = new File(path);
+		if (file.exists())
 		{
-			List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
-			String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
-			File file = new File(path);
-			if (file.exists())
+			for (int i=0; i<file.length(); i++)
 			{
-				for (int i=0; i<file.length(); i++)
+				try
 				{
 					FileInputStream fstream = new FileInputStream(path);
 					DataInputStream in = new DataInputStream(fstream);
 					BufferedReader br = new BufferedReader(new InputStreamReader(in));
-						
+							
 					String str = br.readLine();
 					String[] value = str.split(",");
 					Player player = Util.matchPlayer(value[0]);
@@ -562,21 +562,20 @@ public class FileHelper
 					int z = Integer.parseInt(value[4]);
 					World world = plugin.getServer().getWorld(value[5]);
 					Location loc = new Location(world, x, y, z);
-	
+		
 					SavedArenaPlayer savedPlayer = new SavedArenaPlayer(player, exp, loc);
 					players.add(savedPlayer);
-					
+						
 					br.close();
 				}
+				catch (Exception e)
+				{
+					plugin.getLogger().severe("Error loading saved players: " + e.getMessage());
+				}
 			}
-			
-			return players;
 		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error loading saved players: " + e.getMessage());
-		}
-		return null;
+		
+		return players;
 	}
 	
 	/**Removes a player from the saved file**/
@@ -625,7 +624,7 @@ public class FileHelper
 		}
 		catch (Exception e) 
 		{
-			plugin.getLogger().severe("Error saving players file: " + e.getMessage());
+			plugin.getLogger().severe("Error deleting player: " + e.getMessage());
 		}
 	}
 }
