@@ -534,7 +534,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error saving players: " + e.getMessage());
+			//
 		}
 	}
 	
@@ -571,7 +571,7 @@ public class FileHelper
 				}
 				catch (Exception e)
 				{
-					plugin.getLogger().severe("Error loading saved players: " + e.getMessage());
+					//
 				}
 			}
 		}

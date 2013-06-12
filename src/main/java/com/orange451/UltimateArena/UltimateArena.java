@@ -193,7 +193,14 @@ public class UltimateArena extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 		
-		fileHelper.savePlayers(activeArena, loggedOutPlayers);
+		try
+		{
+			fileHelper.savePlayers(activeArena, loggedOutPlayers);
+		}
+		catch (Exception e)
+		{
+			getLogger().warning("Could not save players.");
+		}
 		
 		for (int i=0; i<activeArena.size(); i++)
 		{
