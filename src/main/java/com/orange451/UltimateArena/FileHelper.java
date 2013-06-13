@@ -467,79 +467,75 @@ public class FileHelper
 	}
 
 	/**Save players on disable**/
-	public void savePlayers(List<Arena> activeArena, List<SavedArenaPlayer> loggedOutPlayers) 
+	public void savePlayers(List<Arena> activeArena, List<SavedArenaPlayer> loggedOutPlayers) throws Exception
 	{
-		try
+		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
+		File file = new File(path);
+		if (!file.exists())
 		{
-			String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
-			File file = new File(path);
-			if (!file.exists())
-			{
-				file.createNewFile();
-			}
+			file.createNewFile();
+		}
 			
-			List<SavedArenaPlayer> playersToSave = new ArrayList<SavedArenaPlayer>();
+		List<SavedArenaPlayer> playersToSave = new ArrayList<SavedArenaPlayer>();
 			
-			/**Add all the logged-in arena players**/
-			for (int i=0; i<activeArena.size(); i++)
+		/**Add all the logged-in arena players**/
+		for (int i=0; i<activeArena.size(); i++)
+		{
+			Arena a = activeArena.get(i);
+			for (int ii=0; ii<a.arenaplayers.size(); i++)
 			{
-				Arena a = activeArena.get(i);
-				for (int ii=0; ii<a.arenaplayers.size(); i++)
+				ArenaPlayer ap = a.arenaplayers.get(ii);
+				if (ap != null && !ap.out)
 				{
-					ArenaPlayer ap = a.arenaplayers.get(ii);
-					if (ap != null && !ap.out)
+					Player player = Util.matchPlayer(ap.player.getName());
+					if (player != null)
 					{
-						Player player = Util.matchPlayer(ap.player.getName());
-						if (player != null)
-						{
-							int exp = Integer.valueOf(Math.round(ap.startxp));
-							Location loc = ap.spawnBack;
+						int exp = Integer.valueOf(Math.round(ap.startxp));
+						Location loc = ap.spawnBack;
 							
-							SavedArenaPlayer playerToSave = new SavedArenaPlayer(player, exp, loc);
+						SavedArenaPlayer playerToSave = new SavedArenaPlayer(player, exp, loc);
 							
-							playersToSave.add(playerToSave);
-						}
+						playersToSave.add(playerToSave);
 					}
 				}
 			}
-			
-			/**Add all the logged out players**/
-			playersToSave.addAll(loggedOutPlayers);
-			
-			/**Save the Players**/
-			for (SavedArenaPlayer playerToSave : playersToSave)
-			{
-				PrintStream ps = new PrintStream(file);
-				
-				Player player = playerToSave.getPlayer();
-				int exp = playerToSave.getExp();
-				Location loc = playerToSave.getLocation();
-				
-				StringBuilder line = new StringBuilder();
-				line.append(player.getName() + ",");
-							
-				line.append(exp + ",");
-							
-				int x = loc.getBlockX();
-				int y = loc.getBlockY();
-				int z = loc.getBlockZ();
-				World world = loc.getWorld();
-							
-				line.append(x + "," + y + "," + z + "," + world.getName());
-							
-				ps.println(line.toString());
-				
-				ps.close();
-			}
 		}
-		catch (Exception e)
+			
+		/**Add all logged out players**/
+		for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
 		{
-			//
+			playersToSave.add(loggedOutPlayer);
+		}
+			
+		/**Save the Players**/
+		for (SavedArenaPlayer playerToSave : playersToSave)
+		{
+			PrintStream ps = new PrintStream(file);
+			
+			Player player = playerToSave.getPlayer();
+			int exp = playerToSave.getExp();
+			Location loc = playerToSave.getLocation();
+				
+			StringBuilder line = new StringBuilder();
+			line.append(player.getName() + ",");
+							
+			line.append(exp + ",");
+							
+			int x = loc.getBlockX();
+			int y = loc.getBlockY();
+			int z = loc.getBlockZ();
+			World world = loc.getWorld();
+							
+			line.append(x + "," + y + "," + z + "," + world.getName());
+							
+			ps.println(line.toString());
+				
+			ps.close();
 		}
 	}
 	
 	/**Normalize Players on enable**/
-	public List<SavedArenaPlayer> getSavedPlayers()
+	public List<SavedArenaPlayer> getSavedPlayers() throws Exception
 	{
 		List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
 		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
@@ -548,31 +544,24 @@ public class FileHelper
 		{
 			for (int i=0; i<file.length(); i++)
 			{
-				try
-				{
-					FileInputStream fstream = new FileInputStream(path);
-					DataInputStream in = new DataInputStream(fstream);
-					BufferedReader br = new BufferedReader(new InputStreamReader(in));
+				FileInputStream fstream = new FileInputStream(path);
+				DataInputStream in = new DataInputStream(fstream);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
 							
-					String str = br.readLine();
-					String[] value = str.split(",");
-					Player player = Util.matchPlayer(value[0]);
-					int exp = Integer.parseInt(value[1]);
-					int x = Integer.parseInt(value[2]);
-					int y = Integer.parseInt(value[3]);
-					int z = Integer.parseInt(value[4]);
-					World world = plugin.getServer().getWorld(value[5]);
-					Location loc = new Location(world, x, y, z);
+				String str = br.readLine();
+				String[] value = str.split(",");
+				Player player = Util.matchPlayer(value[0]);
+				int exp = Integer.parseInt(value[1]);
+				int x = Integer.parseInt(value[2]);
+				int y = Integer.parseInt(value[3]);
+				int z = Integer.parseInt(value[4]);
+				World world = plugin.getServer().getWorld(value[5]);
+				Location loc = new Location(world, x, y, z);
 		
-					SavedArenaPlayer savedPlayer = new SavedArenaPlayer(player, exp, loc);
-					players.add(savedPlayer);
+				SavedArenaPlayer savedPlayer = new SavedArenaPlayer(player, exp, loc);
+				players.add(savedPlayer);
 						
-					br.close();
-				}
-				catch (Exception e)
-				{
-					//
-				}
+				br.close();
 			}
 		}
 		
@@ -580,52 +569,45 @@ public class FileHelper
 	}
 	
 	/**Removes a player from the saved file**/
-	public void deletePlayer(Player player)
+	public void deletePlayer(Player player) throws Exception
 	{
-		try
+		List<SavedArenaPlayer> savedPlayers = getSavedPlayers();
+		for (SavedArenaPlayer savedPlayer : savedPlayers)
 		{
-			List<SavedArenaPlayer> savedPlayers = getSavedPlayers();
-			for (SavedArenaPlayer savedPlayer : savedPlayers)
+			if (savedPlayer.getPlayer().getName().equals(player.getName()))
 			{
-				if (savedPlayer.getPlayer().getName().equals(player.getName()))
-				{
-					savedPlayers.remove(savedPlayer);
-				}
-			}
-			
-			String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
-			File file = new File(path);
-			
-			if (!file.exists()) file.delete();
-			file.createNewFile();
-			
-			for (SavedArenaPlayer savedPlayer1 : savedPlayers)
-			{
-				PrintStream ps = new PrintStream(file);
-				
-				int exp = savedPlayer1.getExp();
-				Location loc = savedPlayer1.getLocation();
-				
-				StringBuilder line = new StringBuilder();
-				line.append(player.getName() + ",");
-							
-				line.append(exp + ",");
-				
-				int x = loc.getBlockX();
-				int y = loc.getBlockY();
-				int z = loc.getBlockZ();
-				World world = loc.getWorld();
-							
-				line.append(x + "," + y + "," + z + "," + world.getName());
-							
-				ps.println(line.toString());
-							
-				ps.close();
+				savedPlayers.remove(savedPlayer);
 			}
 		}
-		catch (Exception e) 
+			
+		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
+		File file = new File(path);
+			
+		if (!file.exists()) file.delete();
+		file.createNewFile();
+			
+		for (SavedArenaPlayer savedPlayer1 : savedPlayers)
 		{
-			plugin.getLogger().severe("Error deleting player: " + e.getMessage());
+			PrintStream ps = new PrintStream(file);
+			
+			int exp = savedPlayer1.getExp();
+			Location loc = savedPlayer1.getLocation();
+				
+			StringBuilder line = new StringBuilder();
+			line.append(player.getName() + ",");
+							
+			line.append(exp + ",");
+				
+			int x = loc.getBlockX();
+			int y = loc.getBlockY();
+			int z = loc.getBlockZ();
+			World world = loc.getWorld();
+							
+			line.append(x + "," + y + "," + z + "," + world.getName());
+				
+			ps.println(line.toString());
+			
+			ps.close();
 		}
 	}
 }
