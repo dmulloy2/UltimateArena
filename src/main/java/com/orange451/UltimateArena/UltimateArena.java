@@ -816,6 +816,15 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 		
+		for (ArenaZone az : loadedArena)
+		{
+			if (az.arenaName.equalsIgnoreCase(name))
+			{
+				player.sendMessage(ChatColor.RED + "An arena by this name already exists!");
+				return;
+			}
+		}
+		
 		getLogger().info(player.getName() + " is making arena " + name + ". Arena type: " + type);
 		ArenaCreator ac = new ArenaCreator(this, player);
 		ac.setArena(name, type);
