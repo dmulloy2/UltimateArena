@@ -62,4 +62,16 @@ public class Field
 		
 		return false;
 	}
+	
+	public String toString()
+	{
+		StringBuilder string = new StringBuilder();
+		string.append("World: " + world.getName());
+		string.append(" MaxX: " + maxx);
+		string.append(" MaxZ: " + maxy);
+		string.append(" MinX: " + minx);
+		string.append(" MinZ: " + miny);
+		
+		return string.toString();
+	}
 }

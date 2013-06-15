@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaReward;
 import com.orange451.UltimateArena.Arenas.Objects.CompositeEnchantment;
@@ -97,7 +98,7 @@ public class FileConverter
 				}
 				
 				String string = line.toString();
-				fc.set("armor.1", string);
+				fc.set("armor.chestplate", string);
 			}
 			
 			if (ac.armor2 > 0)
@@ -116,7 +117,7 @@ public class FileConverter
 				}
 				
 				String string = line.toString();
-				fc.set("armor.2", string);
+				fc.set("armor.leggings", string);
 			}
 			
 			if (ac.armor3 > 0)
@@ -135,7 +136,7 @@ public class FileConverter
 				}
 				
 				String string = line.toString();
-				fc.set("armor.3", string);
+				fc.set("armor.boots", string);
 			}
 			
 			if (ac.weapon1 > 0)
@@ -143,7 +144,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon1);
 				
-				if (ac.special1 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon1, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special1 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special1);
 				}
@@ -173,7 +178,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon2);
 				
-				if (ac.special2 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon2, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special2 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special2);
 				}
@@ -203,7 +212,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon3);
 				
-				if (ac.special3 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon3, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special3 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special3);
 				}
@@ -233,7 +246,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon4);
 				
-				if (ac.special4 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon4, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special4 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special4);
 				}
@@ -263,7 +280,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon5);
 				
-				if (ac.special5 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon5, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special5 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special5);
 				}
@@ -293,7 +314,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon6);
 				
-				if (ac.special6 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon6, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special6 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special6);
 				}
@@ -323,7 +348,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon7);
 				
-				if (ac.special7 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon7, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special7 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special7);
 				}
@@ -353,7 +382,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon8);
 				
-				if (ac.special8 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon8, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special8 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special8);
 				}
@@ -383,7 +416,11 @@ public class FileConverter
 				StringBuilder line = new StringBuilder();
 				line.append(ac.weapon9);
 				
-				if (ac.special9 > 0)
+				boolean hasData = false;
+				ItemStack stack = new ItemStack(ac.weapon9, 1);
+				hasData = (stack.getType().getMaxDurability() == 0 && ac.special9 > 0);
+				
+				if (hasData)
 				{
 					line.append(":" + ac.special9);
 				}

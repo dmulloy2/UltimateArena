@@ -96,10 +96,9 @@ public class ArenaClass
 			String arm1 = fc.getString(armorPath + "chestplate");
 			if (arm1 != null)
 			{
-				String[] split = arm1.split(",");
-				
-				if (split.length > 1)
+				if (arm1.contains(","))
 				{
+					String[] split = arm1.split(",");
 					armor1 = Integer.parseInt(split[0]);
 					armorenchant1 = readArmorEnchantments(split[1]);
 				}
@@ -109,13 +108,12 @@ public class ArenaClass
 				}
 			}
 			
-			String arm2 = fc.getString(armorPath + "chestplate");
+			String arm2 = fc.getString(armorPath + "leggings");
 			if (arm2 != null)
 			{
-				String[] split = arm2.split(",");
-				
-				if (split.length > 1)
+				if (arm2.contains(","))
 				{
+					String[] split = arm2.split(",");
 					armor2 = Integer.parseInt(split[0]);
 					armorenchant2 = readArmorEnchantments(split[1]);
 				}
@@ -125,13 +123,12 @@ public class ArenaClass
 				}
 			}
 			
-			String arm3 = fc.getString(armorPath + "chestplate");
+			String arm3 = fc.getString(armorPath + "boots");
 			if (arm3 != null)
 			{
-				String[] split = arm3.split(",");
-				
-				if (split.length > 1)
+				if (arm3.contains(","))
 				{
+					String[] split = arm3.split(",");
 					armor3 = Integer.parseInt(split[0]);
 					armorenchant3 = readArmorEnchantments(split[1]);
 				}

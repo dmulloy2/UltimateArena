@@ -602,7 +602,7 @@ public class FileHelper
 			fc.set("arena1.z", arena1.getBlockZ());
 			
 			Location arena2 = az.arena2;
-			fc.set("arena2.x", arena2.getBlockZ());
+			fc.set("arena2.x", arena2.getBlockX());
 			fc.set("arena2.z", arena2.getBlockZ());
 			
 			String arenaType = az.arenaType;
