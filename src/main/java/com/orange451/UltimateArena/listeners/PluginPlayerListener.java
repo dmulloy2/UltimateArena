@@ -239,6 +239,14 @@ public class PluginPlayerListener implements Listener
 				plugin.waiting.remove(i);
 			}
 		}
+		
+		if (plugin.isInArena(p))
+		{
+			if (!plugin.isInArena(p.getLocation()))
+			{
+				p.teleport(plugin.getArena(p).getSpawn(plugin.getArenaPlayer(p)));
+			}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

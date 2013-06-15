@@ -236,23 +236,17 @@ public class UltimateArena extends JavaPlugin
 		
 		if (isInArena(player))
 		{
-			Arena ar = this.getArena(player);
-			ArenaPlayer ap = this.getArenaPlayer(player);
+			Arena ar = getArena(player);
+			ArenaPlayer ap = getArenaPlayer(player);
 			if (ap != null)
 			{
 				getLogger().info("Player " + player.getName() + " leaving arena " + ar.name + " from quit");
-				if (ar != null) 
-				{
-					if (ar.starttimer > 0 && (!ap.out)) 
-					{
-						SavedArenaPlayer loggedOut = new SavedArenaPlayer(player.getName(), ap.startxp, ap.spawnBack);
+				SavedArenaPlayer loggedOut = new SavedArenaPlayer(player.getName(), ap.startxp, ap.spawnBack);
 						
-						savedPlayers.add(loggedOut);
-						fileHelper.savePlayer(loggedOut);
+				savedPlayers.add(loggedOut);
+				fileHelper.savePlayer(loggedOut);
 						
-						removeFromArena(player.getName());
-					}
-				}
+				removeFromArena(player.getName());
 			}
 		}
 	}
@@ -260,8 +254,9 @@ public class UltimateArena extends JavaPlugin
 	public void onJoin(Player player) 
 	{
 		/**Normalize Saved Players**/
-		for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
+		for (int i=0; i<savedPlayers.size(); i++)
 		{
+			SavedArenaPlayer savedArenaPlayer = savedPlayers.get(i);
 			if (savedArenaPlayer.getName().equals(player.getName()))
 			{
 				float exp = savedArenaPlayer.getExp();
@@ -499,7 +494,7 @@ public class UltimateArena extends JavaPlugin
 		for (int i=0; i<activeArena.size(); i++)
 		{
 			Arena a = activeArena.get(i);
-			for (int ii=0; i<a.arenaplayers.size(); ii++)
+			for (int ii=0; ii<a.arenaplayers.size(); ii++)
 			{
 				ArenaPlayer ap = a.arenaplayers.get(ii);
 				if (ap != null)

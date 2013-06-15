@@ -115,7 +115,7 @@ public class CTFflag
 	
 	public void fall() 
 	{
-		arena.tellPlayers("&b{0} &7has dropped the &6{0} &7flag!", riding.getName(), flagType);
+		arena.tellPlayers("&b{0} &7has dropped the &6{1} &7flag!", riding.getName(), flagType);
 		timer = 15;
 		toloc = riding.getLocation();
 		pickedUp = false;
@@ -247,6 +247,8 @@ public class CTFflag
 				if (timer <= 0) 
 				{
 					respawn();
+					
+					arena.tellPlayers("&7The {0} &7flag has respawned!", flagType);
 				}
 				else
 				{
