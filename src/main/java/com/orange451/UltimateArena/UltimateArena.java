@@ -65,8 +65,7 @@ public class UltimateArena extends JavaPlugin
 	public List<String> fieldTypes = new ArrayList<String>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
 	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
-	public List<SavedArenaPlayer> loggedOutPlayers = new ArrayList<SavedArenaPlayer>();
-	
+
 	@Override
 	public void onEnable()
 	{
@@ -859,12 +858,12 @@ public class UltimateArena extends JavaPlugin
 	
 	public void clearMemory()
 	{
-		loggedOutPlayers.clear();
 		savedPlayers.clear();
 		loadedArena.clear();
 		activeArena.clear();
 		makingArena.clear();
 		fieldTypes.clear();
+		waiting.clear();
 		classes.clear();
 		configs.clear();
 		wcmd.clear();
