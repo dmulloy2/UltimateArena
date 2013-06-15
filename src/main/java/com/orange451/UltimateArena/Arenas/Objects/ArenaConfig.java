@@ -1,15 +1,12 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -21,61 +18,91 @@ import com.orange451.UltimateArena.util.InventoryHelper;
 
 public class ArenaConfig
 {
-	public int gameTime, lobbyTime, maxDeaths, maxwave, cashReward;
+	public int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
 	public boolean allowTeamKilling;
 	public List<ArenaReward> rewards = new ArrayList<ArenaReward>();
 	public String arenaName;
 	public File file;
 	public UltimateArena plugin;
 	
-	public ArenaConfig(UltimateArena plugin, String str, File f)
+	public ArenaConfig(UltimateArena plugin, String str, File file)
 	{
 		this.arenaName = str;
-		this.file = f;
+		this.file = file;
 		this.plugin = plugin;
 		
 		load();
 	}
 	
-	public void computeData(String str)
+	public void load()
 	{
-		if (str.indexOf("=") > 0)
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+		if (arenaName.equals("mob"))
 		{
-			String str2 = str.substring(0, str.indexOf("="));
-			if (str2.equalsIgnoreCase("maxwave"))
+			gameTime = fc.getInt("gameTime");
+			lobbyTime = fc.getInt("lobbyTime");
+			maxDeaths = fc.getInt("maxDeaths");
+			allowTeamKilling = fc.getBoolean("allowTeamKilling");
+			maxWave = fc.getInt("maxWave");
+			cashReward = fc.getInt("cashReward");
+		
+			List<String> words = fc.getStringList("rewards");
+			for (String word : words)
 			{
-				int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-				maxwave = value;
-			}
-			if (str2.equalsIgnoreCase("gametime")) 
-			{
-				int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-				gameTime = value;
-			}
-			if (str2.equalsIgnoreCase("lobbytime")) 
-			{
-				int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-				lobbyTime = value;
-			}
-			if (str2.equalsIgnoreCase("maxdeaths")) 
-			{
-				int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-				maxDeaths = value;
-			}
-			if (str2.equalsIgnoreCase("allowteamkilling"))
-			{
-				boolean value = Boolean.parseBoolean(str.substring(str.indexOf("=")+1));
-				allowTeamKilling = value;
-			}
-			if (str2.equalsIgnoreCase("cashreward")) 
-			{
-				int value = Integer.parseInt(str.substring(str.indexOf("=")+1));
-				cashReward = value;
+				int id = 0;
+				byte dat = 0;
+				int amt = 0;
+				
+				String[] split = word.split(",");
+				if (split[0].contains(":"))
+				{
+					String[] split2 = split[0].split(":");
+					id = Integer.parseInt(split2[0]);
+					dat = Byte.parseByte(split2[1]);
+					amt = Integer.parseInt(split[1]);
+				}
+				else
+				{
+					id = Integer.parseInt(split[0]);
+					amt = Integer.parseInt(split[1]);
+				}
+				
+				ArenaReward reward = new ArenaReward(id, dat, amt);
+				rewards.add(reward);
 			}
 		}
-		else if (str.indexOf(",") > 0 ) 
+		else
 		{
-			getReward(str);
+			gameTime = fc.getInt("gameTime");
+			lobbyTime = fc.getInt("lobbyTime");
+			maxDeaths = fc.getInt("maxDeaths");
+			allowTeamKilling = fc.getBoolean("allowTeamKilling");
+			cashReward = fc.getInt("cashReward");
+		
+			List<String> words = fc.getStringList("rewards");
+			for (String word : words)
+			{
+				int id = 0;
+				byte dat = 0;
+				int amt = 0;
+				
+				String[] split = word.split(",");
+				if (split[0].contains(":"))
+				{
+					String[] split2 = split[0].split(":");
+					id = Integer.parseInt(split2[0]);
+					dat = Byte.parseByte(split2[1]);
+					amt = Integer.parseInt(split[1]);
+				}
+				else
+				{
+					id = Integer.parseInt(split[0]);
+					amt = Integer.parseInt(split[1]);
+				}
+				
+				ArenaReward reward = new ArenaReward(id, dat, amt);
+				rewards.add(reward);
+			}
 		}
 	}
 	
@@ -131,91 +158,5 @@ public class ArenaConfig
 		}
 		
 		new RewardTask().runTask(plugin);
-	}
-	
-	public void getReward(String str) 
-	{
-		String[] ret = null;
-		ret = str.split(",");
-		if (ret.length == 2) 
-		{
-			try{
-				ArenaReward ar = new ArenaReward();
-				int type = getRewardType(ret[0]);
-				int data = getRewardData(ret[0]);
-				int amt = Integer.parseInt(ret[1]);
-				if (type > -1 && data > -1 && amt > 0)
-				{
-					ar.amt = amt;
-					ar.type = type;
-					ar.data = (byte)data;
-					rewards.add(ar);
-				}
-			}
-			catch(Exception e) 
-			{
-				plugin.getLogger().severe("Error getting reward from string \"" + str + "\": " + e);
-			}
-		}
-		else
-		{
-			plugin.getLogger().severe("Failed to load reward to arena: " + arenaName);
-		}
-	}
-	
-	public int getRewardType(String str)
-	{
-		int ret = -1;
-		try { ret = Integer.parseInt(str); }
-		catch(Exception e) { }
-		
-		if (str.contains(":")) 
-		{
-			str = str.substring(0, str.indexOf(":"));
-			ret = Integer.parseInt(str);
-		}
-		return ret;
-	}
-	
-	public int getRewardData(String str)
-	{
-		int ret = -1;
-		try { ret = Integer.parseInt(str); }
-		catch(Exception e) { }
-		
-		if (str.contains(":")) 
-		{
-			str = str.substring(str.indexOf(":") + 1);
-			ret = Integer.parseInt(str);
-		}
-		return ret;
-	}
-	
-	public void load() 
-	{
-		List<String> file = new ArrayList<String>();
-	    try
-	    {
-			FileInputStream fstream = new FileInputStream(this.file.getAbsolutePath());
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			while ((strLine = br.readLine()) != null)
-			{
-				file.add(strLine);
-			}
-			br.close();
-			in.close();
-			fstream.close();
-        }
-	    catch (Exception e)
-	    {
-        	plugin.getLogger().severe("Error loading files: " + e);
-        }
-	    
-	    for (int i= 0; i < file.size(); i++) 
-	    {
-	    	computeData(file.get(i));
-	    }
 	}
 }

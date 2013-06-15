@@ -14,14 +14,14 @@ import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.CTFArena;
 import com.orange451.UltimateArena.util.Util;
 
-public class CTFflagbase extends flagBase 
+public class CTFFlagBase extends FlagBase 
 {
 	public CTFArena ctf;
 	public CTFflag flag;
 	public CTFflag enemyflag;
 	public int team;
 	
-	public CTFflagbase(Arena arena, Location loc, int team) 
+	public CTFFlagBase(Arena arena, Location loc, int team) 
 	{
 		super(arena, loc);
 		this.arena = arena;
@@ -110,12 +110,12 @@ public class CTFflagbase extends flagBase
 								if (team == 1)
 								{
 									ctf.redcap++;
-									arena.tellPlayers("&c{0} &7team has &a{0}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.redcap);
+									arena.tellPlayers("&c{0} &7team has &a{1}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.redcap);
 								}
 								if (team == 2) 
 								{
 									ctf.bluecap++;
-									arena.tellPlayers("&c{0} &7team has &a{0}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.bluecap);
+									arena.tellPlayers("&c{0} &7team has &a{1}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.bluecap);
 								}
 								return;
 							}
@@ -125,8 +125,7 @@ public class CTFflagbase extends flagBase
 			}
 			catch(Exception e) 
 			{
-				plugin.getLogger().severe("Error with CTF flagbase:");
-				e.printStackTrace();
+				plugin.getLogger().severe("Error with CTF flagbase: " + e.getMessage());
 			}
 		}
 	}

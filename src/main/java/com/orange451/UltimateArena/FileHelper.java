@@ -1,21 +1,17 @@
 package com.orange451.UltimateArena;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
+import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.Arenas.Objects.SavedArenaPlayer;
 import com.orange451.UltimateArena.util.Util;
 
@@ -23,7 +19,6 @@ import com.orange451.UltimateArena.util.Util;
  * @author dmulloy2
  */
 
-// TODO: Convert to YAML?
 public class FileHelper 
 {
 	public UltimateArena plugin;
@@ -35,19 +30,16 @@ public class FileHelper
 	/**Generate Whitelisted Commands File**/
 	public void generateWhitelistedCmds()
 	{
-		String path = plugin.getRoot().getAbsolutePath() + "/whiteListedCommands.txt";
-		File file = new File(path);
-		if (!file.exists())
+		File file = new File(plugin.getDataFolder(), "whiteListedCommands.yml");
+		if (file.exists())
+			return;
+		
+		try
 		{
-			try
-			{
-				file.createNewFile();
-			}
-			catch (Exception e)
-			{
-				plugin.getLogger().severe("Error saving whitelisted cmds file: " + e.getMessage());
-			}
-			
+			file.createNewFile();
+		
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+		
 			List<String> words = new ArrayList<String>();
 			words.add("/f c");
 			words.add("/msg");
@@ -59,188 +51,212 @@ public class FileHelper
 			words.add("/t");
 			words.add("/msg");
 			words.add("/tell");
-			
-			PrintStream ps = null;
-			try { ps = new PrintStream(file); }
-			catch (FileNotFoundException e) {}
-			
-			for (String s : words)
-			{
-				ps.println(s);
-			}
-			
-			ps.close();
+		
+			fc.set("whiteListedCmds", words);
+		
+			fc.save(file);
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().severe("Error saving whitelisted cmds file: " + e.getMessage());
 		}
 	}
 	
 	/**Generate Arena Configurations**/
-	public void generateArenaConfig(String type)
+	public void generateArenaConfig(String field)
 	{
-		String path = plugin.getRoot().getAbsolutePath() + "/" + type + "CONFIG.txt";
-		File file = new File(path);
-		if (!file.exists())
+		File folder = new File(plugin.getDataFolder(), "configs");
+		File file = new File(folder, field + "Config.yml");
+		if (file.exists())
+			return;
+		
+		try
 		{
-			try
-			{
-				file.createNewFile();
-			}
-			catch (Exception e)
-			{
-				plugin.getLogger().severe("Error generating config \"" + type + "\": " + e.getMessage());
-			}
+			file.createNewFile();
 			
-			List<String> words = null;
-			PrintStream ps = null;
-			if (type.equals("bomb"))
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			if (field.equals("bomb"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=900");
-				words.add("lobbytime=70");
-				words.add("maxdeaths=990");
-				words.add("allowteamkilling=false");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,1");
-				words.add("46,4");
+				fc.set("gameTime", 900);
+				fc.set("lobbyTime", 70);
+				fc.set("maxDeaths", 990);
+				fc.set("allowTeamKilling", false);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,1");
+				rewards.add("46,4");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("cq"))
+			if (field.equals("cq"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=1200");
-				words.add("lobbytime=180");
-				words.add("maxdeaths=900");
-				words.add("allowteamkilling=false");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,3");
+				fc.set("gameTime", 1200);
+				fc.set("lobbyTime", 180);
+				fc.set("maxDeaths", 900);
+				fc.set("allowTeamKilling", false);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,3");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("ctf"))
+			if (field.equals("ctf"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=440");
-				words.add("lobbytime=90");
-				words.add("maxdeaths=999");
-				words.add("allowteamkilling=false");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,4");
+				fc.set("gameTime", 440);
+				fc.set("lobbyTime", 90);
+				fc.set("maxDeaths", 999);
+				fc.set("allowTeamKilling", false);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,4");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("ffa"))
+			if (field.equals("ffa"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=600");
-				words.add("lobbytime=70");
-				words.add("maxdeaths=3");
-				words.add("allowteamkilling=true");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,9");
-				words.add("46,3");
+				fc.set("gameTime", 600);
+				fc.set("lobbyTime", 70);
+				fc.set("maxDeaths", 3);
+				fc.set("allowTeamKilling", true);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,9");
+				rewards.add("46,3");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("hunger"))
+			if (field.equals("hunger"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=9000");
-				words.add("lobbytime=70");
-				words.add("maxdeaths=1");
-				words.add("allowteamkilling=true");
-				words.add("cashreward=1000");
-				words.add("//REWARDS");
-				words.add("266,3");
-				words.add("46,3");
+				fc.set("gameTime", 9000);
+				fc.set("lobbyTime", 70);
+				fc.set("maxDeaths", 1);
+				fc.set("allowTeamKilling", true);
+				fc.set("cashReward", 1000);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,3");
+				rewards.add("46,3");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("infect"))
+			if (field.equals("infect"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=180");
-				words.add("lobbytime=90");
-				words.add("maxdeaths=2");
-				words.add("allowteamkilling=false");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,6");
-				words.add("46,2");
+				fc.set("gameTime", 180);
+				fc.set("lobbyTime", 90);
+				fc.set("maxDeaths", 2);
+				fc.set("allowTeamKilling", false);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,6");
+				rewards.add("46,2");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("koth"))
+			if (field.equals("koth"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=1200");
-				words.add("lobbytime=80");
-				words.add("maxdeaths=900");
-				words.add("allowteamkilling=true");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,3");
-				words.add("46,1");
+				fc.set("gameTime", 1200);
+				fc.set("lobbyTime", 80);
+				fc.set("maxDeaths", 900);
+				fc.set("allowTeamKilling", true);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,3");
+				rewards.add("46,3");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("mob"))
+			if (field.equals("mob"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=1200");
-				words.add("lobbytime=90");
-				words.add("maxdeaths=0");
-				words.add("maxwave=15");
-				words.add("allowteamkilling=false");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,3");
-				words.add("46,2");
+				fc.set("gameTime", 1200);
+				fc.set("lobbyTime", 90);
+				fc.set("maxDeaths", 0);
+				fc.set("allowTeamKilling", false);
+				fc.set("cashReward", 15);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,3");
+				rewards.add("46,2");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("pvp"))
+			if (field.equals("pvp"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=600");
-				words.add("lobbytime=90");
-				words.add("maxdeaths=3");
-				words.add("allowteamkilling=false");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,3");
-				words.add("46,2");
+				fc.set("gameTime", 600);
+				fc.set("lobbyTime", 90);
+				fc.set("maxDeaths", 3);
+				fc.set("allowTeamKilling", false);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,3");
+				rewards.add("46,2");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
 			
-			if (type.equals("spleef"))
+			if (field.equals("spleef"))
 			{
-				words = new ArrayList<String>();
-				words.add("gametime=600");
-				words.add("lobbytime=80");
-				words.add("maxdeaths=2");
-				words.add("allowteamkilling=true");
-				words.add("cashreward=100");
-				words.add("//REWARDS");
-				words.add("266,3");
-				words.add("46,2");
+				fc.set("gameTime", 600);
+				fc.set("lobbyTime", 80);
+				fc.set("maxDeaths", 2);
+				fc.set("allowTeamKilling", true);
+				fc.set("cashReward", 100);
+				
+				List<String> rewards = new ArrayList<String>();
+				rewards.add("266,3");
+				rewards.add("46,2");
+				
+				fc.set("rewards", rewards);
+				
+				fc.save(file);
 			}
-			
-			try { ps = new PrintStream(file); }
-			catch (FileNotFoundException e) {}
-			
-			for (String s : words)
-			{
-				ps.println(s);
-			}
-			
-			ps.close();
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().severe("Error generating config \"" + field + "\": " + e.getMessage());
 		}
 	}
 
 	/**Generate Stock Classes**/
 	public void generateStockClasses() 
 	{
-		String path = plugin.getRoot().getAbsolutePath() + "/classes";
-		File dir = new File(path);
-		if (!dir.exists()) dir.mkdir();
+		File dir = new File(plugin.getDataFolder(), "classes");
+		if (!dir.exists())
+			dir.mkdir();
 		
-		String archerPath = path + "/archer";
-		File archerFile = new File(archerPath);
+		File archerFile = new File(dir, "archer.yml");
 		if (!archerFile.exists())
 			try
 		{ 
@@ -252,8 +268,7 @@ public class FileHelper
 		}
 		generateClass(archerFile, "archer");
 		
-		String brutePath = path + "/brute";
-		File bruteFile = new File(brutePath);
+		File bruteFile = new File(dir, "brute.yml");
 		if (!bruteFile.exists())
 			try
 		{ 
@@ -265,8 +280,7 @@ public class FileHelper
 		}
 		generateClass(bruteFile, "brute");
 		
-		String dumbassPath = path + "/dumbass";
-		File dumbassFile = new File(dumbassPath);
+		File dumbassFile = new File(dir, "dumbass.yml");
 		if (!dumbassFile.exists())
 			try
 		{ 
@@ -278,8 +292,7 @@ public class FileHelper
 		}
 		generateClass(dumbassFile, "dumbass");
 		
-		String gunnerPath = path + "/gunner";
-		File gunnerFile = new File(gunnerPath);
+		File gunnerFile = new File(dir, "gunner.yml");
 		if (!gunnerFile.exists())
 			try
 		{ 
@@ -291,8 +304,7 @@ public class FileHelper
 		}
 		generateClass(gunnerFile, "gunner");
 		
-		String healerPath = path + "/healer";
-		File healerFile = new File(healerPath);
+		File healerFile = new File(dir, "healer.yml");
 		if (!healerFile.exists())
 			try
 		{ 
@@ -304,8 +316,7 @@ public class FileHelper
 		}
 		generateClass(healerFile, "healer");
 		
-		String shotgunPath = path + "/shotgun";
-		File shotgunFile = new File(shotgunPath);
+		File shotgunFile = new File(dir, "shotgun.yml");
 		if (!shotgunFile.exists())
 			try
 		{ 
@@ -317,8 +328,7 @@ public class FileHelper
 		}
 		generateClass(shotgunFile, "shotgun");
 		
-		String sniperPath = path + "/sniper";
-		File sniperFile = new File(sniperPath);
+		File sniperFile = new File(dir, "sniper.yml");
 		if (!sniperFile.exists())
 			try
 		{ 
@@ -330,8 +340,7 @@ public class FileHelper
 		}
 		generateClass(sniperFile, "sniper");
 		
-		String spleefPath = path + "/spleef";
-		File spleefFile = new File(spleefPath);
+		File spleefFile = new File(dir, "spleef.yml");
 		if (!spleefFile.exists())
 			try
 		{ 
@@ -344,138 +353,113 @@ public class FileHelper
 		generateClass(spleefFile, "spleef");
 	}
 	
+	/**Generates a Class File**/
 	public void generateClass(File file, String type)
 	{
-		List<String> words = null;
-		PrintStream ps = null;
-		if (type.equals("archer"))
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+		try
 		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=261");
-			words.add("tool2=262,1024");
-			words.add("tool3=267");
+			if (type.equals("archer"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "261");
+				fc.set("tools.2", "262,1024");
+				fc.set("tools.3", "267");
+			}
+			
+			if (type.equals("brute"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "276");
+				fc.set("tools.2", "333:1,2");
+				fc.set("tools.3", "341,24");
+			}
+			
+			if (type.equals("dumbass"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "283");
+				fc.set("tools.2", "259");
+			}
+			
+			if (type.equals("gunner"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "292");
+				fc.set("tools.2", "318,7070");
+				fc.set("tools.3", "341,24");
+				fc.set("tools.4", "322,2");
+				fc.set("tools.5", "261,1,sharp:1");
+			}
+			
+			if (type.equals("healer"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "267");
+				fc.set("tools.2", "373:8261");
+				fc.set("tools.3", "373:16453");
+			}
+			
+			if (type.equals("shotgun"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "291");
+				fc.set("tools.2", "295,1024");
+				fc.set("tools.3", "341,24");
+				fc.set("tools.4", "322,2");
+				fc.set("tools.5", "267");
+			}
+			
+			if (type.equals("sniper"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "294");
+				fc.set("tools.2", "337,1024");
+				fc.set("tools.3", "341,24");
+				fc.set("tools.4", "322,2");
+				fc.set("tools.5", "267");
+			}
+			
+			if (type.equals("spleef"))
+			{
+				fc.set("armor.chestplate", "307");
+				fc.set("armor.leggings", "308");
+				fc.set("armor.boots", "309");
+				fc.set("tools.1", "277");
+			}
+			
+			fc.set("useEssentials", false);
+			fc.set("essentialsKit", "");
+			
+			fc.set("useHelmet", true);
+			
+			fc.set("permissionNode", "");
+			
+			fc.save(file);
 		}
-		
-		if (type.equals("brute"))
+		catch (Exception e)
 		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=276");
-			words.add("tool2=333:1,2");
-			words.add("tool3=341,24");
+			plugin.getLogger().severe("Error saving \"" + type + "\" file: " + e.getMessage());
 		}
-		
-		if (type.equals("dumbass"))
-		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=283");
-			words.add("tool2=259");
-		}
-		
-		if (type.equals("gunner"))
-		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=292");
-			words.add("tool2=318,7070");
-			words.add("tool3=341,24");
-			words.add("tool4=322,2");
-			words.add("tool5=267,1,sharp:1");
-		}
-		
-		if (type.equals("healer"))
-		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=267");
-			words.add("tool2=373:8261");
-			words.add("tool3=373:16453");
-		}
-		
-		if (type.equals("shotgun"))
-		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=291");
-			words.add("tool2=295,1024");
-			words.add("tool3=341,24");
-			words.add("322,2");
-			words.add("tool5=267");
-		}
-		
-		if (type.equals("sniper"))
-		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=294");
-			words.add("tool2=337,1024");
-			words.add("tool3=341,24");
-			words.add("tool4=322,2");
-			words.add("tool5=267");
-		}
-		
-		if (type.equals("spleef"))
-		{
-			words = new ArrayList<String>();
-			words.add("--Armor");
-			words.add("chestplate=307");
-			words.add("leggings=308");
-			words.add("boots=309");
-			words.add("--Tools");
-			words.add("tool1=277");
-		}
-		
-		try { ps = new PrintStream(file); }
-		catch (FileNotFoundException e) {}
-		
-		for (String s : words)
-		{
-			ps.println(s);
-		}
-		
-		ps.close();
 	}
 
 	/**Save players on disable**/
-	public void savePlayers(List<Arena> activeArena, List<SavedArenaPlayer> loggedOutPlayers) throws Exception
+	public void savePlayers(List<Arena> activeArena, List<SavedArenaPlayer> loggedOutPlayers)
 	{
-		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
-		File file = new File(path);
-		if (!file.exists())
-		{
-			file.createNewFile();
-		}
-			
 		List<SavedArenaPlayer> playersToSave = new ArrayList<SavedArenaPlayer>();
 			
 		/**Add all the logged-in arena players**/
@@ -510,104 +494,513 @@ public class FileHelper
 		/**Save the Players**/
 		for (SavedArenaPlayer playerToSave : playersToSave)
 		{
-			PrintStream ps = new PrintStream(file);
-			
-			Player player = playerToSave.getPlayer();
-			int exp = playerToSave.getExp();
-			Location loc = playerToSave.getLocation();
+			try
+			{
+				File folder = new File(plugin.getDataFolder(), "players");
+				if (!folder.exists())
+					folder.mkdir();
 				
-			StringBuilder line = new StringBuilder();
-			line.append(player.getName() + ",");
-							
-			line.append(exp + ",");
-							
-			int x = loc.getBlockX();
-			int y = loc.getBlockY();
-			int z = loc.getBlockZ();
-			World world = loc.getWorld();
-							
-			line.append(x + "," + y + "," + z + "," + world.getName());
-							
-			ps.println(line.toString());
+				Player player = playerToSave.getPlayer();
+				File file = new File(folder, player.getName() + ".dat");
+				if (file.exists())
+					file.delete();
 				
-			ps.close();
+				file.createNewFile();
+				
+				YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+				fc.set("name", player.getName());
+				
+				int exp = playerToSave.getExp();
+				fc.set("xp", exp);
+				
+				Location loc = playerToSave.getLocation();
+	
+				int x = loc.getBlockX();
+				int y = loc.getBlockY();
+				int z = loc.getBlockZ();
+				World world = loc.getWorld();
+								
+				fc.set("loc.world", world.getName());
+				fc.set("loc.x", x);
+				fc.set("loc.y", y);
+				fc.set("loc.z", z);
+				
+				fc.save(file);
+			}
+			catch (Exception e)
+			{
+				plugin.getLogger().severe("Error saving player " + playerToSave.getPlayer().getName() + ": " + e.getMessage());
+			}
 		}
 	}
 	
 	/**Normalize Players on enable**/
-	public List<SavedArenaPlayer> getSavedPlayers() throws Exception
+	public List<SavedArenaPlayer> getSavedPlayers()
 	{
 		List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
-		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
-		File file = new File(path);
-		if (file.exists())
+
+		File folder = new File(plugin.getDataFolder(), "players");
+		File[] children = folder.listFiles();
+		for (File file : children)
 		{
-			for (int i=0; i<file.length(); i++)
-			{
-				FileInputStream fstream = new FileInputStream(path);
-				DataInputStream in = new DataInputStream(fstream);
-				BufferedReader br = new BufferedReader(new InputStreamReader(in));
-							
-				String str = br.readLine();
-				String[] value = str.split(",");
-				Player player = Util.matchPlayer(value[0]);
-				int exp = Integer.parseInt(value[1]);
-				int x = Integer.parseInt(value[2]);
-				int y = Integer.parseInt(value[3]);
-				int z = Integer.parseInt(value[4]);
-				World world = plugin.getServer().getWorld(value[5]);
-				Location loc = new Location(world, x, y, z);
-		
-				SavedArenaPlayer savedPlayer = new SavedArenaPlayer(player, exp, loc);
-				players.add(savedPlayer);
-						
-				br.close();
-			}
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			
+			String name = fc.getString("name");
+			Player player = Util.matchPlayer(name);
+			
+			int exp = fc.getInt("xp");
+			
+			World world = plugin.getServer().getWorld(fc.getString("loc.world"));
+			int x = fc.getInt("loc.x");
+			int y = fc.getInt("loc.y");
+			int z = fc.getInt("loc.z");
+			
+			Location loc = new Location(world, x, y, z);
+			
+			SavedArenaPlayer sp = new SavedArenaPlayer(player, exp, loc);
+			players.add(sp);
 		}
 		
 		return players;
 	}
 	
 	/**Removes a player from the saved file**/
-	public void deletePlayer(Player player) throws Exception
+	public void deletePlayer(Player player)
 	{
-		List<SavedArenaPlayer> savedPlayers = getSavedPlayers();
-		for (SavedArenaPlayer savedPlayer : savedPlayers)
+		File folder = new File(plugin.getDataFolder(), "players");
+		File file = new File(folder, player.getName() + ".dat");
+		
+		if (file.exists())
+			file.delete();
+	}
+	
+	/**Save an ArenaZone**/
+	public void save(ArenaZone az)
+	{
+		try
 		{
-			if (savedPlayer.getPlayer().getName().equals(player.getName()))
+			File folder = new File(plugin.getDataFolder(), "arenas");
+			File file = new File(folder, az.arenaName + ".dat");
+			if (!file.exists())
+				file.createNewFile();
+
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			
+			fc.set("type", az.arenaType);
+			fc.set("world", az.world.getName());
+			
+			Location lobby1 = az.lobby1;
+			fc.set("lobby1.x", lobby1.getBlockX());
+			fc.set("lobby1.z", lobby1.getBlockZ());
+			
+			Location lobby2 = az.lobby2;
+			fc.set("lobby2.x", lobby2.getBlockX());
+			fc.set("lobby2.z", lobby2.getBlockZ());
+			
+			Location arena1 = az.arena1;
+			fc.set("arena1.x", arena1.getBlockX());
+			fc.set("arena1.z", arena1.getBlockZ());
+			
+			Location arena2 = az.arena2;
+			fc.set("arena2.x", arena2.getBlockZ());
+			fc.set("arena2.z", arena2.getBlockZ());
+			
+			String arenaType = az.arenaType;
+			if (arenaType.equals("pvp"))
 			{
-				savedPlayers.remove(savedPlayer);
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				Location lobbyBlue = az.lobbyBLUspawn;
+				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
+				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
+				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
+				
+				Location team1 = az.team1spawn;
+				fc.set("team1.x", team1.getBlockX());
+				fc.set("team1.y", team1.getBlockY());
+				fc.set("team1.z", team1.getBlockZ());
+				
+				Location team2 = az.team2spawn;
+				fc.set("team2.x", team2.getBlockX());
+				fc.set("team2.y", team2.getBlockY());
+				fc.set("team2.z", team2.getBlockZ());
 			}
+			if (arenaType.equals("mob"))
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				Location team1 = az.team1spawn;
+				fc.set("team1.x", team1.getBlockX());
+				fc.set("team1.y", team1.getBlockY());
+				fc.set("team1.z", team1.getBlockZ());
+				
+				fc.set("spawnsAmt", az.spawns.size());
+				for (int i = 0; i < az.spawns.size(); i++) 
+				{
+					Location loc = az.spawns.get(i);
+					String path = "spawns." + i + ".";
+
+					fc.set(path + "x", loc.getBlockX());
+					fc.set(path + "y", loc.getBlockY());
+					fc.set(path + "z", loc.getBlockZ());
+				}
+			}
+			if (arenaType.equals("cq")) 
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				Location lobbyBlue = az.lobbyBLUspawn;
+				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
+				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
+				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
+				
+				Location team1 = az.team1spawn;
+				fc.set("team1.x", team1.getBlockX());
+				fc.set("team1.y", team1.getBlockY());
+				fc.set("team1.z", team1.getBlockZ());
+				
+				Location team2 = az.team2spawn;
+				fc.set("team2.x", team2.getBlockX());
+				fc.set("team2.y", team2.getBlockY());
+				fc.set("team2.z", team2.getBlockZ());
+				
+				fc.set("flagsAmt", az.flags.size());
+				for (int i = 0; i < az.flags.size(); i++) 
+				{
+					Location loc = az.flags.get(i);
+					String path = "flags." + i + ".";
+
+					fc.set(path + "x", loc.getBlockX());
+					fc.set(path + "y", loc.getBlockY());
+					fc.set(path + "z", loc.getBlockZ());
+				}
+			}
+			if (arenaType.equals("koth"))
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				fc.set("spawnsAmt", az.spawns.size());
+				for (int i = 0; i < az.spawns.size(); i++) 
+				{
+					Location loc = az.spawns.get(i);
+					String path = "spawns." + i + ".";
+
+					fc.set(path + "x", loc.getBlockX());
+					fc.set(path + "y", loc.getBlockY());
+					fc.set(path + "z", loc.getBlockZ());
+				}
+				
+				fc.set("flag.x", az.flags.get(0).getBlockX());
+				fc.set("flag.y", az.flags.get(0).getBlockY());
+				fc.set("flag.z", az.flags.get(0).getBlockZ());
+			}
+			if (arenaType.equals("ffa") || arenaType.equals("hunger"))
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				fc.set("spawnsAmt", az.spawns.size());
+				for (int i = 0; i < az.spawns.size(); i++) 
+				{
+					Location loc = az.spawns.get(i);
+					String path = "spawns." + i + ".";
+
+					fc.set(path + "x", loc.getBlockX());
+					fc.set(path + "y", loc.getBlockY());
+					fc.set(path + "z", loc.getBlockZ());
+				}
+				
+			}
+			if (arenaType.equals("spleef"))
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				fc.set("specialType", 80);
+				
+				for (int i = 0; i < 4; i++) 
+				{
+					Location loc = az.flags.get(i);
+					String path = "flags." + i + ".";
+
+					fc.set(path + "x", loc.getBlockX());
+					fc.set(path + "y", loc.getBlockY());
+					fc.set(path + "z", loc.getBlockZ());
+				}
+			}
+			if (arenaType.equals("bomb"))
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				Location lobbyBlue = az.lobbyBLUspawn;
+				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
+				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
+				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
+				
+				Location team1 = az.team1spawn;
+				fc.set("team1.x", team1.getBlockX());
+				fc.set("team1.y", team1.getBlockY());
+				fc.set("team1.z", team1.getBlockZ());
+				
+				Location team2 = az.team2spawn;
+				fc.set("team2.x", team2.getBlockX());
+				fc.set("team2.y", team2.getBlockY());
+				fc.set("team2.z", team2.getBlockZ());
+				
+				fc.set("flag0.x", az.flags.get(0).getBlockX());
+				fc.set("flag0.y", az.flags.get(0).getBlockY());
+				fc.set("flag0.z", az.flags.get(0).getBlockZ());
+				
+				fc.set("flag1.x", az.flags.get(1).getBlockX());
+				fc.set("flag1.y", az.flags.get(1).getBlockY());
+				fc.set("flag1.z", az.flags.get(1).getBlockZ());
+			}
+			if (arenaType.equals("ctf")) 
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				Location lobbyBlue = az.lobbyBLUspawn;
+				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
+				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
+				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
+				
+				Location team1 = az.team1spawn;
+				fc.set("team1.x", team1.getBlockX());
+				fc.set("team1.y", team1.getBlockY());
+				fc.set("team1.z", team1.getBlockZ());
+				
+				Location team2 = az.team2spawn;
+				fc.set("team2.x", team2.getBlockX());
+				fc.set("team2.y", team2.getBlockY());
+				fc.set("team2.z", team2.getBlockZ());
+				
+				fc.set("flag0.x", az.flags.get(0).getBlockX());
+				fc.set("flag0.y", az.flags.get(0).getBlockY());
+				fc.set("flag0.z", az.flags.get(0).getBlockZ());
+				
+				fc.set("flag1.x", az.flags.get(1).getBlockX());
+				fc.set("flag1.y", az.flags.get(1).getBlockY());
+				fc.set("flag1.z", az.flags.get(1).getBlockZ());
+			}
+			if (arenaType.equals("infect"))
+			{
+				Location lobbyRed = az.lobbyREDspawn;
+				fc.set("lobbyRed.x", lobbyRed.getBlockX());
+				fc.set("lobbyRed.y", lobbyRed.getBlockY());
+				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
+				
+				Location lobbyBlue = az.lobbyBLUspawn;
+				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
+				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
+				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
+				
+				Location team1 = az.team1spawn;
+				fc.set("team1.x", team1.getBlockX());
+				fc.set("team1.y", team1.getBlockY());
+				fc.set("team1.z", team1.getBlockZ());
+				
+				Location team2 = az.team2spawn;
+				fc.set("team2.x", team2.getBlockX());
+				fc.set("team2.y", team2.getBlockY());
+				fc.set("team2.z", team2.getBlockZ());
+			}
+			
+			fc.set("maxPlayers", 24);
+			fc.set("defaultClass", plugin.classes.get(0).name);
+			
+			fc.save(file);
 		}
-			
-		String path = plugin.getRoot().getAbsolutePath() + "/players.txt";
-		File file = new File(path);
-			
-		if (!file.exists()) file.delete();
-		file.createNewFile();
-			
-		for (SavedArenaPlayer savedPlayer1 : savedPlayers)
+		catch (Exception e)
 		{
-			PrintStream ps = new PrintStream(file);
+			plugin.getLogger().severe("Error saving arena \"" + az.arenaName + "\": " + e.getMessage());
+		}
+	}
+	
+	/**Load an ArenaZone**/
+	public void load(ArenaZone az)
+	{
+		try
+		{
+			File folder = new File(plugin.getDataFolder(), "arenas");
+			File file = new File(folder, az.arenaName + ".dat");
+	
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			
-			int exp = savedPlayer1.getExp();
-			Location loc = savedPlayer1.getLocation();
-				
-			StringBuilder line = new StringBuilder();
-			line.append(player.getName() + ",");
-							
-			line.append(exp + ",");
-				
-			int x = loc.getBlockX();
-			int y = loc.getBlockY();
-			int z = loc.getBlockZ();
-			World world = loc.getWorld();
-							
-			line.append(x + "," + y + "," + z + "," + world.getName());
-				
-			ps.println(line.toString());
+			String arenaType = fc.getString("type");
+			az.arenaType = arenaType;
 			
-			ps.close();
+			World world = plugin.getServer().getWorld(fc.getString("world"));
+			az.world = world;
+			
+			az.lobby1 = new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z"));
+			az.lobby2 = new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z"));
+			
+			az.arena1 = new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z"));
+			az.arena2 = new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z"));
+	
+			if (arenaType.equals("pvp"))
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				
+				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				
+				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+			}
+			if (arenaType.equals("mob"))
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				
+				int spawnsAmt = fc.getInt("spawnsAmt");
+				for (int i = 0; i < spawnsAmt; i++) 
+				{
+					String path = "spawns." + i + ".";
+	
+					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
+					
+					az.spawns.add(loc);
+				}
+			}
+			if (arenaType.equals("cq")) 
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				
+				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				
+				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				
+				int flagsAmt = fc.getInt("flagsAmt");
+				for (int i = 0; i < flagsAmt; i++) 
+				{
+					String path = "flags." + i + ".";
+	
+					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
+					
+					az.flags.add(loc);
+				}
+			}
+			if (arenaType.equals("koth"))
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				int spawnsAmt = fc.getInt("spawnsAmt");
+				for (int i = 0; i < spawnsAmt; i++) 
+				{
+					String path = "spawns." + i + ".";
+	
+					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
+					
+					az.spawns.add(loc);
+				}
+				
+				Location loc = new Location(world, fc.getInt("flag.x"), fc.getInt("flag.y"), fc.getInt("flag.z"));
+				az.flags.add(loc);
+			}
+			if (arenaType.equals("ffa") || arenaType.equals("hunger"))
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				int spawnsAmt = fc.getInt("spawnsAmt");
+				for (int i = 0; i < spawnsAmt; i++) 
+				{
+					String path = "spawns." + i + ".";
+	
+					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
+					
+					az.spawns.add(loc);
+				}
+				
+			}
+			if (arenaType.equals("spleef"))
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				az.specialType = fc.getInt("specialType");
+				
+				fc.set("specialType", 80);
+				
+				for (int i = 0; i < 4; i++) 
+				{
+					String path = "flags." + i + ".";
+	
+					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
+					
+					az.flags.add(loc);
+				}
+			}
+			if (arenaType.equals("bomb"))
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				
+				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				
+				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				
+				az.flags.add(new Location(world, fc.getInt("flag0.x"),fc.getInt("flag0.y"), fc.getInt("flag0.z")));
+				az.flags.add(new Location(world, fc.getInt("flag1.x"),fc.getInt("flag1.y"), fc.getInt("flag1.z")));
+			}
+			if (arenaType.equals("ctf")) 
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				
+				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				
+				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				
+				az.flags.add(new Location(world, fc.getInt("flag0.x"),fc.getInt("flag0.y"), fc.getInt("flag0.z")));
+				az.flags.add(new Location(world, fc.getInt("flag1.x"),fc.getInt("flag1.y"), fc.getInt("flag1.z")));
+			}
+			if (arenaType.equals("infect"))
+			{
+				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				
+				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				
+				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				
+				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+			}
+			
+			az.maxPlayers = fc.getInt("maxPlayers");
+			az.defaultClass = fc.getString("defaultClass");
+			
+			az.loaded = true;
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().severe("Error loading arena \"" + az.arenaName + "\": " + e.getMessage());
+			az.loaded = false;
 		}
 	}
 }

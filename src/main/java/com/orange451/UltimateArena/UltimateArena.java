@@ -17,11 +17,7 @@
 */
 package com.orange451.UltimateArena;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +27,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
@@ -52,6 +49,8 @@ public class UltimateArena extends JavaPlugin
 {
 	private @Getter Economy economy;
 	private @Getter FileHelper fileHelper;
+	private @Getter FileConverter fileConverter;
+	
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	
@@ -75,17 +74,32 @@ public class UltimateArena extends JavaPlugin
 		
 		permissionHandler =  new PermissionHandler(this);
 		commandHandler = new CommandHandler(this);
- 
-		File dir = getDataFolder();
-		if (!dir.exists()) 
+		
+		fileHelper = new FileHelper(this);
+		fileConverter = new FileConverter(this);
+
+		File arenaFile = new File(getDataFolder(), "arenas");
+		if (!arenaFile.exists())
 		{
-			dir.mkdir();
+			arenaFile.mkdir();
 		}
 		
-		File dir2 = new File(getDataFolder().getAbsolutePath() + "/arenas");
-		if (!dir2.exists())
+		File playersFile = new File(getDataFolder(), "players");
+		if (!playersFile.exists())
 		{
-			dir2.mkdir();
+			playersFile.mkdir();
+		}
+		
+		File classFile = new File(getDataFolder(), "classes");
+		if (!classFile.exists())
+		{
+			classFile.mkdir();
+		}
+		
+		File configsFile = new File(getDataFolder(), "configs");
+		if (!configsFile.exists())
+		{
+			configsFile.mkdir();
 		}
 		
 		saveDefaultConfig();
@@ -132,40 +146,7 @@ public class UltimateArena extends JavaPlugin
 		
 		commandHandler.registerCommand(new PCommandClasses(this));
 		
-		fileHelper = new FileHelper(this);
-		
-		try
-		{
-			// TODO: A MUCH better way to do this :P
-			savedPlayers = fileHelper.getSavedPlayers();
-			if (savedPlayers.size() > 0)
-			{
-				for (Player player : getServer().getOnlinePlayers())
-				{
-					for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
-					{
-						if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
-						{
-							int exp = savedArenaPlayer.getExp();
-							Location loc = savedArenaPlayer.getLocation();
-							
-							normalize(player);
-							player.setExp(exp);
-							player.teleport(loc);
-							removePotions(player);
-							
-							fileHelper.deletePlayer(player);
-							
-							savedPlayers.remove(savedArenaPlayer);
-						}
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			getLogger().warning("Could not load saved players.");
-		}
+		loadPlayers();
 
 		PluginManager pm = getServer().getPluginManager();
 		if (pm.isPluginEnabled("PVPGunPlus"))
@@ -180,6 +161,8 @@ public class UltimateArena extends JavaPlugin
 		new ArenaUpdater().runTaskTimer(this, 2L, 20L);
 			
 		checkVault(pm);
+		
+		fileConverter.run();
 
 		loadFiles();
 		
@@ -193,14 +176,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 		
-		try
-		{
-			fileHelper.savePlayers(activeArena, loggedOutPlayers);
-		}
-		catch (Exception e)
-		{
-			getLogger().warning("Could not save players.");
-		}
+		fileHelper.savePlayers(activeArena, loggedOutPlayers);
 		
 		for (int i=0; i<activeArena.size(); i++)
 		{
@@ -222,6 +198,35 @@ public class UltimateArena extends JavaPlugin
 		long finish = System.currentTimeMillis();
 		
 		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
+	}
+	
+	public void loadPlayers()
+	{
+		savedPlayers = fileHelper.getSavedPlayers();
+		if (savedPlayers.size() > 0)
+		{
+			for (Player player : getServer().getOnlinePlayers())
+			{
+				for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
+				{
+					if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
+					{
+						int exp = savedArenaPlayer.getExp();
+						Location loc = savedArenaPlayer.getLocation();
+						
+						normalize(player);
+						player.setExp(exp);
+						player.teleport(loc);
+						removePotions(player);
+						
+						fileHelper.deletePlayer(player);
+						
+						savedPlayers.remove(savedArenaPlayer);
+					}
+				}
+			}
+			getLogger().info("Loaded " + savedPlayers.size() + " saved players!");
+		}
 	}
 	
 	public File getRoot() 
@@ -260,51 +265,37 @@ public class UltimateArena extends JavaPlugin
 	
 	public void onJoin(Player player) 
 	{
-		try
+		/**Normalize Players from Shutdown**/
+		for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 		{
-			/**Normalize Players from Shutdown**/
-			if (savedPlayers.size() > 0)
+			if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
 			{
-				for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
-				{
-					if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
-					{
-						int exp = savedArenaPlayer.getExp();
-						Location loc = savedArenaPlayer.getLocation();
+				int exp = savedArenaPlayer.getExp();
+				Location loc = savedArenaPlayer.getLocation();
 						
-						normalize(player);
-						player.setExp(exp);
-						player.teleport(loc);
-						removePotions(player);
+				normalize(player);
+				player.setExp(exp);
+				player.teleport(loc);
+				removePotions(player);
 						
-						fileHelper.deletePlayer(player);
+				fileHelper.deletePlayer(player);
 						
-						savedPlayers.remove(savedArenaPlayer);
-					}
-				}
-			}
-	
-			/**Normalize Players from Quit**/
-			if (loggedOutPlayers.size() > 0)
-			{
-				for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
-				{
-					if (loggedOutPlayer.getPlayer().getName().equals(player.getName()))
-					{
-						int exp = loggedOutPlayer.getExp();
-						Location loc = loggedOutPlayer.getLocation();
-						
-						normalize(player);
-						player.setExp(exp);
-						player.teleport(loc);
-						removePotions(player);
-					}
-				}
+				savedPlayers.remove(savedArenaPlayer);
 			}
 		}
-		catch (Exception e)
+	
+		/**Normalize Players from Quit**/
+		for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
 		{
-			//
+			if (loggedOutPlayer.getPlayer().getName().equals(player.getName()))
+			{
+				int exp = loggedOutPlayer.getExp();
+				Location loc = loggedOutPlayer.getLocation();
+						
+				normalize(player);
+				player.setExp(exp);
+				player.teleport(loc);
+			}
 		}
 	}
 	
@@ -323,21 +314,18 @@ public class UltimateArena extends JavaPlugin
 	
 	public void loadArenas()
 	{
-		String path = getRoot().getAbsolutePath() + "/arenas";
-		File dir = new File(path);
-		String[] children = dir.list();
-		if (children != null) 
+		File folder = new File(getDataFolder(), "arenas");
+		File[] children = folder.listFiles();
+		for (File file : children)
 		{
-		    for (int i=0; i<children.length; i++)
-		    {
-		        String filename = children[i];
-		        ArenaZone az = new ArenaZone(this, new File(path + "/" + filename));
-		        if (az.loaded) 
-		        {
-		        	loadedArena.add(az);
-		        }
-		    }
+			ArenaZone az = new ArenaZone(this, file);
+			if (az.loaded)
+			{
+				loadedArena.add(az);
+			}
 		}
+		
+		getLogger().info("Loaded " + children.length + " arena files!");
 	}
 	
 	public void loadConfigs() 
@@ -347,80 +335,61 @@ public class UltimateArena extends JavaPlugin
 			loadConfig(fieldTypes.get(i));
 		}
 		
+		getLogger().info("Loaded " + fieldTypes.size() + " arena configs!");
+		
 		loadWhiteListedCommands();
 	}
 	
 	public void loadWhiteListedCommands()
 	{
-		String path = getRoot().getAbsolutePath() + "/whiteListedCommands.txt";
-		File f = new File(path);
-		if (!f.exists()) 
+		File file = new File(getDataFolder(), "whiteListedCommands.yml");
+		if (!file.exists())
 		{
 			getLogger().info("Whitelisted commands file not found! Generating you a new one!");
 			fileHelper.generateWhitelistedCmds();
-			
 		}
 		
-		try
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+		List<String> whiteListedCommands = fc.getStringList("whiteListedCmds");
+		for (String whiteListed : whiteListedCommands)
 		{
-			FileInputStream fstream = new FileInputStream(f.getAbsolutePath());
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			while ((strLine = br.readLine()) != null) 
-			{
-				wcmd.addCommand(strLine);
-			}
-			br.close();
-			in.close();
-			fstream.close();
+			wcmd.addCommand(whiteListed);
 		}
-		catch (Exception e)
-		{
-			getLogger().severe("Error loading whitelisted commands: " + e.getMessage());
-		}
+		
+		getLogger().info("Loaded " + whiteListedCommands.size() + " Whitelisted Commands!");
 	}
 	
 	public void loadConfig(String str)
 	{
-		String path = getRoot().getAbsolutePath() + "/" + str + "CONFIG.txt";
-		File f = new File(path);
-		if (!f.exists())
+		File folder = new File(getDataFolder(), "configs");
+		File file = new File(folder, str + "Config.yml");
+		if (!file.exists())
 		{
 			getLogger().info("Arena config for \"" + str + "\" not found! Generating you a new one!");
 			fileHelper.generateArenaConfig(str);
 		}
 		
-		ArenaConfig a = new ArenaConfig(this, str, f);
+		ArenaConfig a = new ArenaConfig(this, str, file);
 		configs.add(a);
-		getLogger().info("Loaded configuration for arena type: " + str);
 	}
 	
 	public void loadClasses() 
 	{
-		String path = getRoot().getAbsolutePath() + "/classes";
-		File dir = new File(path);
-		if (!dir.exists())
-		{
-			dir.mkdir();
-		}
-		
-		String[] children = dir.list();
+		File folder = new File(getDataFolder(), "classes");
+		File[] children = folder.listFiles();
 		if (children.length == 0)
 		{
 			fileHelper.generateStockClasses();
 			getLogger().info("No classes found! Generating stock classes!");
 		}
-		
-		dir = new File(path);
-		children = dir.list();
-		
-		for (String filename : children)
+
+		for (File file : children)
 		{
-			ArenaClass ac = new ArenaClass(this, new File(path + "/" + filename));
-	        ac.name = filename;
+			ArenaClass ac = new ArenaClass(this, file);
 	        classes.add(ac);
 		}
+		
+		getLogger().info("Loaded " + children.length + " class files!");
 	}
 	
 	public ArenaConfig getConfig(String type) 
@@ -476,23 +445,22 @@ public class UltimateArena extends JavaPlugin
 	
 	public void deleteArena(Player player, String str) 
 	{
-		try
+		File folder = new File(getDataFolder(), "arenas");
+		File file = new File(folder, str + ".dat");
+		if (file.exists())
 		{
-			String path = getRoot().getAbsolutePath() + "/arenas";
-			File f = new File(path + "/" + str);
-			if (f.exists()) f.delete();
-
 			forceStop(str);
-			loadedArena.remove(this.getArenaZone(str));
-			player.sendMessage(ChatColor.YELLOW + "Deleted arena!");
-			getLogger().info("Deleted arena: " + str);
-		}
-		catch (Exception e) 
-		{
-			getLogger().severe("Error while deleting arena:");
-			e.printStackTrace();
+				
+			loadedArena.remove(getArenaZone(str));
+				
+			file.delete();
 			
-			player.sendMessage(ChatColor.RED + "Failed to delete arena! Check console!");
+			player.sendMessage(ChatColor.YELLOW + "Successfully deleted arena: " + str + "!");
+			getLogger().info("Successfully deleted arena: " + str + "!");
+		}
+		else
+		{
+			player.sendMessage(ChatColor.RED + "Could not find an arena by the name of \"" + str + "\"!");
 		}
 	}
 	

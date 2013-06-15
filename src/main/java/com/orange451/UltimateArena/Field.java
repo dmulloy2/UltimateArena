@@ -49,16 +49,17 @@ public class Field
 	
 	public boolean isInside(Location loc)
 	{
-		int locx = loc.getBlockX();
-		int locz = loc.getBlockZ();
 		World locw = loc.getWorld();
-		if (locx >= minx && locx <= maxx && locw == world)
+		int locx = loc.getBlockX();
+		int locy = loc.getBlockZ();
+		if (world.getUID() == locw.getUID())
 		{
-			if (locz >= miny && locz <= maxy)
+			if (locx >= minx && locx <= maxx)
 			{
-				return true;
+				return (locy > miny && locy <= maxy);
 			}
 		}
+		
 		return false;
 	}
 }

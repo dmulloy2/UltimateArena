@@ -95,7 +95,7 @@ public class MOBArena extends Arena
 	{
 		if (this.az.plugin.isInArena(p.player.getLocation())) 
 		{
-			if (p.out != true)
+			if (!p.out)
 			{
 				super.endPlayer(p, end);
 				this.reward(p, p.player, false);
@@ -254,8 +254,7 @@ public class MOBArena extends Arena
 		}
 		catch(Exception e) 
 		{
-			plugin.getLogger().severe("Error stopping MobArena:");
-			e.printStackTrace();
+			plugin.getLogger().severe("Error stopping MobArena: " + e.getMessage());
 		}
 	}
 }

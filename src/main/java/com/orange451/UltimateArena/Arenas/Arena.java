@@ -98,7 +98,7 @@ public abstract class Arena
 			this.starttimer = config.lobbyTime;
 			this.maxDeaths = config.maxDeaths;
 			this.allowTeamKilling = config.allowTeamKilling;
-			this.maxwave = config.maxwave;
+			this.maxwave = config.maxWave;
 			
 			if (this.maxDeaths < 1) 
 			{
@@ -635,7 +635,7 @@ public abstract class Arena
 		}
 		catch(Exception e)
 		{
-			plugin.getLogger().severe("Error: " + e.getMessage());
+			plugin.getLogger().severe("Error with Killstreaks: " + e.getMessage());
 		}
 	}
 	
@@ -665,7 +665,6 @@ public abstract class Arena
 			for (ArenaPlayer ap : arenaplayers)
 			{
 				if (ap != null)
-					try
 				{
 					Player player = Util.matchPlayer(ap.player.getName());
 					if (player != null)
@@ -685,16 +684,12 @@ public abstract class Arena
 					}
 					ap.out = true;
 				}
-				catch(Exception e) 
-				{
-					plugin.getLogger().severe("Error: " + e.getMessage());
-				}
 			}
 			plugin.activeArena.remove(this);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error: " + e.getMessage());
+			plugin.getLogger().severe("Error stopping: " + e.getMessage());
 		}
 	}
 	
@@ -742,7 +737,7 @@ public abstract class Arena
 			}
 			catch(Exception e) 
 			{
-				plugin.getLogger().severe("Error: " + e.getMessage());
+				plugin.getLogger().severe("Error checking player: " + e.getMessage());
 			}
 		}
 	}
@@ -806,7 +801,7 @@ public abstract class Arena
 		}
 		catch(Exception e)
 		{
-			plugin.getLogger().severe("Error: " + e.getMessage());
+			plugin.getLogger().severe("Error ending player: " + e.getMessage());
 		}
 	}
 	
@@ -910,7 +905,7 @@ public abstract class Arena
 		}
 		catch(Exception e) 
 		{
-			plugin.getLogger().severe("Error: " + e.getMessage());
+			plugin.getLogger().severe("Error stepping: " + e.getMessage());
 		}
 		check();
 
@@ -1019,7 +1014,7 @@ public abstract class Arena
 									}
 									catch(Exception e) 
 									{
-										plugin.getLogger().severe("Error: " + e.getMessage());
+										plugin.getLogger().severe("Error respawning dead player: " + e.getMessage());
 									}
 								}
 							}
@@ -1029,7 +1024,7 @@ public abstract class Arena
 			}
 			catch (Exception e) 
 			{
-				plugin.getLogger().severe("Error: " + e.getMessage());
+				plugin.getLogger().severe("Error stepping: " + e.getMessage());
 			}
 		}
 		

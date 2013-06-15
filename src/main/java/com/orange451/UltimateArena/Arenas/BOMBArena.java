@@ -5,14 +5,14 @@ import org.bukkit.entity.Player;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
-import com.orange451.UltimateArena.Arenas.Objects.Bombflag;
+import com.orange451.UltimateArena.Arenas.Objects.BombFlag;
 import com.orange451.UltimateArena.util.Util;
 
 public class BOMBArena extends Arena 
 {
 	public int REDTEAMPOWER = 100;
-	public Bombflag bomb1;
-	public Bombflag bomb2;
+	public BombFlag bomb1;
+	public BombFlag bomb2;
 	
 	public BOMBArena(ArenaZone az) 
 	{
@@ -24,8 +24,8 @@ public class BOMBArena extends Arena
 		maxgametime = 60 * 15;
 		maxDeaths = 990;
 		
-		bomb1 = new Bombflag(this, az.flags.get(0));
-		bomb2 = new Bombflag(this, az.flags.get(1));
+		bomb1 = new BombFlag(this, az.flags.get(0));
+		bomb2 = new BombFlag(this, az.flags.get(1));
 		bomb1.bnum = 1;
 		bomb2.bnum = 2;
 	}

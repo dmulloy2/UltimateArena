@@ -62,13 +62,14 @@ public class CTFflag
 		}
 		catch(Exception e) 
 		{
-			plugin.getLogger().severe("Error respawning flag:");
-			e.printStackTrace();
+			plugin.getLogger().severe("Error respawning flag: " + e.getMessage());
 		}
 	}
 	
-	public void notifyTime() {
-		if (timer % 5 == 0 || timer < 10) {
+	public void notifyTime() 
+	{
+		if (timer % 5 == 0 || timer < 10) 
+		{
 			sayTimeLeft();
 		}
 	}
@@ -136,7 +137,8 @@ public class CTFflag
 	    				Block BlockUnder = ((myloc.clone()).subtract(0,i,0)).getBlock(); 
 	    				if (BlockUnder != null) 
 	    				{
-	    					if (BlockUnder.getType().equals(Material.AIR) || BlockUnder.getType().equals(Material.WATER)) {
+	    					if (BlockUnder.getType().equals(Material.AIR) || BlockUnder.getType().equals(Material.WATER))
+	    					{
 	    						count++;
 	    					}
 	    					else
@@ -200,17 +202,10 @@ public class CTFflag
 		}
 		if (pickedUp)
 		{
-			if (riding.isOnline()) 
+			if (riding.isOnline() && !riding.isDead()) 
 			{
-				if (!riding.isDead())
-				{ 
-					//if player is alive
-					toloc = riding.getLocation().clone().add(0, 3, 0);
-				}
-				else
-				{
-					fall();
-				}
+				//if player is alive
+				toloc = riding.getLocation().clone().add(0, 3, 0);
 			}
 			else
 			{
@@ -268,12 +263,8 @@ public class CTFflag
 		
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
-		
-    	if (locequals(lastloc, myloc))
-    	{
-    		//
-    	}
-    	else
+
+    	if (!locequals(lastloc, myloc))
     	{
 	    	last.setTypeIdAndData(lastBlockType, lastBlockDat, true);
 	    	lastBlockDat = current.getData();
@@ -294,15 +285,9 @@ public class CTFflag
 
 	public boolean locequals(Location loc, Location loc2) 
 	{
-		if (loc.getBlockX() == loc2.getBlockX() &&
+		return (loc.getBlockX() == loc2.getBlockX() &&
 			loc.getBlockY() == loc2.getBlockY() &&
 			loc.getBlockZ() == loc2.getBlockZ() &&
-			loc.getWorld().equals(loc2.getWorld()))
-		{
-			return true;
-		}
-		
-		return false;
-			
+			loc.getWorld().equals(loc2.getWorld()));	
 	}
 }

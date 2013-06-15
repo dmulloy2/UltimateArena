@@ -3,12 +3,12 @@ package com.orange451.UltimateArena.Arenas;
 import org.bukkit.ChatColor;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
-import com.orange451.UltimateArena.Arenas.Objects.CTFflagbase;
+import com.orange451.UltimateArena.Arenas.Objects.CTFFlagBase;
 
 public class CTFArena extends Arena
 {
-	public CTFflagbase flagred;
-	public CTFflagbase flagblue;
+	public CTFFlagBase flagred;
+	public CTFFlagBase flagblue;
 	public int redcap;
 	public int bluecap;
 	private int ExecuteMove;
@@ -26,8 +26,8 @@ public class CTFArena extends Arena
 		
 		try
 		{
-			flagred = new CTFflagbase(this, az.flags.get(0), 1);
-			flagblue = new CTFflagbase(this, az.flags.get(1), 2);
+			flagred = new CTFFlagBase(this, az.flags.get(0), 1);
+			flagblue = new CTFFlagBase(this, az.flags.get(1), 2);
 			
 			flagred.initialize();
 			flagblue.initialize();

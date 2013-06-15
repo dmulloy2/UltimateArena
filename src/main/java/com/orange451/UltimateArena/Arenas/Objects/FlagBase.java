@@ -10,14 +10,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
 
-public class flagBase
+public class FlagBase
 {
 	public Location loc;
 	public Block notify = null;
 	public Arena arena;
 	public UltimateArena plugin;
 	
-	public flagBase(Arena arena, Location loc) 
+	public FlagBase(Arena arena, Location loc) 
 	{
 		this.arena = arena;
 		Location safe = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());

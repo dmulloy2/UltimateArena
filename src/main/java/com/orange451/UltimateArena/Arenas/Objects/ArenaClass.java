@@ -1,14 +1,11 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -72,8 +69,9 @@ public class ArenaClass
 	
 	public boolean loaded = true;
 	public boolean helmet = true;
-	public boolean useEssentials = false;
 	
+	public boolean useEssentials = false;
+	public String essKitName = "";
 	public Map<String, Object> essentialsKit;
 	
 	public UltimateArena plugin;
@@ -83,44 +81,221 @@ public class ArenaClass
 	{
 		this.plugin = plugin;
 		this.file = file;
-		this.load();
+		this.name = getName(file);
+
+		load();
 	}
 	
-	public void load()
+	public boolean load()
 	{
-		name = file.getName();
-		ArrayList<String> file = new ArrayList<String>();
-	    try
-	    {
-			FileInputStream fstream = new FileInputStream(this.file.getAbsolutePath());
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			while ((strLine = br.readLine()) != null) 
+		try
+		{
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			
+			String armorPath = "armor.";
+			String arm1 = fc.getString(armorPath + "chestplate");
+			if (arm1 != null)
 			{
-				file.add(strLine);
+				String[] split = arm1.split(",");
+				
+				if (split.length > 1)
+				{
+					armor1 = Integer.parseInt(split[0]);
+					armorenchant1 = readArmorEnchantments(split[1]);
+				}
+				else
+				{
+					armor1 = Integer.parseInt(arm1);
+				}
 			}
-			br.close();
-			in.close();
-			fstream.close();
-        }
-	    catch (Exception e)
-	    {
-            plugin.getLogger().severe("Error: " + e.getMessage());
-        }
-	    
-	    for (int i= 0; i < file.size(); i++)
-	    {
-	    	computeData(file.get(i));
-	    }
-	    if (loaded) 
-	    {
-	    	plugin.getLogger().info("Class loaded: " + name);
-	    }
-	    else
-	    {
-	    	plugin.getLogger().severe("Error loading class: " + name);
-	    }
+			
+			String arm2 = fc.getString(armorPath + "chestplate");
+			if (arm2 != null)
+			{
+				String[] split = arm2.split(",");
+				
+				if (split.length > 1)
+				{
+					armor2 = Integer.parseInt(split[0]);
+					armorenchant2 = readArmorEnchantments(split[1]);
+				}
+				else
+				{
+					armor2 = Integer.parseInt(arm1);
+				}
+			}
+			
+			String arm3 = fc.getString(armorPath + "chestplate");
+			if (arm3 != null)
+			{
+				String[] split = arm3.split(",");
+				
+				if (split.length > 1)
+				{
+					armor3 = Integer.parseInt(split[0]);
+					armorenchant3 = readArmorEnchantments(split[1]);
+				}
+				else
+				{
+					armor3 = Integer.parseInt(arm1);
+				}
+			}
+			
+			String toolPath = "tools.";
+			String tool1 = fc.getString(toolPath + 1);
+			if (tool1 != null)
+			{
+				int value = readWep(tool1);
+				int value2 = readSpec(tool1);
+				int value3 = readAmt(tool1);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool1);
+				weapon1 = value;
+				special1 = (byte) value2;
+				amt1 = value3;
+				enchant1 = value4;
+			}
+			
+			String tool2 = fc.getString(toolPath + 2);
+			if (tool2 != null)
+			{
+				int value = readWep(tool2);
+				int value2 = readSpec(tool2);
+				int value3 = readAmt(tool2);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool2);
+				weapon2 = value;
+				special2 = (byte) value2;
+				amt2 = value3;
+				enchant2 = value4;
+			}
+			
+			String tool3 = fc.getString(toolPath + 3);
+			if (tool3 != null)
+			{
+				int value = readWep(tool3);
+				int value2 = readSpec(tool3);
+				int value3 = readAmt(tool3);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool3);
+				weapon3 = value;
+				special3 = (byte) value2;
+				amt3 = value3;
+				enchant3 = value4;
+			}
+			
+			String tool4 = fc.getString(toolPath + 4);
+			if (tool4 != null)
+			{
+				int value = readWep(tool4);
+				int value2 = readSpec(tool4);
+				int value3 = readAmt(tool4);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool4);
+				weapon4 = value;
+				special4 = (byte) value2;
+				amt4 = value3;
+				enchant4 = value4;
+			}
+			
+			String tool5 = fc.getString(toolPath + 5);
+			if (tool5 != null)
+			{
+				int value = readWep(tool5);
+				int value2 = readSpec(tool5);
+				int value3 = readAmt(tool5);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool5);
+				weapon5 = value;
+				special5 = (byte) value2;
+				amt5 = value3;
+				enchant5 = value4;
+			}
+			
+			String tool6 = fc.getString(toolPath + 6);
+			if (tool6 != null)
+			{
+				int value = readWep(tool6);
+				int value2 = readSpec(tool6);
+				int value3 = readAmt(tool6);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool6);
+				weapon6 = value;
+				special6 = (byte) value2;
+				amt6 = value3;
+				enchant6 = value4;
+			}
+			
+			String tool7 = fc.getString(toolPath + 7);
+			if (tool7 != null)
+			{
+				int value = readWep(tool7);
+				int value2 = readSpec(tool7);
+				int value3 = readAmt(tool7);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool7);
+				weapon7 = value;
+				special7 = (byte) value2;
+				amt7 = value3;
+				enchant7 = value4;
+			}
+			
+			String tool8 = fc.getString(toolPath + 8);
+			if (tool8 != null)
+			{
+				int value = readWep(tool8);
+				int value2 = readSpec(tool8);
+				int value3 = readAmt(tool8);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool8);
+				weapon8 = value;
+				special8 = (byte) value2;
+				amt8 = value3;
+				enchant8 = value4;
+			}
+			
+			String tool9 = fc.getString(toolPath + 9);
+			if (tool9 != null)
+			{
+				int value = readWep(tool9);
+				int value2 = readSpec(tool9);
+				int value3 = readAmt(tool9);
+				List<CompositeEnchantment> value4 = readToolEnchantments(tool9);
+				weapon9 = value;
+				special9 = (byte) value2;
+				amt9 = value3;
+				enchant9 = value4;
+			}
+			
+			useEssentials = fc.getBoolean("useEssentials");
+			
+			if (useEssentials)
+			{
+				String line = fc.getString("essentialsKit");
+				
+				// Initialize Essentials Hook
+				PluginManager pm = plugin.getServer().getPluginManager();
+				if (pm.isPluginEnabled("Essentials"))
+				{
+					Plugin essPlugin = pm.getPlugin("Essentials");
+					IEssentials ess = (IEssentials) essPlugin;
+					Map<String, Object> kit = ess.getSettings().getKit(line);
+					if (kit != null)
+					{
+						essentialsKit = kit;
+					}
+				}
+				
+				essKitName = line;
+			}
+			
+			helmet = fc.getBoolean("useHelmet");
+			
+			String node = fc.getString("permissionNode");
+			if (node != null)
+			{
+				permissionNode = node;
+			}
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().severe("Error loading class \"" + name + "\": " + e.getMessage());
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public int readWep(String str) 
@@ -221,212 +396,6 @@ public class ArenaClass
 		}
 		return enchants;
 	}
-	
-	public void computeData(String str) 
-	{
-		try
-		{
-			if (str.indexOf("=") >=1 ) 
-			{
-				String str2 = str.substring(0, str.indexOf("="));
-				if (str2.equalsIgnoreCase("chestplate")) 
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					String[] split = line.split(",");
-					
-					if (split.length > 1)
-					{
-						armor1 = Integer.parseInt(split[0]);
-						armorenchant1 = readArmorEnchantments(split[1]);
-					}
-					else
-					{
-						armor1 = Integer.parseInt(line);
-					}
-				}
-				if (str2.equalsIgnoreCase("leggings")) 
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					String[] split = line.split(",");
-					
-					if (split.length > 1)
-					{
-						armor2 = Integer.parseInt(split[0]);
-						armorenchant2 = readArmorEnchantments(split[1]);
-					}
-					else
-					{
-						armor2 = Integer.parseInt(line);
-					}
-				}
-				if (str2.equalsIgnoreCase("boots"))
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					String[] split = line.split(",");
-					
-					if (split.length > 1)
-					{
-						armor3 = Integer.parseInt(split[0]);
-						armorenchant3 = readArmorEnchantments(split[1]);
-					}
-					else
-					{
-						armor3 = Integer.parseInt(line);
-					}
-				}
-				if (str2.equalsIgnoreCase("node"))
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					permissionNode = line;
-				}
-				if (str2.equalsIgnoreCase("tool1"))
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon1 = value;
-					special1 = (byte) value2;
-					amt1 = value3;
-					enchant1 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool2"))
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon2 = value;
-					special2 = (byte) value2;
-					amt2 = value3;
-					enchant2 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool3")) 
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon3 = value;
-					special3 = (byte) value2;
-					amt3 = value3;
-					enchant3 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool4")) 
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon4 = value;
-					special4 = (byte) value2;
-					amt4 = value3;
-					enchant4 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool5")) 
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon5 = value;
-					special5 = (byte) value2;
-					amt5 = value3;
-					enchant5 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool6")) 
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon6 = value;
-					special6 = (byte) value2;
-					amt6 = value3;
-					enchant6 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool7"))
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon7 = value;
-					special7 = (byte) value2;
-					amt7 = value3;
-					enchant7 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool8"))
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon8 = value;
-					special8 = (byte) value2;
-					amt8 = value3;
-					enchant8 = value4;
-				}
-				if (str2.equalsIgnoreCase("tool9")) 
-				{
-					String line = str.substring(str.indexOf("=")+1);
-					int value = readWep(line);
-					int value2 = readSpec(line);
-					int value3 = readAmt(line);
-					List<CompositeEnchantment> value4 = readToolEnchantments(line);
-					weapon9 = value;
-					special9 = (byte) value2;
-					amt9 = value3;
-					enchant9 = value4;
-				}
-				if (str2.equalsIgnoreCase("helmet")) 
-				{
-					String line = str.substring(str.indexOf("=") + 1);
-					if (line.equalsIgnoreCase("false"))
-					{
-						helmet = false;
-					}
-				}
-				if (str2.equalsIgnoreCase("useEssentials"))
-				{
-					String line = str.substring(str.indexOf("=") + 1);
-					if (line.equalsIgnoreCase("true"))
-					{
-						useEssentials = true;
-					}
-				}
-				if (str2.equalsIgnoreCase("essentialsKit"))
-				{
-					String line = str.substring(str.indexOf("=") + 1);
-					// Initialize Essentials Hook
-					PluginManager pm = plugin.getServer().getPluginManager();
-					if (pm.isPluginEnabled("Essentials"))
-					{
-						Plugin essPlugin = pm.getPlugin("Essentials");
-						IEssentials ess = (IEssentials) essPlugin;
-						Map<String, Object> kit = ess.getSettings().getKit(line);
-						if (kit != null)
-						{
-							essentialsKit = kit;
-						}
-					}
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			//problem loading the class
-			loaded = false;
-		}
-	}
 
 	public boolean checkPermission(Player player)
 	{
@@ -435,4 +404,9 @@ public class ArenaClass
 			
 		return plugin.getPermissionHandler().hasPermission(player, permissionNode);
 	}	
+	
+	public String getName(File file)
+	{
+		return file.getName().replaceAll(".yml", "");
+	}
 }

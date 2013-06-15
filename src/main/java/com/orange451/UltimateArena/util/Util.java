@@ -59,13 +59,25 @@ public class Util
 		return rand.nextInt(x);
 	}
 
-	public static double pointDistance(Location loc1, Location loc2)
+	public static int pointDistance(Location loc1, Location loc2)
 	{
-		int xdist = loc1.getBlockX() - loc2.getBlockX();
-		int ydist = loc1.getBlockY() - loc2.getBlockY();
-		int zdist = loc2.getBlockY() - loc2.getBlockZ();
+		int p1x = (int) loc1.getX();
+		int p1y = (int) loc1.getY();
+		int p1z = (int) loc1.getZ();
+	
+		int p2x = (int) loc2.getX();
+		int p2y = (int) loc2.getY();
+		int p2z = (int) loc2.getZ();
 		
-		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist);
+		return (int) magnitude(p1x, p1y, p1z, p2x, p2y, p2z);
+	}
+	
+	public static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2) 
+	{
+		int xdist = x1 - x2;
+		int ydist = y1 - y2;
+		int zdist = z1 - z2;
+		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist); 
 	}
 
 	public static void playEffect(Effect effect, Location loc, int i) 

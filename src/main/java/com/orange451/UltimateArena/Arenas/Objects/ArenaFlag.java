@@ -12,7 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.util.Util;
 
-public class ArenaFlag extends flagBase
+public class ArenaFlag extends FlagBase
 {
 	public int power;
 	public int color = 14;

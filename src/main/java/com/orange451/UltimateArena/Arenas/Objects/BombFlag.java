@@ -12,7 +12,7 @@ import com.orange451.UltimateArena.Arenas.BOMBArena;
 import com.orange451.UltimateArena.util.FormatUtil;
 import com.orange451.UltimateArena.util.Util;
 
-public class Bombflag extends ArenaFlag
+public class BombFlag extends ArenaFlag
 {
 	public int timer = 45;
 	public int fuser = 0;
@@ -20,7 +20,7 @@ public class Bombflag extends ArenaFlag
 	public boolean exploded = false;
 	public int bnum;
 	
-	public Bombflag(Arena arena, Location loc)
+	public BombFlag(Arena arena, Location loc)
 	{
 		super(arena, loc);
 	}
