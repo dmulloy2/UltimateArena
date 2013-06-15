@@ -9,11 +9,8 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import com.orange451.UltimateArena.Arenas.Arena;
-import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.Arenas.Objects.SavedArenaPlayer;
-import com.orange451.UltimateArena.util.Util;
 
 /**
  * @author dmulloy2
@@ -457,123 +454,6 @@ public class FileHelper
 		}
 	}
 
-	/**Save players on disable**/
-	public void savePlayers(List<Arena> activeArena, List<SavedArenaPlayer> loggedOutPlayers)
-	{
-		List<SavedArenaPlayer> playersToSave = new ArrayList<SavedArenaPlayer>();
-			
-		/**Add all the logged-in arena players**/
-		for (int i=0; i<activeArena.size(); i++)
-		{
-			Arena a = activeArena.get(i);
-			for (int ii=0; ii<a.arenaplayers.size(); i++)
-			{
-				ArenaPlayer ap = a.arenaplayers.get(ii);
-				if (ap != null && !ap.out)
-				{
-					Player player = Util.matchPlayer(ap.player.getName());
-					if (player != null)
-					{
-						int exp = Integer.valueOf(Math.round(ap.startxp));
-						Location loc = ap.spawnBack;
-							
-						SavedArenaPlayer playerToSave = new SavedArenaPlayer(player, exp, loc);
-							
-						playersToSave.add(playerToSave);
-					}
-				}
-			}
-		}
-			
-		/**Add all logged out players**/
-		for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
-		{
-			playersToSave.add(loggedOutPlayer);
-		}
-			
-		/**Save the Players**/
-		for (SavedArenaPlayer playerToSave : playersToSave)
-		{
-			try
-			{
-				File folder = new File(plugin.getDataFolder(), "players");
-				if (!folder.exists())
-					folder.mkdir();
-				
-				Player player = playerToSave.getPlayer();
-				File file = new File(folder, player.getName() + ".dat");
-				if (file.exists())
-					file.delete();
-				
-				file.createNewFile();
-				
-				YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-				fc.set("name", player.getName());
-				
-				int exp = playerToSave.getExp();
-				fc.set("xp", exp);
-				
-				Location loc = playerToSave.getLocation();
-	
-				int x = loc.getBlockX();
-				int y = loc.getBlockY();
-				int z = loc.getBlockZ();
-				World world = loc.getWorld();
-								
-				fc.set("loc.world", world.getName());
-				fc.set("loc.x", x);
-				fc.set("loc.y", y);
-				fc.set("loc.z", z);
-				
-				fc.save(file);
-			}
-			catch (Exception e)
-			{
-				plugin.getLogger().severe("Error saving player " + playerToSave.getPlayer().getName() + ": " + e.getMessage());
-			}
-		}
-	}
-	
-	/**Normalize Players on enable**/
-	public List<SavedArenaPlayer> getSavedPlayers()
-	{
-		List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
-
-		File folder = new File(plugin.getDataFolder(), "players");
-		File[] children = folder.listFiles();
-		for (File file : children)
-		{
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			
-			String name = fc.getString("name");
-			Player player = Util.matchPlayer(name);
-			
-			int exp = fc.getInt("xp");
-			
-			World world = plugin.getServer().getWorld(fc.getString("loc.world"));
-			int x = fc.getInt("loc.x");
-			int y = fc.getInt("loc.y");
-			int z = fc.getInt("loc.z");
-			
-			Location loc = new Location(world, x, y, z);
-			
-			SavedArenaPlayer sp = new SavedArenaPlayer(player, exp, loc);
-			players.add(sp);
-		}
-		
-		return players;
-	}
-	
-	/**Removes a player from the saved file**/
-	public void deletePlayer(Player player)
-	{
-		File folder = new File(plugin.getDataFolder(), "players");
-		File file = new File(folder, player.getName() + ".dat");
-		
-		if (file.exists())
-			file.delete();
-	}
-	
 	/**Save an ArenaZone**/
 	public void save(ArenaZone az)
 	{
@@ -1002,5 +882,81 @@ public class FileHelper
 			plugin.getLogger().severe("Error loading arena \"" + az.arenaName + "\": " + e.getMessage());
 			az.loaded = false;
 		}
+	}
+	
+	/**Saves a SavedArenaPlayer**/
+	public void savePlayer(SavedArenaPlayer player)
+	{
+		try
+		{
+			File folder = new File(plugin.getDataFolder(), "players");
+			File file = new File(folder, player.getName() + ".dat");
+			if (file.exists()) file.delete();
+			
+			file.createNewFile();
+			
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			fc.set("name", player.getName());
+			
+			float exp = player.getExp();
+			fc.set("xp", exp);
+			
+			Location loc = player.getLocation();
+
+			int x = loc.getBlockX();
+			int y = loc.getBlockY();
+			int z = loc.getBlockZ();
+			World world = loc.getWorld();
+							
+			fc.set("loc.world", world.getName());
+			fc.set("loc.x", x);
+			fc.set("loc.y", y);
+			fc.set("loc.z", z);
+			
+			fc.save(file);
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().severe("Error saving player " + player.getName() + ": " + e.getMessage());
+		}
+	}
+	
+	/**Removes a player from the saved file**/
+	public void deletePlayer(Player player)
+	{
+		File folder = new File(plugin.getDataFolder(), "players");
+		File file = new File(folder, player.getName() + ".dat");
+		
+		if (file.exists())
+			file.delete();
+	}
+	
+	/**Normalize Players on enable**/
+	public List<SavedArenaPlayer> getSavedPlayers()
+	{
+		List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
+
+		File folder = new File(plugin.getDataFolder(), "players");
+		File[] children = folder.listFiles();
+		for (File file : children)
+		{
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			
+			String name = fc.getString("name");
+
+			float exp = Float.valueOf(fc.getString("exp"));
+			
+			World world = plugin.getServer().getWorld(fc.getString("loc.world"));
+			int x = fc.getInt("loc.x");
+			int y = fc.getInt("loc.y");
+			int z = fc.getInt("loc.z");
+			
+			Location loc = new Location(world, x, y, z);
+			
+			SavedArenaPlayer sp = new SavedArenaPlayer(name, exp, loc);
+			players.add(sp);
+		}
+		
+		return players;
 	}
 }

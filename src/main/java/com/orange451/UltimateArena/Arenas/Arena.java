@@ -26,6 +26,7 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaFlag;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
+import com.orange451.UltimateArena.Arenas.Objects.SavedArenaPlayer;
 import com.orange451.UltimateArena.events.*;
 import com.orange451.UltimateArena.util.FormatUtil;
 import com.orange451.UltimateArena.util.InventoryHelper;
@@ -1042,5 +1043,17 @@ public abstract class Arena
 			player.setExp(ap.startxp);
 			player.giveExp(Integer.valueOf(Math.round(ap.XP / 9)));
 		}
+	}
+	
+	// Save players on shutdown
+	public void onShutdown()
+	{
+		for (ArenaPlayer pl : arenaplayers)
+		{
+			SavedArenaPlayer playerToSave = new SavedArenaPlayer(pl.player.getName(), pl.startxp, pl.spawnBack);
+			plugin.getFileHelper().savePlayer(playerToSave);
+		}
+		
+		stop();
 	}
 }

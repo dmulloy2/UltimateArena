@@ -21,6 +21,9 @@ public class ArenaConfig
 	public int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
 	public boolean allowTeamKilling;
 	public List<ArenaReward> rewards = new ArrayList<ArenaReward>();
+	
+	public boolean loaded = false;
+	
 	public String arenaName;
 	public File file;
 	public UltimateArena plugin;
@@ -31,79 +34,93 @@ public class ArenaConfig
 		this.file = file;
 		this.plugin = plugin;
 		
-		load();
+		this.loaded = load();
+		if (!loaded)
+		{
+			plugin.getLogger().warning("Could not load config for " + arenaName + "!");
+		}
 	}
 	
-	public void load()
+	public boolean load()
 	{
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		if (arenaName.equals("mob"))
+		try
 		{
-			gameTime = fc.getInt("gameTime");
-			lobbyTime = fc.getInt("lobbyTime");
-			maxDeaths = fc.getInt("maxDeaths");
-			allowTeamKilling = fc.getBoolean("allowTeamKilling");
-			maxWave = fc.getInt("maxWave");
-			cashReward = fc.getInt("cashReward");
-		
-			List<String> words = fc.getStringList("rewards");
-			for (String word : words)
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			if (arenaName.equals("mob"))
 			{
-				int id = 0;
-				byte dat = 0;
-				int amt = 0;
-				
-				String[] split = word.split(",");
-				if (split[0].contains(":"))
+				gameTime = fc.getInt("gameTime");
+				lobbyTime = fc.getInt("lobbyTime");
+				maxDeaths = fc.getInt("maxDeaths");
+				allowTeamKilling = fc.getBoolean("allowTeamKilling");
+				maxWave = fc.getInt("maxWave");
+				cashReward = fc.getInt("cashReward");
+			
+				List<String> words = fc.getStringList("rewards");
+				for (String word : words)
 				{
-					String[] split2 = split[0].split(":");
-					id = Integer.parseInt(split2[0]);
-					dat = Byte.parseByte(split2[1]);
-					amt = Integer.parseInt(split[1]);
+					int id = 0;
+					byte dat = 0;
+					int amt = 0;
+					
+					String[] split = word.split(",");
+					if (split[0].contains(":"))
+					{
+						String[] split2 = split[0].split(":");
+						id = Integer.parseInt(split2[0]);
+						dat = Byte.parseByte(split2[1]);
+						amt = Integer.parseInt(split[1]);
+					}
+					else
+					{
+						id = Integer.parseInt(split[0]);
+						amt = Integer.parseInt(split[1]);
+					}
+					
+					ArenaReward reward = new ArenaReward(id, dat, amt);
+					rewards.add(reward);
 				}
-				else
+			}
+			else
+			{
+				gameTime = fc.getInt("gameTime");
+				lobbyTime = fc.getInt("lobbyTime");
+				maxDeaths = fc.getInt("maxDeaths");
+				allowTeamKilling = fc.getBoolean("allowTeamKilling");
+				cashReward = fc.getInt("cashReward");
+			
+				List<String> words = fc.getStringList("rewards");
+				for (String word : words)
 				{
-					id = Integer.parseInt(split[0]);
-					amt = Integer.parseInt(split[1]);
+					int id = 0;
+					byte dat = 0;
+					int amt = 0;
+					
+					String[] split = word.split(",");
+					if (split[0].contains(":"))
+					{
+						String[] split2 = split[0].split(":");
+						id = Integer.parseInt(split2[0]);
+						dat = Byte.parseByte(split2[1]);
+						amt = Integer.parseInt(split[1]);
+					}
+					else
+					{
+						id = Integer.parseInt(split[0]);
+						amt = Integer.parseInt(split[1]);
+					}
+					
+					ArenaReward reward = new ArenaReward(id, dat, amt);
+					rewards.add(reward);
 				}
-				
-				ArenaReward reward = new ArenaReward(id, dat, amt);
-				rewards.add(reward);
 			}
 		}
-		else
+		catch (Exception e)
 		{
-			gameTime = fc.getInt("gameTime");
-			lobbyTime = fc.getInt("lobbyTime");
-			maxDeaths = fc.getInt("maxDeaths");
-			allowTeamKilling = fc.getBoolean("allowTeamKilling");
-			cashReward = fc.getInt("cashReward");
-		
-			List<String> words = fc.getStringList("rewards");
-			for (String word : words)
-			{
-				int id = 0;
-				byte dat = 0;
-				int amt = 0;
-				
-				String[] split = word.split(",");
-				if (split[0].contains(":"))
-				{
-					String[] split2 = split[0].split(":");
-					id = Integer.parseInt(split2[0]);
-					dat = Byte.parseByte(split2[1]);
-					amt = Integer.parseInt(split[1]);
-				}
-				else
-				{
-					id = Integer.parseInt(split[0]);
-					amt = Integer.parseInt(split[1]);
-				}
-				
-				ArenaReward reward = new ArenaReward(id, dat, amt);
-				rewards.add(reward);
-			}
+			plugin.getLogger().severe("Error while loading config for " + arenaName + ": " + e.getMessage());
+			return false;
 		}
+		
+		return true;
 	}
 	
 	public void giveRewards(final Player player, final boolean half) 

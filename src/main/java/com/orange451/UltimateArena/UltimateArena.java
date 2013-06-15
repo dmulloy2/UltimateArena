@@ -175,14 +175,12 @@ public class UltimateArena extends JavaPlugin
 	public void onDisable()
 	{
 		long start = System.currentTimeMillis();
-		
-		fileHelper.savePlayers(activeArena, loggedOutPlayers);
-		
+
 		for (int i=0; i<activeArena.size(); i++)
 		{
 			try
 			{
-				activeArena.get(i).stop();
+				activeArena.get(i).onDisable();
 			}
 			catch (Exception e)
 			{
@@ -209,29 +207,25 @@ public class UltimateArena extends JavaPlugin
 			{
 				for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 				{
-					if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
+					if (savedArenaPlayer.getName().equals(player.getName()))
 					{
-						int exp = savedArenaPlayer.getExp();
+						float exp = savedArenaPlayer.getExp();
 						Location loc = savedArenaPlayer.getLocation();
-						
+								
 						normalize(player);
 						player.setExp(exp);
 						player.teleport(loc);
 						removePotions(player);
-						
+								
 						fileHelper.deletePlayer(player);
-						
+								
 						savedPlayers.remove(savedArenaPlayer);
 					}
 				}
 			}
+			
 			getLogger().info("Loaded " + savedPlayers.size() + " saved players!");
 		}
-	}
-	
-	public File getRoot() 
-	{
-		return getDataFolder();
 	}
 
 	public void onQuit(Player player)
@@ -252,9 +246,10 @@ public class UltimateArena extends JavaPlugin
 				{
 					if (ar.starttimer > 0 && (!ap.out)) 
 					{
-						int exp = Integer.valueOf(Math.round(ap.startxp));
-						SavedArenaPlayer loggedOut = new SavedArenaPlayer(player, exp, ap.spawnBack);
-						loggedOutPlayers.add(loggedOut);
+						SavedArenaPlayer loggedOut = new SavedArenaPlayer(player.getName(), ap.startxp, ap.spawnBack);
+						
+						savedPlayers.add(loggedOut);
+						fileHelper.savePlayer(loggedOut);
 						
 						removeFromArena(player.getName());
 					}
@@ -265,12 +260,12 @@ public class UltimateArena extends JavaPlugin
 	
 	public void onJoin(Player player) 
 	{
-		/**Normalize Players from Shutdown**/
+		/**Normalize Saved Players**/
 		for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
 		{
-			if (savedArenaPlayer.getPlayer().getName().equals(player.getName()))
+			if (savedArenaPlayer.getName().equals(player.getName()))
 			{
-				int exp = savedArenaPlayer.getExp();
+				float exp = savedArenaPlayer.getExp();
 				Location loc = savedArenaPlayer.getLocation();
 						
 				normalize(player);
@@ -281,20 +276,6 @@ public class UltimateArena extends JavaPlugin
 				fileHelper.deletePlayer(player);
 						
 				savedPlayers.remove(savedArenaPlayer);
-			}
-		}
-	
-		/**Normalize Players from Quit**/
-		for (SavedArenaPlayer loggedOutPlayer : loggedOutPlayers)
-		{
-			if (loggedOutPlayer.getPlayer().getName().equals(player.getName()))
-			{
-				int exp = loggedOutPlayer.getExp();
-				Location loc = loggedOutPlayer.getLocation();
-						
-				normalize(player);
-				player.setExp(exp);
-				player.teleport(loc);
 			}
 		}
 	}

@@ -1,27 +1,26 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 public class SavedArenaPlayer 
 {
-	public Player player;
-	public int exp;
+	public String name;
+	public float exp;
 	public Location location;
 	
-	public SavedArenaPlayer(Player player, int exp, Location location)
+	public SavedArenaPlayer(String name, float exp, Location location)
 	{
-		this.player = player;
+		this.name = name;
 		this.exp = exp;
 		this.location = location;
 	}
 	
-	public Player getPlayer()
+	public String getName()
 	{
-		return player;
+		return name;
 	}
 	
-	public int getExp()
+	public float getExp()
 	{
 		return exp;
 	}

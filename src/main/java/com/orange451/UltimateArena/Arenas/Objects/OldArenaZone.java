@@ -93,7 +93,7 @@ public class OldArenaZone
 	
 	public void save() 
 	{
-		String path = plugin.getRoot().getAbsolutePath() + "/arenas/" + arenaName;
+		String path = plugin.getDataFolder().getAbsolutePath() + "/arenas/" + arenaName;
         FileWriter outFile = null;
         PrintWriter out = null;
 		try 
@@ -238,7 +238,7 @@ public class OldArenaZone
 	
 	public void loadArena() 
 	{
-		String path = plugin.getRoot().getAbsolutePath() + "/arenas/" + arenaName;
+		String path = plugin.getDataFolder().getAbsolutePath() + "/arenas/" + arenaName;
 		FileInputStream fstream = null;
 		DataInputStream in = null;
 		BufferedReader br = null;

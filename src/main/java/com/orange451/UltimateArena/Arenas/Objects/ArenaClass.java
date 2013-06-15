@@ -83,7 +83,11 @@ public class ArenaClass
 		this.file = file;
 		this.name = getName(file);
 
-		load();
+		this.loaded = load();
+		if (!loaded)
+		{
+			plugin.getLogger().warning("Failed to load class: " + name + "!");
+		}
 	}
 	
 	public boolean load()
