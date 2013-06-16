@@ -153,10 +153,7 @@ public class FileConverter
 					line.append(":" + ac.special1);
 				}
 				
-				if (ac.amt1 != 1)
-				{
-					line.append("," + ac.amt1);
-				}
+				line.append("," + ac.amt1);
 				
 				if (ac.enchant1.size() > 0)
 				{
@@ -187,10 +184,7 @@ public class FileConverter
 					line.append(":" + ac.special2);
 				}
 				
-				if (ac.amt2 != 1)
-				{
-					line.append("," + ac.amt2);
-				}
+				line.append("," + ac.amt2);
 				
 				if (ac.enchant2.size() > 0)
 				{
@@ -221,10 +215,7 @@ public class FileConverter
 					line.append(":" + ac.special3);
 				}
 				
-				if (ac.amt3 != 1)
-				{
-					line.append("," + ac.amt3);
-				}
+				line.append("," + ac.amt3);
 				
 				if (ac.enchant3.size() > 0)
 				{
@@ -255,10 +246,7 @@ public class FileConverter
 					line.append(":" + ac.special4);
 				}
 				
-				if (ac.amt4 != 1)
-				{
-					line.append("," + ac.amt4);
-				}
+				line.append("," + ac.amt4);
 				
 				if (ac.enchant4.size() > 0)
 				{
@@ -289,10 +277,7 @@ public class FileConverter
 					line.append(":" + ac.special5);
 				}
 				
-				if (ac.amt5 != 1)
-				{
-					line.append("," + ac.amt5);
-				}
+				line.append("," + ac.amt5);
 				
 				if (ac.enchant5.size() > 0)
 				{
@@ -323,10 +308,7 @@ public class FileConverter
 					line.append(":" + ac.special6);
 				}
 				
-				if (ac.amt6 != 1)
-				{
-					line.append("," + ac.amt6);
-				}
+				line.append("," + ac.amt6);
 				
 				if (ac.enchant6.size() > 0)
 				{
@@ -357,10 +339,7 @@ public class FileConverter
 					line.append(":" + ac.special7);
 				}
 				
-				if (ac.amt7 != 1)
-				{
-					line.append("," + ac.amt7);
-				}
+				line.append("," + ac.amt7);
 				
 				if (ac.enchant7.size() > 0)
 				{
@@ -391,10 +370,7 @@ public class FileConverter
 					line.append(":" + ac.special8);
 				}
 				
-				if (ac.amt8 != 1)
-				{
-					line.append("," + ac.amt8);
-				}
+				line.append("," + ac.amt8);
 				
 				if (ac.enchant8.size() > 0)
 				{
@@ -425,10 +401,7 @@ public class FileConverter
 					line.append(":" + ac.special9);
 				}
 				
-				if (ac.amt9 != 1)
-				{
-					line.append("," + ac.amt9 + ",");
-				}
+				line.append("," + ac.amt9);
 				
 				if (ac.enchant9.size() > 0)
 				{
@@ -491,7 +464,7 @@ public class FileConverter
 			fc.set("arena1.z", arena1.getBlockZ());
 			
 			Location arena2 = az.arena2;
-			fc.set("arena2.x", arena2.getBlockZ());
+			fc.set("arena2.x", arena2.getBlockX());
 			fc.set("arena2.z", arena2.getBlockZ());
 			
 			String arenaType = az.arenaType;

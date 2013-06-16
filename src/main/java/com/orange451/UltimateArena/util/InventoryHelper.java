@@ -15,7 +15,8 @@ public class InventoryHelper
 			ItemStack[] items = inventory.getContents();
 			for(int slot = 0; slot < items.length; slot++)
 			{
-				if (items[slot] != null) {
+				if (items[slot] != null) 
+				{
 					int id = items[slot].getTypeId();
 					int amt = items[slot].getAmount();
 					if (id == itemid) 
@@ -57,7 +58,8 @@ public class InventoryHelper
 			ItemStack[] items = inventory.getContents();
 			for(int slot = 0; slot < items.length; slot++) 
 			{
-				if (items[slot] != null) {
+				if (items[slot] != null) 
+				{
 					int id = items[slot].getTypeId();
 					int amt = items[slot].getAmount();
 					if (id == itemid) 
