@@ -934,16 +934,20 @@ public abstract class Arena
 							}
 							ap.decideHat(player);
 							ap.healtimer--;
-							if (ap.mclass.name.equals("healer") && ap.healtimer <= 0) 
+							
+							if (ap.mclass != null)
 							{
-								if (ap.player.getHealth()+1<=20)
+								if (ap.mclass.name.equals("healer") && ap.healtimer <= 0) 
 								{
-									if (ap.player.getHealth() < 0) 
+									if (ap.player.getHealth()+1<=20)
 									{
-										ap.player.setHealth(1);
+										if (ap.player.getHealth() < 0) 
+										{
+											ap.player.setHealth(1);
+										}
+										ap.player.setHealth(ap.player.getHealth()+1);
+										ap.healtimer = 2;
 									}
-									ap.player.setHealth(ap.player.getHealth()+1);
-									ap.healtimer = 2;
 								}
 							}
 							
@@ -1013,7 +1017,7 @@ public abstract class Arena
 											}
 										}
 									}
-									catch(Exception e) 
+									catch (Exception e) 
 									{
 										plugin.getLogger().severe("Error respawning dead player: " + e.getMessage());
 									}
