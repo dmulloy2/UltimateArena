@@ -85,10 +85,11 @@ public class FileConverter
 			if (ac.armor1 > 0)
 			{
 				StringBuilder line = new StringBuilder();
-				line.append(ac.armor1 + ",");
+				line.append(ac.armor1);
 				
 				if (ac.armorenchant1.size() > 0)
 				{
+					line.append(",");
 					for (CompositeEnchantment ench : ac.armorenchant1)
 					{
 						line.append(EnchantmentType.toName(ench.getType()) + ":");
@@ -104,10 +105,11 @@ public class FileConverter
 			if (ac.armor2 > 0)
 			{
 				StringBuilder line = new StringBuilder();
-				line.append(ac.armor2 + ",");
+				line.append(ac.armor2);
 				
 				if (ac.armorenchant2.size() > 0)
 				{
+					line.append(",");
 					for (CompositeEnchantment ench : ac.armorenchant2)
 					{
 						line.append(EnchantmentType.toName(ench.getType()) + ":");
@@ -123,10 +125,11 @@ public class FileConverter
 			if (ac.armor3 > 0)
 			{
 				StringBuilder line = new StringBuilder();
-				line.append(ac.armor3 + ",");
+				line.append(ac.armor3);
 				
 				if (ac.armorenchant3.size() > 0)
 				{
+					line.append(",");
 					for (CompositeEnchantment ench : ac.armorenchant3)
 					{
 						line.append(EnchantmentType.toName(ench.getType()) + ":");

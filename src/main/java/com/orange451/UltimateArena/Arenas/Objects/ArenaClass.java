@@ -128,7 +128,7 @@ public class ArenaClass
 				}
 				else
 				{
-					armor2 = Integer.parseInt(arm1);
+					armor2 = Integer.parseInt(arm2);
 				}
 			}
 			
@@ -143,7 +143,7 @@ public class ArenaClass
 				}
 				else
 				{
-					armor3 = Integer.parseInt(arm1);
+					armor3 = Integer.parseInt(arm3);
 				}
 			}
 			
@@ -322,7 +322,8 @@ public class ArenaClass
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error loading class \"" + name + "\": " + e.getMessage());
+//			plugin.getLogger().severe("Error loading class \"" + name + "\": " + e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 		
