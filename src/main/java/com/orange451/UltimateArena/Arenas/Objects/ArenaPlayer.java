@@ -9,11 +9,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.potion.PotionEffectType;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Kit;
@@ -67,55 +65,11 @@ public class ArenaPlayer
 		}
 	}
 	
-	public void giveItem(Player p, int weapon1, byte dat, int amt, int slot, List<CompositeEnchantment> enchants)
+	public void giveItem(Player p, int id, byte dat, int amt, int slot, List<CompositeEnchantment> enchants)
 	{
-		if (weapon1 > 0)
+		if (id > 0)
 		{
-			Material mat = Material.getMaterial(weapon1);
-			if (mat != null)
-			{
-				if (!mat.equals(Material.AIR)) 
-				{
-					ItemStack itemStack = new ItemStack(mat, amt);
-					if (enchants != null && enchants.size() > 0)
-					{
-						for (CompositeEnchantment enchantment : enchants)
-						{
-							Enchantment ench = enchantment.getType();
-							int level = enchantment.getLevel();
-							try { itemStack.addUnsafeEnchantment(ench, level); }
-							catch (Exception e) {}
-						}
-					}
-					if (dat == 0)
-					{
-						p.getInventory().addItem(itemStack);
-					}
-					else
-					{
-						if (itemStack.getType() == Material.POTION)
-						{
-							PotionMeta meta = (PotionMeta)itemStack.getItemMeta();
-							PotionEffectType effect = PotionEffectType.getById(dat);
-							meta.setMainEffect(effect);
-							p.getInventory().setItem(slot, itemStack);
-						}
-						MaterialData data = itemStack.getData();
-						data.setData(dat);
-						itemStack.setData(data);
-						p.getInventory().setItem(slot, itemStack);
-					}
-				}
-			}
-		}
-	}
-	
-	public void giveArmor(Player p, int type, int slot, List<CompositeEnchantment> enchants)
-	{
-		Material mat = Material.getMaterial(type);
-		if (mat != null)
-		{
-			ItemStack itemStack = new ItemStack(mat, 1);
+			ItemStack itemStack = new ItemStack(id, amt);
 			if (enchants != null && enchants.size() > 0)
 			{
 				for (CompositeEnchantment enchantment : enchants)
@@ -126,18 +80,41 @@ public class ArenaPlayer
 					catch (Exception e) {}
 				}
 			}
-			if (slot == 0)
+			if (dat > 0)
 			{
-				p.getInventory().setChestplate(itemStack);
+				MaterialData data = itemStack.getData();
+				data.setData(dat);
+				itemStack.setData(data);
 			}
-			if (slot == 1)
+					
+			p.getInventory().setItem(slot, itemStack);
+		}
+	}	
+	
+	public void giveArmor(Player p, int type, int slot, List<CompositeEnchantment> enchants)
+	{
+		ItemStack itemStack = new ItemStack(type, 1);
+		if (enchants != null && enchants.size() > 0)
+		{
+			for (CompositeEnchantment enchantment : enchants)
 			{
-				p.getInventory().setLeggings(itemStack);
+				Enchantment ench = enchantment.getType();
+				int level = enchantment.getLevel();
+				try { itemStack.addUnsafeEnchantment(ench, level); }
+				catch (Exception e) {}
 			}
-			if (slot == 2)
-			{
-				p.getInventory().setBoots(itemStack);
-			}
+		}
+		if (slot == 0)
+		{
+			p.getInventory().setChestplate(itemStack);
+		}
+		if (slot == 1)
+		{
+			p.getInventory().setLeggings(itemStack);
+		}
+		if (slot == 2)
+		{
+			p.getInventory().setBoots(itemStack);
 		}
 	}
 	
@@ -196,7 +173,7 @@ public class ArenaPlayer
 		}
 		catch(Exception e)
 		{
-			inArena.az.plugin.getLogger().severe("Error spawning: " + e.getMessage());
+			inArena.az.plugin.getLogger().severe("Error giving class items: " + e.getMessage());
 		}
 	}
 }

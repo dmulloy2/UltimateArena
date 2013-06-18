@@ -208,11 +208,11 @@ public class UltimateArena extends JavaPlugin
 				{
 					if (savedArenaPlayer.getName().equals(player.getName()))
 					{
-						float exp = savedArenaPlayer.getExp();
+						int levels = savedArenaPlayer.getLevels();
 						Location loc = savedArenaPlayer.getLocation();
 								
 						normalize(player);
-						player.setExp(exp);
+						player.setLevel(levels);
 						player.teleport(loc);
 						removePotions(player);
 								
@@ -241,7 +241,7 @@ public class UltimateArena extends JavaPlugin
 			if (ap != null)
 			{
 				getLogger().info("Player " + player.getName() + " leaving arena " + ar.name + " from quit");
-				SavedArenaPlayer loggedOut = new SavedArenaPlayer(player.getName(), ap.startxp, ap.spawnBack);
+				SavedArenaPlayer loggedOut = new SavedArenaPlayer(player.getName(), ap.baselevel, ap.spawnBack);
 						
 				savedPlayers.add(loggedOut);
 				fileHelper.savePlayer(loggedOut);
@@ -259,11 +259,11 @@ public class UltimateArena extends JavaPlugin
 			SavedArenaPlayer savedArenaPlayer = savedPlayers.get(i);
 			if (savedArenaPlayer.getName().equals(player.getName()))
 			{
-				float exp = savedArenaPlayer.getExp();
+				int levels = savedArenaPlayer.getLevels();
 				Location loc = savedArenaPlayer.getLocation();
 						
 				normalize(player);
-				player.setExp(exp);
+				player.setLevel(levels);
 				player.teleport(loc);
 				removePotions(player);
 						

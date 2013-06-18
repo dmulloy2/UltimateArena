@@ -16,6 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.earth2me.essentials.IEssentials;
@@ -949,6 +950,21 @@ public abstract class Arena
 										ap.healtimer = 2;
 									}
 								}
+								
+								if (ap.mclass.hasPotionEffects)
+								{
+									if (ap.mclass.potionEffects.size() > 0)
+									{
+										for (PotionEffect effect : ap.mclass.potionEffects)
+										{
+											if (player.hasPotionEffect(effect.getType()))
+											{
+												player.removePotionEffect(effect.getType());
+											}
+											player.addPotionEffect(effect);
+										}
+									}
+								}
 							}
 							
 							if (!(plugin.isInArena(player.getLocation()))) 
@@ -1044,8 +1060,6 @@ public abstract class Arena
 		if (ap != null)
 		{
 			player.setLevel(ap.baselevel);
-			player.setExp(ap.startxp);
-			player.giveExp(Integer.valueOf(Math.round(ap.XP / 9)));
 		}
 	}
 	
@@ -1054,7 +1068,7 @@ public abstract class Arena
 	{
 		for (ArenaPlayer pl : arenaplayers)
 		{
-			SavedArenaPlayer playerToSave = new SavedArenaPlayer(pl.player.getName(), pl.startxp, pl.spawnBack);
+			SavedArenaPlayer playerToSave = new SavedArenaPlayer(pl.player.getName(), pl.baselevel, pl.spawnBack);
 			plugin.getFileHelper().savePlayer(playerToSave);
 		}
 		

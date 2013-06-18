@@ -5,13 +5,13 @@ import org.bukkit.Location;
 public class SavedArenaPlayer 
 {
 	public String name;
-	public float exp;
+	public int levels;
 	public Location location;
 	
-	public SavedArenaPlayer(String name, float exp, Location location)
+	public SavedArenaPlayer(String name, int levels, Location location)
 	{
 		this.name = name;
-		this.exp = exp;
+		this.levels = levels;
 		this.location = location;
 	}
 	
@@ -20,9 +20,9 @@ public class SavedArenaPlayer
 		return name;
 	}
 	
-	public float getExp()
+	public int getLevels()
 	{
-		return exp;
+		return levels;
 	}
 	
 	public Location getLocation()

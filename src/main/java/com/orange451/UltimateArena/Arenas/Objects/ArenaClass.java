@@ -10,6 +10,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.earth2me.essentials.IEssentials;
 import com.orange451.UltimateArena.UltimateArena;
@@ -73,6 +75,9 @@ public class ArenaClass
 	public boolean useEssentials = false;
 	public String essKitName = "";
 	public Map<String, Object> essentialsKit;
+	
+	public boolean hasPotionEffects = false;
+	public List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 	
 	public UltimateArena plugin;
 	public File file;
@@ -282,6 +287,28 @@ public class ArenaClass
 				essKitName = line;
 			}
 			
+			if (fc.get("hasPotionEffects") != null)
+			{
+				hasPotionEffects = fc.getBoolean("hasPotionEffects");
+			
+				if (hasPotionEffects)
+				{
+					String effects = fc.getString("potionEffects");
+					if (effects != null)
+					{
+						potionEffects = readPotionEffects(effects);
+					}
+					else
+					{
+						fc.set("potionEffects", "");
+					}
+				}
+			}
+			else
+			{
+				fc.set("hasPotionEffects", false);
+			}
+			
 			helmet = fc.getBoolean("useHelmet");
 			
 			String node = fc.getString("permissionNode");
@@ -339,6 +366,37 @@ public class ArenaClass
 			str = str.substring(str.indexOf(",") + 1);
 			try{ ret = Integer.parseInt(str); }catch(Exception e) { }
 		}
+		return ret;
+	}
+	
+	public List<PotionEffect> readPotionEffects(String str)
+	{
+		List<PotionEffect> ret = new ArrayList<PotionEffect>();
+		if (str.contains(","))
+		{
+			String[] split = str.split(",");
+			for (String s : split)
+			{
+				if (s.contains(":"))
+				{
+					PotionEffectType type = null;
+					int strength = 0;
+										
+					String[] split1 = s.split(":");
+					try { type = PotionEffectType.getByName(split1[0]); }
+					catch (Exception e) { type = PotionEffectType.getById(Integer.parseInt(split1[0])); }
+
+					try { strength = Integer.parseInt(split1[1]); }
+					catch (Exception e) {}
+					
+					if (type != null)
+					{
+						ret.add(new PotionEffect(type, 60, strength));
+					}
+				}
+			}
+		}
+		
 		return ret;
 	}
 	

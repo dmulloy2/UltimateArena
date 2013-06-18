@@ -898,8 +898,8 @@ public class FileHelper
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			fc.set("name", player.getName());
 			
-			float exp = player.getExp();
-			fc.set("xp", exp);
+			int level = player.getLevels();
+			fc.set("level", level);
 			
 			Location loc = player.getLocation();
 
@@ -944,7 +944,17 @@ public class FileHelper
 			
 			String name = fc.getString("name");
 
-			float exp = Float.valueOf(fc.getString("exp"));
+			int level = 0;
+			if (fc.get("exp") != null)
+			{
+				fc.set("exp", null);
+				level = 1;
+				
+			}
+			else
+			{
+				level = fc.getInt("level");
+			}
 			
 			World world = plugin.getServer().getWorld(fc.getString("loc.world"));
 			int x = fc.getInt("loc.x");
@@ -953,7 +963,7 @@ public class FileHelper
 			
 			Location loc = new Location(world, x, y, z);
 			
-			SavedArenaPlayer sp = new SavedArenaPlayer(name, exp, loc);
+			SavedArenaPlayer sp = new SavedArenaPlayer(name, level, loc);
 			players.add(sp);
 		}
 		
