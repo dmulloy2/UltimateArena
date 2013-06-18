@@ -307,6 +307,7 @@ public class ArenaClass
 			else
 			{
 				fc.set("hasPotionEffects", false);
+				fc.set("potionEffects", "");
 			}
 			
 			helmet = fc.getBoolean("useHelmet");
@@ -316,6 +317,8 @@ public class ArenaClass
 			{
 				permissionNode = node;
 			}
+			
+			fc.save(file);
 		}
 		catch (Exception e)
 		{
