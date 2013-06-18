@@ -322,8 +322,7 @@ public class ArenaClass
 		}
 		catch (Exception e)
 		{
-//			plugin.getLogger().severe("Error loading class \"" + name + "\": " + e.getMessage());
-			e.printStackTrace();
+			plugin.getLogger().severe("Error loading class \"" + name + "\": " + e.getMessage());
 			return false;
 		}
 		
