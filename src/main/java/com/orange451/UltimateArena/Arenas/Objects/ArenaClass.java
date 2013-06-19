@@ -394,8 +394,28 @@ public class ArenaClass
 					
 					if (type != null)
 					{
-						ret.add(new PotionEffect(type, 60, strength));
+						ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 					}
+				}
+			}
+		}
+		else
+		{
+			if (str.contains(":"))
+			{
+				PotionEffectType type = null;
+				int strength = 0;
+									
+				String[] split1 = str.split(":");
+				try { type = PotionEffectType.getByName(split1[0]); }
+				catch (Exception e) { type = PotionEffectType.getById(Integer.parseInt(split1[0])); }
+
+				try { strength = Integer.parseInt(split1[1]); }
+				catch (Exception e) {}
+				
+				if (type != null)
+				{
+					ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 				}
 			}
 		}

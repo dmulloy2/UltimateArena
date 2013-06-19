@@ -957,11 +957,10 @@ public abstract class Arena
 									{
 										for (PotionEffect effect : ap.mclass.potionEffects)
 										{
-											if (player.hasPotionEffect(effect.getType()))
+											if (!ap.player.hasPotionEffect(effect.getType()))
 											{
-												player.removePotionEffect(effect.getType());
+												player.addPotionEffect(effect);
 											}
-											player.addPotionEffect(effect);
 										}
 									}
 								}
@@ -969,7 +968,7 @@ public abstract class Arena
 							
 							if (!(plugin.isInArena(player.getLocation()))) 
 							{
-								plugin.getLogger().info(ap.player.getName() + " Got out of the arena! Putting him back in");
+								plugin.getLogger().info(ap.player.getName() + " got out of the arena! Putting him back in");
 								ap.amtkicked++;
 								spawn(ap.player.getName(), false);
 							}
