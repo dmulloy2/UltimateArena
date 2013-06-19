@@ -71,37 +71,14 @@ public class UltimateArena extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 		
+		createDirectories();
+		saveDefaultConfig();
+		
 		permissionHandler =  new PermissionHandler(this);
 		commandHandler = new CommandHandler(this);
 		
 		fileHelper = new FileHelper(this);
 		fileConverter = new FileConverter(this);
-
-		File arenaFile = new File(getDataFolder(), "arenas");
-		if (!arenaFile.exists())
-		{
-			arenaFile.mkdir();
-		}
-		
-		File playersFile = new File(getDataFolder(), "players");
-		if (!playersFile.exists())
-		{
-			playersFile.mkdir();
-		}
-		
-		File classFile = new File(getDataFolder(), "classes");
-		if (!classFile.exists())
-		{
-			classFile.mkdir();
-		}
-		
-		File configsFile = new File(getDataFolder(), "configs");
-		if (!configsFile.exists())
-		{
-			configsFile.mkdir();
-		}
-		
-		saveDefaultConfig();
 		
 		// Add fields
 		fieldTypes.add("pvp");
@@ -116,8 +93,6 @@ public class UltimateArena extends JavaPlugin
 		fieldTypes.add("hunger");
 
 		// Add Commands
-		getCommand("ua").setExecutor(commandHandler);
-		
 		commandHandler.setCommandPrefix("ua");
 		commandHandler.registerCommand(new PCommandHelp(this));
 		commandHandler.registerCommand(new PCommandInfo(this));
@@ -195,6 +170,33 @@ public class UltimateArena extends JavaPlugin
 		long finish = System.currentTimeMillis();
 		
 		getLogger().info(getDescription().getFullName() + " has been disabled ("+(finish-start)+"ms)");
+	}
+	
+	public void createDirectories()
+	{
+		File arenaFile = new File(getDataFolder(), "arenas");
+		if (!arenaFile.exists())
+		{
+			arenaFile.mkdir();
+		}
+		
+		File playersFile = new File(getDataFolder(), "players");
+		if (!playersFile.exists())
+		{
+			playersFile.mkdir();
+		}
+		
+		File classFile = new File(getDataFolder(), "classes");
+		if (!classFile.exists())
+		{
+			classFile.mkdir();
+		}
+		
+		File configsFile = new File(getDataFolder(), "configs");
+		if (!configsFile.exists())
+		{
+			configsFile.mkdir();
+		}
 	}
 	
 	public void loadPlayers()
@@ -357,6 +359,8 @@ public class UltimateArena extends JavaPlugin
 			fileHelper.generateStockClasses();
 			getLogger().info("No classes found! Generating stock classes!");
 		}
+
+		children = folder.listFiles();
 
 		for (File file : children)
 		{

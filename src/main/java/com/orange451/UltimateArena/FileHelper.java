@@ -937,6 +937,12 @@ public class FileHelper
 		List<SavedArenaPlayer> players = new ArrayList<SavedArenaPlayer>();
 
 		File folder = new File(plugin.getDataFolder(), "players");
+		if (!folder.exists())
+		{
+			plugin.createDirectories();
+			return players;
+		}
+		
 		File[] children = folder.listFiles();
 		for (File file : children)
 		{
