@@ -126,12 +126,10 @@ public class UltimateArena extends JavaPlugin
 		if (pm.isPluginEnabled("PVPGunPlus"))
 			pm.registerEvents(new PVPGunPlusListener (this), this);
 			
-		pm.registerEvents(new PluginEntityListener(this), this);
-		pm.registerEvents(new PluginBlockListener(this), this);
-		pm.registerEvents(new PluginPlayerListener(this), this);
-		
-		Util.initialize(this);
- 
+		pm.registerEvents(new EntityListener(this), this);
+		pm.registerEvents(new BlockListener(this), this);
+		pm.registerEvents(new PlayerListener(this), this);
+
 		new ArenaUpdater().runTaskTimer(this, 2L, 20L);
 			
 		checkVault(pm);

@@ -56,7 +56,7 @@ public class Field
 		{
 			if (locx >= minx && locx <= maxx)
 			{
-				return (locy > miny && locy <= maxy);
+				return (locy >= miny && locy <= maxy);
 			}
 		}
 		

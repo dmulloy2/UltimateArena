@@ -17,10 +17,10 @@ import com.orange451.UltimateArena.permissions.PermissionType;
  * @author dmulloy2
  */
 
-public class PluginBlockListener implements Listener 
+public class BlockListener implements Listener 
 {
 	public UltimateArena plugin;
-	public PluginBlockListener(UltimateArena plugin) 
+	public BlockListener(UltimateArena plugin) 
 	{
 		this.plugin = plugin;
 	}
@@ -52,31 +52,21 @@ public class PluginBlockListener implements Listener
 				/**Check to make sure the player is in an arena**/
 				if (plugin.isInArena(player))
 				{
-					/**If the arena is hunger, allow blocks to be placed**/
-					if (arena.type.equals("Hunger"))
+					/**If the arena isn't hunger, don't allow blocks to be placed**/
+					if (!arena.type.equalsIgnoreCase("Hunger"))
 					{
-						event.setCancelled(false);
-					}
-					/**If any other arena, disallow**/
-					else
-					{
-						player.sendMessage(ChatColor.RED + "You can't break this!");
+						player.sendMessage(ChatColor.RED + "You cannot break this!");
 						event.setCancelled(true);
 					}
 				}
 				/**If the player is not in an arena, but the block is**/
 				else
 				{
-					/**If the player has correct perms, allow them to build**/
-					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
+					/**If the player does not have perms, don't allow them to build**/
+					if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
 					{
-						event.setCancelled(false);
-					}
-					/**If not, disallow**/
-					else
-					{
-						event.setCancelled(true);
 						player.sendMessage(ChatColor.RED + "You cannot break this!");
+						event.setCancelled(true);
 					}
 				}
 			}
@@ -110,28 +100,20 @@ public class PluginBlockListener implements Listener
 				/**Check to make sure the player is in an arena**/
 				if (plugin.isInArena(player))
 				{
-					/**If the arena is hunger, allow blocks to be placed**/
-					if (arena.type.equals("Hunger"))
+					/**If the arena isn't hunger, don't allow blocks to be placed**/
+					if (!arena.type.equalsIgnoreCase("Hunger"))
 					{
-						event.setCancelled(false);
-					}
-					/**If any other arena, disallow**/
-					else
-					{
+						player.sendMessage(ChatColor.RED + "You cannot place this!");
 						event.setCancelled(true);
 					}
 				}
 				/**If the player is not in an arena, but the block is**/
 				else
 				{
-					/**If the player has correct perms, allow them to build**/
-					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
+					/**If the player does not have perms, don't allow them to build**/
+					if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
 					{
-						event.setCancelled(false);
-					}
-					/**If not, disallow**/
-					else
-					{
+						player.sendMessage(ChatColor.RED + "You cannot place this!");
 						event.setCancelled(true);
 					}
 				}

@@ -27,10 +27,10 @@ import com.orange451.UltimateArena.Arenas.SPLEEFArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 
-public class PluginPlayerListener implements Listener 
+public class PlayerListener implements Listener 
 {
 	public UltimateArena plugin;
-	public PluginPlayerListener(UltimateArena plugin)
+	public PlayerListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -237,14 +237,6 @@ public class PluginPlayerListener implements Listener
 				plugin.waiting.get(i).player.sendMessage(ChatColor.RED + "Cancelled!");
 				plugin.waiting.get(i).cancel();
 				plugin.waiting.remove(i);
-			}
-		}
-		
-		if (plugin.isInArena(p))
-		{
-			if (!plugin.isInArena(p.getLocation()))
-			{
-				p.teleport(plugin.getArena(p).getSpawn(plugin.getArenaPlayer(p)));
 			}
 		}
 	}

@@ -3,25 +3,17 @@ package com.orange451.UltimateArena.util;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
-
-import com.orange451.UltimateArena.UltimateArena;
 
 public class Util 
 {
-	public static Server server;
-	public static void initialize(UltimateArena plugin)
-	{
-		Util.server = plugin.getServer();
-	}
-	
 	public static Player matchPlayer(String pl)
 	{
-		List<Player> players = server.matchPlayer(pl);
+		List<Player> players = Bukkit.matchPlayer(pl);
 		
 		if (players.size() >= 1)
 			return players.get(0);
@@ -34,7 +26,7 @@ public class Util
 		if (matchPlayer(pl) != null)
 			return matchPlayer(pl);
 		
-		for (OfflinePlayer o : server.getOfflinePlayers())
+		for (OfflinePlayer o : Bukkit.getOfflinePlayers())
 		{
 			if (o.getName().equalsIgnoreCase(pl))
 				return o;
@@ -45,7 +37,7 @@ public class Util
 	
 	public static boolean isBanned(OfflinePlayer p)
 	{
-		for (OfflinePlayer banned : server.getBannedPlayers()) 
+		for (OfflinePlayer banned : Bukkit.getBannedPlayers()) 
 		{
 			if (p.getName().equalsIgnoreCase(banned.getName()))
 				return true;
@@ -82,7 +74,7 @@ public class Util
 
 	public static void playEffect(Effect effect, Location loc, int i) 
 	{
-		for (Player player : server.getOnlinePlayers())
+		for (Player player : Bukkit.getOnlinePlayers())
 		{
 			player.playEffect(loc, effect, i);
 		}

@@ -21,20 +21,20 @@ import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.events.UltimateArenaKillEvent;
 
-public class PluginEntityListener implements Listener
+public class EntityListener implements Listener
 {
 	public UltimateArena plugin;
-	public PluginEntityListener(UltimateArena plugin)
+	public EntityListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityExplode(EntityExplodeEvent event) 
 	{
 		if (plugin.isInArena(event.getLocation()))
 		{
-			if (event.blockList().size() > 1)
+			if (!event.blockList().isEmpty())
 			{
 				event.setCancelled(true);
 			}

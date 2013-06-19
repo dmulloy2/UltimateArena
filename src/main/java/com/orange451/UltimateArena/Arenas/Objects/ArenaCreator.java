@@ -128,6 +128,7 @@ public class ArenaCreator
 			az.defaultClass = plugin.classes.get(0).name;
 			az.world = lobby1.getWorld();
 			az.save();
+			az.initialize();
 			plugin.getLogger().info("Arena created and saved: " + arenaName + "  Type: " + arenaType);
 			plugin.loadedArena.add(az);
 			player.sendMessage(ChatColor.GRAY + "Finished arena!");

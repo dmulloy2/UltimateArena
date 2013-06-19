@@ -51,6 +51,18 @@ public class ArenaZone
 	{
 		this.arenaName = getName(file);
 		this.plugin = plugin;
+		
+		initialize();
+	}
+	
+	public ArenaZone(UltimateArena plugin, String str) 
+	{
+		this.arenaName = str;
+		this.plugin = plugin;
+	}
+	
+	public void initialize()
+	{
 		this.lobby = new Field();
 		this.arena = new Field();
 		this.defaultClass = plugin.classes.get(0).name;
@@ -66,12 +78,6 @@ public class ArenaZone
 		{
 			plugin.getLogger().warning("Arena: " + arenaName + " has failed to load!");
 		}
-	}
-	
-	public ArenaZone(UltimateArena plugin, String str) 
-	{
-		this.arenaName = str;
-		this.plugin = plugin;
 	}
 	
 	public boolean checkLocation(Location loc) 
