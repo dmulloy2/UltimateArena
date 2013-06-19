@@ -28,46 +28,37 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) 
 	{
-		/**Checks to make sure the block is not null**/
 		Block block = event.getBlock();
 		if (block == null)
 			return;
-		
-		/**Checks to make sure the player is not null**/
+
 		Player player = event.getPlayer();
 		if (player == null)
 			return;
 		
-		/**Check to make sure the event is not cancelled**/
 		if (event.isCancelled())
 			return;
 		
-		/**Checks to make sure the block is in an arena**/
 		if (plugin.isInArena(block))
 		{
-			/**Checks to make sure the arena is not null**/
-			Arena arena = plugin.getArenaInside(block);
-			if (arena != null)
+			/** The player is in an arena **/
+			if (plugin.isInArena(player) && plugin.getArena(player) != null)
 			{
-				/**Check to make sure the player is in an arena**/
-				if (plugin.isInArena(player))
+				Arena arena = plugin.getArena(player);
+				if (!arena.type.equalsIgnoreCase("Hunger"))
 				{
-					/**If the arena isn't hunger, don't allow blocks to be placed**/
-					if (!arena.type.equalsIgnoreCase("Hunger"))
-					{
-						player.sendMessage(ChatColor.RED + "You cannot break this!");
-						event.setCancelled(true);
-					}
+					player.sendMessage(ChatColor.RED + "You cannot break this!");
+					event.setCancelled(true);
 				}
-				/**If the player is not in an arena, but the block is**/
-				else
+				// TODO: Hunger games block logging?
+			}
+			else
+			{
+				/** The player is at the site of the arena, but not in it **/
+				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
 				{
-					/**If the player does not have perms, don't allow them to build**/
-					if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
-					{
-						player.sendMessage(ChatColor.RED + "You cannot break this!");
-						event.setCancelled(true);
-					}
+					player.sendMessage(ChatColor.RED + "You cannot break this!");
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -76,46 +67,37 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) 
 	{
-		/**Checks to make sure the block is not null**/
 		Block block = event.getBlock();
 		if (block == null)
 			return;
-		
-		/**Checks to make sure the player is not null**/
+
 		Player player = event.getPlayer();
 		if (player == null)
 			return;
 		
-		/**Check to make sure the event is not cancelled**/
 		if (event.isCancelled())
 			return;
 		
-		/**Checks to make sure the block is in an arena**/
 		if (plugin.isInArena(block))
 		{
-			/**Checks to make sure the arena is not null**/
-			Arena arena = plugin.getArenaInside(block);
-			if (arena != null)
+			/** The player is in an arena **/
+			if (plugin.isInArena(player) && plugin.getArena(player) != null)
 			{
-				/**Check to make sure the player is in an arena**/
-				if (plugin.isInArena(player))
+				Arena arena = plugin.getArena(player);
+				if (!arena.type.equalsIgnoreCase("Hunger"))
 				{
-					/**If the arena isn't hunger, don't allow blocks to be placed**/
-					if (!arena.type.equalsIgnoreCase("Hunger"))
-					{
-						player.sendMessage(ChatColor.RED + "You cannot place this!");
-						event.setCancelled(true);
-					}
+					player.sendMessage(ChatColor.RED + "You cannot place this!");
+					event.setCancelled(true);
 				}
-				/**If the player is not in an arena, but the block is**/
-				else
+				// TODO: Hunger games block logging?
+			}
+			else
+			{
+				/** The player is at the site of the arena, but not in it **/
+				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
 				{
-					/**If the player does not have perms, don't allow them to build**/
-					if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
-					{
-						player.sendMessage(ChatColor.RED + "You cannot place this!");
-						event.setCancelled(true);
-					}
+					player.sendMessage(ChatColor.RED + "You cannot place this!");
+					event.setCancelled(true);
 				}
 			}
 		}

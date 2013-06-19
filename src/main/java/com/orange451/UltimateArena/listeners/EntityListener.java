@@ -48,7 +48,7 @@ public class EntityListener implements Listener
 		if (att instanceof Player)
 		{
 			Player attacker = (Player)att;
-			if (this.plugin.isInArena(attacker)) 
+			if (plugin.isInArena(attacker)) 
 			{
 				ItemStack itm = attacker.getItemInHand();
 				itm.setDurability((short) 0);
