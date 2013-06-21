@@ -504,6 +504,7 @@ public class ArenaCreator
 			catch(Exception e) 
 			{
 				player.sendMessage(ChatColor.RED + "Error creating arena. Check console.");
+				plugin.getLogger().severe("Error creating arena:");
 				e.printStackTrace();
 			}
 		}

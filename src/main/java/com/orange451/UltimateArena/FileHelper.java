@@ -194,6 +194,7 @@ public class FileHelper
 				fc.set("gameTime", 1200);
 				fc.set("lobbyTime", 90);
 				fc.set("maxDeaths", 0);
+				fc.set("maxWave", 15);
 				fc.set("allowTeamKilling", false);
 				fc.set("cashReward", 15);
 				
