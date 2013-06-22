@@ -2,16 +2,21 @@ package com.orange451.UltimateArena.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
+import com.orange451.UltimateArena.Arenas.Objects.ArenaSign;
+import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.permissions.PermissionType;
+import com.orange451.UltimateArena.util.FormatUtil;
 
 /**
  * @author dmulloy2
@@ -98,6 +103,78 @@ public class BlockListener implements Listener
 				{
 					player.sendMessage(ChatColor.RED + "You cannot place this!");
 					event.setCancelled(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onSignChange(SignChangeEvent event)
+	{
+		if (event.getLine(0).equalsIgnoreCase("[UltimateArena]"))
+		{
+			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), PermissionType.ARENA_BUILD.permission))
+			{
+				if (event.getLine(1).equalsIgnoreCase("Click to join"))
+				{
+					Sign s = (Sign)event.getBlock().getState();
+					if (event.getLine(2).equalsIgnoreCase("Auto assign"))
+					{
+						ArenaSign sign = new ArenaSign(plugin, s, s.getLocation());
+						plugin.joinSigns.add(sign);
+					}
+					else
+					{
+						ArenaZone az = plugin.getArenaZone(event.getLine(2));
+						if (az != null)
+						{
+							ArenaSign sign = new ArenaSign(plugin, s, s.getLocation(), az);
+							plugin.joinSigns.add(sign);
+							sign.update();
+						}
+						else
+						{
+							event.setLine(0, FormatUtil.format("[UltimateArena]"));
+							event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+							event.setLine(2, "");
+							event.setLine(3, "");
+						}
+					}
+				}
+			}
+			else
+			{
+				event.setLine(0, FormatUtil.format("[UltimateArena]"));
+				event.setLine(1, FormatUtil.format("&4No permission"));
+				event.setLine(2, "");
+				event.setLine(3, "");
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onSignBreak(BlockBreakEvent event)
+	{
+		Block block = event.getBlock();
+		Player player = event.getPlayer();
+		if (block.getState() instanceof Sign)
+		{
+			Sign s = (Sign)block.getState();
+			if (s.getLine(0).equalsIgnoreCase("[UltimateArena]"))
+			{
+				ArenaSign sign = plugin.getArenaSign(block.getLocation());
+				if (sign != null)
+				{
+					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
+					{
+						plugin.deleteSign(sign);
+						player.sendMessage(FormatUtil.format("&eDeleted join sign!"));
+					}
+					else
+					{
+						event.setCancelled(true);
+						player.sendMessage(FormatUtil.format("&cPermission denied!"));
+					}
 				}
 			}
 		}

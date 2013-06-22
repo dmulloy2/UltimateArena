@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class Util 
@@ -78,5 +79,13 @@ public class Util
 		{
 			player.playEffect(loc, effect, i);
 		}
+	}
+	
+	public static boolean checkLocation(Location loc1, Location loc2)
+	{
+		Block block1 = loc1.getBlock();
+		Block block2 = loc2.getBlock();
+		
+		return (block1.getLocation().equals(block2.getLocation()));
 	}
 }

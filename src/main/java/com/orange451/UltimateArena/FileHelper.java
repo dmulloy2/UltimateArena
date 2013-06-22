@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.orange451.UltimateArena.Arenas.Objects.ArenaSign;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.Arenas.Objects.SavedArenaPlayer;
 
@@ -975,5 +977,119 @@ public class FileHelper
 		}
 		
 		return players;
+	}
+	
+	public void saveSign(ArenaSign sign)
+	{
+		try
+		{
+			File signFile = new File(plugin.getDataFolder(), "signs.yml");
+			if (!signFile.exists()) signFile.createNewFile();
+			
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
+			fc.set("total", 0);
+			
+			String path = "signs." + fc.getInt("total") + ".";
+			String locpath = path + "location.";
+			Location loc = sign.loc;
+			
+			fc.set(locpath + "world", loc.getWorld().getName());
+			fc.set(locpath + "x", loc.getBlockX());
+			fc.set(locpath + "y", loc.getBlockY());
+			fc.set(locpath + "z", loc.getBlockZ());
+			
+			fc.set(path + "autoAssign", sign.autoAssign);
+			fc.set(path + "name", sign.zone.arenaName);
+			
+			fc.set("total", fc.getInt("total") + 1);
+			
+			fc.save(signFile);
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().severe("Error saving signs: " + e.getMessage());
+		}
+	}
+	
+	public List<ArenaSign> loadSigns()
+	{
+		List<ArenaSign> signs = new ArrayList<ArenaSign>();
+		
+		File signFile = new File(plugin.getDataFolder(), "signs.yml");
+		if (!signFile.exists())
+		{
+			return signs;
+		}
+		
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
+		for (int i=0; i<fc.getInt("signs"); i++)
+		{
+			String path = "signs" + i + ".";
+			String locpath = path + "location.";
+			
+			World world = plugin.getServer().getWorld(fc.getString(locpath + "world"));
+			Location loc = new Location(world, fc.getInt(locpath + "x"), fc.getInt(locpath + "y"), fc.getInt(locpath + "z"));
+			
+			if (world.getBlockAt(loc).getState() instanceof Sign)
+			{
+				Sign s = (Sign)world.getBlockAt(loc);
+				if (fc.getBoolean("autoAssign"))
+				{
+					ArenaSign sign = new ArenaSign(plugin, s, loc);
+					plugin.joinSigns.add(sign);
+				}
+				else
+				{
+					ArenaZone zone = plugin.getArenaZone(fc.getString("name"));
+					if (zone != null)
+					{
+						ArenaSign sign = new ArenaSign(plugin, s, loc, zone);
+						plugin.joinSigns.add(sign);
+					}
+				}
+			}
+		}
+		
+		return signs;
+	}
+	
+	public void deleteSign()
+	{
+		try
+		{
+			File signFile = new File(plugin.getDataFolder(), "signs.yml");
+			if (!signFile.exists())
+			{
+				signFile.delete();
+			}
+			
+			signFile.createNewFile();
+			
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
+			fc.set("total", 0);
+			
+			for (ArenaSign sign : plugin.joinSigns)
+			{
+				String path = "signs." + fc.getInt("total") + ".";
+				String locpath = path + "location.";
+				Location loc = sign.loc;
+				
+				fc.set(locpath + "world", loc.getWorld().getName());
+				fc.set(locpath + "x", loc.getBlockX());
+				fc.set(locpath + "y", loc.getBlockY());
+				fc.set(locpath + "z", loc.getBlockZ());
+				
+				fc.set(path + "autoAssign", sign.autoAssign);
+				fc.set(path + "name", sign.zone.arenaName);
+				
+				fc.set("total", fc.getInt("total") + 1);
+			}
+			
+			fc.save(signFile);
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().severe("Error deleting sign: " + e.getMessage());
+		}
 	}
 }

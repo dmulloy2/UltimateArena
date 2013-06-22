@@ -63,6 +63,7 @@ public class UltimateArena extends JavaPlugin
 	public List<RemindTask> waiting = new ArrayList<RemindTask>();
 	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	public List<String> fieldTypes = new ArrayList<String>();
+	public List<ArenaSign> joinSigns = new ArrayList<ArenaSign>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
 	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
 
@@ -131,6 +132,11 @@ public class UltimateArena extends JavaPlugin
 		pm.registerEvents(new PlayerListener(this), this);
 
 		new ArenaUpdater().runTaskTimer(this, 2L, 20L);
+		
+		joinSigns = fileHelper.loadSigns();
+		getLogger().info("Loaded " + joinSigns.size() + " join signs!");
+		
+		new SignUpdateTask().runTaskTimer(this, 2L, 20L);
 			
 		checkVault(pm);
 		
@@ -158,6 +164,11 @@ public class UltimateArena extends JavaPlugin
 			{
 				getLogger().severe("Error while stopping arena " + activeArena.get(i).name + ". (" + e.getMessage()+")");
 			}
+		}
+		
+		for (ArenaSign sign : joinSigns)
+		{
+			sign.save();
 		}
 		
 		getServer().getServicesManager().unregisterAll(this);
@@ -406,6 +417,22 @@ public class UltimateArena extends JavaPlugin
 				arena.stop();
 			}
 		}
+	}
+	
+	public ArenaSign getArenaSign(Location loc)
+	{
+		for (ArenaSign sign : joinSigns)
+		{
+			if (Util.checkLocation(sign.loc, loc))
+				return sign;
+		}
+		return null;
+	}
+	
+	public void deleteSign(ArenaSign sign)
+	{
+		joinSigns.remove(sign);
+		fileHelper.deleteSign();
 	}
 	
 	public ArenaClass getArenaClass(String line)
@@ -869,6 +896,7 @@ public class UltimateArena extends JavaPlugin
 		activeArena.clear();
 		makingArena.clear();
 		fieldTypes.clear();
+		joinSigns.clear();
 		waiting.clear();
 		classes.clear();
 		configs.clear();
@@ -941,4 +969,19 @@ public class UltimateArena extends JavaPlugin
  
 		return economy != null;
 	}
+    
+    public class SignUpdateTask extends BukkitRunnable
+    {
+    	@Override
+    	public void run()
+    	{
+    		for (ArenaSign sign : joinSigns)
+    		{
+    			if (!sign.autoAssign)
+    			{
+    				sign.update();
+    			}
+    		}
+    	}
+    }
 }

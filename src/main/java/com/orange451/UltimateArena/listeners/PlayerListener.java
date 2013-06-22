@@ -26,6 +26,7 @@ import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.SPLEEFArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
+import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
 public class PlayerListener implements Listener 
 {
@@ -136,7 +137,7 @@ public class PlayerListener implements Listener
 					if (event.hasBlock()) 
 					{
 						Block block = event.getClickedBlock();
-						if(block.getState() instanceof Sign) 
+						if (block.getState() instanceof Sign) 
 						{
 							Sign s = (Sign)block.getState();
 							String line1 = s.getLine(0);
@@ -181,6 +182,85 @@ public class PlayerListener implements Listener
 									if (splf.isInside(block.getLocation())) 
 									{
 										block.setType(Material.AIR);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerInteract1(PlayerInteractEvent event)
+	{
+		Player player = event.getPlayer();
+		Action action = event.getAction();
+		if (action.equals(Action.RIGHT_CLICK_BLOCK))
+		{
+			if (event.hasBlock()) 
+			{
+				Block block = event.getClickedBlock();
+				if (block.getState() instanceof Sign) 
+				{
+					Sign s = (Sign)block.getState();
+					if (s.getLine(0).equalsIgnoreCase("[UltimateArena]"))
+					{
+						if (s.getLine(1).equalsIgnoreCase("Click to join"))
+						{
+							if (s.getLine(2).equalsIgnoreCase("Auto assign"))
+							{
+								boolean found = false;
+								if (plugin.activeArena.size() > 0)
+								{
+									for (Arena a : plugin.activeArena)
+									{
+										if (a.starttimer > 1)
+										{
+											plugin.fight(player, a.name);
+											found = true;
+										}
+									}
+								}
+								if (!found)
+								{
+									if (plugin.loadedArena.size() > 0)
+									{
+										ArenaZone az = plugin.loadedArena.get(0);
+										if (az != null)
+										{
+											plugin.fight(player, az.arenaName);
+											found = true;
+										}
+									}
+								}
+							}
+							else
+							{
+								String name = s.getLine(2);
+								boolean found = false;
+								for (Arena a : plugin.activeArena)
+								{
+									if (a.name.equalsIgnoreCase(name) && a.starttimer > 1)
+									{
+										plugin.fight(player, a.name);
+										found = true;
+									}
+								}
+								if (!found)
+								{
+									for (ArenaZone az : plugin.loadedArena)
+									{
+										if (az != null && az.arenaName.equalsIgnoreCase(name))
+										{
+											plugin.fight(player, az.arenaName);
+											found = true;
+										}
+									}
+									if (!found)
+									{
+										player.sendMessage(ChatColor.RED + "No arena by the name of \"" + name + "\" exists!");
 									}
 								}
 							}
