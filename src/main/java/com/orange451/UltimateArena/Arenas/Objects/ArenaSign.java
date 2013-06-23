@@ -43,13 +43,13 @@ public class ArenaSign
 			Arena a = plugin.getArena(zone.arenaName);
 			if (a.starttimer > 1)
 			{
-				line.append("LOBBY ");
+				line.append("LOBBY (");
 			}
 			else
 			{
-				line.append("INGAME ");
+				line.append("INGAME (");
 			}
-			line.append(a.amtPlayersInArena + "/" + zone.maxPlayers);
+			line.append(a.amtPlayersInArena + "/" + zone.maxPlayers + ")");
 			line3 = line.toString();
 		}
 		else

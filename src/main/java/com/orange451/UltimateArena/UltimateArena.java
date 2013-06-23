@@ -671,9 +671,9 @@ public class UltimateArena extends JavaPlugin
 		}
 		
 		ArenaJoinTask join = new ArenaJoinTask(player, name);
-		if (getConfig().getBoolean("joinTask.enabled"))
+		if (getConfig().getBoolean("joinTimer.enabled"))
 		{
-			int seconds = getConfig().getInt("joinTask.wait");
+			int seconds = getConfig().getInt("joinTimer.wait");
 			int wait = seconds * 20;
 			
 			join.runTaskLater(this, wait);
@@ -1015,7 +1015,6 @@ public class UltimateArena extends JavaPlugin
 		{
 			waiting.remove(this);
 			joinBattle(false, player, name);
-			this.cancel();
 		}
 	}
     
