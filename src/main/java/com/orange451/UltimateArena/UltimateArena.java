@@ -29,6 +29,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -221,6 +222,39 @@ public class UltimateArena extends JavaPlugin
 						removePotions(player);
 								
 						fileHelper.deletePlayer(player);
+						
+						List<ItemStack> itemContents = savedArenaPlayer.getSavedInventory();
+						List<ItemStack> armorContents = savedArenaPlayer.getSavedArmor();
+						
+						PlayerInventory inv = player.getInventory();
+						for (ItemStack itemStack : itemContents)
+						{
+							inv.addItem(itemStack);
+						}
+						
+						for (ItemStack armor : armorContents)
+						{
+							String type = armor.getType().toString().toLowerCase();
+							if (type.contains("helmet"))
+							{
+								inv.setHelmet(armor);
+							}
+							
+							if (type.contains("chestplate"))
+							{
+								inv.setChestplate(armor);
+							}
+							
+							if (type.contains("leggings"))
+							{
+								inv.setLeggings(armor);
+							}
+							
+							if (type.contains("boots"))
+							{
+								inv.setBoots(armor);
+							}
+						}
 								
 						savedPlayers.remove(savedArenaPlayer);
 					}
@@ -270,6 +304,39 @@ public class UltimateArena extends JavaPlugin
 				player.setLevel(levels);
 				player.teleport(loc);
 				removePotions(player);
+				
+				List<ItemStack> itemContents = savedArenaPlayer.getSavedInventory();
+				List<ItemStack> armorContents = savedArenaPlayer.getSavedArmor();
+				
+				PlayerInventory inv = player.getInventory();
+				for (ItemStack itemStack : itemContents)
+				{
+					inv.addItem(itemStack);
+				}
+				
+				for (ItemStack armor : armorContents)
+				{
+					String type = armor.getType().toString().toLowerCase();
+					if (type.contains("helmet"))
+					{
+						inv.setHelmet(armor);
+					}
+					
+					if (type.contains("chestplate"))
+					{
+						inv.setChestplate(armor);
+					}
+					
+					if (type.contains("leggings"))
+					{
+						inv.setLeggings(armor);
+					}
+					
+					if (type.contains("boots"))
+					{
+						inv.setBoots(armor);
+					}
+				}
 						
 				fileHelper.deletePlayer(player);
 						
