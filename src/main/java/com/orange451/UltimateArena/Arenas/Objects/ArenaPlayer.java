@@ -1,5 +1,6 @@
 package com.orange451.UltimateArena.Arenas.Objects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Color;
@@ -8,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
@@ -38,6 +40,9 @@ public class ArenaPlayer
 	public Location spawnBack;
 	public Arena inArena;
 	public Player player;
+	
+	public List<ItemStack> savedInventory = new ArrayList<ItemStack>();
+	public List<ItemStack> savedArmor = new ArrayList<ItemStack>();
 	
 	public ArenaPlayer(Player p, Arena a)
 	{
@@ -118,62 +123,125 @@ public class ArenaPlayer
 		}
 	}
 	
+	public void saveInventory()
+	{
+		PlayerInventory inv = player.getPlayer().getInventory();
+		for (ItemStack itemStack : inv.getContents())
+		{
+			if (itemStack != null && itemStack.getType() != Material.AIR)
+			{
+				savedInventory.add(itemStack);
+			}
+		}
+		
+		for (ItemStack armor : inv.getArmorContents())
+		{
+			if (armor != null && armor.getType() != Material.AIR)
+			{
+				savedArmor.add(armor);
+			}
+		}
+	}
+	
+	public void clearInventory()
+	{
+		PlayerInventory inv = player.getInventory();
+		inv.setHelmet(null);
+		inv.setChestplate(null);
+		inv.setLeggings(null);
+		inv.setBoots(null);
+		inv.clear();
+	}
+	
+	public void returnInventory()
+	{
+		PlayerInventory inv = player.getPlayer().getInventory();
+		for (ItemStack itemStack : savedInventory)
+		{
+			inv.addItem(itemStack);
+		}
+		
+		for (ItemStack armor : savedArmor)
+		{
+			String type = armor.getType().toString().toLowerCase();
+			if (type.contains("helmet"))
+			{
+				inv.setHelmet(armor);
+			}
+				
+			if (type.contains("chestplate"))
+			{
+				inv.setChestplate(armor);
+			}
+				
+			if (type.contains("leggings"))
+			{
+				inv.setLeggings(armor);
+			}
+				
+			if (type.contains("boots"))
+			{
+				inv.setBoots(armor);
+			}
+		}
+	}
+	
 	public void spawn()
 	{
-		try
+		if (amtkicked > 10)
 		{
-			if (amtkicked > 10)
+			inArena.az.plugin.leaveArena(player);
+		}
+			
+		Player p = Util.matchPlayer(player.getName());
+		p.getInventory().clear();
+		decideHat(p);
+			
+		if (inArena.starttimer <= 0 && inArena.gametimer >= 2) 
+		{
+			if (mclass == null) 
 			{
-				inArena.az.plugin.leaveArena(player);
+				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
+				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS, 1));
+				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS, 1));
+				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD, 1));
+				return;
 			}
-			
-			Player p = Util.matchPlayer(player.getName());
-			p.getInventory().clear();
-			decideHat(p);
-			
-			if (inArena.starttimer <= 0 && inArena.gametimer >= 2) 
-			{
-				if (mclass == null) 
-				{
-					p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
-					p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS, 1));
-					p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS, 1));
-					p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD, 1));
-					return;
-				}
 				
-				if (mclass.useEssentials)
+			if (mclass.useEssentials)
+			{
+				try
 				{
 					PluginManager pm = inArena.az.plugin.getServer().getPluginManager();
 					Plugin essPlugin = pm.getPlugin("Essentials");
 					IEssentials ess = (IEssentials) essPlugin;
 					User user = ess.getUser(p);
-							
+								
 					List<String> items = Kit.getItems(user, mclass.essentialsKit);
 					
 					Kit.expandItems(ess, user, items);
 					return;
 				}
-				
-				if (mclass.armor1 > 0) { giveArmor(p, mclass.armor1, 0, mclass.armorenchant1); }
-				if (mclass.armor2 > 0) { giveArmor(p, mclass.armor2, 1, mclass.armorenchant2); }
-				if (mclass.armor3 > 0) { giveArmor(p, mclass.armor3, 2, mclass.armorenchant3); }
-				if (mclass.helmet == false) { p.getInventory().setHelmet(null); }
-							
-				giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
-				giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1, mclass.enchant2);
-				giveItem(p, mclass.weapon3, mclass.special3, mclass.amt3, 2, mclass.enchant3);
-				giveItem(p, mclass.weapon4, mclass.special4, mclass.amt4, 3, mclass.enchant4);
-				giveItem(p, mclass.weapon5, mclass.special5, mclass.amt5, 4, mclass.enchant5);
-				giveItem(p, mclass.weapon6, mclass.special6, mclass.amt6, 5, mclass.enchant6);
-				giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
-				giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
-				giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
+				catch (Exception e)
+				{
+					inArena.plugin.getLogger().severe("Error giving class items: " + e.getMessage());
+				}
 			}
-		}
-		catch(Exception e)
-		{
-			inArena.az.plugin.getLogger().severe("Error giving class items: " + e.getMessage());
+			
+			if (mclass.armor1 > 0) { giveArmor(p, mclass.armor1, 0, mclass.armorenchant1); }
+			if (mclass.armor2 > 0) { giveArmor(p, mclass.armor2, 1, mclass.armorenchant2); }
+			if (mclass.armor3 > 0) { giveArmor(p, mclass.armor3, 2, mclass.armorenchant3); }
+			if (mclass.helmet == false) { p.getInventory().setHelmet(null); }
+							
+			giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
+			giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1, mclass.enchant2);
+			giveItem(p, mclass.weapon3, mclass.special3, mclass.amt3, 2, mclass.enchant3);
+			giveItem(p, mclass.weapon4, mclass.special4, mclass.amt4, 3, mclass.enchant4);
+			giveItem(p, mclass.weapon5, mclass.special5, mclass.amt5, 4, mclass.enchant5);
+			giveItem(p, mclass.weapon6, mclass.special6, mclass.amt6, 5, mclass.enchant6);
+			giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
+			giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
+			giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
 		}
 	}
 }

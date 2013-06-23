@@ -176,74 +176,66 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void check() 
 	{
-		try
+		for (ArenaPlayer ap : arenaplayers)
 		{
-			for (int i = 0; i < arenaplayers.size(); i++) 
+			if (ap != null && !ap.out)
 			{
-				ArenaPlayer ap = arenaplayers.get(i);
-				if (!ap.out) 
+				if (BLUETEAMPOWER <= 0) 
 				{
-					
-					if (BLUETEAMPOWER <= 0) 
+					if (ap.team == 2)
 					{
-						if (ap.team == 2)
+						ap.out = true;
+						updatedTeams = true;
+						Player p = Util.matchPlayer(ap.player.getName());
+						if (p != null) 
 						{
-							ap.out = true;
-							updatedTeams = true;
-							Player p = Util.matchPlayer(ap.player.getName());
-							if (p != null) 
-							{
-								p.sendMessage(ChatColor.RED + "Your team lost!");
-								endPlayer(ap, false);
-							}
+							p.sendMessage(ChatColor.RED + "Your team lost!");
+							endPlayer(ap, false);
 						}
-					}else if (REDTEAMPOWER <= 0) 
+					}
+				}
+				else if (REDTEAMPOWER <= 0) 
+				{
+					if (ap.team == 1)
 					{
-						if (ap.team == 1)
+						ap.out = true;
+						updatedTeams = true;
+						Player p = Util.matchPlayer(ap.player.getName());
+						if (p != null)
 						{
-							ap.out = true;
-							updatedTeams = true;
-							Player p = Util.matchPlayer(ap.player.getName());
-							if (p != null)
-							{
-								p.sendMessage(ChatColor.RED + "Your team lost!");
-								endPlayer(ap, false);
-							}
+							p.sendMessage(ChatColor.RED + "Your team lost!");
+							endPlayer(ap, false);
 						}
 					}
 				}
 			}
-			if (BLUETEAMPOWER <= 0)
-			{
-				this.tellPlayers(ChatColor.RED + "Red team won!");
-				this.setWinningTeam(1);
-			}
-			if (REDTEAMPOWER <= 0) 
-			{
-				this.tellPlayers(ChatColor.RED + "Blue team won!");
-				this.setWinningTeam(2);
-			}
-			
-			for (int i = 0; i < flags.size(); i++)
-			{
-				flags.get(i).step();
-				flags.get(i).checkNear(arenaplayers);
-			}
-			
-			if (starttimer <= 0) 
-			{
-				if (!simpleTeamCheck(false)) 
-				{
-					stop();
-					this.rewardTeam(-1, ChatColor.BLUE + "You won!", false);
-				}
-			}
 		}
-		catch(Exception e)
+		
+		if (BLUETEAMPOWER <= 0)
 		{
-			plugin.getLogger().severe("Error with Conquest:");
-			e.printStackTrace();
+			this.tellPlayers(ChatColor.RED + "Red team won!");
+			this.setWinningTeam(1);
+		}
+		
+		if (REDTEAMPOWER <= 0) 
+		{
+			this.tellPlayers(ChatColor.RED + "Blue team won!");
+			this.setWinningTeam(2);
+		}
+			
+		for (int i = 0; i < flags.size(); i++)
+		{
+			flags.get(i).step();
+			flags.get(i).checkNear(arenaplayers);
+		}
+		
+		if (starttimer <= 0) 
+		{
+			if (!simpleTeamCheck(false)) 
+			{
+				stop();
+				this.rewardTeam(-1, ChatColor.BLUE + "You won!", false);
+			}
 		}
 	}
-	
 }

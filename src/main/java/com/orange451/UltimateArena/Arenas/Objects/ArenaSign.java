@@ -41,12 +41,31 @@ public class ArenaSign
 		{
 			StringBuilder line = new StringBuilder();
 			Arena a = plugin.getArena(zone.arenaName);
+			if (a.starttimer > 1)
+			{
+				line.append("LOBBY ");
+			}
+			else
+			{
+				line.append("INGAME ");
+			}
 			line.append(a.amtPlayersInArena + "/" + zone.maxPlayers);
 			line3 = line.toString();
 		}
 		else
 		{
-			line3 = "0/" + zone.maxPlayers;
+			StringBuilder line = new StringBuilder();
+			if (zone.disabled)
+			{
+				line.append("DISABLED (0/0)");
+			}
+			else
+			{
+				line.append("IDLE (0/");
+				line.append(zone.maxPlayers);
+				line.append(")");
+			}
+			line3 = line.toString();
 		}
 		
 		sign.setLine(3, line3);

@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.util.Util;
@@ -56,29 +55,14 @@ public class ArenaFlag extends FlagBase
 			added = -150;
 			capped = true;
 		}
-		try
+		
+		if (capped)
 		{
-			class FlagTask extends BukkitRunnable
-			{
-				@Override
-				public void run()
-				{
-					if (capped)
-					{
-						notify.setData((byte) color);
-					}
-					else
-					{
-						notify.setData((byte) 8);
-					}
-				}
-			}
-			
-			new FlagTask().runTask(plugin);
+			notify.setData((byte) color);
 		}
-		catch(Exception e) 
+		else
 		{
-			//
+			notify.setData((byte) 8);
 		}
 	}
 	

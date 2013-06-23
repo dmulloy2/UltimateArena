@@ -121,40 +121,31 @@ public class CTFflag
 		pickedUp = false;
 		riding = null;
 		
-		class FallTask extends BukkitRunnable
+		myloc = toloc.clone();
+	    		
+		int count = 0;
+		boolean can = true;
+		for (int i = 1; i < 128; i++) 
 		{
-			@Override
-			public void run()
+			if (can) 
 			{
-				myloc = toloc.clone();
-	    		
-	    		int count = 0;
-	    		boolean can = true;
-	    		for (int i = 1; i < 128; i++) 
-	    		{
-	    			if (can) 
-	    			{
-	    				Block BlockUnder = ((myloc.clone()).subtract(0,i,0)).getBlock(); 
-	    				if (BlockUnder != null) 
-	    				{
-	    					if (BlockUnder.getType().equals(Material.AIR) || BlockUnder.getType().equals(Material.WATER))
-	    					{
-	    						count++;
-	    					}
-	    					else
-	    					{
-	    						can = false; 
-	    					}
-	    				}
-	    			}
-	    		}
-	    		
-	    		toloc = myloc.clone().subtract(0, count, 0);
-	    		setFlag();
+				Block BlockUnder = ((myloc.clone()).subtract(0,i,0)).getBlock(); 
+				if (BlockUnder != null) 
+				{
+					if (BlockUnder.getType().equals(Material.AIR) || BlockUnder.getType().equals(Material.WATER))
+					{
+						count++;
+					}
+					else
+					{
+						can = false; 
+					}
+				}
 			}
 		}
-		
-		new FallTask().runTask(plugin);
+	    		
+		toloc = myloc.clone().subtract(0, count, 0);
+		setFlag();
 	}
 	
 	public void checkNear(List<ArenaPlayer> arenaplayers)
@@ -220,17 +211,9 @@ public class CTFflag
 	public void despawn() 
 	{
 		stopped = true;
-		final Block last = lastloc.getBlock();
-		class DespawnTask extends BukkitRunnable
-		{
-			@Override
-			public void run()
-			{
-				last.setTypeIdAndData(lastBlockType, lastBlockDat, false);
-			}
-		}
 		
-		new DespawnTask().runTask(plugin);
+		Block last = lastloc.getBlock();
+		last.setTypeIdAndData(lastBlockType, lastBlockDat, false);
 	}
 	
 	public void tick()

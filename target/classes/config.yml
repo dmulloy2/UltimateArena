@@ -1,5 +1,18 @@
 # Ultimate Arena Global Configuration
 # By dmulloy2
 
+# Whether or not cash rewards are given upon completion
+# Input - boolean
 moneyrewards: true
-# Enable/disable money rewards for completing arenas (Requires changing of arena configurations)
+
+# Time a player must stand still before joining the arena
+# Enabled - boolean
+# Wait - integer (in seconds)
+joinTimer:
+  enabled: true
+  wait: 3
+  
+# Whether or not the plugin will save inventories
+# WARNING: !!HIGHLY EXPERIMENTAL!! USE AT OWN RISK
+# Input - boolean
+saveInventories: false

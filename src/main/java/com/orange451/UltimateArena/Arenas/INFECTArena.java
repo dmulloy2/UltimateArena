@@ -85,39 +85,31 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void check() 
 	{
-		try
+		if (starttimer <= 0)
 		{
-			if (starttimer <= 0)
+			if (!simpleTeamCheck(false)) 
 			{
-				if (!simpleTeamCheck(false)) 
+				if (this.team1size == 0)
 				{
-					if (this.team1size == 0)
-					{
-						this.setWinningTeam(2);
-						this.tellPlayers(ChatColor.BLUE + "Infected Win!");
-						this.stop();
-						this.rewardTeam(2, ChatColor.YELLOW + "You win!", true);
-					}
-					else
-					{
-						this.tellPlayers(ChatColor.BLUE + "One team is empty! game ended!");
-						this.stop();
-					}
+					this.setWinningTeam(2);
+					this.tellPlayers(ChatColor.BLUE + "Infected Win!");
+					this.stop();
+					this.rewardTeam(2, ChatColor.YELLOW + "You win!", true);
 				}
 				else
 				{
-					if (this.amtPlayersStartingInArena <= 1) 
-					{
-						this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
-						this.stop();
-					}
+					this.tellPlayers(ChatColor.BLUE + "One team is empty! game ended!");
+					this.stop();
 				}
 			}
-		}
-		catch(Exception e) 
-		{
-			plugin.getLogger().severe("Error with Infect:");
-			e.printStackTrace();
+			else
+			{
+				if (this.amtPlayersStartingInArena <= 1) 
+				{
+					this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
+					this.stop();
+				}
+			}
 		}
 	}
 	

@@ -3,6 +3,7 @@ package com.orange451.UltimateArena.Arenas;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.orange451.UltimateArena.Arenas.Objects.ArenaFlag;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaSpawn;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
@@ -38,31 +39,23 @@ public class KOTHArena extends Arena
 	@Override
 	public void doKillStreak(ArenaPlayer ap) 
 	{
-		try
+		Player pl = Util.matchPlayer(ap.player.getName());
+		if (pl != null) 
 		{
-			Player pl = Util.matchPlayer(ap.player.getName());
-			if (pl != null) 
+			if (ap.killstreak == 2) 
 			{
-				if (ap.killstreak == 2) 
-				{
-					giveItem(pl, Material.POTION.getId(), (byte)9, 1, "2 kills! Unlocked strength potion!");
-				}
-				if (ap.killstreak == 4) 
-				{
-					giveItem(pl, Material.POTION.getId(), (byte)1, 1, "4 kills! Unlocked Health potion!");
-					giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 kills! Unlocked food!");
-				}
-				if (ap.killstreak == 12) 
-				{
-					giveItem(pl, Material.POTION.getId(), (byte)1, 1, "12 kills! Unlocked Health potion!");
-					giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "12 kills! Unlocked food!");
-				}
+				giveItem(pl, Material.POTION.getId(), (byte)9, 1, "2 kills! Unlocked strength potion!");
 			}
-		}
-		catch(Exception e) 
-		{
-			plugin.getLogger().severe("Error with KOTH KillStreak:");
-			e.printStackTrace();
+			if (ap.killstreak == 4) 
+			{
+				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "4 kills! Unlocked Health potion!");
+				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 kills! Unlocked food!");
+			}
+			if (ap.killstreak == 12) 
+			{
+				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "12 kills! Unlocked Health potion!");
+				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "12 kills! Unlocked food!");
+			}
 		}
 	}
 	
@@ -86,21 +79,21 @@ public class KOTHArena extends Arena
 	@Override
 	public void onStart()
 	{
-		for (int i = 0; i < arenaplayers.size(); i++)
+		for (ArenaPlayer ap : arenaplayers)
 		{
-			spawn(arenaplayers.get(i).username, false);
+			spawn(ap.username, false);
 		}
 	}
 	
 	@Override
 	public void check()
 	{
-		for (int i = 0; i < flags.size(); i++) 
+		for (ArenaFlag flag : flags)
 		{
-			flags.get(i).step();
-			flags.get(i).checkNear(arenaplayers);
+			flag.step();
+			flag.checkNear(arenaplayers);
 		}
-		
+
 		checkPlayerPoints(MAXPOWER);
 		checkEmpty();
 	}

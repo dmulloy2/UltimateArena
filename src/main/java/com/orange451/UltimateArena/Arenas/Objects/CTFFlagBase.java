@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.Arenas.CTFArena;
@@ -37,19 +36,10 @@ public class CTFFlagBase extends FlagBase
 	{
 		super.setup();
 		this.flag = new CTFflag(arena, loc.clone().add(0,1,0), team);
-		
-		class SetupTask extends BukkitRunnable
-		{
-			@Override
-			public void run()
-			{
-				Location flag = getLoc().clone().add(0, 5, 0);
-		    	notify = flag.getBlock();
-				notify.setType(Material.AIR);
-			}
-		}
-		
-		new SetupTask().runTask(plugin);
+
+		Location flag = getLoc().clone().add(0, 5, 0);
+		notify = flag.getBlock();
+		notify.setType(Material.AIR);
 	}
 	
 	@Override

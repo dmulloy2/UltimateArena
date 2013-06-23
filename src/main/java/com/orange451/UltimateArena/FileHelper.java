@@ -3,12 +3,18 @@ package com.orange451.UltimateArena;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaSign;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
@@ -916,6 +922,100 @@ public class FileHelper
 			fc.set("loc.y", y);
 			fc.set("loc.z", z);
 			
+			int i=0;
+			for (ItemStack stack : player.getSavedInventory())
+			{
+				String path = "item." + i + ".";
+				fc.set(path + "type", stack.getTypeId());
+				fc.set(path + "amt", stack.getAmount());
+				fc.set(path + "dat", stack.getData().getData());
+				
+				Map<Enchantment, Integer> enchantments = stack.getEnchantments();
+				boolean hasEnchants = enchantments.size() > 0;
+				int enchantsAmt = enchantments.size();
+				
+				fc.set(path + "hasEnchants", hasEnchants);
+				fc.set(path + "enchantsAmt", enchantsAmt);
+				
+				
+				int ii=0;
+				for (Entry<Enchantment, Integer> entrySet : enchantments.entrySet())
+				{
+					String epath = path + "enchantments." + ii + ".";
+					fc.set(epath + "name", entrySet.getKey().getName());
+					fc.set(epath + "level", entrySet.getValue());
+					ii++; 
+				}
+				
+				ItemMeta meta = stack.getItemMeta();
+				fc.set(path + "hasName", meta.hasDisplayName());
+				if (meta.hasDisplayName())
+				{
+					fc.set(path + "name", meta.getDisplayName());
+				}
+				
+				fc.set("hasLore", meta.hasLore());
+				if (meta.hasLore())
+				{
+					int iii = 0;
+					for (String lore : meta.getLore())
+					{
+						fc.set(path + "lore." + iii, lore);
+						iii++;
+					}
+					fc.set("loreamt", iii);
+				}
+				i++;
+			}
+			fc.set("itemAmt", i);
+			
+			int a=0;
+			for (ItemStack stack : player.getSavedArmor())
+			{
+				String path = "item." + a + ".";
+				fc.set(path + "type", stack.getTypeId());
+				fc.set(path + "amt", stack.getAmount());
+				fc.set(path + "dat", stack.getData().getData());
+				
+				Map<Enchantment, Integer> enchantments = stack.getEnchantments();
+				boolean hasEnchants = enchantments.size() > 0;
+				int enchantsAmt = enchantments.size();
+				
+				fc.set(path + "hasEnchants", hasEnchants);
+				fc.set(path + "enchantsAmt", enchantsAmt);
+				
+				
+				int aa=0;
+				for (Entry<Enchantment, Integer> entrySet : enchantments.entrySet())
+				{
+					String epath = path + "enchantments." + aa + ".";
+					fc.set(epath + "name", entrySet.getKey().getName());
+					fc.set(epath + "level", entrySet.getValue());
+					aa++; 
+				}
+				
+				ItemMeta meta = stack.getItemMeta();
+				fc.set(path + "hasName", meta.hasDisplayName());
+				if (meta.hasDisplayName())
+				{
+					fc.set(path + "name", meta.getDisplayName());
+				}
+				
+				fc.set("hasLore", meta.hasLore());
+				if (meta.hasLore())
+				{
+					int aaa=0;
+					for (String lore : meta.getLore())
+					{
+						fc.set(path + "lore." + aaa, lore);
+						aaa++;
+					}
+					fc.set("loreamt", aaa);
+				}
+				a++;
+			}
+			fc.set("armorAmt", a);
+			
 			fc.save(file);
 		}
 		catch (Exception e)
@@ -972,7 +1072,115 @@ public class FileHelper
 			
 			Location loc = new Location(world, x, y, z);
 			
-			SavedArenaPlayer sp = new SavedArenaPlayer(name, level, loc);
+			List<ItemStack> items = new ArrayList<ItemStack>();
+			for (int i=0; i<fc.getInt("itemAmt"); i++)
+			{
+				String path = "item." + i + ".";
+				int id = fc.getInt(path + "type");
+				int amt = fc.getInt(path + "amt");
+				int dat = fc.getInt(path + "dat");
+
+				ItemStack stack = new ItemStack(id, amt);
+				if (dat > 0)
+				{
+					MaterialData data = stack.getData();
+					data.setData((byte)dat);
+					stack.setData(data);
+				}
+				
+				if (fc.getBoolean(path + "hasEnchants"))
+				{
+					int enchantsAmt = fc.getInt(path + "enchantsAmt");
+					for (int e=0; e<enchantsAmt; e++)
+					{
+						String epath = path + "enchantment" + e;
+						Enchantment enchantment = Enchantment.getByName(fc.getString(epath + "name"));
+						int elevel = fc.getInt(epath + "level");
+						
+						stack.addUnsafeEnchantment(enchantment, elevel);
+					}
+				}
+				
+				ItemMeta meta = stack.getItemMeta();
+				if (fc.getBoolean(path + "hasName"))
+				{
+					meta.setDisplayName(fc.getString(path + "name"));
+				}
+				
+				if (fc.getBoolean(path + "hasLore"))
+				{
+					List<String> lore = new ArrayList<String>();
+					
+					int loreAmt = fc.getInt(path + "loreAmt");
+					for (int m=0; m<loreAmt; m++)
+					{
+						String mpath = path + "lore." + m;
+						lore.add(fc.getString(mpath));
+					}
+					
+					meta.setLore(lore);
+				}
+				
+				stack.setItemMeta(meta);
+				
+				items.add(stack);
+			}
+			
+			List<ItemStack> armor = new ArrayList<ItemStack>();
+			for (int i=0; i<fc.getInt("armorAmt"); i++)
+			{
+				String path = "armor" + i;
+				int id = fc.getInt(path + "type");
+				int amt = fc.getInt(path + "amt");
+				int dat = fc.getInt(path + "dat");
+				
+				ItemStack stack = new ItemStack(id, amt);
+				if (dat > 0)
+				{
+					MaterialData data = stack.getData();
+					data.setData((byte)dat);
+					stack.setData(data);
+				}
+				
+				if (fc.getBoolean(path + "hasEnchants"))
+				{
+					int enchantsAmt = fc.getInt(path + "enchantsAmt");
+					for (int e=0; e<enchantsAmt; e++)
+					{
+						String epath = path + "enchantment" + e;
+						Enchantment enchantment = Enchantment.getByName(fc.getString(epath + "name"));
+						int elevel = fc.getInt(epath + "level");
+						
+						stack.addUnsafeEnchantment(enchantment, elevel);
+					}
+				}
+				
+				ItemMeta meta = stack.getItemMeta();
+				if (fc.getBoolean(path + "hasName"))
+				{
+					meta.setDisplayName(fc.getString(path + "name"));
+				}
+				
+				if (fc.getBoolean(path + "hasLore"))
+				{
+					List<String> lore = new ArrayList<String>();
+					
+					int loreAmt = fc.getInt(path + "loreAmt");
+					for (int m=0; m<loreAmt; m++)
+					{
+						String mpath = path + "lore." + m;
+						lore.add(fc.getString(mpath));
+					}
+					
+					meta.setLore(lore);
+				}
+				
+				stack.setItemMeta(meta);
+				
+				armor.add(stack);
+			}
+			
+			SavedArenaPlayer sp = new SavedArenaPlayer(name, level, loc, items, armor);
 			players.add(sp);
 		}
 		

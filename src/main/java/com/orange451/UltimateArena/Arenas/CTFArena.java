@@ -1,6 +1,8 @@
 package com.orange451.UltimateArena.Arenas;
 
 import org.bukkit.ChatColor;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 import com.orange451.UltimateArena.Arenas.Objects.CTFFlagBase;
@@ -11,7 +13,7 @@ public class CTFArena extends Arena
 	public CTFFlagBase flagblue;
 	public int redcap;
 	public int bluecap;
-	private int ExecuteMove;
+	private BukkitTask  ExecuteMove;
 	private String lastcap;
 	
 	public CTFArena(ArenaZone az)
@@ -23,49 +25,35 @@ public class CTFArena extends Arena
 		gametimer = 0;
 		maxgametime = 60 * 15;
 		maxDeaths = 990;
-		
-		try
-		{
-			flagred = new CTFFlagBase(this, az.flags.get(0), 1);
-			flagblue = new CTFFlagBase(this, az.flags.get(1), 2);
+
+		flagred = new CTFFlagBase(this, az.flags.get(0), 1);
+		flagblue = new CTFFlagBase(this, az.flags.get(1), 2);
 			
-			flagred.initialize();
-			flagblue.initialize();
-			ExecuteMove = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new ExecuteMove(), 12, 1);
-		}
-		catch(Exception e) 
-		{
-			plugin.getLogger().severe("Error setting up CTF:");
-			e.printStackTrace();
-		}
+		flagred.initialize();
+		flagblue.initialize();
+		
+		
+		ExecuteMove = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}
 	
 	@Override
 	public void check()
 	{
-		try
+		if (starttimer <= 0) 
 		{
-			if (starttimer <= 0) 
+			if (!simpleTeamCheck(false)) 
 			{
-				if (!simpleTeamCheck(false)) 
+				this.tellPlayers(ChatColor.BLUE + "One team is empty! game ended!");
+				this.stop();
+			}
+			else
+			{
+				if (this.amtPlayersStartingInArena <= 1) 
 				{
-					this.tellPlayers(ChatColor.BLUE + "One team is empty! game ended!");
+					this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
 					this.stop();
 				}
-				else
-				{
-					if (this.amtPlayersStartingInArena <= 1) 
-					{
-						this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
-						this.stop();
-					}
-				}
 			}
-		}
-		catch(Exception e)
-		{
-			plugin.getLogger().severe("Error with CTF:");
-			e.printStackTrace();
 		}
 		
 		if (redcap >= 3 || bluecap >= 3) 
@@ -110,54 +98,30 @@ public class CTFArena extends Arena
 	@Override
 	public void onStop()
 	{
-		try
-		{
-			flagred.flag.stopped = true;
-			flagblue.flag.stopped = true;
-		}
-		catch(Exception e)
-		{
-			//
-		}
-		try
-		{
-			flagred.flag.returnto.getBlock().setTypeIdAndData(0, (byte)0, false);
-			flagblue.flag.returnto.getBlock().setTypeIdAndData(0, (byte)0, false);
-			flagred.flag.despawn();
-			flagblue.flag.despawn();
-		}
-		catch(Exception e)
-		{
-			//
-		}
-		
-		plugin.getServer().getScheduler().cancelTask(ExecuteMove);
+		flagred.flag.stopped = true;
+		flagblue.flag.stopped = true;
+
+		flagred.flag.returnto.getBlock().setTypeIdAndData(0, (byte)0, false);
+		flagblue.flag.returnto.getBlock().setTypeIdAndData(0, (byte)0, false);
+		flagred.flag.despawn();
+		flagblue.flag.despawn();
+
+		ExecuteMove.cancel();
 	}
 	
-	class ExecuteMove implements Runnable 
+	public class ExecuteMove extends BukkitRunnable 
 	{
-		public ExecuteMove()
-		{
-		}
-		
+		@Override
 		public void run()
 		{
-			try
+			if (!stopped)
 			{
-				if (!stopped)
-				{
-					flagred.checkNear(arenaplayers);
-					flagblue.checkNear(arenaplayers);
-				}
-				else
-				{
-					onStop();
-				}
+				flagred.checkNear(arenaplayers);
+				flagblue.checkNear(arenaplayers);
 			}
-			catch(Exception ex)
+			else
 			{
-				plugin.getLogger().severe("Error executing move:");
-				ex.printStackTrace();
+				onStop();
 			}
 		}
 	}

@@ -44,12 +44,13 @@ public class BombFlag extends ArenaFlag
 				{
 					Util.playEffect(Effect.EXTINGUISH, this.getLoc(), 4);
 					BOMBArena ba = null;
-					try
+					if (arena instanceof BOMBArena)
 					{
-						ba = ((BOMBArena)arena);
+						ba = (BOMBArena)arena;
+					}
 					
-					}catch(Exception e) {}
-					if (ba != null) {
+					if (ba != null)
+					{
 						int amte = 0;
 						if (ba.bomb1.exploded)
 							amte++;
