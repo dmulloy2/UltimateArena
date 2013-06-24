@@ -75,3 +75,6 @@ permissions:
   ultimatearena.build:
     description: Allows the breaking and placing of blocks in arenas
     default: false
+  ultimatearena.join:
+    description: Allows the player to join arenas
+    default: true

@@ -60,7 +60,7 @@ public class BlockListener implements Listener
 			else
 			{
 				/** The player is at the site of the arena, but not in it **/
-				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
+				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
 				{
 					player.sendMessage(ChatColor.RED + "You cannot break this!");
 					event.setCancelled(true);
@@ -99,7 +99,7 @@ public class BlockListener implements Listener
 			else
 			{
 				/** The player is at the site of the arena, but not in it **/
-				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
+				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
 				{
 					player.sendMessage(ChatColor.RED + "You cannot place this!");
 					event.setCancelled(true);
@@ -113,7 +113,7 @@ public class BlockListener implements Listener
 	{
 		if (event.getLine(0).equalsIgnoreCase("[UltimateArena]"))
 		{
-			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), PermissionType.ARENA_BUILD.permission))
+			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), PermissionType.BUILD.permission))
 			{
 				if (event.getLine(1).equalsIgnoreCase("Click to join"))
 				{
@@ -165,7 +165,7 @@ public class BlockListener implements Listener
 				ArenaSign sign = plugin.getArenaSign(block.getLocation());
 				if (sign != null)
 				{
-					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.ARENA_BUILD.permission))
+					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
 					{
 						plugin.deleteSign(sign);
 						player.sendMessage(FormatUtil.format("&eDeleted join sign!"));

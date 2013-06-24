@@ -42,6 +42,7 @@ import com.orange451.UltimateArena.Arenas.Objects.*;
 import com.orange451.UltimateArena.commands.*;
 import com.orange451.UltimateArena.listeners.*;
 import com.orange451.UltimateArena.permissions.PermissionHandler;
+import com.orange451.UltimateArena.permissions.PermissionType;
 import com.orange451.UltimateArena.util.FormatUtil;
 import com.orange451.UltimateArena.util.InventoryHelper;
 import com.orange451.UltimateArena.util.Util;
@@ -519,6 +520,14 @@ public class UltimateArena extends JavaPlugin
 				
 			file.delete();
 			
+			for (ArenaSign as : joinSigns)
+			{
+				if (as.zone.arenaName.equalsIgnoreCase(str))
+				{
+					deleteSign(as);
+				}
+			}
+			
 			player.sendMessage(ChatColor.YELLOW + "Successfully deleted arena: " + str + "!");
 			getLogger().info("Successfully deleted arena: " + str + "!");
 		}
@@ -625,6 +634,12 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (player == null)
 			return;
+		
+		if (!permissionHandler.hasPermission(player, PermissionType.JOIN.permission))
+		{
+			player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+			return;
+		}
 		
 		if (isPlayerCreatingArena(player))
 		{

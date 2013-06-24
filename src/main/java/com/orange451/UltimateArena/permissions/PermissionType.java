@@ -19,7 +19,8 @@ public enum PermissionType
 	CMD_SET_POINT("setpoint"),
 	CMD_START("start"),
 	CMD_STOP("stop"),
-	ARENA_BUILD("build");
+	BUILD("build"),
+	JOIN("join");
 	
 	public final Permission permission;
 	
