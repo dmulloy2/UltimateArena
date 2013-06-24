@@ -109,9 +109,11 @@ public abstract class Arena
 	public void addPlayer(Player player)
 	{
 		ArenaPlayer pl = new ArenaPlayer(player, this);
-		pl.team = getTeam();
 		arenaplayers.add(pl);
-		if (plugin.getConfig().getBoolean("saveItems"))
+		pl.team = getTeam();
+		
+		// Save Inventories
+		if (plugin.getConfig().getBoolean("saveInventories"))
 		{
 			pl.saveInventory();
 			pl.clearInventory();
@@ -241,9 +243,7 @@ public abstract class Arena
 		for (ArenaPlayer ap : arenaplayers)
 		{
 			if (ap != null && !ap.out)
-			{
 				spawn(ap.player.getName(), false);
-			}
 		}
 	}
 	
@@ -256,17 +256,13 @@ public abstract class Arena
 			{
 				loc = az.lobbyREDspawn.clone();
 				if (ap.team == 2)
-				{
 					loc = az.lobbyBLUspawn.clone();
-				}
 			}
 			else
 			{
 				loc = az.team1spawn.clone();
 				if (ap.team == 2) 
-				{
 					loc = az.team2spawn.clone();
-				}
 			}
 		}
 		catch (Exception e)
@@ -346,8 +342,6 @@ public abstract class Arena
 			PlayerInventory inv = player.getInventory();
 			inv.addItem(new ItemStack(Material.GOLD_INGOT, 1));
 		}
-		
-		returnXP(player);
 	}
 	
 	public void rewardTeam(int team, String string, boolean half)
@@ -418,15 +412,7 @@ public abstract class Arena
 	
 	public boolean isEmpty()
 	{
-		if (starttimer <= 0) 
-		{
-			//check if the arena is empty
-			if (amtPlayersInArena <= 1)
-			{
-				return true;
-			}
-		}
-		return false;
+		return (starttimer <= 0 && amtPlayersInArena <= 1);
 	}
 	
 	public void tellPlayers(String string, Object...objects) 
@@ -460,10 +446,7 @@ public abstract class Arena
 				{
 					Player player = Util.matchPlayer(ap.player.getName());
 					if (player != null && player.isOnline())
-					{
-						string = FormatUtil.format(string);
-						player.sendMessage(string);
-					}
+						player.sendMessage(FormatUtil.format(string));
 				}
 			}
 		}
@@ -483,9 +466,7 @@ public abstract class Arena
 					{
 						Location ploc = player.getLocation();
 						if (Util.pointDistance(loc, ploc) < rad)
-						{
 							player.setHealth(0);
-						}
 					}
 				}
 			}
@@ -504,9 +485,7 @@ public abstract class Arena
 				if (ap != null && !ap.out)
 				{
 					if (spawns.size() > 0) 
-					{
 						teleport(p, (spawns.get(Util.random(spawns.size())).getLocation().clone()).add(0, 2, 0));
-					}
 				}
 			}
 		}
@@ -556,9 +535,7 @@ public abstract class Arena
 				{
 					pl.sendMessage(ChatColor.GOLD + "5 kills! Unlocked Zombies!");
 					for (int i = 0; i < 4; i++)
-					{
 						pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.ZOMBIE);
-					}
 				}
 			}
 			if (ap.killstreak == 8) 
@@ -624,6 +601,7 @@ public abstract class Arena
 				ap.out = true;
 			}
 		}
+		
 		plugin.activeArena.remove(this);
 		
 		plugin.getLogger().info("Arena \"" + name + "\" has been stopped");
@@ -658,9 +636,9 @@ public abstract class Arena
 								ap.player.setHealth(ap.player.getHealth()+1);
 							}
 								
-							if (!(plugin.isInArena(player.getLocation()))) 
+							if (plugin.isInArena(player.getLocation()))
 							{
-								plugin.getLogger().info(ap.player.getName() + " Got out of the Arena! Putting him back in!");
+								plugin.getLogger().info(ap.player.getName() + " got out of the Arena! Putting him back in!");
 								ap.spawn();
 								spawn(ap.player.getName(), false);
 							}
@@ -685,6 +663,8 @@ public abstract class Arena
 	
 	public void check() {}
 	
+	// TODO: Make sure all players who leave go through this
+	// This should be the case, but there can be loopholes
 	public void endPlayer(final ArenaPlayer ap, boolean dead) 
 	{
 		// When the player is kicked from the arena after too many deaths
@@ -707,9 +687,7 @@ public abstract class Arena
 		ap.out = true;
 		updatedTeams = true;
 		if (dead) 
-		{
 			player.sendMessage(ChatColor.BLUE + "You have exceeded the death limit!");
-		}
 	}
 
 	public void onStart() 
@@ -827,12 +805,10 @@ public abstract class Arena
 					{
 						if (ap.mclass.name.equals("healer") && ap.healtimer <= 0) 
 						{
-							if (ap.player.getHealth()+1<=20)
+							if (ap.player.getHealth() + 1 <= 20)
 							{
 								if (ap.player.getHealth() < 0) 
-								{
 									ap.player.setHealth(1);
-								}
 								ap.player.setHealth(ap.player.getHealth()+1);
 								ap.healtimer = 2;
 							}
@@ -845,9 +821,7 @@ public abstract class Arena
 								for (PotionEffect effect : ap.mclass.potionEffects)
 								{
 									if (!ap.player.hasPotionEffect(effect.getType()))
-									{
 										player.addPotionEffect(effect);
-									}
 								}
 							}
 						}
@@ -931,9 +905,7 @@ public abstract class Arena
 	{
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
 		if (ap != null)
-		{
 			player.setLevel(ap.baselevel);
-		}
 	}
 	
 	// Save players on shutdown

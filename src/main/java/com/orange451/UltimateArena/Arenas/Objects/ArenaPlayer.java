@@ -125,7 +125,7 @@ public class ArenaPlayer
 	
 	public void saveInventory()
 	{
-		PlayerInventory inv = player.getPlayer().getInventory();
+		PlayerInventory inv = player.getInventory();
 		for (ItemStack itemStack : inv.getContents())
 		{
 			if (itemStack != null && itemStack.getType() != Material.AIR)
@@ -155,7 +155,7 @@ public class ArenaPlayer
 	
 	public void returnInventory()
 	{
-		PlayerInventory inv = player.getPlayer().getInventory();
+		PlayerInventory inv = player.getInventory();
 		for (ItemStack itemStack : savedInventory)
 		{
 			inv.addItem(itemStack);

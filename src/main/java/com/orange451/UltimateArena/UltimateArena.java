@@ -76,7 +76,7 @@ public class UltimateArena extends JavaPlugin
 		
 		createDirectories();
 		saveDefaultConfig();
-		
+
 		permissionHandler =  new PermissionHandler(this);
 		commandHandler = new CommandHandler(this);
 		
@@ -814,9 +814,7 @@ public class UltimateArena extends JavaPlugin
 				if (pl != null && pl.isOnline())
 				{
 					if (pl.getName().equals(player.getName()))
-					{
 						return ac;
-					}
 				}
 			}
 		}

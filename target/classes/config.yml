@@ -13,6 +13,5 @@ joinTimer:
   wait: 3
   
 # Whether or not the plugin will save inventories
-# WARNING: !!HIGHLY EXPERIMENTAL!! USE AT OWN RISK
 # Input - boolean
 saveInventories: false
