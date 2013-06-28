@@ -14,7 +14,7 @@ public enum PermissionType
 	CMD_FORCE_STOP("forcestop"),
 	CMD_KICK("kick"),
 	CMD_PAUSE("pause"),
-	CMD_REFRESH("refresh"),
+	CMD_RELOAD("reload"),
 	CMD_SET_DONE("setdone"),
 	CMD_SET_POINT("setpoint"),
 	CMD_START("start"),

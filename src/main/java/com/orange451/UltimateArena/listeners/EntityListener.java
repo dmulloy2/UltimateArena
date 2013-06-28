@@ -146,8 +146,11 @@ public class EntityListener implements Listener
 						event.setCancelled(true);
 						if (attacker.getItemInHand().getType().equals(Material.GOLD_AXE))
 						{
-							defender.setHealth(defender.getHealth()+2);
-							attacker.sendMessage(ChatColor.GRAY + "You have healed " + ChatColor.GOLD + defender.getName() + ChatColor.GRAY + " for 1 hearts");
+							if ((defender.getHealth() + 2) <= 20)
+							{
+								defender.setHealth(defender.getHealth() + 2);
+								attacker.sendMessage(ChatColor.GRAY + "You have healed " + ChatColor.GOLD + defender.getName() + ChatColor.GRAY + " for 1 heart");
+							}
 						}
 						else
 						{

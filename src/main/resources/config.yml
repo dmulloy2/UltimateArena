@@ -15,3 +15,7 @@ joinTimer:
 # Whether or not the plugin will save inventories
 # Input - boolean
 saveInventories: false
+
+# Whether or not PVPGun ammo is unlimited
+# Default - true; Input - boolean
+unlimitedAmmo: true

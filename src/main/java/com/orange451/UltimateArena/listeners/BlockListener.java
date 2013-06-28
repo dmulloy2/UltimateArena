@@ -117,28 +117,24 @@ public class BlockListener implements Listener
 			{
 				if (event.getLine(1).equalsIgnoreCase("Click to join"))
 				{
-					Sign s = (Sign)event.getBlock().getState();
 					if (event.getLine(2).equalsIgnoreCase("Auto assign"))
 					{
-						ArenaSign sign = new ArenaSign(plugin, s, s.getLocation());
-						plugin.joinSigns.add(sign);
+						return;
+					}
+					
+					ArenaZone az = plugin.getArenaZone(event.getLine(2));
+					if (az != null)
+					{
+						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, true, plugin.arenaSigns.size());
+						plugin.arenaSigns.add(sign);
+						sign.update();
 					}
 					else
 					{
-						ArenaZone az = plugin.getArenaZone(event.getLine(2));
-						if (az != null)
-						{
-							ArenaSign sign = new ArenaSign(plugin, s, s.getLocation(), az);
-							plugin.joinSigns.add(sign);
-							sign.update();
-						}
-						else
-						{
-							event.setLine(0, FormatUtil.format("[UltimateArena]"));
-							event.setLine(1, FormatUtil.format("&4Invalid Arena"));
-							event.setLine(2, "");
-							event.setLine(3, "");
-						}
+						event.setLine(0, FormatUtil.format("[UltimateArena]"));
+						event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+						event.setLine(2, "");
+						event.setLine(3, "");
 					}
 				}
 			}
@@ -149,6 +145,34 @@ public class BlockListener implements Listener
 				event.setLine(2, "");
 				event.setLine(3, "");
 			}
+		}
+		else if (event.getLine(0).equalsIgnoreCase("[UA Stats]"))
+		{
+			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), PermissionType.BUILD.permission))
+			{
+				ArenaZone az = plugin.getArenaZone(event.getLine(1));
+				if (az != null)
+				{
+					ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, false, plugin.arenaSigns.size());
+					plugin.arenaSigns.add(sign);
+					sign.update();
+				}
+				else
+				{
+					event.setLine(0, FormatUtil.format("[UltimateArena]"));
+					event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+					event.setLine(2, "");
+					event.setLine(3, "");
+				}
+			}
+			else
+			{
+				event.setLine(0, FormatUtil.format("[UltimateArena]"));
+				event.setLine(1, FormatUtil.format("&4No permission"));
+				event.setLine(2, "");
+				event.setLine(3, "");
+			}
+			
 		}
 	}
 	

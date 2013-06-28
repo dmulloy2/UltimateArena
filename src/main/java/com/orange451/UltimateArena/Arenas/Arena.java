@@ -629,8 +629,9 @@ public abstract class Arena
 							{
 								player.setFireTicks(0);
 								player.setFoodLevel(20);
+								ap.decideHat(player);
 							}
-							ap.decideHat(player);
+
 							if (ap.mclass.name.equals("healer"))
 							{
 								ap.player.setHealth(ap.player.getHealth()+1);
@@ -662,9 +663,7 @@ public abstract class Arena
 	}
 	
 	public void check() {}
-	
-	// TODO: Make sure all players who leave go through this
-	// This should be the case, but there can be loopholes
+
 	public void endPlayer(final ArenaPlayer ap, boolean dead) 
 	{
 		// When the player is kicked from the arena after too many deaths
@@ -797,8 +796,9 @@ public abstract class Arena
 					{
 						player.setFireTicks(0);
 						player.setFoodLevel(20);
+						ap.decideHat(player);
 					}
-					ap.decideHat(player);
+					
 					ap.healtimer--;
 							
 					if (ap.mclass != null)
@@ -839,41 +839,41 @@ public abstract class Arena
 					{
 						if (starttimer > 0 && starttimer < 11) 
 						{
-							Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(starttimer) + ChatColor.GRAY + " second(s) until start!");
+							player.sendMessage(ChatColor.GOLD + Integer.toString(starttimer) + ChatColor.GRAY + " second(s) until start!");
 						}
 						if (starttimer == 30) 
 						{
-							Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "30 " + ChatColor.GRAY + " second(s) until start!");
+							player.sendMessage(ChatColor.GOLD + "30" + ChatColor.GRAY + " second(s) until start!");
 						}
 						if (starttimer == 60)
 						{
-							Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "60 " + ChatColor.GRAY + " second(s) until start!");
+							player.sendMessage(ChatColor.GOLD + "60" + ChatColor.GRAY + " second(s) until start!");
 						}
 						if (starttimer == 45)
 						{
-							Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "45 " + ChatColor.GRAY + " second(s) until start!");
+							player.sendMessage(ChatColor.GOLD + "45" + ChatColor.GRAY + " second(s) until start!");
 						}
 						if (starttimer == 15)
 						{
-							Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "15 " + ChatColor.GRAY + " second(s) until start!");
+							player.sendMessage(ChatColor.GOLD + "15" + ChatColor.GRAY + " second(s) until start!");
 						}
 						if (starttimer == 120) 
 						{
-							Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + "120 " + ChatColor.GRAY + " second(s) until start!");
+							player.sendMessage(ChatColor.GOLD + "120" + ChatColor.GRAY + " second(s) until start!");
 						}
 					}
 							
 					if (gametimer > 0 && gametimer < 21)
 					{
-						Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(gametimer) + ChatColor.GRAY + " second(s) until end!");
+						player.sendMessage(ChatColor.GOLD + Integer.toString(gametimer) + ChatColor.GRAY + " second(s) until end!");
 					}
 					if (gametimer == 60 && maxgametime > 60)
 					{
-						Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString((gametimer-60)/60) + ChatColor.GRAY + " minute(s) until end!");
+						player.sendMessage(ChatColor.GOLD + Integer.toString((gametimer-60)/60) + ChatColor.GRAY + " minute(s) until end!");
 					}
 					if (gametimer == maxgametime/2) 
 					{
-						Util.matchPlayer(ap.player.getName()).sendMessage(ChatColor.GOLD + Integer.toString(maxgametime/2) + ChatColor.GRAY + " second(s) until end!");
+						player.sendMessage(ChatColor.GOLD + Integer.toString(maxgametime/2) + ChatColor.GRAY + " second(s) until end!");
 					}
 							
 					// TP players back when dead
@@ -881,10 +881,9 @@ public abstract class Arena
 					{
 						if (ap.deaths >= maxDeaths) 
 						{
-							Player p = Util.matchPlayer(ap.player.getName());
-							if (p != null) 
+							if (player != null) 
 							{
-								if (p.getHealth() > 0) 
+								if (player.getHealth() > 0) 
 								{
 									endPlayer(ap, true);
 									removePlayer(ap);

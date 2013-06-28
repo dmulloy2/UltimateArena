@@ -17,7 +17,7 @@ permissions:
     children:
       ultimatearena.builder: true
       ultimatearena.forcestop: true
-      ultimatearena.refresh: true
+      ultimatearena.reload: true
       ultimatearena.disable: true
       ultimatearena.enable: true
       ultimatearena.kick: true
@@ -57,7 +57,7 @@ permissions:
   ultimatearena.pause:
     description: Allows the pausing of arena start timers
     default: false
-  ultimatearena.refresh:
+  ultimatearena.reload:
     description: Allows the reloading of the UltimateArena plugin
     default: false
   ultimatearena.setdone:

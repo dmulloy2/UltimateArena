@@ -35,7 +35,7 @@ public class BombFlag extends ArenaFlag
 
 			if (timer == 30 || timer == 20 || timer == 10 || timer <= 5) 
 			{
-				arena.tellPlayers("&7Bomb &6{0} &7 will expode in &d{1} &7seconds!", bnum, timer);
+				arena.tellPlayers("&7Bomb &6{0} &7will expode in &d{1} &7seconds!", bnum, timer);
 			}
 			
 			if (timer < 1) 

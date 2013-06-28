@@ -13,7 +13,7 @@ public class CTFArena extends Arena
 	public CTFFlagBase flagblue;
 	public int redcap;
 	public int bluecap;
-	private BukkitTask  ExecuteMove;
+	private BukkitTask ExecuteMove;
 	private String lastcap;
 	
 	public CTFArena(ArenaZone az)

@@ -10,13 +10,13 @@ import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
 
 public class PVPGunPlusListener implements Listener
 {
-	UltimateArena plugin;
+	private UltimateArena plugin;
 	public PVPGunPlusListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerGunFire(PVPGunPlusFireGunEvent event)
 	{
 		Player pl = event.getShooterAsPlayer();
@@ -32,8 +32,10 @@ public class PVPGunPlusListener implements Listener
 				}
 					
 				/**If its a gun in a regular arena, unlimited ammo!**/
-				event.setCancelled(false);
-				event.setAmountAmmoNeeded(0);
+				if (plugin.getConfig().getBoolean("unlimitedAmmo", true))
+				{
+					event.setAmountAmmoNeeded(0);
+				}
 			}
 		}
 	}

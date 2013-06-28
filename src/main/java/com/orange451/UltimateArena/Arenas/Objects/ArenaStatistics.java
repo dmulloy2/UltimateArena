@@ -21,10 +21,9 @@ public class ArenaStatistics
 	
 	public void stats() 
 	{
-		//calculates all the arenas stats
+		// Calculates all the arenas stats
 		this.totalPlays = arena.plugin.arenasPlayed;
 		this.plays = arena.timesPlayed;
-		//this.percentagePlayed = (int)(((int) ((double)plays/(double)totalPlays) * 100) / 100.0);
 		this.percentagePlayed = (int) (((double)plays/(double)totalPlays) * 100);
 		this.likes = arena.liked;
 		this.dislikes = arena.disliked;
@@ -32,9 +31,9 @@ public class ArenaStatistics
 	
 	public void dumpStats(Player p) 
 	{
-		//dumps the arenas stats to the player
+		// Dumps the arenas stats to the player
 		p.sendMessage(FormatUtil.format("&8Stats on arena: &6{0}", arena.arenaName));
-		p.sendMessage(FormatUtil.format("&7Plays: {0}/{1} (&c{2}%)", plays, totalPlays, percentagePlayed));
+		p.sendMessage(FormatUtil.format("&7Plays: {0}/{1} (&c{2}%&7)", plays, totalPlays, percentagePlayed));
 		p.sendMessage(FormatUtil.format("&7Likes: &a{0}", likes));
 		p.sendMessage(FormatUtil.format("&7Disikes: &c{0}", dislikes));
 	}

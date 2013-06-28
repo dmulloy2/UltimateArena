@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
@@ -89,7 +88,7 @@ public class CTFflag
 	
 	public void colorize() 
 	{
-		final Block current = myloc.getBlock();
+		Block current = myloc.getBlock();
 		if (team == 1) 
 		{
 			color = 14; // red team
@@ -101,16 +100,7 @@ public class CTFflag
 			flagType = ChatColor.BLUE + "BLUE";
 		}
 		
-		class ColorizeTask extends BukkitRunnable
-		{
-			@Override
-			public void run()
-			{
-				setFlagBlock(current);
-			}
-		}
-		
-		new ColorizeTask().runTask(plugin);
+		setFlagBlock(current);
 	}
 	
 	public void fall() 

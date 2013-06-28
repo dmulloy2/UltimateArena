@@ -24,24 +24,16 @@ public class SPLEEFArena extends FFAArena
 		type = "Spleef";
 		maxDeaths = 2;
 
-		try
-		{
-			spleefGround = new Field3D(az.plugin, this.world);
-			Location pos1 = az.flags.get(0);
-			Location pos2 = az.flags.get(1);
-			spleefGround.setParam(pos1.getWorld(), pos1.getX(), pos1.getZ(), pos1.getY()-1, pos2.getX(), pos2.getZ(), pos2.getY()-1);
-			spleefGround.setType(this.az.specialType);
+		spleefGround = new Field3D(az.plugin, this.world);
+		Location pos1 = az.flags.get(0);
+		Location pos2 = az.flags.get(1);
+		spleefGround.setParam(pos1.getWorld(), pos1.getX(), pos1.getZ(), pos1.getY()-1, pos2.getX(), pos2.getZ(), pos2.getY()-1);
+		spleefGround.setType(this.az.specialType);
 			
-			outZone = new Field3D(az.plugin, this.world);
-			Location pos3 = az.flags.get(2);
-			Location pos4 = az.flags.get(3);
-			outZone.setParam(pos3.getWorld(), pos3.getX(), pos3.getZ(), pos3.getY()-1, pos4.getX(), pos4.getZ(), pos4.getY()-1);
-		}
-		catch(Exception e) 
-		{
-			plugin.getLogger().severe("Error with spleef:");
-			e.printStackTrace();
-		}
+		outZone = new Field3D(az.plugin, this.world);
+		Location pos3 = az.flags.get(2);
+		Location pos4 = az.flags.get(3);
+		outZone.setParam(pos3.getWorld(), pos3.getX(), pos3.getZ(), pos3.getY()-1, pos4.getX(), pos4.getZ(), pos4.getY()-1);
 	}
 	
 	@Override

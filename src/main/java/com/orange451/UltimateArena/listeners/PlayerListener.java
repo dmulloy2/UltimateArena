@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.orange451.UltimateArena.Field3D;
 import com.orange451.UltimateArena.UltimateArena;
@@ -30,13 +29,13 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
 
 public class PlayerListener implements Listener 
 {
-	public UltimateArena plugin;
+	private UltimateArena plugin;
 	public PlayerListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		Player pl = event.getPlayer();
@@ -44,7 +43,7 @@ public class PlayerListener implements Listener
 		{
 			plugin.onQuit(pl);
 			
-			for (int i = plugin.waiting.size()-1; i >= 0; i--)
+			for (int i = 0; i < plugin.waiting.size(); i++)
 			{
 				if (plugin.waiting.get(i).player.getName().equals(pl.getName()))
 				{
@@ -55,7 +54,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerKick(PlayerKickEvent event) 
 	{
 		Player player = event.getPlayer();
@@ -71,7 +70,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event) 
 	{
 		Player pl = event.getPlayer();
@@ -82,7 +81,7 @@ public class PlayerListener implements Listener
 	}
 	
 	// dmulloy2 improved method.
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) 
 	{
 		Player pl = event.getPlayer();
@@ -90,11 +89,7 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.isInArena(pl))
 			{
-				if (plugin.getArena(pl).type.equals("Hunger"))
-				{
-					event.setCancelled(false);
-				}
-				else
+				if (! plugin.getArena(pl).type.equals("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -103,7 +98,7 @@ public class PlayerListener implements Listener
 	}
 	
 	// dmulloy2 improved method.
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) 
 	{
 		Player pl = event.getPlayer();
@@ -111,11 +106,7 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.isInArena(pl)) 
 			{
-				if (plugin.getArena(pl).type.equals("Hunger"))
-				{
-					event.setCancelled(false);
-				}
-				else 
+				if (! plugin.getArena(pl).type.equals("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -123,7 +114,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent event) 
 	{
 		Action action = event.getAction();
@@ -192,7 +183,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract1(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
@@ -280,24 +271,21 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl)) 
 			{
 				ArenaPlayer apl = plugin.getArenaPlayer(pl);
-				if (apl != null) 
+				if (apl != null && !apl.out) 
 				{
-					if (!apl.out)
-					{ 
-						if (plugin.getArenaPlayer(pl).deaths < plugin.getArena(pl).maxDeaths) 
+					if (plugin.getArenaPlayer(pl).deaths < plugin.getArena(pl).maxDeaths) 
+					{
+						Arena are = plugin.getArena(pl);
+						if (are != null && !are.stopped)
 						{
-							Arena are = plugin.getArena(pl);
-							if (are != null)
+							if (are.gametimer > 1) 
 							{
-								if (!are.stopped) 
+								if (are.getSpawn(apl) != null)
 								{
-									if (are.gametimer > 1) 
-									{
-										if (are.getSpawn(apl) != null)
-											event.setRespawnLocation(are.getSpawn(apl));
-										new RemindTask(pl).runTaskLater(plugin, 20L);
-									}
+									event.setRespawnLocation(are.getSpawn(apl));
 								}
+								
+								are.spawn(pl.getName(), false);
 							}
 						}
 					}
@@ -306,7 +294,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player p = event.getPlayer();
@@ -314,7 +302,8 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.waiting.get(i).player.getName().equals(p.getName()))
 			{
-				plugin.waiting.get(i).player.sendMessage(ChatColor.RED + "Cancelled!");
+				p.sendMessage(ChatColor.RED + "Cancelled!");
+				
 				plugin.waiting.get(i).cancel();
 				plugin.waiting.remove(i);
 			}
@@ -324,39 +313,16 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
+		Player player = event.getPlayer();
 		String cmd = event.getMessage().toLowerCase();
+		
 		String[] check = cmd.split(" ");
-		if (!cmd.contains("/ua") && plugin.isInArena(event.getPlayer()) && !plugin.wcmd.isAllowed(check))
+		if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
 		{
-			event.getPlayer().sendMessage(ChatColor.GRAY + "You cannot use non-ua commands in an arena!");
-			event.getPlayer().sendMessage(ChatColor.GRAY + "If you wish to use commands again, use " + ChatColor.LIGHT_PURPLE + "/ua leave");
+			player.sendMessage(ChatColor.GRAY + "You cannot use non-ua commands in an arena!");
+			player.sendMessage(ChatColor.GRAY + "If you wish to use commands again, use " + ChatColor.LIGHT_PURPLE + "/ua leave");
 			event.setCancelled(true);
 			return;
 		}
 	}	
-	
-	class RemindTask extends BukkitRunnable 
-	{
-		public Player event;
-		public RemindTask(Player event) 
-		{
-			this.event = event;
-		}
-
-		@Override
-		public void run()
-		{
-			if (event != null)
-			{
-				if (event.getName() != null)
-				{
-					Arena a = plugin.getArena(event);
-					if (a != null) 
-					{
-						a.spawn(event.getName(), false);
-					}
-				}
-			}
-		}
-	}
 }

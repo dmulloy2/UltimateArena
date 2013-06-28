@@ -96,7 +96,7 @@ public class ArenaConfig
 		return true;
 	}
 	
-	public void giveRewards(final Player player, final boolean half) 
+	public void giveRewards(Player player, boolean half) 
 	{
 		for (ArenaReward a : rewards)
 		{

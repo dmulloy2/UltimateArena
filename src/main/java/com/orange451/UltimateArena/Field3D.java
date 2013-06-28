@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class Field3D extends Field
 {
@@ -57,10 +56,7 @@ public class Field3D extends Field
 		{
 			int locy = loc.getBlockY();
 			World locw = loc.getWorld();
-			if (locy >= minz && locy <= maxz && locw == world) 
-			{
-				return true;
-			}
+			return (locy >= minz && locy <= maxz && locw == world);
 		}
 		return false;
 	}
@@ -69,10 +65,7 @@ public class Field3D extends Field
 	{
 		if (super.isInside(loc))
 		{
-			if (loc.getBlockY() < maxz) 
-			{
-				return true;
-			}
+			return (loc.getBlockY() < maxz);
 		}
 		return false;
 	}
@@ -84,26 +77,16 @@ public class Field3D extends Field
 	
 	public void setType(final int id)
 	{
-		class TypeSetTask extends BukkitRunnable
+		for (int i = minx; i <= maxx; i++)
 		{
-			@Override
-			public void run() 
+			for (int ii = miny; ii <= maxy; ii++)
 			{
-				for (int i = minx; i <= maxx; i++)
+				for (int iii = minz; iii <= maxz; iii++)
 				{
-					for (int ii = miny; ii <= maxy; ii++)
-					{
-						for (int iii = minz; iii <= maxz; iii++)
-						{
-							Block b = world.getBlockAt(i, iii, ii);
-							b.setTypeId(id);
-						}
-					}
+					Block b = world.getBlockAt(i, iii, ii);
+					b.setTypeId(id);
 				}
 			}
 		}
-		
-		new TypeSetTask().runTask(plugin);
 	}
 }
-

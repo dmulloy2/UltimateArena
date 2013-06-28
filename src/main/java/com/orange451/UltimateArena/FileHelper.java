@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -1195,21 +1194,24 @@ public class FileHelper
 			if (!signFile.exists()) signFile.createNewFile();
 			
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-			fc.set("total", 0);
 			
-			String path = "signs." + fc.getInt("total") + ".";
+			String path = "signs." + sign.getId() + ".";
 			String locpath = path + "location.";
-			Location loc = sign.loc;
+			Location loc = sign.getLocation();
 			
 			fc.set(locpath + "world", loc.getWorld().getName());
 			fc.set(locpath + "x", loc.getBlockX());
 			fc.set(locpath + "y", loc.getBlockY());
 			fc.set(locpath + "z", loc.getBlockZ());
 			
-			fc.set(path + "autoAssign", sign.autoAssign);
-			fc.set(path + "name", sign.zone.arenaName);
+			if (fc.get(path + "autoAssign") != null)
+				fc.set(path + "autoAssign", null);
 			
-			fc.set("total", fc.getInt("total") + 1);
+			fc.set(path + "isJoin", sign.isJoinSign());
+			fc.set(path + "isStatus", sign.isStatusSign());
+			fc.set(path + "name", sign.getArena());
+			
+			fc.set("total", plugin.arenaSigns.size() + 1);
 			
 			fc.save(signFile);
 		}
@@ -1230,7 +1232,7 @@ public class FileHelper
 		}
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-		for (int i=0; i<fc.getInt("signs"); i++)
+		for (int i=0; i<fc.getInt("total"); i++)
 		{
 			String path = "signs" + i + ".";
 			String locpath = path + "location.";
@@ -1238,66 +1240,25 @@ public class FileHelper
 			World world = plugin.getServer().getWorld(fc.getString(locpath + "world"));
 			Location loc = new Location(world, fc.getInt(locpath + "x"), fc.getInt(locpath + "y"), fc.getInt(locpath + "z"));
 			
-			if (world.getBlockAt(loc).getState() instanceof Sign)
+			ArenaZone az = plugin.getArenaZone(fc.getString("name"));
+			if (az != null)
 			{
-				Sign s = (Sign)world.getBlockAt(loc);
-				if (fc.getBoolean("autoAssign"))
+				if (fc.get("isJoin") == null)
 				{
-					ArenaSign sign = new ArenaSign(plugin, s, loc);
-					plugin.joinSigns.add(sign);
+					fc.set("isJoin", true);
+					fc.set("isStatus", false);
+					fc.set("autoAssign", null);
 				}
-				else
-				{
-					ArenaZone zone = plugin.getArenaZone(fc.getString("name"));
-					if (zone != null)
-					{
-						ArenaSign sign = new ArenaSign(plugin, s, loc, zone);
-						plugin.joinSigns.add(sign);
-					}
-				}
+				
+				boolean isJoin = fc.getBoolean("isJoin");
+				ArenaSign sign = new ArenaSign(plugin, loc, az, isJoin, i);
+				signs.add(sign);
 			}
 		}
 		
+		try { fc.save(signFile); }
+		catch (Exception e) {}
+		
 		return signs;
-	}
-	
-	public void deleteSign()
-	{
-		try
-		{
-			File signFile = new File(plugin.getDataFolder(), "signs.yml");
-			if (!signFile.exists())
-			{
-				signFile.delete();
-			}
-			
-			signFile.createNewFile();
-			
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-			fc.set("total", 0);
-			
-			for (ArenaSign sign : plugin.joinSigns)
-			{
-				String path = "signs." + fc.getInt("total") + ".";
-				String locpath = path + "location.";
-				Location loc = sign.loc;
-				
-				fc.set(locpath + "world", loc.getWorld().getName());
-				fc.set(locpath + "x", loc.getBlockX());
-				fc.set(locpath + "y", loc.getBlockY());
-				fc.set(locpath + "z", loc.getBlockZ());
-				
-				fc.set(path + "autoAssign", sign.autoAssign);
-				fc.set(path + "name", sign.zone.arenaName);
-				
-				fc.set("total", fc.getInt("total") + 1);
-			}
-			
-			fc.save(signFile);
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error deleting sign: " + e.getMessage());
-		}
 	}
 }

@@ -65,7 +65,7 @@ public class UltimateArena extends JavaPlugin
 	public List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
 	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	public List<String> fieldTypes = new ArrayList<String>();
-	public List<ArenaSign> joinSigns = new ArrayList<ArenaSign>();
+	public List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
 	public WhiteListCommands wcmd = new WhiteListCommands();
 	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
 
@@ -113,7 +113,7 @@ public class UltimateArena extends JavaPlugin
 		commandHandler.registerCommand(new PCommandStop(this));
 		
 		commandHandler.registerCommand(new PCommandForceStop(this));
-		commandHandler.registerCommand(new PCommandRefresh(this));
+		commandHandler.registerCommand(new PCommandReload(this));
 		commandHandler.registerCommand(new PCommandForceJoin(this));
 		commandHandler.registerCommand(new PCommandDisable(this));
 		commandHandler.registerCommand(new PCommandEnable(this));
@@ -135,8 +135,8 @@ public class UltimateArena extends JavaPlugin
 
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
 		
-		joinSigns = fileHelper.loadSigns();
-		getLogger().info("Loaded " + joinSigns.size() + " join signs!");
+		arenaSigns = fileHelper.loadSigns();
+		getLogger().info("Loaded " + arenaSigns.size() + " arena signs!");
 		
 		new SignUpdateTask().runTaskTimer(this, 2L, 20L);
 			
@@ -161,7 +161,7 @@ public class UltimateArena extends JavaPlugin
 			activeArena.get(i).onDisable();
 		}
 		
-		for (ArenaSign sign : joinSigns)
+		for (ArenaSign sign : arenaSigns)
 		{
 			sign.save();
 		}
@@ -482,9 +482,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public ArenaSign getArenaSign(Location loc)
 	{
-		for (ArenaSign sign : joinSigns)
+		for (ArenaSign sign : arenaSigns)
 		{
-			if (Util.checkLocation(sign.loc, loc))
+			if (Util.checkLocation(sign.getLocation(), loc))
 				return sign;
 		}
 		return null;
@@ -492,8 +492,12 @@ public class UltimateArena extends JavaPlugin
 	
 	public void deleteSign(ArenaSign sign)
 	{
-		joinSigns.remove(sign);
-		fileHelper.deleteSign();
+		arenaSigns.remove(sign);
+		
+		for (ArenaSign as : arenaSigns)
+		{
+			fileHelper.saveSign(as);
+		}
 	}
 	
 	public ArenaClass getArenaClass(String line)
@@ -520,9 +524,9 @@ public class UltimateArena extends JavaPlugin
 				
 			file.delete();
 			
-			for (ArenaSign as : joinSigns)
+			for (ArenaSign as : arenaSigns)
 			{
-				if (as.zone.arenaName.equalsIgnoreCase(str))
+				if (as.getArena().equalsIgnoreCase(str))
 				{
 					deleteSign(as);
 				}
@@ -558,9 +562,7 @@ public class UltimateArena extends JavaPlugin
 		for (ArenaZone az : loadedArena)
 		{
 			if (az.checkLocation(loc))
-			{
 				return true;
-			}
 		}
 		return false;
 	}
@@ -616,15 +618,10 @@ public class UltimateArena extends JavaPlugin
 		{
 			Arena a = activeArena.get(i);
 			ArenaPlayer ap = a.getArenaPlayer(player);
-			if (ap != null)
+			if (ap != null && !ap.out)
 			{
-				if (!ap.out) 
-				{
-					if (ap.player.getName().equals(player.getName())) 
-					{
-						return ap;
-					}
-				}
+				if (ap.player.getName().equals(player.getName())) 
+					return ap;
 			}
 		}
 		return null;
@@ -826,9 +823,7 @@ public class UltimateArena extends JavaPlugin
 		for (Arena ac : activeArena)
 		{
 			if (ac.name.equals(name))
-			{
 				return ac;
-			}
 		}
 		return null;
 	}
@@ -838,9 +833,7 @@ public class UltimateArena extends JavaPlugin
 		for (ArenaZone az : loadedArena)
 		{
 			if (az.arenaName.equals(name)) 
-			{
 				return az;
-			}
 		}
 		return null;
 	}
@@ -899,9 +892,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			ArenaCreator ac = makingArena.get(i);
 			if (ac.player.equalsIgnoreCase(player.getName()))
-			{
 				return ac;
-			}
 		}
 		return null;
 	}
@@ -976,7 +967,7 @@ public class UltimateArena extends JavaPlugin
 		activeArena.clear();
 		makingArena.clear();
 		fieldTypes.clear();
-		joinSigns.clear();
+		arenaSigns.clear();
 		waiting.clear();
 		classes.clear();
 		configs.clear();
@@ -1048,12 +1039,9 @@ public class UltimateArena extends JavaPlugin
     	@Override
     	public void run()
     	{
-    		for (ArenaSign sign : joinSigns)
+    		for (ArenaSign sign : arenaSigns)
     		{
-    			if (!sign.autoAssign)
-    			{
-    				sign.update();
-    			}
+    			sign.update();
     		}
     	}
     }

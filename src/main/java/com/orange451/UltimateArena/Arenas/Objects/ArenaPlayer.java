@@ -18,6 +18,7 @@ import org.bukkit.plugin.PluginManager;
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Kit;
 import com.earth2me.essentials.User;
+import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Arena;
 import com.orange451.UltimateArena.util.Util;
 
@@ -40,6 +41,7 @@ public class ArenaPlayer
 	public Location spawnBack;
 	public Arena inArena;
 	public Player player;
+	private UltimateArena plugin;
 	
 	public List<ItemStack> savedInventory = new ArrayList<ItemStack>();
 	public List<ItemStack> savedArmor = new ArrayList<ItemStack>();
@@ -49,8 +51,9 @@ public class ArenaPlayer
 		this.player = p;
 		this.username = p.getName();
 		this.inArena = a;
+		this.plugin = a.az.plugin;
 		this.spawnBack = p.getLocation().clone();
-		this.mclass = a.az.plugin.getArenaClass(a.az.defaultClass);
+		this.mclass = plugin.getArenaClass(a.az.defaultClass);
 		this.baselevel = p.getLevel();
 		this.startxp = p.getExp();
 	}
@@ -190,15 +193,16 @@ public class ArenaPlayer
 	{
 		if (amtkicked > 10)
 		{
-			inArena.az.plugin.leaveArena(player);
+			plugin.leaveArena(player);
 		}
 			
 		Player p = Util.matchPlayer(player.getName());
 		p.getInventory().clear();
-		decideHat(p);
 			
 		if (inArena.starttimer <= 0 && inArena.gametimer >= 2) 
 		{
+			decideHat(p);
+			
 			if (mclass == null) 
 			{
 				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
@@ -224,7 +228,7 @@ public class ArenaPlayer
 				}
 				catch (Exception e)
 				{
-					inArena.plugin.getLogger().severe("Error giving class items: " + e.getMessage());
+					plugin.getLogger().severe("Error giving class items: " + e.getMessage());
 				}
 			}
 			
