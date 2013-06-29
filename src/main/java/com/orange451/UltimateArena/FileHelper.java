@@ -1232,9 +1232,9 @@ public class FileHelper
 		}
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-		for (int i=0; i<fc.getInt("total") - 1; i++)
+		for (int i=0; i<fc.getInt("total"); i++)
 		{
-			String path = "signs" + i + ".";
+			String path = "signs." + i + ".";
 			String locpath = path + "location.";
 			
 			World world = plugin.getServer().getWorld(fc.getString(locpath + "world"));
