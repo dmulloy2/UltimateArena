@@ -128,6 +128,8 @@ public class BlockListener implements Listener
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, true, plugin.arenaSigns.size());
 						plugin.arenaSigns.add(sign);
 						sign.update();
+						
+						event.getPlayer().sendMessage(FormatUtil.format("&eCreated new Join Sign!"));
 					}
 					else
 					{
@@ -146,7 +148,7 @@ public class BlockListener implements Listener
 				event.setLine(3, "");
 			}
 		}
-		else if (event.getLine(0).equalsIgnoreCase("[UA Stats]"))
+		else if (event.getLine(0).equalsIgnoreCase("[Arena Stats]"))
 		{
 			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), PermissionType.BUILD.permission))
 			{
@@ -156,6 +158,8 @@ public class BlockListener implements Listener
 					ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, false, plugin.arenaSigns.size());
 					plugin.arenaSigns.add(sign);
 					sign.update();
+					
+					event.getPlayer().sendMessage(FormatUtil.format("&eCreated new Stats sign!"));
 				}
 				else
 				{
@@ -192,7 +196,25 @@ public class BlockListener implements Listener
 					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
 					{
 						plugin.deleteSign(sign);
-						player.sendMessage(FormatUtil.format("&eDeleted join sign!"));
+						player.sendMessage(FormatUtil.format("&eDeleted Join sign!"));
+					}
+					else
+					{
+						event.setCancelled(true);
+						player.sendMessage(FormatUtil.format("&cPermission denied!"));
+					}
+				}
+			}
+			
+			if (s.getLine(0).equalsIgnoreCase("[Arena Stats]"))
+			{
+				ArenaSign sign = plugin.getArenaSign(block.getLocation());
+				if (sign != null)
+				{
+					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
+					{
+						plugin.deleteSign(sign);
+						player.sendMessage(FormatUtil.format("&eDeleted Stats sign!"));
 					}
 					else
 					{

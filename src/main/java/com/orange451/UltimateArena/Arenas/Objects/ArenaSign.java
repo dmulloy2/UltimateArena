@@ -54,8 +54,8 @@ public class ArenaSign
 		}
 		else
 		{
-			sign.setLine(0, "[UA Stats]");
-			sign.setLine(1, "Arena: " + zone.arenaName);
+			sign.setLine(0, "[Arena Stats]");
+			sign.setLine(1, zone.arenaName);
 			sign.setLine(2, "Type: " + zone.arenaType);
 			sign.setLine(3, getStatus());
 		}
