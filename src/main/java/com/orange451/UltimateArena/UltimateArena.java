@@ -134,17 +134,17 @@ public class UltimateArena extends JavaPlugin
 		pm.registerEvents(new PlayerListener(this), this);
 
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
-		
-		arenaSigns = fileHelper.loadSigns();
-		getLogger().info("Loaded " + arenaSigns.size() + " arena signs!");
-		
-		new SignUpdateTask().runTaskTimer(this, 2L, 20L);
 			
 		checkVault(pm);
 		
 		fileConverter.run();
 
 		loadFiles();
+		
+		arenaSigns = fileHelper.loadSigns();
+		getLogger().info("Loaded " + arenaSigns.size() + " arena signs!");
+		
+		new SignUpdateTask().runTaskTimer(this, 2L, 20L);
 		
 		long finish = System.currentTimeMillis();
 		
