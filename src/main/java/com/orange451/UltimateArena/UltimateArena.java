@@ -493,11 +493,8 @@ public class UltimateArena extends JavaPlugin
 	public void deleteSign(ArenaSign sign)
 	{
 		arenaSigns.remove(sign);
-		
-		for (ArenaSign as : arenaSigns)
-		{
-			fileHelper.saveSign(as);
-		}
+
+		fileHelper.refreshSignSave();
 	}
 	
 	public ArenaClass getArenaClass(String line)

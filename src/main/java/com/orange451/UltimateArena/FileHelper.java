@@ -1261,4 +1261,21 @@ public class FileHelper
 		
 		return signs;
 	}
+	
+	public void refreshSignSave()
+	{
+		File signFile = new File(plugin.getDataFolder(), "signs.yml");
+		if (!signFile.exists())
+			return;
+		
+		signFile.delete();
+		
+		try { signFile.createNewFile(); }
+		catch (Exception e) {}
+		
+		for (ArenaSign sign : plugin.arenaSigns)
+		{
+			saveSign(sign);
+		}
+	}
 }
