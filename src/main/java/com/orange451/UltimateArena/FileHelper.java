@@ -1211,7 +1211,7 @@ public class FileHelper
 			fc.set(path + "isStatus", sign.isStatusSign());
 			fc.set(path + "name", sign.getArena());
 			
-			fc.set("total", plugin.arenaSigns.size() + 1);
+			fc.set("total", plugin.arenaSigns.size());
 			
 			fc.save(signFile);
 		}
@@ -1232,7 +1232,7 @@ public class FileHelper
 		}
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-		for (int i=0; i<fc.getInt("total"); i++)
+		for (int i=0; i<fc.getInt("total") - 1; i++)
 		{
 			String path = "signs" + i + ".";
 			String locpath = path + "location.";
@@ -1240,7 +1240,7 @@ public class FileHelper
 			World world = plugin.getServer().getWorld(fc.getString(locpath + "world"));
 			Location loc = new Location(world, fc.getInt(locpath + "x"), fc.getInt(locpath + "y"), fc.getInt(locpath + "z"));
 			
-			ArenaZone az = plugin.getArenaZone(fc.getString("name"));
+			ArenaZone az = plugin.getArenaZone(fc.getString(path + "name"));
 			if (az != null)
 			{
 				if (fc.get("isJoin") == null)
@@ -1250,7 +1250,7 @@ public class FileHelper
 					fc.set("autoAssign", null);
 				}
 				
-				boolean isJoin = fc.getBoolean("isJoin");
+				boolean isJoin = fc.getBoolean(path + "isJoin");
 				ArenaSign sign = new ArenaSign(plugin, loc, az, isJoin, i);
 				signs.add(sign);
 			}
