@@ -140,7 +140,8 @@ public abstract class Arena
 			if (user.isFlying())
 				user.setFlying(false);
 		}
-		plugin.removePotions(player);
+		
+		pl.clearPotionEffects();
 		updatedTeams = true;
 		
 		// Call ArenaJoinEvent
@@ -369,16 +370,14 @@ public abstract class Arena
 		// Sets the winning team, -1 for everyone wins
 		for (ArenaPlayer ap : arenaplayers)
 		{
-			if (ap != null)
+			if (ap != null && !ap.out)
 			{
-				if (ap.out == false)
+				ap.canReward = false;
+				if (ap.team == team || team == -1)
 				{
-					ap.canReward = false;
-					if (ap.team == team || team == -1)
-					{
-						ap.canReward = true;
-					}
+					ap.canReward = true;
 				}
+
 			}
 		}
 		this.winningTeam = team;
@@ -404,8 +403,7 @@ public abstract class Arena
 	public boolean checkEmpty() 
 	{
 		boolean ret = isEmpty();
-		if (ret)
-			stop();
+		if (ret) stop();
 		
 		return ret;
 	}
@@ -420,54 +418,31 @@ public abstract class Arena
 		// Tells ALL players in the arena a message
 		for (ArenaPlayer ap : arenaplayers)
 		{
-			if (ap != null) 
+			if (ap != null && !ap.out) 
 			{
-				if (!ap.out)
+				Player player = Util.matchPlayer(ap.player.getName());
+				if (player != null && player.isOnline())
 				{
-					Player player = Util.matchPlayer(ap.player.getName());
-					if (player != null && player.isOnline())
-					{
-						string = FormatUtil.format(string, objects);
-						player.sendMessage(string);
-					}
+					string = FormatUtil.format(string, objects);
+					player.sendMessage(string);
 				}
 			}
 		}
 	}
 	
-	public void tellPlayers(String string) 
-	{
-		// Tells ALL players in the arena a message
-		for (ArenaPlayer ap : arenaplayers)
-		{
-			if (ap != null) 
-			{
-				if (!ap.out)
-				{
-					Player player = Util.matchPlayer(ap.player.getName());
-					if (player != null && player.isOnline())
-						player.sendMessage(FormatUtil.format(string));
-				}
-			}
-		}
-	}
-
 	public void killAllNear(Location loc, int rad)
 	{
 		// Kills ALL players in the arena near a point
 		for (ArenaPlayer ap : arenaplayers)
 		{
-			if (ap != null) 
+			if (ap != null && !ap.out) 
 			{
-				if (!ap.out)
+				Player player = Util.matchPlayer(ap.player.getName());
+				if (player != null && player.isOnline())
 				{
-					Player player = Util.matchPlayer(ap.player.getName());
-					if (player != null && player.isOnline())
-					{
-						Location ploc = player.getLocation();
-						if (Util.pointDistance(loc, ploc) < rad)
-							player.setHealth(0);
-					}
+					Location ploc = player.getLocation();
+					if (Util.pointDistance(loc, ploc) < rad)
+						player.setHealth(0);
 				}
 			}
 		}

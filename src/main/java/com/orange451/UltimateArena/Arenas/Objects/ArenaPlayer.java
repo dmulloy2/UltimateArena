@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.potion.PotionEffect;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Kit;
@@ -60,6 +61,12 @@ public class ArenaPlayer
 	
 	public void decideHat(Player p)
 	{
+		if (mclass != null && !mclass.helmet)
+		{
+			p.getInventory().setHelmet(null);
+			return;
+		}
+		
 		if (p.getInventory().getHelmet() == null)
 		{
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET, 1);
@@ -84,10 +91,14 @@ public class ArenaPlayer
 				{
 					Enchantment ench = enchantment.getType();
 					int level = enchantment.getLevel();
-					try { itemStack.addUnsafeEnchantment(ench, level); }
-					catch (Exception e) {}
+					
+					if (ench != null && level > 0)
+					{
+						itemStack.addUnsafeEnchantment(ench, level);
+					}
 				}
 			}
+			
 			if (dat > 0)
 			{
 				MaterialData data = itemStack.getData();
@@ -101,28 +112,35 @@ public class ArenaPlayer
 	
 	public void giveArmor(Player p, int type, int slot, List<CompositeEnchantment> enchants)
 	{
-		ItemStack itemStack = new ItemStack(type, 1);
-		if (enchants != null && enchants.size() > 0)
+		if (type > 0)
 		{
-			for (CompositeEnchantment enchantment : enchants)
+			ItemStack itemStack = new ItemStack(type, 1);
+			if (enchants != null && enchants.size() > 0)
 			{
-				Enchantment ench = enchantment.getType();
-				int level = enchantment.getLevel();
-				try { itemStack.addUnsafeEnchantment(ench, level); }
-				catch (Exception e) {}
+				for (CompositeEnchantment enchantment : enchants)
+				{
+					Enchantment ench = enchantment.getType();
+					int level = enchantment.getLevel();
+					
+					if (ench != null && level > 0)
+					{
+						itemStack.addUnsafeEnchantment(ench, level);
+					}
+				}
 			}
-		}
-		if (slot == 0)
-		{
-			p.getInventory().setChestplate(itemStack);
-		}
-		if (slot == 1)
-		{
-			p.getInventory().setLeggings(itemStack);
-		}
-		if (slot == 2)
-		{
-			p.getInventory().setBoots(itemStack);
+			
+			if (slot == 0)
+			{
+				p.getInventory().setChestplate(itemStack);
+			}
+			if (slot == 1)
+			{
+				p.getInventory().setLeggings(itemStack);
+			}
+			if (slot == 2)
+			{
+				p.getInventory().setBoots(itemStack);
+			}
 		}
 	}
 	
@@ -198,7 +216,24 @@ public class ArenaPlayer
 			
 		Player p = Util.matchPlayer(player.getName());
 		p.getInventory().clear();
-			
+		
+		giveClassItems(p);
+	}
+	
+	public void setClass(ArenaClass ac)
+	{
+		this.mclass = ac;
+		clearInventory();
+		clearPotionEffects();
+		
+		if (inArena.starttimer > 0)
+		{
+			giveClassItems(player);
+		}
+	}
+	
+	public void giveClassItems(Player p)
+	{
 		if (inArena.starttimer <= 0 && inArena.gametimer >= 2) 
 		{
 			decideHat(p);
@@ -235,7 +270,6 @@ public class ArenaPlayer
 			if (mclass.armor1 > 0) { giveArmor(p, mclass.armor1, 0, mclass.armorenchant1); }
 			if (mclass.armor2 > 0) { giveArmor(p, mclass.armor2, 1, mclass.armorenchant2); }
 			if (mclass.armor3 > 0) { giveArmor(p, mclass.armor3, 2, mclass.armorenchant3); }
-			if (mclass.helmet == false) { p.getInventory().setHelmet(null); }
 							
 			giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
 			giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1, mclass.enchant2);
@@ -246,6 +280,14 @@ public class ArenaPlayer
 			giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
 			giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
 			giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
+		}
+	}
+	
+	public void clearPotionEffects()
+	{
+		for (PotionEffect effect : player.getActivePotionEffects())
+		{
+			player.removePotionEffect(effect.getType());
 		}
 	}
 }

@@ -81,7 +81,7 @@ public class ArenaCreator
 		}
 		if (arenaType.equals("spleef")) 
 		{
-			amtLobbys = 1;;
+			amtLobbys = 1;
 			this.steps.add("spleefzone");
 			this.steps.add("outzone");
 		}
@@ -136,9 +136,10 @@ public class ArenaCreator
 		}
 		catch(Exception e)
 		{
-			plugin.getLogger().severe("Error creating arena!");
 			player.sendMessage(ChatColor.RED + "Error creating arena: " + e.getMessage());
 			player.sendMessage(ChatColor.RED + "Check Console for more details");
+			
+			plugin.getLogger().severe("Error creating arena: ");
 			e.printStackTrace();
 		}
 		plugin.makingArena.remove(this);
@@ -194,7 +195,7 @@ public class ArenaCreator
 						if (arenaType.equals("spleef"))
 						{
 							player.sendMessage(ChatColor.GRAY + "Done with lobby spawns");
-							player.sendMessage(ChatColor.GRAY + "   -please create 2 spleefzone points");
+							player.sendMessage(ChatColor.GRAY + "Please create 2 spleefzone points");
 						}
 						else
 						{

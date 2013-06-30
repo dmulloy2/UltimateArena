@@ -121,7 +121,8 @@ public class UltimateArena extends JavaPlugin
 		commandHandler.registerCommand(new PCommandStart(this));
 		commandHandler.registerCommand(new PCommandPause(this));
 		
-		commandHandler.registerCommand(new PCommandClasses(this));
+		commandHandler.registerCommand(new PCommandClassList(this));
+		commandHandler.registerCommand(new PCommandClass(this));
 		
 		loadPlayers();
 

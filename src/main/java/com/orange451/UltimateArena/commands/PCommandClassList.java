@@ -10,13 +10,14 @@ import org.bukkit.inventory.ItemStack;
 import com.orange451.UltimateArena.UltimateArena;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaClass;
 
-public class PCommandClasses extends UltimateArenaCommand
+public class PCommandClassList extends UltimateArenaCommand
 {
-	public PCommandClasses(UltimateArena plugin)
+	public PCommandClassList(UltimateArena plugin)
 	{
 		super(plugin);
-		this.name = "classes";
+		this.name = "classlist";
 		this.aliases.add("cl");
+		this.aliases.add("classes");
 		this.description = "List UltimateArena classes";
 		
 		this.mustBePlayer = false;
