@@ -77,8 +77,8 @@ public class Field
 	
 	public int getArea()
 	{
-		int length = maxx - minx;
-		int width = maxy - miny;
+		this.length = maxx - minx;
+		this.width = maxy - miny;
 		return length * width;
 	}
 }

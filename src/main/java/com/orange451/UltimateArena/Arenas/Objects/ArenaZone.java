@@ -21,12 +21,16 @@ public class ArenaZone
 	public int liked;
 	public int disliked;
 	public int maxPlayers = 24;
+	
 	public boolean loaded = false;
 	public boolean disabled = false;
-	public String defaultClass;
+	
+	public String step;
 	public String player;
+	public String defaultClass;
 	public String arenaName = "";
 	public String arenaType = "";
+	
 	public Location lobby1 = null;
 	public Location lobby2 = null;
 	public Location arena1 = null;
@@ -37,14 +41,17 @@ public class ArenaZone
 	public Location team2spawn = null;
 	public Location lobbyREDspawn = null;
 	public Location lobbyBLUspawn = null;
+	
 	public Field lobby;
 	public Field arena;
-	public String step;
+	
 	public List<String> voted = new ArrayList<String>();
 	public List<String> steps = new ArrayList<String>();
 	public List<Location> spawns = new ArrayList<Location>();
 	public List<Location> flags = new ArrayList<Location>();
+	
 	public World world;
+	
 	public UltimateArena plugin;
 	
 	public ArenaZone(UltimateArena plugin, File file)

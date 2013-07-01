@@ -1,6 +1,7 @@
 package com.orange451.UltimateArena.Arenas;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -9,8 +10,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 import com.orange451.UltimateArena.Arenas.Objects.ArenaZone;
@@ -18,11 +19,11 @@ import com.orange451.UltimateArena.util.Util;
 
 public class MOBArena extends Arena 
 {
-	private int mobspawn;
-	private int mobPerWave;
 	private int mobtimer = 0;
-	private ArrayList<LivingEntity> mobs = new ArrayList<LivingEntity>();
-	private ArrayList<String> spawning = new ArrayList<String>();
+	private int mobspawn, mobPerWave;
+	
+	private List<LivingEntity> mobs = new ArrayList<LivingEntity>();
+	private List<String> spawning = new ArrayList<String>();
 	
 	public MOBArena(ArenaZone az) 
 	{
@@ -49,7 +50,7 @@ public class MOBArena extends Arena
 		if (wave > 0)
 		{
 			tellPlayers("&aYou survived the wave!");
-			tellPlayers("&aNow going to wave &c{0}", wave);
+			tellPlayers("&aNow going to wave &c{0}&a!", wave);
 		}
 		
 		wave++;
@@ -88,31 +89,25 @@ public class MOBArena extends Arena
 	@Override
 	public void endPlayer(ArenaPlayer p, boolean end)
 	{
-		if (this.az.plugin.isInArena(p.player.getLocation())) 
-		{
-			if (!p.out)
-			{
-				super.endPlayer(p, end);
-				this.reward(p, p.player, false);
-			}
-		}
+		super.endPlayer(p, end);
+		this.reward(p, p.player, false);
 	}
 	
 	@Override
 	public void reward(ArenaPlayer p, Player pl, boolean half)
 	{
-		int amtGold = (int) Math.floor(p.XP / 500.0);
-		int amtSlime = (int) Math.floor(p.XP / 550.0);
-		int amtGlowStone = (int) Math.floor(p.XP / 450.0);
-		int amtGunPowder = (int) Math.floor(p.XP / 425.0);
+		int amtGold = (int) Math.floor(p.gameXP / 500.0);
+		int amtSlime = (int) Math.floor(p.gameXP / 550.0);
+		int amtGlowStone = (int) Math.floor(p.gameXP / 450.0);
+		int amtGunPowder = (int) Math.floor(p.gameXP / 425.0);
 
-		if (pl.isOnline()) 
+		if (pl != null) 
 		{
-			Inventory inv = pl.getInventory();
-			if (amtGold > 0) { inv.setItem(0, new ItemStack(Material.GOLD_INGOT, amtGold)); }
-			if (amtSlime > 0) { inv.setItem(1, new ItemStack(Material.SLIME_BALL, amtSlime)); }
-			if (amtGlowStone > 0) { inv.setItem(2, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone)); }
-			if (amtGunPowder > 0) { inv.setItem(3, new ItemStack(Material.SULPHUR, amtGunPowder)); }
+			PlayerInventory inv = pl.getInventory();
+			if (amtGold > 0) { inv.addItem(new ItemStack(Material.GOLD_INGOT, amtGold)); }
+			if (amtSlime > 0) { inv.addItem(new ItemStack(Material.SLIME_BALL, amtSlime)); }
+			if (amtGlowStone > 0) { inv.addItem(new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone)); }
+			if (amtGunPowder > 0) { inv.addItem(new ItemStack(Material.SULPHUR, amtGunPowder)); }
 		}
 	}
 	

@@ -40,7 +40,9 @@ public abstract class Arena
 	public List<ArenaPlayer> arenaplayers = new ArrayList<ArenaPlayer>();
 	public List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
 	public List<ArenaSpawn> spawns = new ArrayList<ArenaSpawn>();
+	
 	public ArenaConfig config;
+	
 	public int amountFlagCap = 0;
 	public int maxDeaths = 1;
 	public int wave = 0;
@@ -58,20 +60,25 @@ public abstract class Arena
 	public int amtPlayersStartingInArena;
 	public int team1size;
 	public int team2size;
+	
 	public boolean allowTeamKilling = false;
+	public boolean pauseStartTimer = false;
 	public boolean forceStop = false;
 	public boolean stopped = false;
 	public boolean start = false;
+	
 	public boolean endGameonDeath;
 	public boolean captureFlag;
 	public boolean disabled;
 	public boolean updatedTeams;
+	
 	public World world;
+	
 	public String type;
 	public String name = "";
+	
 	public ArenaZone az;
 	public UltimateArena plugin;
-	public boolean pauseStartTimer = false;
 	
 	public Arena(ArenaZone az) 
 	{

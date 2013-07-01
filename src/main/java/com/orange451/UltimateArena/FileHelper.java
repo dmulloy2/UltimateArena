@@ -25,7 +25,7 @@ import com.orange451.UltimateArena.Arenas.Objects.SavedArenaPlayer;
 
 public class FileHelper 
 {
-	public UltimateArena plugin;
+	private UltimateArena plugin;
 	public FileHelper(UltimateArena plugin)
 	{
 		this.plugin = plugin;

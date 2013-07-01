@@ -18,6 +18,7 @@ public class CTFFlagBase extends FlagBase
 	public CTFArena ctf;
 	public CTFflag flag;
 	public CTFflag enemyflag;
+	
 	public int team;
 	
 	public CTFFlagBase(Arena arena, Location loc, int team) 
@@ -95,7 +96,7 @@ public class CTFFlagBase extends FlagBase
 									}
 								}
 								
-								a.XP += 500;
+								a.gameXP += 500;
 								arena.tellPlayers(ChatColor.GREEN + a.player.getName() + ChatColor.GRAY + " captured the " + enemyflag.flagType + ChatColor.GRAY + " flag");
 								if (team == 1)
 								{

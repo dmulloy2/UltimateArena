@@ -25,23 +25,26 @@ import com.orange451.UltimateArena.util.Util;
 
 public class ArenaPlayer 
 {
-	public int kills      = 0;
-	public int deaths     = 0;
+	public int kills = 0;
+	public int deaths = 0;
 	public int killstreak = 0;
-	public int XP         = 0;
-	public int team       = 1;
-	public int points     = 0;
-	public int baselevel  = 0;
-	public int amtkicked  = 0;
-	public float startxp  = 0;
-	public boolean out    = false;
-	public boolean canReward = false;
-	public String username;
+	public int gameXP = 0;
+	public int team = 1;
+	public int points = 0;
+	public int baselevel = 0;
+	public int amtkicked = 0;
 	public int healtimer = 0;
+	
+	public boolean out = false;
+	public boolean canReward = false;
+	
+	public Player player;
+	public String username;
+	
+	public Arena inArena;
 	public ArenaClass mclass;
 	public Location spawnBack;
-	public Arena inArena;
-	public Player player;
+	
 	private UltimateArena plugin;
 	
 	public List<ItemStack> savedInventory = new ArrayList<ItemStack>();
@@ -56,7 +59,6 @@ public class ArenaPlayer
 		this.spawnBack = p.getLocation().clone();
 		this.mclass = plugin.getArenaClass(a.az.defaultClass);
 		this.baselevel = p.getLevel();
-		this.startxp = p.getExp();
 	}
 	
 	public void decideHat(Player p)
@@ -220,13 +222,19 @@ public class ArenaPlayer
 		giveClassItems(p);
 	}
 	
-	public void setClass(ArenaClass ac)
+	public void setClass(ArenaClass ac, boolean command)
 	{
 		this.mclass = ac;
 		clearInventory();
 		clearPotionEffects();
 		
-		if (inArena.starttimer > 0)
+		if (command)
+		{
+			giveClassItems(player);
+			return;
+		}
+		
+		if (inArena.starttimer <= 0 && inArena.gametimer >= 2) 
 		{
 			giveClassItems(player);
 		}
@@ -234,53 +242,50 @@ public class ArenaPlayer
 	
 	public void giveClassItems(Player p)
 	{
-		if (inArena.starttimer <= 0 && inArena.gametimer >= 2) 
-		{
-			decideHat(p);
+		decideHat(p);
 			
-			if (mclass == null) 
+		if (mclass == null) 
+		{
+			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
+			p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS, 1));
+			p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS, 1));
+			p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD, 1));
+			return;
+		}
+				
+		if (mclass.useEssentials)
+		{
+			try
 			{
-				p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
-				p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS, 1));
-				p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS, 1));
-				p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD, 1));
+				PluginManager pm = inArena.az.plugin.getServer().getPluginManager();
+				Plugin essPlugin = pm.getPlugin("Essentials");
+				IEssentials ess = (IEssentials) essPlugin;
+				User user = ess.getUser(p);
+								
+				List<String> items = Kit.getItems(user, mclass.essentialsKit);
+					
+				Kit.expandItems(ess, user, items);
 				return;
 			}
-				
-			if (mclass.useEssentials)
+			catch (Exception e)
 			{
-				try
-				{
-					PluginManager pm = inArena.az.plugin.getServer().getPluginManager();
-					Plugin essPlugin = pm.getPlugin("Essentials");
-					IEssentials ess = (IEssentials) essPlugin;
-					User user = ess.getUser(p);
-								
-					List<String> items = Kit.getItems(user, mclass.essentialsKit);
-					
-					Kit.expandItems(ess, user, items);
-					return;
-				}
-				catch (Exception e)
-				{
-					plugin.getLogger().severe("Error giving class items: " + e.getMessage());
-				}
+				plugin.getLogger().severe("Error giving class items: " + e.getMessage());
 			}
-			
-			if (mclass.armor1 > 0) { giveArmor(p, mclass.armor1, 0, mclass.armorenchant1); }
-			if (mclass.armor2 > 0) { giveArmor(p, mclass.armor2, 1, mclass.armorenchant2); }
-			if (mclass.armor3 > 0) { giveArmor(p, mclass.armor3, 2, mclass.armorenchant3); }
-							
-			giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
-			giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1, mclass.enchant2);
-			giveItem(p, mclass.weapon3, mclass.special3, mclass.amt3, 2, mclass.enchant3);
-			giveItem(p, mclass.weapon4, mclass.special4, mclass.amt4, 3, mclass.enchant4);
-			giveItem(p, mclass.weapon5, mclass.special5, mclass.amt5, 4, mclass.enchant5);
-			giveItem(p, mclass.weapon6, mclass.special6, mclass.amt6, 5, mclass.enchant6);
-			giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
-			giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
-			giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
 		}
+		
+		if (mclass.armor1 > 0) { giveArmor(p, mclass.armor1, 0, mclass.armorenchant1); }
+		if (mclass.armor2 > 0) { giveArmor(p, mclass.armor2, 1, mclass.armorenchant2); }
+		if (mclass.armor3 > 0) { giveArmor(p, mclass.armor3, 2, mclass.armorenchant3); }
+							
+		giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
+		giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1, mclass.enchant2);
+		giveItem(p, mclass.weapon3, mclass.special3, mclass.amt3, 2, mclass.enchant3);
+		giveItem(p, mclass.weapon4, mclass.special4, mclass.amt4, 3, mclass.enchant4);
+		giveItem(p, mclass.weapon5, mclass.special5, mclass.amt5, 4, mclass.enchant5);
+		giveItem(p, mclass.weapon6, mclass.special6, mclass.amt6, 5, mclass.enchant6);
+		giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
+		giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
+		giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
 	}
 	
 	public void clearPotionEffects()

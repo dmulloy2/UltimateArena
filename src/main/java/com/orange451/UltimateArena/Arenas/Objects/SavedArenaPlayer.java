@@ -8,11 +8,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class SavedArenaPlayer 
 {
-	public String name;
-	public int levels;
-	public Location location;
-	public List<ItemStack> savedInventory = new ArrayList<ItemStack>();
-	public List<ItemStack> savedArmor = new ArrayList<ItemStack>();
+	private String name;
+	private int levels;
+	private Location location;
+	
+	private List<ItemStack> savedInventory = new ArrayList<ItemStack>();
+	private List<ItemStack> savedArmor = new ArrayList<ItemStack>();
 	
 	public SavedArenaPlayer(String name, int levels, Location location, List<ItemStack> savedInventory, List<ItemStack> savedArmor)
 	{

@@ -16,21 +16,28 @@ import com.orange451.UltimateArena.util.Util;
 
 public class CTFflag
 {
-	public UltimateArena plugin;
-	public Arena arena;
 	public Player riding;
+	
 	public String flagType = "";
+	
+	public Arena arena;
+	
 	public Location returnto;
 	public Location myloc;
 	public Location toloc;
 	private Location lastloc;
+	
 	public int lastBlockType;
 	public int team;
 	public int timer = 15;
+	
 	public boolean pickedUp;
 	public boolean stopped;
+	
 	public byte color;
 	public byte lastBlockDat;
+	
+	public UltimateArena plugin;
 	
 	public CTFflag(Arena a, Location loc, int team)
 	{
@@ -170,7 +177,7 @@ public class CTFflag
 								{ 
 									//if the flag is not at its flagstand
 									pl.sendMessage(ChatColor.GRAY + "Flag Returned! " + ChatColor.RED + " +50 XP");
-									arenaplayers.get(i).XP += 50;
+									arenaplayers.get(i).gameXP += 50;
 									arena.tellPlayers("&b{0} &7returned the &6{1} &7flag!", pl.getName(), flagType);
 									respawn();
 									return;

@@ -140,7 +140,7 @@ public class PlayerListener implements Listener
 								{
 									if (arc.checkPermission(player))
 									{
-										ac.setClass(arc);
+										ac.setClass(arc, false);
 										player.sendMessage(ChatColor.GRAY + "You will spawn as a(n): " + ChatColor.GOLD + line1);
 									}
 									else 

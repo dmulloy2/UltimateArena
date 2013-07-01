@@ -15,10 +15,14 @@ import com.orange451.UltimateArena.Arenas.Objects.OldArenaClass;
 import com.orange451.UltimateArena.Arenas.Objects.OldArenaConfig;
 import com.orange451.UltimateArena.Arenas.Objects.OldArenaZone;
 
+/**
+ * @author dmulloy2
+ */
+
 @SuppressWarnings("deprecation")
 public class FileConverter 
 {
-	public UltimateArena plugin;
+	private UltimateArena plugin;
 	public FileConverter(UltimateArena plugin)
 	{
 		this.plugin = plugin;

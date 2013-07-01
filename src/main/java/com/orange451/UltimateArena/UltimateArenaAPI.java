@@ -9,8 +9,8 @@ import com.orange451.UltimateArena.Arenas.Objects.ArenaPlayer;
 
 public class UltimateArenaAPI 
 {
-	public UltimateArena plugin;
-	public UltimateArenaAPI(Plugin p)
+	private final UltimateArena plugin;
+	private UltimateArenaAPI(Plugin p)
 	{
 		this.plugin = (UltimateArena)p;
 	}
@@ -19,7 +19,7 @@ public class UltimateArenaAPI
 	 * @param p - Player in question
 	 * @return whether or not they're playing in an arena (boolean)
 	 */
-	public boolean isPlayerPlayingArena(Player p)
+	public final boolean isPlayerPlayingArena(Player p)
 	{
 		return plugin.isInArena(p);
 	}
@@ -28,69 +28,89 @@ public class UltimateArenaAPI
 	 * @param p - Player in question
 	 * @return whether or not they are standing in an arena (boolean)
 	 */
-	public boolean isPlayerInArenaLocation(Player p)
+	public final boolean isPlayerInArenaLocation(Player p)
 	{
 		return plugin.isInArena(p.getLocation());
 	}
 	
 	/**
 	 * @param p - Player instance
-	 * @return - The player's ArenaPlayer instance
+	 * @return The player's ArenaPlayer instance
 	 */
-	public ArenaPlayer getArenaPlayer(Player p)
+	public final ArenaPlayer getArenaPlayer(Player p)
 	{
 		return plugin.getArenaPlayer(p);
 	}
 	
 	/**
 	 * @param loc - Location in question
-	 * @return - Whether or not an arena is at that location
+	 * @return Whether or not an arena is at that location
 	 */
-	public boolean isLocationInArena(Location loc)
+	public final boolean isLocationInArena(Location loc)
 	{
 		return plugin.isInArena(loc);
 	}
 
 	/**
-	 * @param a - ArenaPlayer
-	 * @return - The ArenaPlayer's kills
+	 * @param a - ArenaPlayer instance
+	 * @return The ArenaPlayer's kills
 	 */
-	public int getKills(ArenaPlayer a)
+	public final int getKills(ArenaPlayer a)
 	{
 		return a.kills;
 	}
 	
 	/**
-	 * @param a - ArenaPlayer
-	 * @return - The ArenaPlayer's deaths
+	 * @param a - ArenaPlayer instance
+	 * @return The ArenaPlayer's deaths
 	 */
-	public int getDeaths(ArenaPlayer a)
+	public final int getDeaths(ArenaPlayer a)
 	{
 		return a.deaths;
 	}
 	
 	/**
-	 * @param a - ArenaPlayer
-	 * @return - The ArenaPlayer's team
+	 * @param a - ArenaPlayer instance
+	 * @return The ArenaPlayer's team
 	 */
-	public int getTeam(ArenaPlayer a)
+	public final int getTeam(ArenaPlayer a)
 	{
 		return a.team;
 	}
 	
 	/**
-	 * @param a - ArenaPlayer
-	 * @return - The ArenaPlayer's killstreak
+	 * @param a - ArenaPlayer instance
+	 * @return The ArenaPlayer's killstreak
 	 */
-	public int getKillStreak(ArenaPlayer a)
+	public final int getKillStreak(ArenaPlayer a)
 	{
 		return a.killstreak;
 	}
 	
 	/**
+	 * @param a - ArenaPlayer instance
+	 * @return The name of the arena the player is in
+	 */
+	public String getArenaName(ArenaPlayer a)
+	{
+		return a.inArena.name;
+	}
+	
+	/**
+	 * @param a - ArenaPlayer instance
+	 * @return The type of the arena the player is in
+	 */
+	public String getArenaType(ArenaPlayer a)
+	{
+		return a.inArena.type;
+	}
+	
+	/**
+	 * @deprecated - We can be more creative than this
 	 * @return UltimateArena plugin
 	 */
-	public UltimateArena getPlugin()
+	@Deprecated
+	public final UltimateArena getPlugin()
 	{
 		return plugin;
 	}
@@ -99,14 +119,21 @@ public class UltimateArenaAPI
 	public static UltimateArenaAPI hookIntoUA()
 	{
 		Plugin p = Bukkit.getPluginManager().getPlugin("UltimateArena");
-		if (p != null)
-		{
-			return new UltimateArenaAPI(p);
-		}
-		else
+		if (p == null)
 		{
 			Bukkit.getLogger().severe("Could not hook into UltimateArena! Is it installed?");
+			return null;
 		}
-		return null;
+		
+		if (!(p instanceof UltimateArena))
+		{
+			Bukkit.getLogger().severe("Could not hook into UltimateArena! Is there a plugin by the same name?");
+			return null;
+		}
+		
+		Bukkit.getLogger().info("Successfully hooked into UltimateArena!");
+		
+		return new UltimateArenaAPI(p);
+		
 	}
 }

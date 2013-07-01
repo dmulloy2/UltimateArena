@@ -14,11 +14,12 @@ import com.orange451.UltimateArena.util.Util;
 
 public class BombFlag extends ArenaFlag
 {
-	public int timer = 45;
+	public int bnum;
 	public int fuser = 0;
+	public int timer = 45;
+	
 	public boolean fused = false;
 	public boolean exploded = false;
-	public int bnum;
 	
 	public BombFlag(Arena arena, Location loc)
 	{

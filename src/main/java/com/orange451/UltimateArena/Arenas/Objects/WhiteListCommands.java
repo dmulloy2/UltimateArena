@@ -5,7 +5,7 @@ import java.util.List;
 
 public class WhiteListCommands
 {
-	public List<String> allowedCommand;
+	private List<String> allowedCommand;
 	public WhiteListCommands() 
 	{
 		this.allowedCommand = new ArrayList<String>();

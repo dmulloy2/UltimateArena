@@ -23,7 +23,7 @@ import com.orange451.UltimateArena.events.UltimateArenaKillEvent;
 
 public class EntityListener implements Listener
 {
-	public UltimateArena plugin;
+	private UltimateArena plugin;
 	public EntityListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -225,7 +225,7 @@ public class EntityListener implements Listener
 										ArenaPlayer ap = plugin.getArenaPlayer(attacker);
 										ap.kills++;
 										ap.killstreak++;
-										ap.XP += 100;
+										ap.gameXP += 100;
 										
 										line2  = ChatColor.RED + "killed " + dead.getName() + " +100 XP";
 										line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).kills;
@@ -296,7 +296,7 @@ public class EntityListener implements Listener
 												{
 													plugin.getArenaPlayer(gunner).killstreak++;
 													plugin.getArenaPlayer(gunner).kills++;
-													plugin.getArenaPlayer(gunner).XP += 25;
+													plugin.getArenaPlayer(gunner).gameXP += 25;
 														
 													String line1 = ChatColor.GREEN + gunnerp + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getType().getName();
 													String line2 = ChatColor.RED + "----------------------------";
@@ -393,7 +393,7 @@ public class EntityListener implements Listener
 												{
 													plugin.getArenaPlayer(gunner).killstreak++;
 													plugin.getArenaPlayer(gunner).kills++;
-													plugin.getArenaPlayer(gunner).XP += 25;
+													plugin.getArenaPlayer(gunner).gameXP += 25;
 														
 													String line1 = ChatColor.GREEN + gunnerp + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getType().getName();
 													String line2 = ChatColor.RED + "----------------------------";
@@ -441,7 +441,7 @@ public class EntityListener implements Listener
 									{
 										plugin.getArenaPlayer(attacker).kills++;
 										plugin.getArenaPlayer(attacker).killstreak++;
-										plugin.getArenaPlayer(attacker).XP += 25;
+										plugin.getArenaPlayer(attacker).gameXP += 25;
 										
 										String attstr = dead.getType().getName();
 										
@@ -482,7 +482,7 @@ public class EntityListener implements Listener
 										{
 											plugin.getArenaPlayer(attacker).kills++;
 											plugin.getArenaPlayer(attacker).killstreak++;
-											plugin.getArenaPlayer(attacker).XP += 25;
+											plugin.getArenaPlayer(attacker).gameXP += 25;
 											
 											String attstr = dead.getType().getName();
 												

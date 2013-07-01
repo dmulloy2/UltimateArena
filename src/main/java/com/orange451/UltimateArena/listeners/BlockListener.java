@@ -24,7 +24,7 @@ import com.orange451.UltimateArena.util.FormatUtil;
 
 public class BlockListener implements Listener 
 {
-	public UltimateArena plugin;
+	private UltimateArena plugin;
 	public BlockListener(UltimateArena plugin) 
 	{
 		this.plugin = plugin;

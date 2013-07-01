@@ -18,7 +18,9 @@ import com.orange451.UltimateArena.util.InventoryHelper;
 public class ArenaConfig
 {
 	public int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
+	
 	public boolean allowTeamKilling;
+	
 	public List<ArenaReward> rewards = new ArrayList<ArenaReward>();
 	
 	public boolean loaded = false;

@@ -44,7 +44,7 @@ public class PCommandClass extends UltimateArenaCommand
 			{
 				if (cl.name.equalsIgnoreCase(args[0]))
 				{
-					ap.setClass(cl);
+					ap.setClass(cl, true);
 					sendMessage("&eYou have successfully set your class to: &a{0}&e!", cl.name);
 					return;
 				}

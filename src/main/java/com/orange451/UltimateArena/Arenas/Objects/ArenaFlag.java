@@ -17,6 +17,7 @@ public class ArenaFlag extends FlagBase
 	public int color = 14;
 	public int team = 0;
 	public int added = 0;
+	
 	public boolean capped = false;
 	
 	public ArenaFlag(Arena arena, Location loc) 

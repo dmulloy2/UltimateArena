@@ -1,6 +1,7 @@
 package com.orange451.UltimateArena.Arenas;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -66,12 +67,12 @@ public class CONQUESTArena extends Arena
 			{
 				if (!ap.out)
 				{
-					ArrayList<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
+					List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
 					for (int i = 0; i < flags.size(); i++)
 					{
 						if (flags.get(i).team == ap.team)
 						{
-							if (flags.get(i).capped == true)
+							if (flags.get(i).capped)
 							{
 								spawnto.add(flags.get(i));
 							}
@@ -89,8 +90,6 @@ public class CONQUESTArena extends Arena
 	
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
-		az.plugin.getLogger().info("Conquest: Player("+pl.player.getName()+") has died!");
-		
 		int majority = 0;
 		int red = 0;
 		int blu = 0;
@@ -102,7 +101,8 @@ public class CONQUESTArena extends Arena
 				{
 					red++;
 				}
-			}else if (flags.get(i).color == 11) 
+			}
+			else if (flags.get(i).color == 11) 
 			{
 				if (flags.get(i).capped == true) 
 				{

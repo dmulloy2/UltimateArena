@@ -66,17 +66,20 @@ public class UltimateArena extends JavaPlugin
 	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	public List<String> fieldTypes = new ArrayList<String>();
 	public List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
-	public WhiteListCommands wcmd = new WhiteListCommands();
 	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
+	
+	public WhiteListCommands wcmd = new WhiteListCommands();
 
 	@Override
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
 		
+		// IO Stuff
 		createDirectories();
 		saveDefaultConfig();
 
+		// Register Handlers and Helpers
 		permissionHandler =  new PermissionHandler(this);
 		commandHandler = new CommandHandler(this);
 		
@@ -124,24 +127,33 @@ public class UltimateArena extends JavaPlugin
 		commandHandler.registerCommand(new PCommandClassList(this));
 		commandHandler.registerCommand(new PCommandClass(this));
 		
+		// Load saved players
 		loadPlayers();
 
+		// PVPGun
 		PluginManager pm = getServer().getPluginManager();
 		if (pm.isPluginEnabled("PVPGunPlus"))
 			pm.registerEvents(new PVPGunPlusListener (this), this);
+		
+		// Vault
+		checkVault(pm);
 			
+		// Register Listeners
 		pm.registerEvents(new EntityListener(this), this);
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
 
+		// Arena Updater
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
 			
-		checkVault(pm);
-		
+		// File Converter
+		// TODO: Remove this
 		fileConverter.run();
 
+		// Load Arenas
 		loadFiles();
 		
+		// Arena Signs
 		arenaSigns = fileHelper.loadSigns();
 		getLogger().info("Loaded " + arenaSigns.size() + " arena signs!");
 		
@@ -157,19 +169,23 @@ public class UltimateArena extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 
+		// Stop Arenas
 		for (int i=0; i<activeArena.size(); i++)
 		{
 			activeArena.get(i).onDisable();
 		}
 		
+		// Save Signs
 		for (ArenaSign sign : arenaSigns)
 		{
 			sign.save();
 		}
 		
+		// Unregister
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
 		
+		// Clear Memory
 		clearMemory();
 		
 		long finish = System.currentTimeMillis();
@@ -215,50 +231,7 @@ public class UltimateArena extends JavaPlugin
 				{
 					if (savedArenaPlayer.getName().equals(player.getName()))
 					{
-						int levels = savedArenaPlayer.getLevels();
-						Location loc = savedArenaPlayer.getLocation();
-								
-						normalize(player);
-						player.setLevel(levels);
-						player.teleport(loc);
-						removePotions(player);
-								
-						fileHelper.deletePlayer(player);
-						
-						List<ItemStack> itemContents = savedArenaPlayer.getSavedInventory();
-						List<ItemStack> armorContents = savedArenaPlayer.getSavedArmor();
-						
-						PlayerInventory inv = player.getInventory();
-						for (ItemStack itemStack : itemContents)
-						{
-							inv.addItem(itemStack);
-						}
-						
-						for (ItemStack armor : armorContents)
-						{
-							String type = armor.getType().toString().toLowerCase();
-							if (type.contains("helmet"))
-							{
-								inv.setHelmet(armor);
-							}
-							
-							if (type.contains("chestplate"))
-							{
-								inv.setChestplate(armor);
-							}
-							
-							if (type.contains("leggings"))
-							{
-								inv.setLeggings(armor);
-							}
-							
-							if (type.contains("boots"))
-							{
-								inv.setBoots(armor);
-							}
-						}
-								
-						savedPlayers.remove(savedArenaPlayer);
+						normalizeSavedPlayer(savedArenaPlayer);
 					}
 				}
 			}
@@ -293,56 +266,13 @@ public class UltimateArena extends JavaPlugin
 	
 	public void onJoin(Player player) 
 	{
-		/**Normalize Saved Players**/
+		/**Normalize Player If Saved**/
 		for (int i=0; i<savedPlayers.size(); i++)
 		{
 			SavedArenaPlayer savedArenaPlayer = savedPlayers.get(i);
 			if (savedArenaPlayer.getName().equals(player.getName()))
 			{
-				int levels = savedArenaPlayer.getLevels();
-				Location loc = savedArenaPlayer.getLocation();
-						
-				normalize(player);
-				player.setLevel(levels);
-				player.teleport(loc);
-				removePotions(player);
-				
-				List<ItemStack> itemContents = savedArenaPlayer.getSavedInventory();
-				List<ItemStack> armorContents = savedArenaPlayer.getSavedArmor();
-				
-				PlayerInventory inv = player.getInventory();
-				for (ItemStack itemStack : itemContents)
-				{
-					inv.addItem(itemStack);
-				}
-				
-				for (ItemStack armor : armorContents)
-				{
-					String type = armor.getType().toString().toLowerCase();
-					if (type.contains("helmet"))
-					{
-						inv.setHelmet(armor);
-					}
-					
-					if (type.contains("chestplate"))
-					{
-						inv.setChestplate(armor);
-					}
-					
-					if (type.contains("leggings"))
-					{
-						inv.setLeggings(armor);
-					}
-					
-					if (type.contains("boots"))
-					{
-						inv.setBoots(armor);
-					}
-				}
-						
-				fileHelper.deletePlayer(player);
-						
-				savedPlayers.remove(savedArenaPlayer);
+				normalizeSavedPlayer(savedArenaPlayer);
 			}
 		}
 	}
@@ -998,6 +928,58 @@ public class UltimateArena extends JavaPlugin
  
 		return economy != null;
 	}
+    
+    private void normalizeSavedPlayer(SavedArenaPlayer savedArenaPlayer)
+    {
+    	getLogger().info("Normalizing Saved Player \"" + savedArenaPlayer.getName() + "\"!");
+    	
+    	Player player = Util.matchPlayer(savedArenaPlayer.getName());
+    	
+    	int levels = savedArenaPlayer.getLevels();
+		Location loc = savedArenaPlayer.getLocation();
+				
+		normalize(player);
+		player.setLevel(levels);
+		player.teleport(loc);
+		removePotions(player);
+		
+		List<ItemStack> itemContents = savedArenaPlayer.getSavedInventory();
+		List<ItemStack> armorContents = savedArenaPlayer.getSavedArmor();
+		
+		PlayerInventory inv = player.getInventory();
+		for (ItemStack itemStack : itemContents)
+		{
+			inv.addItem(itemStack);
+		}
+		
+		for (ItemStack armor : armorContents)
+		{
+			String type = armor.getType().toString().toLowerCase();
+			if (type.contains("helmet"))
+			{
+				inv.setHelmet(armor);
+			}
+			
+			if (type.contains("chestplate"))
+			{
+				inv.setChestplate(armor);
+			}
+			
+			if (type.contains("leggings"))
+			{
+				inv.setLeggings(armor);
+			}
+			
+			if (type.contains("boots"))
+			{
+				inv.setBoots(armor);
+			}
+		}
+				
+		fileHelper.deletePlayer(player);
+				
+		savedPlayers.remove(savedArenaPlayer);
+    }
     
     /**Timers and Runnables**/
     public class ArenaJoinTask extends BukkitRunnable 

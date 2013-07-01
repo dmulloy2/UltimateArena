@@ -7,7 +7,9 @@ import com.orange451.UltimateArena.util.FormatUtil;
 public class ArenaStatistics 
 {
 	public ArenaZone arena;
+	
 	public double percentagePlayed;
+	
 	public int totalPlays;
 	public int plays;
 	public int likes;

@@ -11,9 +11,12 @@ import com.orange451.UltimateArena.util.Util;
 
 public class ArenaCreator 
 {
+	public String step;
 	public String player;
+	public String msg = "";
 	public String arenaName = "";
 	public String arenaType = "";
+	
 	public Location lobby1 = null;
 	public Location lobby2 = null;
 	public Location arena1 = null;
@@ -24,14 +27,16 @@ public class ArenaCreator
 	public Location team2spawn = null;
 	public Location lobbyREDspawn = null;
 	public Location lobbyBLUspawn = null;
+	
 	public int amtLobbys = 2;
 	public int amtSpawnpoints = 2;
-	public String step;
+
 	public ArrayList<String> steps = new ArrayList<String>();
 	public ArrayList<Location> spawns = new ArrayList<Location>();
 	public ArrayList<Location> flags = new ArrayList<Location>();
+	
 	public int stepnum;
-	public String msg = "";
+	
 	public UltimateArena plugin;
 	
 	public ArenaCreator(UltimateArena plugin, Player player)
