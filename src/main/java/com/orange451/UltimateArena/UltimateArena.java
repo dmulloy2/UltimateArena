@@ -130,18 +130,18 @@ public class UltimateArena extends JavaPlugin
 		// Load saved players
 		loadPlayers();
 
-		// PVPGun
+		// SwornGuns
 		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("PVPGunPlus"))
-			pm.registerEvents(new PVPGunPlusListener (this), this);
+		if (pm.isPluginEnabled("SwornGuns"))
+			pm.registerEvents(new SwornGunsListener(this), this);
 		
-		// Vault
-		checkVault(pm);
-			
-		// Register Listeners
+		// Register Other Listeners
 		pm.registerEvents(new EntityListener(this), this);
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
+		
+		// Vault
+		checkVault(pm);
 
 		// Arena Updater
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);

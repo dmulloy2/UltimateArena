@@ -22,6 +22,10 @@
       <id>essentials-repo</id>
       <url>http://ci.ess3.net/nexus/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>shadowvolt-repo</id>
+      <url>http://ci.shadowvolt.com/plugin/repository/everything</url>
+    </repository>
   </repositories>
   
   <build>
@@ -74,11 +78,9 @@
       <version>1.5.2-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>com.orange451</groupId>
-      <artifactId>pvpgunplus</artifactId>
-      <version>0.1</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/lib/PVPGunPlus.jar</systemPath>
+      <groupId>net.dmulloy2</groupId>
+      <artifactId>swornguns</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
  	  <groupId>org.projectlombok</groupId>

@@ -1,23 +1,24 @@
 package com.orange451.UltimateArena.listeners;
 
+import net.dmulloy2.swornguns.events.SwornGunsFireEvent;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.orange451.UltimateArena.UltimateArena;
-import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
 
-public class PVPGunPlusListener implements Listener
+public class SwornGunsListener implements Listener
 {
-	private UltimateArena plugin;
-	public PVPGunPlusListener(UltimateArena plugin)
+	private final UltimateArena plugin;
+	public SwornGunsListener(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerGunFire(PVPGunPlusFireGunEvent event)
+	public void onPlayerGunFire(final SwornGunsFireEvent event)
 	{
 		Player pl = event.getShooterAsPlayer();
 		if (pl != null)
