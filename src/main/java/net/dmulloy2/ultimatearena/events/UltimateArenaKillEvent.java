@@ -66,7 +66,7 @@ public class UltimateArenaKillEvent extends Event
 	
 	public int getHeartsLeft()
 	{
-		return killer.player.getHealth() / 2;
+		return (int) (killer.player.getHealth() / 2);
 	}
 
 	@Override
