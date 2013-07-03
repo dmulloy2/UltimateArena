@@ -186,24 +186,19 @@ public class ArenaPlayer
 	public void setClass(ArenaClass ac, boolean command)
 	{
 		this.mclass = ac;
+		
 		clearInventory();
 		clearPotionEffects();
-		
-		if (command)
-		{
-			giveClassItems(getPlayer());
-			return;
-		}
-		
-		if (arena.getStarttimer() <= 0 && arena.getGametimer() >= 2) 
-		{
-			giveClassItems(getPlayer());
-		}
+
+		giveClassItems(getPlayer());
 	}
 	
 	public void giveClassItems(Player p)
 	{
 		decideHat(p);
+		
+		if (! arena.isInGame())
+			return;
 			
 		if (mclass == null) 
 		{

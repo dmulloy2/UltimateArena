@@ -25,8 +25,8 @@ import net.dmulloy2.ultimatearena.arenas.objects.SavedArenaPlayer;
 
 public class FileHelper 
 {
-	private UltimateArena plugin;
-	public FileHelper(UltimateArena plugin)
+	private final UltimateArena plugin;
+	public FileHelper(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}

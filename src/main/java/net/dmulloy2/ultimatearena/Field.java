@@ -5,58 +5,62 @@ import org.bukkit.World;
 
 public class Field
 {
-	public int minx;
-	public int miny;
-	public int maxx;
-	public int maxy;
-	public int width;
-	public int length;
-	private World world;
+	protected int minx;
+	protected int maxx;
 	
-	public Field(World world, double x, double z, double x2, double z2) 
+	protected int minz;
+	protected int maxz;
+
+	private int width;
+	private int length;
+	
+	protected World world;
+	
+	public Field(World world, int maxx, int minx, int maxz, int minz)
 	{
-		setParam(world, x, z, x2, z2);
+		setParam(world, maxx, minx, maxz, minz);
 	}
 
 	public Field() 
 	{
 	}
 
-	public void setParam(World world, double x, double z, double x2, double z2) 
+	public void setParam(World world, int maxx, int maxz, int minx, int minz)
 	{
-		this.minx = (int)x;
-		this.miny = (int)z;
-		this.maxx = (int)x2;
-		this.maxy = (int)z2;
-		
-		if (minx > maxx) 
-		{
-			maxx = minx;
-			minx = (int)x2;
-		}
-		
-		if (miny > maxy)
-		{
-			maxy = miny;
-			miny = (int)z2;
-		}
-		
-		this.width = maxx-minx;
-		this.length = maxy-miny;
-		
 		this.world = world;
+		
+		this.maxx = maxx;
+		this.minx = minx;
+		
+		this.maxz = maxz;
+		this.minz  = minz;
+		
+		if (minx > maxx)
+		{
+			this.maxx = minx;
+			this.minx = maxx;
+		}
+		
+		if (minz > maxz)
+		{
+			this.maxz = minz;
+			this.minz = maxz;
+		}
+		
+		this.length = maxx - minx;
+		this.width = maxz - minz;
 	}
 	
 	public boolean isInside(Location loc)
 	{
 		World locw = loc.getWorld();
 		int locx = loc.getBlockX();
-		int locy = loc.getBlockZ();
+		int locz = loc.getBlockZ();
 		if (world.getUID() == locw.getUID())
 		{
 			if (locx >= minx && locx <= maxx)
 			{
-				return (locy >= miny && locy <= maxy);
+				return (locz >= minz && locz <= maxz);
 			}
 		}
 		
@@ -68,17 +72,25 @@ public class Field
 		StringBuilder string = new StringBuilder();
 		string.append("World: " + world.getName());
 		string.append(" MaxX: " + maxx);
-		string.append(" MaxZ: " + maxy);
+		string.append(" MaxZ: " + maxz);
 		string.append(" MinX: " + minx);
-		string.append(" MinZ: " + miny);
+		string.append(" MinZ: " + minz);
 		
 		return string.toString();
 	}
 	
 	public int getArea()
 	{
-		this.length = maxx - minx;
-		this.width = maxy - miny;
-		return length * width;
+		return getLength() * getWidth();
+	}
+
+	public int getLength()
+	{
+		return length;
+	}
+
+	public int getWidth() 
+	{
+		return width;
 	}
 }

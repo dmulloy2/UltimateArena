@@ -1037,7 +1037,8 @@ public class UltimateArena extends JavaPlugin
 		{
 			for (int i = 0; i < activeArena.size(); i++) 
 			{
-				activeArena.get(i).step();
+				Arena arena = activeArena.get(i);
+				arena.update();
 			}
 		}
 	}
@@ -1049,7 +1050,8 @@ public class UltimateArena extends JavaPlugin
     	{
     		for (int i = 0; i < arenaSigns.size(); i++)
     		{
-    			arenaSigns.get(i).update();
+    			ArenaSign sign = arenaSigns.get(i);
+    			sign.update();
     		}
     	}
     }

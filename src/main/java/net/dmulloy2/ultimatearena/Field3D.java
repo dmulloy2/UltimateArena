@@ -7,47 +7,39 @@ import org.bukkit.block.Block;
 
 public class Field3D extends Field
 {
-	//I know my Y and Z are inverted... I'm just more used to that
-	public World world;
-	public int minz;
-	public int maxz;
-	public int height;
-	public UltimateArena plugin;
+	protected int miny;
+	protected int maxy;
 	
-	public Field3D(World world, double x, double y, double z, double x2, double y2, double z2) 
+	private int height;
+	
+	public Field3D(World world, int maxx, int maxy, int maxz, int minx, int miny, int minz)
 	{
-		setParam(world, x, y, z, x2, y2, z2);
+		setParam(world, maxx, maxy, maxz, minx, miny, minz);
 	}
 
 	public Field3D() 
 	{
 	}
-
-	public Field3D(UltimateArena plugin, World world) 
+	
+	public void setParam(World world, int maxx, int maxy, int maxz, int minx, int miny, int minz)
 	{
-		this.plugin = plugin;
-		this.world = world;
-	}
-
-	public void setParam(World world, double x, double y, double z, double x2, double y2, double z2) 
-	{
-		setParam(world, x, y, x2, y2);
+		super.setParam(world, maxx, maxz, minx, minz);
 		
-		this.minz = (int)z;
-		this.maxz = (int)z2;
+		this.maxy = maxy;
+		this.miny = miny;
 		
-		if (minz > maxz) 
+		if (miny > maxy)
 		{
-			maxz = minz;
-			minz = (int)z2;
+			this.maxy = miny;
+			this.miny = maxy;
 		}
-		
-		this.height = maxz-minz;
+
+		this.height = maxy - miny;
 	}
 	
-	public Block getBlockAt(int i, int ii, int iii) 
+	public Block getBlockAt(int x, int y, int z) 
 	{
-		return world.getBlockAt(minx + i, minz + ii, miny + iii);
+		return world.getBlockAt(minx + x, miny + y, minz + z);
 	}
 	
 	public boolean isInside(Location loc) 
@@ -55,9 +47,9 @@ public class Field3D extends Field
 		if (super.isInside(loc)) 
 		{
 			int locy = loc.getBlockY();
-			World locw = loc.getWorld();
-			return (locy >= minz && locy <= maxz && locw == world);
+			return (locy >= miny && locy <= maxy);
 		}
+		
 		return false;
 	}
 	
@@ -65,8 +57,9 @@ public class Field3D extends Field
 	{
 		if (super.isInside(loc))
 		{
-			return (loc.getBlockY() < maxz);
+			return (loc.getBlockY() < miny);
 		}
+		
 		return false;
 	}
 	
@@ -88,5 +81,15 @@ public class Field3D extends Field
 				}
 			}
 		}
+	}
+	
+	public int getVolume()
+	{
+		return getHeight() * getArea();
+	}
+
+	public int getHeight()
+	{
+		return height;
 	}
 }

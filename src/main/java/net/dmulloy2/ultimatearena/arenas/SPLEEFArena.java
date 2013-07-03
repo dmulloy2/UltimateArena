@@ -24,16 +24,19 @@ public class SPLEEFArena extends FFAArena
 		setType("Spleef");
 		setMaxDeaths(2);
 
-		spleefGround = new Field3D(az.getPlugin(), this.getWorld());
+		spleefGround = new Field3D();
 		Location pos1 = az.getFlags().get(0);
 		Location pos2 = az.getFlags().get(1);
-		spleefGround.setParam(pos1.getWorld(), pos1.getX(), pos1.getZ(), pos1.getY()-1, pos2.getX(), pos2.getZ(), pos2.getY()-1);
-		spleefGround.setType(this.getArenaZone().getSpecialType());
+		spleefGround.setParam(pos1.getWorld(), pos1.getBlockX(), pos1.getBlockY(), pos1.getBlockZ(), 
+				pos2.getBlockX(), pos2.getBlockY(), pos2.getBlockZ());
+		
+		spleefGround.setType(getArenaZone().getSpecialType());
 			
-		outZone = new Field3D(az.getPlugin(), this.getWorld());
+		outZone = new Field3D();
 		Location pos3 = az.getFlags().get(2);
 		Location pos4 = az.getFlags().get(3);
-		outZone.setParam(pos3.getWorld(), pos3.getX(), pos3.getZ(), pos3.getY()-1, pos4.getX(), pos4.getZ(), pos4.getY()-1);
+		outZone.setParam(pos3.getWorld(), pos3.getBlockX(), pos3.getBlockY(), pos3.getBlockZ(),
+				pos4.getBlockX(), pos3.getBlockY(), pos3.getBlockZ());
 	}
 	
 	@Override
@@ -55,8 +58,8 @@ public class SPLEEFArena extends FFAArena
 	{
 		Random rand = new Random();
 		Location ret = null;
-		int checkx = rand.nextInt(spleefGround.width-1);
-		int checkz = rand.nextInt(spleefGround.length-1);
+		int checkx = rand.nextInt(spleefGround.getWidth()-1);
+		int checkz = rand.nextInt(spleefGround.getLength()-1);
 		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
 		Material mat = b.getType();
 		if (mat.getId() == getArenaZone().getSpecialType())
@@ -65,7 +68,7 @@ public class SPLEEFArena extends FFAArena
 		}
 		else
 		{
-			if (repeat < (spleefGround.width*spleefGround.height) / 2) 
+			if (repeat < (spleefGround.getWidth()*spleefGround.getHeight()) / 2) 
 			{
 				ret = getBlockInSpleefArena(repeat+1);
 			}
