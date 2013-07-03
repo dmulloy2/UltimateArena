@@ -52,7 +52,6 @@ public class UltimateArena extends JavaPlugin
 {
 	private @Getter Economy economy;
 	private @Getter FileHelper fileHelper;
-	private @Getter FileConverter fileConverter;
 	
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
@@ -85,7 +84,6 @@ public class UltimateArena extends JavaPlugin
 		commandHandler = new CommandHandler(this);
 		
 		fileHelper = new FileHelper(this);
-		fileConverter = new FileConverter(this);
 		
 		// Add fields
 		fieldTypes.add("pvp");
@@ -149,9 +147,6 @@ public class UltimateArena extends JavaPlugin
 
 		// Arena Updater
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
-			
-		// File Converter
-		fileConverter.run();
 
 		// Load Arenas
 		loadFiles();
