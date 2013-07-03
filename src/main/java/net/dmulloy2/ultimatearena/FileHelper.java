@@ -953,7 +953,7 @@ public class FileHelper
 					fc.set(path + "name", meta.getDisplayName());
 				}
 				
-				fc.set("hasLore", meta.hasLore());
+				fc.set(path + "hasLore", meta.hasLore());
 				if (meta.hasLore())
 				{
 					int iii = 0;
@@ -1000,7 +1000,7 @@ public class FileHelper
 					fc.set(path + "name", meta.getDisplayName());
 				}
 				
-				fc.set("hasLore", meta.hasLore());
+				fc.set(path + "hasLore", meta.hasLore());
 				if (meta.hasLore())
 				{
 					int aaa=0;
