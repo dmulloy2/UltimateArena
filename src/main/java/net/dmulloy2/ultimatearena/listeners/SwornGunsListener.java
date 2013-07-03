@@ -25,7 +25,7 @@ public class SwornGunsListener implements Listener
 			if (plugin.isInArena(pl)) 
 			{
 				/**Hunger Games Check**/
-				if (plugin.getArena(pl).type.equals("Hunger"))
+				if (plugin.getArena(pl).getType().equals("Hunger"))
 				{
 					event.setCancelled(true);
 					return;

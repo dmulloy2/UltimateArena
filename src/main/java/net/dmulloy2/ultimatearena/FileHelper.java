@@ -468,70 +468,70 @@ public class FileHelper
 		try
 		{
 			File folder = new File(plugin.getDataFolder(), "arenas");
-			File file = new File(folder, az.arenaName + ".dat");
+			File file = new File(folder, az.getArenaName() + ".dat");
 			if (!file.exists())
 				file.createNewFile();
 
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			
-			fc.set("type", az.arenaType);
-			fc.set("world", az.world.getName());
+			fc.set("type", az.getArenaType());
+			fc.set("world", az.getWorld().getName());
 			
-			Location lobby1 = az.lobby1;
+			Location lobby1 = az.getLobby1();
 			fc.set("lobby1.x", lobby1.getBlockX());
 			fc.set("lobby1.z", lobby1.getBlockZ());
 			
-			Location lobby2 = az.lobby2;
+			Location lobby2 = az.getLobby2();
 			fc.set("lobby2.x", lobby2.getBlockX());
 			fc.set("lobby2.z", lobby2.getBlockZ());
 			
-			Location arena1 = az.arena1;
+			Location arena1 = az.getArena1();
 			fc.set("arena1.x", arena1.getBlockX());
 			fc.set("arena1.z", arena1.getBlockZ());
 			
-			Location arena2 = az.arena2;
+			Location arena2 = az.getArena2();
 			fc.set("arena2.x", arena2.getBlockX());
 			fc.set("arena2.z", arena2.getBlockZ());
 			
-			String arenaType = az.arenaType;
+			String arenaType = az.getArenaType();
 			if (arenaType.equals("pvp"))
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				Location lobbyBlue = az.lobbyBLUspawn;
+				Location lobbyBlue = az.getLobbyBLUspawn();
 				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
 				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
 				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
 				
-				Location team1 = az.team1spawn;
+				Location team1 = az.getTeam1spawn();
 				fc.set("team1.x", team1.getBlockX());
 				fc.set("team1.y", team1.getBlockY());
 				fc.set("team1.z", team1.getBlockZ());
 				
-				Location team2 = az.team2spawn;
+				Location team2 = az.getTeam2spawn();
 				fc.set("team2.x", team2.getBlockX());
 				fc.set("team2.y", team2.getBlockY());
 				fc.set("team2.z", team2.getBlockZ());
 			}
 			if (arenaType.equals("mob"))
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				Location team1 = az.team1spawn;
+				Location team1 = az.getTeam1spawn();
 				fc.set("team1.x", team1.getBlockX());
 				fc.set("team1.y", team1.getBlockY());
 				fc.set("team1.z", team1.getBlockZ());
 				
-				fc.set("spawnsAmt", az.spawns.size());
-				for (int i = 0; i < az.spawns.size(); i++) 
+				fc.set("spawnsAmt", az.getSpawns().size());
+				for (int i = 0; i < az.getSpawns().size(); i++) 
 				{
-					Location loc = az.spawns.get(i);
+					Location loc = az.getSpawns().get(i);
 					String path = "spawns." + i + ".";
 
 					fc.set(path + "x", loc.getBlockX());
@@ -541,30 +541,30 @@ public class FileHelper
 			}
 			if (arenaType.equals("cq")) 
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				Location lobbyBlue = az.lobbyBLUspawn;
+				Location lobbyBlue = az.getLobbyBLUspawn();
 				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
 				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
 				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
 				
-				Location team1 = az.team1spawn;
+				Location team1 = az.getTeam1spawn();
 				fc.set("team1.x", team1.getBlockX());
 				fc.set("team1.y", team1.getBlockY());
 				fc.set("team1.z", team1.getBlockZ());
 				
-				Location team2 = az.team2spawn;
+				Location team2 = az.getTeam2spawn();
 				fc.set("team2.x", team2.getBlockX());
 				fc.set("team2.y", team2.getBlockY());
 				fc.set("team2.z", team2.getBlockZ());
 				
-				fc.set("flagsAmt", az.flags.size());
-				for (int i = 0; i < az.flags.size(); i++) 
+				fc.set("flagsAmt", az.getFlags().size());
+				for (int i = 0; i < az.getFlags().size(); i++) 
 				{
-					Location loc = az.flags.get(i);
+					Location loc = az.getFlags().get(i);
 					String path = "flags." + i + ".";
 
 					fc.set(path + "x", loc.getBlockX());
@@ -574,15 +574,15 @@ public class FileHelper
 			}
 			if (arenaType.equals("koth"))
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				fc.set("spawnsAmt", az.spawns.size());
-				for (int i = 0; i < az.spawns.size(); i++) 
+				fc.set("spawnsAmt", az.getSpawns().size());
+				for (int i = 0; i < az.getSpawns().size(); i++) 
 				{
-					Location loc = az.spawns.get(i);
+					Location loc = az.getSpawns().get(i);
 					String path = "spawns." + i + ".";
 
 					fc.set(path + "x", loc.getBlockX());
@@ -590,21 +590,21 @@ public class FileHelper
 					fc.set(path + "z", loc.getBlockZ());
 				}
 				
-				fc.set("flag.x", az.flags.get(0).getBlockX());
-				fc.set("flag.y", az.flags.get(0).getBlockY());
-				fc.set("flag.z", az.flags.get(0).getBlockZ());
+				fc.set("flag.x", az.getFlags().get(0).getBlockX());
+				fc.set("flag.y", az.getFlags().get(0).getBlockY());
+				fc.set("flag.z", az.getFlags().get(0).getBlockZ());
 			}
 			if (arenaType.equals("ffa") || arenaType.equals("hunger"))
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				fc.set("spawnsAmt", az.spawns.size());
-				for (int i = 0; i < az.spawns.size(); i++) 
+				fc.set("spawnsAmt", az.getSpawns().size());
+				for (int i = 0; i < az.getSpawns().size(); i++) 
 				{
-					Location loc = az.spawns.get(i);
+					Location loc = az.getSpawns().get(i);
 					String path = "spawns." + i + ".";
 
 					fc.set(path + "x", loc.getBlockX());
@@ -615,7 +615,7 @@ public class FileHelper
 			}
 			if (arenaType.equals("spleef"))
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
@@ -624,7 +624,7 @@ public class FileHelper
 				
 				for (int i = 0; i < 4; i++) 
 				{
-					Location loc = az.flags.get(i);
+					Location loc = az.getFlags().get(i);
 					String path = "flags." + i + ".";
 
 					fc.set(path + "x", loc.getBlockX());
@@ -634,95 +634,95 @@ public class FileHelper
 			}
 			if (arenaType.equals("bomb"))
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				Location lobbyBlue = az.lobbyBLUspawn;
+				Location lobbyBlue = az.getLobbyBLUspawn();
 				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
 				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
 				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
 				
-				Location team1 = az.team1spawn;
+				Location team1 = az.getTeam1spawn();
 				fc.set("team1.x", team1.getBlockX());
 				fc.set("team1.y", team1.getBlockY());
 				fc.set("team1.z", team1.getBlockZ());
 				
-				Location team2 = az.team2spawn;
+				Location team2 = az.getTeam2spawn();
 				fc.set("team2.x", team2.getBlockX());
 				fc.set("team2.y", team2.getBlockY());
 				fc.set("team2.z", team2.getBlockZ());
 				
-				fc.set("flag0.x", az.flags.get(0).getBlockX());
-				fc.set("flag0.y", az.flags.get(0).getBlockY());
-				fc.set("flag0.z", az.flags.get(0).getBlockZ());
+				fc.set("flag0.x", az.getFlags().get(0).getBlockX());
+				fc.set("flag0.y", az.getFlags().get(0).getBlockY());
+				fc.set("flag0.z", az.getFlags().get(0).getBlockZ());
 				
-				fc.set("flag1.x", az.flags.get(1).getBlockX());
-				fc.set("flag1.y", az.flags.get(1).getBlockY());
-				fc.set("flag1.z", az.flags.get(1).getBlockZ());
+				fc.set("flag1.x", az.getFlags().get(1).getBlockX());
+				fc.set("flag1.y", az.getFlags().get(1).getBlockY());
+				fc.set("flag1.z", az.getFlags().get(1).getBlockZ());
 			}
 			if (arenaType.equals("ctf")) 
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				Location lobbyBlue = az.lobbyBLUspawn;
+				Location lobbyBlue = az.getLobbyBLUspawn();
 				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
 				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
 				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
 				
-				Location team1 = az.team1spawn;
+				Location team1 = az.getTeam1spawn();
 				fc.set("team1.x", team1.getBlockX());
 				fc.set("team1.y", team1.getBlockY());
 				fc.set("team1.z", team1.getBlockZ());
 				
-				Location team2 = az.team2spawn;
+				Location team2 = az.getTeam2spawn();
 				fc.set("team2.x", team2.getBlockX());
 				fc.set("team2.y", team2.getBlockY());
 				fc.set("team2.z", team2.getBlockZ());
 				
-				fc.set("flag0.x", az.flags.get(0).getBlockX());
-				fc.set("flag0.y", az.flags.get(0).getBlockY());
-				fc.set("flag0.z", az.flags.get(0).getBlockZ());
+				fc.set("flag0.x", az.getFlags().get(0).getBlockX());
+				fc.set("flag0.y", az.getFlags().get(0).getBlockY());
+				fc.set("flag0.z", az.getFlags().get(0).getBlockZ());
 				
-				fc.set("flag1.x", az.flags.get(1).getBlockX());
-				fc.set("flag1.y", az.flags.get(1).getBlockY());
-				fc.set("flag1.z", az.flags.get(1).getBlockZ());
+				fc.set("flag1.x", az.getFlags().get(1).getBlockX());
+				fc.set("flag1.y", az.getFlags().get(1).getBlockY());
+				fc.set("flag1.z", az.getFlags().get(1).getBlockZ());
 			}
 			if (arenaType.equals("infect"))
 			{
-				Location lobbyRed = az.lobbyREDspawn;
+				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				Location lobbyBlue = az.lobbyBLUspawn;
+				Location lobbyBlue = az.getLobbyBLUspawn();
 				fc.set("lobbyBlue.x", lobbyBlue.getBlockX());
 				fc.set("lobbyBlue.y", lobbyBlue.getBlockY());
 				fc.set("lobbyBlue.z", lobbyBlue.getBlockZ());
 				
-				Location team1 = az.team1spawn;
+				Location team1 = az.getTeam1spawn();
 				fc.set("team1.x", team1.getBlockX());
 				fc.set("team1.y", team1.getBlockY());
 				fc.set("team1.z", team1.getBlockZ());
 				
-				Location team2 = az.team2spawn;
+				Location team2 = az.getTeam2spawn();
 				fc.set("team2.x", team2.getBlockX());
 				fc.set("team2.y", team2.getBlockY());
 				fc.set("team2.z", team2.getBlockZ());
 			}
 			
 			fc.set("maxPlayers", 24);
-			fc.set("defaultClass", plugin.classes.get(0).name);
+			fc.set("defaultClass", plugin.classes.get(0).getName());
 			
 			fc.save(file);
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error saving arena \"" + az.arenaName + "\": " + e.getMessage());
+			plugin.getLogger().severe("Error saving arena \"" + az.getArenaName() + "\": " + e.getMessage());
 		}
 	}
 	
@@ -732,37 +732,37 @@ public class FileHelper
 		try
 		{
 			File folder = new File(plugin.getDataFolder(), "arenas");
-			File file = new File(folder, az.arenaName + ".dat");
+			File file = new File(folder, az.getArenaName() + ".dat");
 	
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			
 			String arenaType = fc.getString("type");
-			az.arenaType = arenaType;
+			az.setArenaType(arenaType);
 			
 			World world = plugin.getServer().getWorld(fc.getString("world"));
-			az.world = world;
+			az.setWorld(world);
 			
-			az.lobby1 = new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z"));
-			az.lobby2 = new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z"));
+			az.setLobby1(new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z")));
+			az.setLobby2(new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z")));
 			
-			az.arena1 = new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z"));
-			az.arena2 = new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z"));
+			az.setArena1(new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z")));
+			az.setArena2(new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z")));
 	
 			if (arenaType.equals("pvp"))
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
-				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				az.setLobbyBLUspawn(new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z")));
 				
-				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				az.setTeam1spawn(new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z")));
 				
-				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				az.setTeam2spawn(new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z")));
 			}
 			if (arenaType.equals("mob"))
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
-				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				az.setTeam1spawn(new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z")));
 				
 				int spawnsAmt = fc.getInt("spawnsAmt");
 				for (int i = 0; i < spawnsAmt; i++) 
@@ -771,18 +771,18 @@ public class FileHelper
 	
 					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
 					
-					az.spawns.add(loc);
+					az.getSpawns().add(loc);
 				}
 			}
 			if (arenaType.equals("cq")) 
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
-				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				az.setLobbyBLUspawn(new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z")));
 				
-				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				az.setTeam1spawn(new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z")));
 				
-				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				az.setTeam2spawn(new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z")));
 				
 				int flagsAmt = fc.getInt("flagsAmt");
 				for (int i = 0; i < flagsAmt; i++) 
@@ -791,12 +791,12 @@ public class FileHelper
 	
 					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
 					
-					az.flags.add(loc);
+					az.getFlags().add(loc);
 				}
 			}
 			if (arenaType.equals("koth"))
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
 				int spawnsAmt = fc.getInt("spawnsAmt");
 				for (int i = 0; i < spawnsAmt; i++) 
@@ -805,15 +805,15 @@ public class FileHelper
 	
 					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
 					
-					az.spawns.add(loc);
+					az.getSpawns().add(loc);
 				}
 				
 				Location loc = new Location(world, fc.getInt("flag.x"), fc.getInt("flag.y"), fc.getInt("flag.z"));
-				az.flags.add(loc);
+				az.getFlags().add(loc);
 			}
 			if (arenaType.equals("ffa") || arenaType.equals("hunger"))
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
 				int spawnsAmt = fc.getInt("spawnsAmt");
 				for (int i = 0; i < spawnsAmt; i++) 
@@ -822,15 +822,15 @@ public class FileHelper
 	
 					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
 					
-					az.spawns.add(loc);
+					az.getSpawns().add(loc);
 				}
 				
 			}
 			if (arenaType.equals("spleef"))
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
-				az.specialType = fc.getInt("specialType");
+				az.setSpecialType(fc.getInt("specialType"));
 				
 				fc.set("specialType", 80);
 				
@@ -840,55 +840,55 @@ public class FileHelper
 	
 					Location loc = new Location(world, fc.getInt(path + "x"),fc.getInt(path + "y"), fc.getInt(path + "z"));
 					
-					az.flags.add(loc);
+					az.getFlags().add(loc);
 				}
 			}
 			if (arenaType.equals("bomb"))
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
-				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				az.setLobbyBLUspawn(new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z")));
 				
-				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				az.setTeam1spawn(new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z")));
 				
-				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				az.setTeam2spawn(new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z")));
 				
-				az.flags.add(new Location(world, fc.getInt("flag0.x"),fc.getInt("flag0.y"), fc.getInt("flag0.z")));
-				az.flags.add(new Location(world, fc.getInt("flag1.x"),fc.getInt("flag1.y"), fc.getInt("flag1.z")));
+				az.getFlags().add(new Location(world, fc.getInt("flag0.x"),fc.getInt("flag0.y"), fc.getInt("flag0.z")));
+				az.getFlags().add(new Location(world, fc.getInt("flag1.x"),fc.getInt("flag1.y"), fc.getInt("flag1.z")));
 			}
 			if (arenaType.equals("ctf")) 
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
-				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				az.setLobbyBLUspawn(new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z")));
 				
-				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				az.setTeam1spawn(new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z")));
 				
-				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				az.setTeam2spawn(new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z")));
 				
-				az.flags.add(new Location(world, fc.getInt("flag0.x"),fc.getInt("flag0.y"), fc.getInt("flag0.z")));
-				az.flags.add(new Location(world, fc.getInt("flag1.x"),fc.getInt("flag1.y"), fc.getInt("flag1.z")));
+				az.getFlags().add(new Location(world, fc.getInt("flag0.x"),fc.getInt("flag0.y"), fc.getInt("flag0.z")));
+				az.getFlags().add(new Location(world, fc.getInt("flag1.x"),fc.getInt("flag1.y"), fc.getInt("flag1.z")));
 			}
 			if (arenaType.equals("infect"))
 			{
-				az.lobbyREDspawn = new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z"));
+				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 				
-				az.lobbyBLUspawn = new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z"));
+				az.setLobbyBLUspawn(new Location(world, fc.getInt("lobbyBlue.x"), fc.getInt("lobbyBlue.y"), fc.getInt("lobbyBlue.z")));
 				
-				az.team1spawn = new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z"));
+				az.setTeam1spawn(new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z")));
 				
-				az.team2spawn = new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z"));
+				az.setTeam2spawn(new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z")));
 			}
 			
-			az.maxPlayers = fc.getInt("maxPlayers");
-			az.defaultClass = fc.getString("defaultClass");
+			az.setMaxPlayers(fc.getInt("maxPlayers"));
+			az.setDefaultClass(fc.getString("defaultClass"));
 			
-			az.loaded = true;
+			az.setLoaded(true);
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error loading arena \"" + az.arenaName + "\": " + e.getMessage());
-			az.loaded = false;
+			plugin.getLogger().severe("Error loading arena \"" + az.getArenaName() + "\": " + e.getMessage());
+			az.setLoaded(false);
 		}
 	}
 	

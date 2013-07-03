@@ -11,7 +11,7 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 public class KothFlag extends ArenaFlag
 {
-	public KOTHArena marena;
+	private KOTHArena marena;
 	public KothFlag(KOTHArena arena, Location loc)
 	{
 		super(arena, loc);
@@ -25,7 +25,7 @@ public class KothFlag extends ArenaFlag
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (int i = 0; i < arenaplayers.size(); i++)
 		{
-			Player pl = arenaplayers.get(i).player;
+			Player pl = arenaplayers.get(i).getPlayer();
 			if (pl != null)
 			{
 				if (Util.pointDistance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) 
@@ -41,9 +41,9 @@ public class KothFlag extends ArenaFlag
 		{
 			if (capturer != null) 
 			{
-				Player pl = capturer.player;
-				capturer.points++;
-				pl.sendMessage(ChatColor.GRAY + "You have capped for 1 point! " + ChatColor.LIGHT_PURPLE + capturer.points + " / " + marena.MAXPOWER);
+				Player pl = capturer.getPlayer();
+				capturer.setPoints(capturer.getPoints() + 1);
+				pl.sendMessage(ChatColor.GRAY + "You have capped for 1 point! " + ChatColor.LIGHT_PURPLE + capturer.getPoints() + " / " + marena.MAXPOWER);
 			}
 		}
 	}

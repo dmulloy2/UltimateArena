@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.listeners;
 
+import net.dmulloy2.ultimatearena.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.Field3D;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -43,12 +44,12 @@ public class PlayerListener implements Listener
 		{
 			plugin.onQuit(pl);
 			
-			for (int i = 0; i < plugin.waiting.size(); i++)
+			for (ArenaJoinTask task : plugin.waiting)
 			{
-				if (plugin.waiting.get(i).player.getName().equals(pl.getName()))
+				if (task.getPlayer().getName().equals(pl.getName()))
 				{
-					plugin.waiting.get(i).cancel();
-					plugin.waiting.remove(i);
+					task.cancel();
+					plugin.waiting.remove(task);
 				}
 			}
 		}
@@ -89,7 +90,7 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.isInArena(pl))
 			{
-				if (! plugin.getArena(pl).type.equals("Hunger"))
+				if (! plugin.getArena(pl).getType().equals("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -106,7 +107,7 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.isInArena(pl)) 
 			{
-				if (! plugin.getArena(pl).type.equals("Hunger"))
+				if (! plugin.getArena(pl).getType().equals("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -207,9 +208,9 @@ public class PlayerListener implements Listener
 								{
 									for (Arena a : plugin.activeArena)
 									{
-										if (a.starttimer > 1)
+										if (a.getStarttimer() > 1)
 										{
-											plugin.fight(player, a.name);
+											plugin.fight(player, a.getName());
 											found = true;
 										}
 									}
@@ -221,7 +222,7 @@ public class PlayerListener implements Listener
 										ArenaZone az = plugin.loadedArena.get(0);
 										if (az != null)
 										{
-											plugin.fight(player, az.arenaName);
+											plugin.fight(player, az.getArenaName());
 											found = true;
 										}
 									}
@@ -233,9 +234,9 @@ public class PlayerListener implements Listener
 								boolean found = false;
 								for (Arena a : plugin.activeArena)
 								{
-									if (a.name.equalsIgnoreCase(name) && a.starttimer > 1)
+									if (a.getName().equalsIgnoreCase(name) && a.getStarttimer() > 1)
 									{
-										plugin.fight(player, a.name);
+										plugin.fight(player, a.getName());
 										found = true;
 									}
 								}
@@ -243,9 +244,9 @@ public class PlayerListener implements Listener
 								{
 									for (ArenaZone az : plugin.loadedArena)
 									{
-										if (az != null && az.arenaName.equalsIgnoreCase(name))
+										if (az != null && az.getArenaName().equalsIgnoreCase(name))
 										{
-											plugin.fight(player, az.arenaName);
+											plugin.fight(player, az.getArenaName());
 											found = true;
 										}
 									}
@@ -271,14 +272,14 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl)) 
 			{
 				ArenaPlayer apl = plugin.getArenaPlayer(pl);
-				if (apl != null && !apl.out) 
+				if (apl != null && !apl.isOut()) 
 				{
-					if (plugin.getArenaPlayer(pl).deaths < plugin.getArena(pl).maxDeaths) 
+					if (plugin.getArenaPlayer(pl).getDeaths() < plugin.getArena(pl).getMaxDeaths()) 
 					{
 						Arena are = plugin.getArena(pl);
-						if (are != null && !are.stopped)
+						if (are != null && !are.isStopped())
 						{
-							if (are.gametimer > 1) 
+							if (are.getGametimer() > 1) 
 							{
 								if (are.getSpawn(apl) != null)
 								{
@@ -298,14 +299,14 @@ public class PlayerListener implements Listener
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player p = event.getPlayer();
-		for (int i = 0; i < plugin.waiting.size(); i++) 
+		for (ArenaJoinTask task : plugin.waiting)
 		{
-			if (plugin.waiting.get(i).player.getName().equals(p.getName()))
+			if (task.getPlayer().getName().equals(p.getName()))
 			{
-				p.sendMessage(ChatColor.RED + "Cancelled!");
+				task.cancel();
+				plugin.waiting.remove(task);
 				
-				plugin.waiting.get(i).cancel();
-				plugin.waiting.remove(i);
+				p.sendMessage(ChatColor.RED + "Cancelled!");
 			}
 		}
 	}

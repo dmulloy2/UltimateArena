@@ -32,6 +32,6 @@ public class PCommandStart extends UltimateArenaCommand
 		}
 			
 		arena.start();
-		player.sendMessage(ChatColor.GOLD + "Starting arena.. " + ChatColor.AQUA + arena.name );
+		player.sendMessage(ChatColor.GOLD + "Starting arena.. " + ChatColor.AQUA + arena.getName() );
 	}
 }

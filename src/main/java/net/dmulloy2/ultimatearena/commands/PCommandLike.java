@@ -24,10 +24,10 @@ public class PCommandLike extends UltimateArenaCommand
 		{
 			if (az.canLike(player)) 
 			{
-				sendMessage("&aYou have voted for: {0}!", az.arenaName);
+				sendMessage("&aYou have voted for: {0}!", az.getArenaName());
 				
-				az.liked++;
-				az.voted.add(player.getName());
+				az.setLiked(az.getLiked() + 1);
+				az.getVoted().add(player.getName());
 			}
 			else
 			{

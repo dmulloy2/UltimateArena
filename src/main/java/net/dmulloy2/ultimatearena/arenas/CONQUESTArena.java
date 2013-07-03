@@ -19,15 +19,15 @@ public class CONQUESTArena extends Arena
 	{
 		super(az);
 		
-		type = "Cq";
-		starttimer = 180;
-		gametimer = 0;
-		maxgametime = 60 * 20;
-		maxDeaths = 900;
+		setType("Cq");
+		setStarttimer(180);
+		setGametimer(0);
+		setMaxgametime(60 * 20);
+		setMaxDeaths(900);
 		
-		for (int i = 0; i < this.az.flags.size(); i++) 
+		for (int i = 0; i < this.getArenaZone().getFlags().size(); i++) 
 		{
-			this.flags.add( new ArenaFlag(this, this.az.flags.get(i)) );
+			this.getFlags().add( new ArenaFlag(this, this.getArenaZone().getFlags().get(i)) );
 		}
 	}
 	
@@ -35,7 +35,7 @@ public class CONQUESTArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.REDTEAMPOWER = amtPlayersInArena * 4;
+		this.REDTEAMPOWER = getAmtPlayersInArena() * 4;
 		this.BLUETEAMPOWER = REDTEAMPOWER;
 		if (REDTEAMPOWER < 4) 
 		{
@@ -62,19 +62,19 @@ public class CONQUESTArena extends Arena
 		Player p = Util.matchPlayer(name);
 		if (p != null) 
 		{
-			ArenaPlayer ap = this.az.plugin.getArenaPlayer(p);
+			ArenaPlayer ap = this.getArenaZone().getPlugin().getArenaPlayer(p);
 			if (ap != null) 
 			{
-				if (!ap.out)
+				if (!ap.isOut())
 				{
 					List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
-					for (int i = 0; i < flags.size(); i++)
+					for (int i = 0; i < getFlags().size(); i++)
 					{
-						if (flags.get(i).team == ap.team)
+						if (getFlags().get(i).team == ap.getTeam())
 						{
-							if (flags.get(i).capped)
+							if (getFlags().get(i).capped)
 							{
-								spawnto.add(flags.get(i));
+								spawnto.add(getFlags().get(i));
 							}
 						}
 					}
@@ -93,18 +93,18 @@ public class CONQUESTArena extends Arena
 		int majority = 0;
 		int red = 0;
 		int blu = 0;
-		for (int i = 0; i < flags.size(); i++) 
+		for (int i = 0; i < getFlags().size(); i++) 
 		{
-			if (flags.get(i).color == 14) 
+			if (getFlags().get(i).color == 14) 
 			{
-				if (flags.get(i).capped == true) 
+				if (getFlags().get(i).capped == true) 
 				{
 					red++;
 				}
 			}
-			else if (flags.get(i).color == 11) 
+			else if (getFlags().get(i).color == 11) 
 			{
-				if (flags.get(i).capped == true) 
+				if (getFlags().get(i).capped == true) 
 				{
 					blu++;
 				}
@@ -123,15 +123,15 @@ public class CONQUESTArena extends Arena
 			BLUETEAMPOWER--;
 		}
 		
-		if (pl.team == 1) 
+		if (pl.getTeam() == 1) 
 		{
 			REDTEAMPOWER--;
-			for (int i = 0; i < arenaplayers.size(); i++) 
+			for (int i = 0; i < getArenaplayers().size(); i++) 
 			{
-				if (!arenaplayers.get(i).out){ 
-					Player pl1 = arenaplayers.get(i).player;
+				if (!getArenaplayers().get(i).isOut()){ 
+					Player pl1 = getArenaplayers().get(i).getPlayer();
 					if (pl1 != null) {
-						if (arenaplayers.get(i).team == 1) 
+						if (getArenaplayers().get(i).getTeam() == 1) 
 						{
 							pl1.sendMessage(ChatColor.RED + "Your power is now: " + ChatColor.GOLD + REDTEAMPOWER);
 						}
@@ -143,17 +143,17 @@ public class CONQUESTArena extends Arena
 				}
 			}
 		}
-		else if (pl.team == 2) 
+		else if (pl.getTeam() == 2) 
 		{
 			BLUETEAMPOWER--;
-			for (int i = 0; i < arenaplayers.size(); i++) 
+			for (int i = 0; i < getArenaplayers().size(); i++) 
 			{
-				if (!arenaplayers.get(i).out)
+				if (!getArenaplayers().get(i).isOut())
 				{
-					Player pl1 = arenaplayers.get(i).player;
+					Player pl1 = getArenaplayers().get(i).getPlayer();
 					if (pl1 != null) 
 					{
-						if (arenaplayers.get(i).team == 2)
+						if (getArenaplayers().get(i).getTeam() == 2)
 						{
 							pl1.sendMessage(ChatColor.RED + "Your power is now: " + ChatColor.GOLD + BLUETEAMPOWER);
 						}
@@ -176,17 +176,17 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void check() 
 	{
-		for (ArenaPlayer ap : arenaplayers)
+		for (ArenaPlayer ap : getArenaplayers())
 		{
-			if (ap != null && !ap.out)
+			if (ap != null && !ap.isOut())
 			{
 				if (BLUETEAMPOWER <= 0) 
 				{
-					if (ap.team == 2)
+					if (ap.getTeam() == 2)
 					{
-						ap.out = true;
-						updatedTeams = true;
-						Player p = Util.matchPlayer(ap.player.getName());
+						ap.setOut(true);
+						setUpdatedTeams(true);
+						Player p = Util.matchPlayer(ap.getPlayer().getName());
 						if (p != null) 
 						{
 							p.sendMessage(ChatColor.RED + "Your team lost!");
@@ -196,11 +196,11 @@ public class CONQUESTArena extends Arena
 				}
 				else if (REDTEAMPOWER <= 0) 
 				{
-					if (ap.team == 1)
+					if (ap.getTeam() == 1)
 					{
-						ap.out = true;
-						updatedTeams = true;
-						Player p = Util.matchPlayer(ap.player.getName());
+						ap.setOut(true);
+						setUpdatedTeams(true);
+						Player p = Util.matchPlayer(ap.getPlayer().getName());
 						if (p != null)
 						{
 							p.sendMessage(ChatColor.RED + "Your team lost!");
@@ -223,13 +223,13 @@ public class CONQUESTArena extends Arena
 			this.setWinningTeam(2);
 		}
 			
-		for (int i = 0; i < flags.size(); i++)
+		for (int i = 0; i < getFlags().size(); i++)
 		{
-			flags.get(i).step();
-			flags.get(i).checkNear(arenaplayers);
+			getFlags().get(i).step();
+			getFlags().get(i).checkNear(getArenaplayers());
 		}
 		
-		if (starttimer <= 0) 
+		if (getStarttimer() <= 0) 
 		{
 			if (!simpleTeamCheck(false)) 
 			{

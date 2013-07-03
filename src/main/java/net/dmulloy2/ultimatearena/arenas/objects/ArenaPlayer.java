@@ -3,15 +3,18 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.Util;
+
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
@@ -19,51 +22,49 @@ import org.bukkit.potion.PotionEffect;
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Kit;
 import com.earth2me.essentials.User;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class ArenaPlayer 
 {
-	public int kills = 0;
-	public int deaths = 0;
-	public int killstreak = 0;
-	public int gameXP = 0;
-	public int team = 1;
-	public int points = 0;
-	public int baselevel = 0;
-	public int amtkicked = 0;
-	public int healtimer = 0;
+	private int kills = 0;
+	private int deaths = 0;
+	private int killstreak = 0;
+	private int gameXP = 0;
+	private int team = 1;
+	private int points = 0;
+	private int baselevel = 0;
+	private int amtkicked = 0;
+	private int healtimer = 0;
 	
-	public boolean out = false;
-	public boolean canReward = false;
+	private boolean out = false;
+	private boolean canReward = false;
 	
-	public Player player;
-	public String username;
+	private Player player;
+	private String username;
 	
-	public Arena inArena;
-	public ArenaClass mclass;
-	public Location spawnBack;
+	private Arena arena;
+	private ArenaClass mclass;
+	private Location spawnBack;
 	
-	private UltimateArena plugin;
+	private final UltimateArena plugin;
 	
-	public List<ItemStack> savedInventory = new ArrayList<ItemStack>();
-	public List<ItemStack> savedArmor = new ArrayList<ItemStack>();
+	private List<ItemStack> savedInventory = new ArrayList<ItemStack>();
+	private List<ItemStack> savedArmor = new ArrayList<ItemStack>();
 	
-	public ArenaPlayer(Player p, Arena a)
+	public ArenaPlayer(Player player, Arena arena)
 	{
-		this.player = p;
-		this.username = p.getName();
-		this.inArena = a;
-		this.plugin = a.az.plugin;
-		this.spawnBack = p.getLocation().clone();
-		this.mclass = plugin.getArenaClass(a.az.defaultClass);
-		this.baselevel = p.getLevel();
+		this.player = player;
+		this.username = player.getName();
+		this.spawnBack = player.getLocation();
+		this.baselevel = player.getLevel();
+		
+		this.arena = arena;
+		this.plugin = arena.getPlugin();
+		this.mclass = plugin.getArenaClass(arena.getArenaZone().getDefaultClass());
 	}
 	
 	public void decideHat(Player p)
 	{
-		if (mclass != null && !mclass.helmet)
+		if (mclass != null && !mclass.usesHelmet())
 		{
 			p.getInventory().setHelmet(null);
 			return;
@@ -74,7 +75,7 @@ public class ArenaPlayer
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET, 1);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
 			Color teamColor = Color.RED;
-			if (team == 2)
+			if (getTeam() == 2)
 				teamColor = Color.BLUE;
 			meta.setColor(teamColor);
 			itemStack.setItemMeta(meta);
@@ -82,78 +83,38 @@ public class ArenaPlayer
 		}
 	}
 	
-	public void giveItem(Player p, int id, byte dat, int amt, int slot, List<CompositeEnchantment> enchants)
+	private void giveItem(int slot, ItemStack stack) 
 	{
-		if (id > 0)
-		{
-			ItemStack itemStack = new ItemStack(id, amt);
-			if (enchants != null && enchants.size() > 0)
-			{
-				for (CompositeEnchantment enchantment : enchants)
-				{
-					Enchantment ench = enchantment.getType();
-					int level = enchantment.getLevel();
-					
-					if (ench != null && level > 0)
-					{
-						itemStack.addUnsafeEnchantment(ench, level);
-					}
-				}
-			}
-			
-			if (dat > 0)
-			{
-				MaterialData data = itemStack.getData();
-				data.setData(dat);
-				itemStack.setData(data);
-			}
-					
-			p.getInventory().setItem(slot, itemStack);
-		}
-	}	
+		player.getInventory().setItem(slot, stack);
+	}
 	
-	public void giveArmor(Player p, int type, int slot, List<CompositeEnchantment> enchants)
+	public void giveArmor(int slot, ItemStack stack)
 	{
-		if (type > 0)
+		if (stack != null)
 		{
-			ItemStack itemStack = new ItemStack(type, 1);
-			if (enchants != null && enchants.size() > 0)
-			{
-				for (CompositeEnchantment enchantment : enchants)
-				{
-					Enchantment ench = enchantment.getType();
-					int level = enchantment.getLevel();
-					
-					if (ench != null && level > 0)
-					{
-						itemStack.addUnsafeEnchantment(ench, level);
-					}
-				}
-			}
-			
 			if (slot == 0)
 			{
-				p.getInventory().setChestplate(itemStack);
+				player.getInventory().setChestplate(stack);
 			}
 			if (slot == 1)
 			{
-				p.getInventory().setLeggings(itemStack);
+				player.getInventory().setLeggings(stack);
 			}
 			if (slot == 2)
 			{
-				p.getInventory().setBoots(itemStack);
+				player.getInventory().setBoots(stack);
 			}
 		}
 	}
 	
 	public void saveInventory()
 	{
-		PlayerInventory inv = player.getInventory();
+		PlayerInventory inv = getPlayer().getInventory();
 		for (ItemStack itemStack : inv.getContents())
 		{
 			if (itemStack != null && itemStack.getType() != Material.AIR)
 			{
-				savedInventory.add(itemStack);
+				getSavedInventory().add(itemStack);
 			}
 		}
 		
@@ -161,14 +122,14 @@ public class ArenaPlayer
 		{
 			if (armor != null && armor.getType() != Material.AIR)
 			{
-				savedArmor.add(armor);
+				getSavedArmor().add(armor);
 			}
 		}
 	}
 	
 	public void clearInventory()
 	{
-		PlayerInventory inv = player.getInventory();
+		PlayerInventory inv = getPlayer().getInventory();
 		inv.setHelmet(null);
 		inv.setChestplate(null);
 		inv.setLeggings(null);
@@ -178,13 +139,13 @@ public class ArenaPlayer
 	
 	public void returnInventory()
 	{
-		PlayerInventory inv = player.getInventory();
-		for (ItemStack itemStack : savedInventory)
+		PlayerInventory inv = getPlayer().getInventory();
+		for (ItemStack itemStack : getSavedInventory())
 		{
 			inv.addItem(itemStack);
 		}
 		
-		for (ItemStack armor : savedArmor)
+		for (ItemStack armor : getSavedArmor())
 		{
 			String type = armor.getType().toString().toLowerCase();
 			if (type.contains("helmet"))
@@ -211,12 +172,12 @@ public class ArenaPlayer
 	
 	public void spawn()
 	{
-		if (amtkicked > 10)
+		if (getAmtkicked() > 10)
 		{
-			plugin.leaveArena(player);
+			plugin.leaveArena(getPlayer());
 		}
 			
-		Player p = Util.matchPlayer(player.getName());
+		Player p = Util.matchPlayer(getPlayer().getName());
 		p.getInventory().clear();
 		
 		giveClassItems(p);
@@ -230,13 +191,13 @@ public class ArenaPlayer
 		
 		if (command)
 		{
-			giveClassItems(player);
+			giveClassItems(getPlayer());
 			return;
 		}
 		
-		if (inArena.starttimer <= 0 && inArena.gametimer >= 2) 
+		if (arena.getStarttimer() <= 0 && arena.getGametimer() >= 2) 
 		{
-			giveClassItems(player);
+			giveClassItems(getPlayer());
 		}
 	}
 	
@@ -253,16 +214,16 @@ public class ArenaPlayer
 			return;
 		}
 				
-		if (mclass.useEssentials)
+		if (mclass.usesEssentials())
 		{
 			try
 			{
-				PluginManager pm = inArena.az.plugin.getServer().getPluginManager();
+				PluginManager pm = plugin.getServer().getPluginManager();
 				Plugin essPlugin = pm.getPlugin("Essentials");
 				IEssentials ess = (IEssentials) essPlugin;
 				User user = ess.getUser(p);
 								
-				List<String> items = Kit.getItems(user, mclass.essentialsKit);
+				List<String> items = Kit.getItems(user, mclass.getEssentialsKit());
 					
 				Kit.expandItems(ess, user, items);
 				return;
@@ -273,26 +234,174 @@ public class ArenaPlayer
 			}
 		}
 		
-		if (mclass.armor1 > 0) { giveArmor(p, mclass.armor1, 0, mclass.armorenchant1); }
-		if (mclass.armor2 > 0) { giveArmor(p, mclass.armor2, 1, mclass.armorenchant2); }
-		if (mclass.armor3 > 0) { giveArmor(p, mclass.armor3, 2, mclass.armorenchant3); }
-							
-		giveItem(p, mclass.weapon1, mclass.special1, mclass.amt1, 0, mclass.enchant1);
-		giveItem(p, mclass.weapon2, mclass.special2, mclass.amt2, 1, mclass.enchant2);
-		giveItem(p, mclass.weapon3, mclass.special3, mclass.amt3, 2, mclass.enchant3);
-		giveItem(p, mclass.weapon4, mclass.special4, mclass.amt4, 3, mclass.enchant4);
-		giveItem(p, mclass.weapon5, mclass.special5, mclass.amt5, 4, mclass.enchant5);
-		giveItem(p, mclass.weapon6, mclass.special6, mclass.amt6, 5, mclass.enchant6);
-		giveItem(p, mclass.weapon7, mclass.special7, mclass.amt7, 6, mclass.enchant7);
-		giveItem(p, mclass.weapon8, mclass.special8, mclass.amt8, 7, mclass.enchant8);
-		giveItem(p, mclass.weapon9, mclass.special9, mclass.amt9, 8, mclass.enchant9);
+		for (int i = 0; i < mclass.getArmor().size(); i++)
+		{
+			ItemStack stack = mclass.getArmor(i);
+			if (stack != null)
+			{
+				giveArmor(i, stack);
+			}
+		}
+		
+		for (int i = 0; i < mclass.getWeapons().size(); i++)
+		{
+			ItemStack stack = mclass.getWeapon(i);
+			if (stack != null)
+			{
+				giveItem(i, stack);
+			}
+		}
 	}
-	
+
 	public void clearPotionEffects()
 	{
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for (PotionEffect effect : getPlayer().getActivePotionEffects())
 		{
-			player.removePotionEffect(effect.getType());
+			getPlayer().removePotionEffect(effect.getType());
 		}
+	}
+
+	public int getKills()
+	{
+		return kills;
+	}
+
+	public void setKills(int kills) {
+		this.kills = kills;
+	}
+
+	public int getDeaths() 
+	{
+		return deaths;
+	}
+
+	public void setDeaths(int deaths) 
+	{
+		this.deaths = deaths;
+	}
+
+	public int getKillstreak()
+	{
+		return killstreak;
+	}
+
+	public void setKillstreak(int killstreak)
+	{
+		this.killstreak = killstreak;
+	}
+
+	public int getGameXP()
+	{
+		return gameXP;
+	}
+
+	public void setGameXP(int gameXP) 
+	{
+		this.gameXP = gameXP;
+	}
+
+	public int getPoints() 
+	{
+		return points;
+	}
+
+	public void setPoints(int points) 
+	{
+		this.points = points;
+	}
+
+	public int getBaselevel()
+	{
+		return baselevel;
+	}
+
+	public int getHealtimer()
+	{
+		return healtimer;
+	}
+
+	public void setHealtimer(int healtimer)
+	{
+		this.healtimer = healtimer;
+	}
+
+	public boolean isOut()
+	{
+		return out;
+	}
+
+	public void setOut(boolean out) 
+	{
+		this.out = out;
+	}
+
+	public boolean canReward() 
+	{
+		return canReward;
+	}
+
+	public void setCanReward(boolean canReward)
+	{
+		this.canReward = canReward;
+	}
+
+	public String getUsername() 
+	{
+		return username;
+	}
+	
+	public Location getSpawnBack() 
+	{
+		return spawnBack;
+	}
+	
+	public Player getPlayer()
+	{
+		return player;
+	}
+	
+	public int getTeam() 
+	{
+		return team;
+	}
+
+	public void setTeam(int team) 
+	{
+		this.team = team;
+	}
+
+	public int getAmtkicked() 
+	{
+		return amtkicked;
+	}
+
+	public void setAmtkicked(int amtkicked) 
+	{
+		this.amtkicked = amtkicked;
+	}
+
+	public List<ItemStack> getSavedInventory() 
+	{
+		return savedInventory;
+	}
+
+	public List<ItemStack> getSavedArmor() 
+	{
+		return savedArmor;
+	}
+	
+	public ArenaClass getArenaClass()
+	{
+		return mclass;
+	}
+	
+	public Arena getArena() 
+	{
+		return arena;
+	}
+	
+	public void sendMessage(String string, Object...objects)
+	{
+		player.sendMessage(FormatUtil.format(string, objects));
 	}
 }

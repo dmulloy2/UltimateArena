@@ -21,18 +21,18 @@ public class SPLEEFArena extends FFAArena
 	{
 		super(az);
 		
-		type = "Spleef";
-		maxDeaths = 2;
+		setType("Spleef");
+		setMaxDeaths(2);
 
-		spleefGround = new Field3D(az.plugin, this.world);
-		Location pos1 = az.flags.get(0);
-		Location pos2 = az.flags.get(1);
+		spleefGround = new Field3D(az.getPlugin(), this.getWorld());
+		Location pos1 = az.getFlags().get(0);
+		Location pos2 = az.getFlags().get(1);
 		spleefGround.setParam(pos1.getWorld(), pos1.getX(), pos1.getZ(), pos1.getY()-1, pos2.getX(), pos2.getZ(), pos2.getY()-1);
-		spleefGround.setType(this.az.specialType);
+		spleefGround.setType(this.getArenaZone().getSpecialType());
 			
-		outZone = new Field3D(az.plugin, this.world);
-		Location pos3 = az.flags.get(2);
-		Location pos4 = az.flags.get(3);
+		outZone = new Field3D(az.getPlugin(), this.getWorld());
+		Location pos3 = az.getFlags().get(2);
+		Location pos4 = az.getFlags().get(3);
 		outZone.setParam(pos3.getWorld(), pos3.getX(), pos3.getZ(), pos3.getY()-1, pos4.getX(), pos4.getZ(), pos4.getY()-1);
 	}
 	
@@ -59,7 +59,7 @@ public class SPLEEFArena extends FFAArena
 		int checkz = rand.nextInt(spleefGround.length-1);
 		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
 		Material mat = b.getType();
-		if (mat.getId() == az.specialType)
+		if (mat.getId() == getArenaZone().getSpecialType())
 		{
 			ret = b.getLocation();
 		}
@@ -77,19 +77,19 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void check() 
 	{
-		if (this.amtPlayersInArena == 1)
+		if (this.getAmtPlayersInArena() == 1)
 		{
-			if (this.amtPlayersStartingInArena > 1)
+			if (this.getAmtPlayersStartingInArena() > 1)
 			{
 				this.setWinningTeam(-1);
 			}
 		}
 		if (!checkEmpty())
 		{
-			for (int i = 0; i < arenaplayers.size(); i++)
+			for (int i = 0; i < getArenaplayers().size(); i++)
 			{
-				ArenaPlayer apl = arenaplayers.get(i);
-				Player pl = apl.player;
+				ArenaPlayer apl = getArenaplayers().get(i);
+				Player pl = apl.getPlayer();
 				Location ploc = pl.getLocation();
 				if (pl.getHealth() > 0) {
 					if (outZone.isUnder(ploc))

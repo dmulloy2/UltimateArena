@@ -31,12 +31,12 @@ public class PCommandDisable extends UltimateArenaCommand
 			for (int ii = 0; ii < plugin.activeArena.size(); ii++)
 			{		
 				Arena aa = plugin.activeArena.get(ii);
-				if (aa.name.equals(at)) 
+				if (aa.getName().equals(at)) 
 				{
 					aa.onDisable();
 					sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
-				else if (aa.az.arenaType.equals(at)) 
+				else if (aa.getArenaZone().getArenaType().equals(at)) 
 				{
 					aa.onDisable();
 					sendMessage(ChatColor.GRAY + " Disabled " + at);
@@ -45,14 +45,14 @@ public class PCommandDisable extends UltimateArenaCommand
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++) 
 			{
 				ArenaZone aa = plugin.loadedArena.get(ii);
-				if (aa.arenaType.equals(at))
+				if (aa.getArenaType().equals(at))
 				{
-					aa.disabled = true;
+					aa.setDisabled(true);
 					sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
-				else if (aa.arenaName.equals(at)) 
+				else if (aa.getArenaName().equals(at)) 
 				{
-					aa.disabled = true;
+					aa.setDisabled(true);
 					sendMessage(ChatColor.GRAY + "Disabled " + at);
 				}
 			}
@@ -62,7 +62,7 @@ public class PCommandDisable extends UltimateArenaCommand
 			for (int ii = 0; ii < plugin.activeArena.size(); ii++)
 				plugin.activeArena.get(ii).onDisable();
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
-				plugin.loadedArena.get(ii).disabled = true;
+				plugin.loadedArena.get(ii).setDisabled(true);
 			sendMessage(ChatColor.GRAY + "Disabled ALL arenas");
 		}
 	}

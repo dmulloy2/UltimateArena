@@ -19,15 +19,15 @@ public class HUNGERArena extends Arena
 	{
 		super(az);
 		
-		type = "Hunger";
-		starttimer = 120;
-		maxgametime = 60 * 10 * 3;
-		maxDeaths = 1;
-		allowTeamKilling = true;
+		setType("Hunger");
+		setStarttimer(120);
+		setMaxgametime(60 * 10 * 3);
+		setMaxDeaths(1);
+		setAllowTeamKilling(true);
 		
-		for (int i = 0; i < this.az.spawns.size(); i++) 
+		for (int i = 0; i < this.getArenaZone().getSpawns().size(); i++) 
 		{
-			this.spawns.add( new ArenaSpawn(this.az.spawns.get(i).getWorld(), this.az.spawns.get(i).getBlockX(), this.az.spawns.get(i).getBlockY(), this.az.spawns.get(i).getBlockZ()) );
+			this.getSpawns().add( new ArenaSpawn(this.getArenaZone().getSpawns().get(i).getWorld(), this.getArenaZone().getSpawns().get(i).getBlockX(), this.getArenaZone().getSpawns().get(i).getBlockY(), this.getArenaZone().getSpawns().get(i).getBlockZ()) );
 		}
 	}
 	
@@ -72,21 +72,21 @@ public class HUNGERArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (starttimer <= 0) 
+		if (getStarttimer() <= 0) 
 		{
 			if (isEmpty()) 
 			{
-				if (amtPlayersInArena == 1) 
+				if (getAmtPlayersInArena() == 1) 
 				{
 					this.setWinningTeam(-1);
 					stop();
-					for (int i = 0; i < arenaplayers.size(); i++) 
+					for (int i = 0; i < getArenaplayers().size(); i++) 
 					{
-						spawn(arenaplayers.get(i).username, false);
+						spawn(getArenaplayers().get(i).getUsername(), false);
 					}
-					if (this.amtPlayersStartingInArena > 1)
+					if (this.getAmtPlayersStartingInArena() > 1)
 					{
-						this.rewardTeam(winningTeam, ChatColor.BLUE + "You won!", false);
+						this.rewardTeam(getWinningTeam(), ChatColor.BLUE + "You won!", false);
 					}
 					else
 					{
@@ -101,6 +101,6 @@ public class HUNGERArena extends Arena
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
 		super.onPlayerDeath(pl);
-		pl.player.getWorld().strikeLightningEffect(pl.player.getLocation());
+		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
 	}
 }

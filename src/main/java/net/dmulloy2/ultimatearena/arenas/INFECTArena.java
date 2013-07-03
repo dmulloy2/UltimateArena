@@ -18,11 +18,11 @@ public class INFECTArena extends PVPArena
 	{
 		super(az);
 		
-		type = "Infect";
-		starttimer = 80;
-		gametimer = 0;
-		maxgametime = (60 * 2) + 10; //2 minutes and 10 seconds (by default)
-		maxDeaths = 99;
+		setType("Infect");
+		setStarttimer(80);
+		setGametimer(0);
+		setMaxgametime((60 * 2) + 10); //2 minutes and 10 seconds (by default)
+		setMaxDeaths(99);
 	}
 	
 	@Override
@@ -42,15 +42,15 @@ public class INFECTArena extends PVPArena
 	{
 		if (tries < 16)
 		{
-			ArenaPlayer apl = this.arenaplayers.get(Util.random(this.arenaplayers.size()));
-			if (apl != null && apl.player.isOnline())
+			ArenaPlayer apl = this.getArenaplayers().get(Util.random(this.getArenaplayers().size()));
+			if (apl != null && apl.getPlayer().isOnline())
 			{
-				apl.player = Util.matchPlayer(apl.username);
-				apl.team = 2;
-				//spawn(apl.player.getName(), true);
-				apl.player.sendMessage(ChatColor.BLUE + "You have been chosen for the infected!");
+//				apl.setPlayer(Util.matchPlayer(apl.getUsername()));
+				apl.setTeam(2);
+//				spawn(apl.player.getName(), true);
+				apl.getPlayer().sendMessage(ChatColor.BLUE + "You have been chosen for the infected!");
 				onSpawn(apl);
-				tellPlayers("&c{0} &bis the zombie!", apl.player.getName());
+				tellPlayers("&c{0} &bis the zombie!", apl.getPlayer().getName());
 			}
 			else
 			{
@@ -67,29 +67,29 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onSpawn(ArenaPlayer apl) 
 	{
-		if (apl.team == 2)
+		if (apl.getTeam() == 2)
 		{
-			Player pl = apl.player;
-			normalize(apl.player);
+			Player pl = apl.getPlayer();
+			normalize(apl.getPlayer());
 			//pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 2));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 1));
-			spawn(apl.player.getName(), true);
-			normalize(apl.player);
-			apl.decideHat(apl.player);
+			spawn(apl.getPlayer().getName(), true);
+			normalize(apl.getPlayer());
+			apl.decideHat(apl.getPlayer());
 		}
 	}
 
 	@Override
 	public void check() 
 	{
-		if (starttimer <= 0)
+		if (getStarttimer() <= 0)
 		{
 			if (!simpleTeamCheck(false)) 
 			{
-				if (this.team1size == 0)
+				if (this.getTeam1size() == 0)
 				{
 					this.setWinningTeam(2);
 					this.tellPlayers(ChatColor.BLUE + "Infected Win!");
@@ -104,7 +104,7 @@ public class INFECTArena extends PVPArena
 			}
 			else
 			{
-				if (this.amtPlayersStartingInArena <= 1) 
+				if (this.getAmtPlayersStartingInArena() <= 1) 
 				{
 					this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
 					this.stop();
@@ -128,10 +128,10 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
-		if (pl.team == 1)
+		if (pl.getTeam() == 1)
 		{
-			pl.player.sendMessage(ChatColor.AQUA + "You have joined the Infected!");
+			pl.getPlayer().sendMessage(ChatColor.AQUA + "You have joined the Infected!");
 		}
-		pl.team = 2;
+		pl.setTeam(2);
 	}
 }

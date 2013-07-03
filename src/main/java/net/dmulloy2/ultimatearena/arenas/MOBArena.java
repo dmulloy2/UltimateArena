@@ -29,14 +29,14 @@ public class MOBArena extends Arena
 	{
 		super(az);
 		
-		type = "Mob";
-		starttimer = 80;
-		maxgametime = 60 * 10;
-		maxDeaths = 0;
+		setType("Mob");
+		setStarttimer(80);
+		setMaxgametime(60 * 10);
+		setMaxDeaths(0);
 		mobspawn = 0;
 		mobtimer = 0;
-		wave = 0;
-		winningTeam = -1;
+		setWave(0);
+		setWinningTeam(-1);
 		
 		spawning.add("ZOMBIE");
 		spawning.add("ZOMBIE");
@@ -47,40 +47,40 @@ public class MOBArena extends Arena
 	
 	public void newWave()
 	{
-		if (wave > 0)
+		if (getWave() > 0)
 		{
 			tellPlayers("&aYou survived the wave!");
-			tellPlayers("&aNow going to wave &c{0}&a!", wave);
+			tellPlayers("&aNow going to wave &c{0}&a!", getWave());
 		}
 		
-		wave++;
-		this.mobPerWave = 4 + ((int)(wave * 1.5)) + (this.amtPlayersInArena * 3);
-		mobtimer = (wave*4) + 20;
-		if (wave <= 1) 
+		setWave(getWave() + 1);
+		this.mobPerWave = 4 + ((int)(getWave() * 1.5)) + (this.getAmtPlayersInArena() * 3);
+		mobtimer = (getWave()*4) + 20;
+		if (getWave() <= 1) 
 		{
 			mobtimer = 1;
 		}
-		if (wave > 1)
+		if (getWave() > 1)
 		{
 			spawning.add("ZOMBIE");
 			spawning.add("ZOMBIE");
 			spawning.add("SKELETON");
 		}
-		if (wave > 3) 
+		if (getWave() > 3) 
 		{
 			spawning.add("SPIDER");
 		}
-		if (wave > 6) 
+		if (getWave() > 6) 
 		{
 			spawning.add("BLAZE");
 			spawning.add("BLAZE");
 		}
-		if (wave > 9) 
+		if (getWave() > 9) 
 		{
 			spawning.add("PIG_ZOMBIE");
 			spawning.add("ENDERMAN");
 		}
-		if (wave > 12)
+		if (getWave() > 12)
 		{
 			spawning.add("GHAST");
 		}
@@ -90,16 +90,16 @@ public class MOBArena extends Arena
 	public void endPlayer(ArenaPlayer p, boolean end)
 	{
 		super.endPlayer(p, end);
-		this.reward(p, p.player, false);
+		this.reward(p, p.getPlayer(), false);
 	}
 	
 	@Override
 	public void reward(ArenaPlayer p, Player pl, boolean half)
 	{
-		int amtGold = (int) Math.floor(p.gameXP / 500.0);
-		int amtSlime = (int) Math.floor(p.gameXP / 550.0);
-		int amtGlowStone = (int) Math.floor(p.gameXP / 450.0);
-		int amtGunPowder = (int) Math.floor(p.gameXP / 425.0);
+		int amtGold = (int) Math.floor(p.getGameXP() / 500.0);
+		int amtSlime = (int) Math.floor(p.getGameXP() / 550.0);
+		int amtGlowStone = (int) Math.floor(p.getGameXP() / 450.0);
+		int amtGunPowder = (int) Math.floor(p.getGameXP() / 425.0);
 
 		if (pl != null) 
 		{
@@ -115,7 +115,7 @@ public class MOBArena extends Arena
 	public void onOutOfTime()
 	{
 		this.setWinningTeam(-1);
-		this.rewardTeam(winningTeam, ChatColor.BLUE + "You won!", false);
+		this.rewardTeam(getWinningTeam(), ChatColor.BLUE + "You won!", false);
 	}
 	
 	@Override
@@ -135,25 +135,25 @@ public class MOBArena extends Arena
 	@Override
 	public void doKillStreak(ArenaPlayer ap)
 	{
-		Player pl = Util.matchPlayer(ap.player.getName());
+		Player pl = Util.matchPlayer(ap.getPlayer().getName());
 		if (pl != null) 
 		{
-			if (ap.killstreak == 8)
+			if (ap.getKillstreak() == 8)
 				giveItem(pl, Material.POTION.getId(), (byte)9, 1, "8 kills! Unlocked strength potion!");
 			
-			if (ap.killstreak == 12)
+			if (ap.getKillstreak() == 12)
 				giveItem(pl, Material.POTION.getId(), (byte)2, 1, "12 kills! Unlocked swiftness potion!");
 				
-			if (ap.killstreak == 16)
+			if (ap.getKillstreak() == 16)
 					giveItem(pl, Material.POTION.getId(), (byte)3, 1, "16 kills! Unlocked antifire!");
 			
-			if (ap.killstreak == 24) 
+			if (ap.getKillstreak() == 24) 
 			{
 				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "24 kills! Unlocked Health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "24 kills! Unlocked food!");
 			}
 				
-			if (ap.killstreak == 32) 
+			if (ap.getKillstreak() == 32) 
 			{
 				pl.sendMessage(ChatColor.GOLD + "32 kills! Unlocked attackdogs!");
 				for (int i = 0; i < 3; i++)
@@ -163,16 +163,16 @@ public class MOBArena extends Arena
 				}
 			}
 				
-			if (ap.killstreak == 40) 
+			if (ap.getKillstreak() == 40) 
 			{
 				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "40 kills! Unlocked Health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "40 kills! Unlocked food!");
 			}
 				
-			if (ap.killstreak == 72)
+			if (ap.getKillstreak() == 72)
 				giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte)0, 2, "72 kills! Unlocked Golden Apples!");
 
-			if (ap.killstreak == 112)
+			if (ap.getKillstreak() == 112)
 				giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte)0, 2, "112 kills! Unlocked Golden Apples!");
 		}
 	}
@@ -180,7 +180,7 @@ public class MOBArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (starttimer <= 0) 
+		if (getStarttimer() <= 0) 
 		{
 			mobtimer--;
 			mobspawn--;
@@ -193,7 +193,7 @@ public class MOBArena extends Arena
 					{
 						for (int i = 0; i < mobPerWave; i++) 
 						{
-							Location loc = this.az.spawns.get(Util.random(this.az.spawns.size()));
+							Location loc = this.getArenaZone().getSpawns().get(Util.random(this.getArenaZone().getSpawns().size()));
 							String mob = this.spawning.get(Util.random(spawning.size()));
 							LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
 							this.mobs.add(newMob);
@@ -202,12 +202,12 @@ public class MOBArena extends Arena
 				}
 			}
 				
-			if (amtPlayersInArena == 0) 
+			if (getAmtPlayersInArena() == 0) 
 			{
-				plugin.getLogger().info("Stopping Mob arena");
+				getPlugin().getLogger().info("Stopping Mob arena");
 				stop();
 			}
-			if (wave > maxwave) 
+			if (getWave() > getMaxwave()) 
 			{
 				setWinningTeam(-1);
 				tellPlayers(ChatColor.GOLD + "You have beat the mob arena!");

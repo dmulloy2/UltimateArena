@@ -30,26 +30,26 @@ public class PCommandInfo extends UltimateArenaCommand
 				Arena ar = plugin.getArena(player);
 				if (ar != null) 
 				{
-					sendMessage(ChatColor.DARK_RED + "==== " + ChatColor.GOLD + ar.az.arenaName + ChatColor.DARK_RED + " ====");
+					sendMessage(ChatColor.DARK_RED + "==== " + ChatColor.GOLD + ar.getArenaZone().getArenaName() + ChatColor.DARK_RED + " ====");
 					ArenaPlayer ap = plugin.getArenaPlayer(player);
 					if (ap != null)
 					{
 						String out = ChatColor.GREEN + "NOT OUT";
-						if (ap.out) 
+						if (ap.isOut()) 
 						{
 							out = ChatColor.RED + "OUT";
 						}
 						sendMessage(ChatColor.GRAY + "YOU ARE: " + out);
 					}
-					List<ArenaPlayer> arr = ar.arenaplayers;
+					List<ArenaPlayer> arr = ar.getArenaplayers();
 					for (int i = 0; i < arr.size(); i++)
 					{
 						try
 						{
-							if (arr.get(i).out != true)
+							if (arr.get(i).isOut() != true)
 							{
-								String playerName = ChatColor.BLUE + "[" + ChatColor.GRAY + arr.get(i).player.getName() + ChatColor.BLUE + "]";
-								String playerHealth = ChatColor.BLUE + "[" + ChatColor.GRAY + ((arr.get(i).player.getHealth() / 20.0) * 100) + ChatColor.BLUE + "%]";
+								String playerName = ChatColor.BLUE + "[" + ChatColor.GRAY + arr.get(i).getPlayer().getName() + ChatColor.BLUE + "]";
+								String playerHealth = ChatColor.BLUE + "[" + ChatColor.GRAY + ((arr.get(i).getPlayer().getHealth() / 20.0) * 100) + ChatColor.BLUE + "%]";
 								sendMessage(playerName + playerHealth);
 							}
 						}
@@ -73,19 +73,19 @@ public class PCommandInfo extends UltimateArenaCommand
 			if (ar != null)
 			{
 				sendMessage(ChatColor.GRAY + "Arena: " + ChatColor.GOLD + arenaname);
-				sendMessage(ChatColor.GRAY + "Type: " + ChatColor.GOLD + ar.az.arenaType);
+				sendMessage(ChatColor.GRAY + "Type: " + ChatColor.GOLD + ar.getArenaZone().getArenaType());
 				sendMessage(ChatColor.GRAY + "Players:");
-				List<ArenaPlayer> arr = ar.arenaplayers;
+				List<ArenaPlayer> arr = ar.getArenaplayers();
 				if (arr.size() > 0)
 				{
 					for (int i = 0; i < arr.size(); i++)
 					{
 						try
 						{
-							if (arr.get(i).out != true) 
+							if (arr.get(i).isOut() != true) 
 							{
-								String playerName = ChatColor.BLUE + "[" + ChatColor.GRAY + arr.get(i).player.getName() + ChatColor.BLUE + "]";
-								String playerHealth = ChatColor.BLUE + "[" + ChatColor.GRAY + ((arr.get(i).player.getHealth() / 20.0) * 100) + ChatColor.BLUE + "%]";
+								String playerName = ChatColor.BLUE + "[" + ChatColor.GRAY + arr.get(i).getPlayer().getName() + ChatColor.BLUE + "]";
+								String playerHealth = ChatColor.BLUE + "[" + ChatColor.GRAY + ((arr.get(i).getPlayer().getHealth() / 20.0) * 100) + ChatColor.BLUE + "%]";
 								sendMessage(playerName + playerHealth);
 							}
 						}

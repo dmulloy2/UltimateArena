@@ -6,14 +6,14 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 public class ArenaStatistics 
 {
-	public ArenaZone arena;
+	private ArenaZone arena;
 	
-	public double percentagePlayed;
+	private double percentagePlayed;
 	
-	public int totalPlays;
-	public int plays;
-	public int likes;
-	public int dislikes;
+	private int totalPlays;
+	private int plays;
+	private int likes;
+	private int dislikes;
 	
 	public ArenaStatistics(ArenaZone az)
 	{
@@ -24,17 +24,17 @@ public class ArenaStatistics
 	public void stats() 
 	{
 		// Calculates all the arenas stats
-		this.totalPlays = arena.plugin.arenasPlayed;
-		this.plays = arena.timesPlayed;
+		this.totalPlays = arena.getPlugin().arenasPlayed;
+		this.plays = arena.getTimesPlayed();
 		this.percentagePlayed = (int) (((double)plays/(double)totalPlays) * 100);
-		this.likes = arena.liked;
-		this.dislikes = arena.disliked;
+		this.likes = arena.getLiked();
+		this.dislikes = arena.getDisliked();
 	}
 	
 	public void dumpStats(Player p) 
 	{
 		// Dumps the arenas stats to the player
-		p.sendMessage(FormatUtil.format("&8Stats on arena: &6{0}", arena.arenaName));
+		p.sendMessage(FormatUtil.format("&8Stats on arena: &6{0}", arena.getArenaName()));
 		p.sendMessage(FormatUtil.format("&7Plays: {0}/{1} (&c{2}%&7)", plays, totalPlays, percentagePlayed));
 		p.sendMessage(FormatUtil.format("&7Likes: &a{0}", likes));
 		p.sendMessage(FormatUtil.format("&7Disikes: &c{0}", dislikes));

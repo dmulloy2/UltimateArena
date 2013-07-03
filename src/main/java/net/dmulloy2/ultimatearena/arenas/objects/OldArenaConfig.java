@@ -89,9 +89,9 @@ public class OldArenaConfig
 				for (int i = 0; i < rewards.size(); i++) 
 				{
 					ArenaReward a = rewards.get(i);
-					Material mat = Material.getMaterial(a.type);
-					int amt = a.amt;
-					byte dat = a.data;
+					Material mat = Material.getMaterial(a.getType());
+					int amt = a.getAmount();
+					byte dat = a.getData();
 					PlayerInventory inv = player.getInventory();
 					MaterialData data = new MaterialData(mat.getId());
 					

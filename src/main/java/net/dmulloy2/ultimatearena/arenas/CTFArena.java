@@ -20,26 +20,26 @@ public class CTFArena extends Arena
 	{
 		super(az);
 		
-		type = "Ctf";
-		starttimer = 120;
-		gametimer = 0;
-		maxgametime = 60 * 15;
-		maxDeaths = 990;
+		setType("Ctf");
+		setStarttimer(120);
+		setGametimer(0);
+		setMaxgametime(60 * 15);
+		setMaxDeaths(990);
 
-		flagred = new CTFFlagBase(this, az.flags.get(0), 1);
-		flagblue = new CTFFlagBase(this, az.flags.get(1), 2);
+		flagred = new CTFFlagBase(this, az.getFlags().get(0), 1);
+		flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2);
 			
 		flagred.initialize();
 		flagblue.initialize();
 		
 		
-		ExecuteMove = new ExecuteMove().runTaskTimer(plugin, 12, 1);
+		ExecuteMove = new ExecuteMove().runTaskTimer(getPlugin(), 12, 1);
 	}
 	
 	@Override
 	public void check()
 	{
-		if (starttimer <= 0) 
+		if (getStarttimer() <= 0) 
 		{
 			if (!simpleTeamCheck(false)) 
 			{
@@ -48,7 +48,7 @@ public class CTFArena extends Arena
 			}
 			else
 			{
-				if (this.amtPlayersStartingInArena <= 1) 
+				if (this.getAmtPlayersStartingInArena() <= 1) 
 				{
 					this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
 					this.stop();
@@ -69,8 +69,8 @@ public class CTFArena extends Arena
 		}
 		else
 		{
-			flagred.flag.tick();
-			flagblue.flag.tick();
+			flagred.getFlag().tick();
+			flagblue.getFlag().tick();
 		}
 	}
 	
@@ -92,19 +92,19 @@ public class CTFArena extends Arena
 		
 		this.tellPlayers(lastcap + ChatColor.GRAY + " team won the game!");
 		this.stop();
-		this.rewardTeam(this.winningTeam, "You win!", false);
+		this.rewardTeam(this.getWinningTeam(), "You win!", false);
 	}
 	
 	@Override
 	public void onStop()
 	{
-		flagred.flag.stopped = true;
-		flagblue.flag.stopped = true;
+		flagred.getFlag().setStopped(true);
+		flagblue.getFlag().setStopped(true);
 
-		flagred.flag.returnto.getBlock().setTypeIdAndData(0, (byte)0, false);
-		flagblue.flag.returnto.getBlock().setTypeIdAndData(0, (byte)0, false);
-		flagred.flag.despawn();
-		flagblue.flag.despawn();
+		flagred.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte)0, false);
+		flagblue.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte)0, false);
+		flagred.getFlag().despawn();
+		flagblue.getFlag().despawn();
 
 		ExecuteMove.cancel();
 	}
@@ -114,10 +114,10 @@ public class CTFArena extends Arena
 		@Override
 		public void run()
 		{
-			if (!stopped)
+			if (!isStopped())
 			{
-				flagred.checkNear(arenaplayers);
-				flagblue.checkNear(arenaplayers);
+				flagred.checkNear(getArenaplayers());
+				flagblue.checkNear(getArenaplayers());
 			}
 			else
 			{

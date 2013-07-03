@@ -16,36 +16,36 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 public class CTFflag
 {
-	public Player riding;
+	private Player riding;
 	
-	public String flagType = "";
+	private String flagType = "";
 	
-	public Arena arena;
+	private Arena arena;
 	
-	public Location returnto;
-	public Location myloc;
-	public Location toloc;
+	private Location returnto;
+	private Location myloc;
+	private Location toloc;
 	private Location lastloc;
 	
-	public int lastBlockType;
-	public int team;
-	public int timer = 15;
+	private int lastBlockType;
+	private int team;
+	private int timer = 15;
 	
-	public boolean pickedUp;
-	public boolean stopped;
+	private boolean pickedUp;
+	private boolean stopped;
 	
-	public byte color;
-	public byte lastBlockDat;
+	private byte color;
+	private byte lastBlockDat;
 	
-	public UltimateArena plugin;
+	private final UltimateArena plugin;
 	
 	public CTFflag(Arena a, Location loc, int team)
 	{
-		this.team = team;
+		this.setTeam(team);
 		this.arena = a;
-		this.plugin = arena.az.plugin;
+		this.plugin = arena.getArenaZone().getPlugin();
 		
-		this.returnto = loc.clone();
+		this.setReturnto(loc.clone());
 		this.myloc = loc.clone();
 		this.lastloc = loc.clone();
 		this.toloc = loc.clone();
@@ -60,9 +60,9 @@ public class CTFflag
 		try
 		{
 			timer = 15;
-			pickedUp = false;
-			riding = null;
-			toloc = returnto.clone();
+			setPickedUp(false);
+			setRiding(null);
+			toloc = getReturnto().clone();
 			myloc = toloc.clone();
 			setFlag();
 		}
@@ -82,7 +82,7 @@ public class CTFflag
 	
 	public void sayTimeLeft() 
 	{
-		arena.tellPlayers("&d{0} &7seconds left until &6{1} &7flag returns!", timer, flagType);
+		arena.tellPlayers("&d{0} &7seconds left until &6{1} &7flag returns!", timer, getFlagType());
 	}
 	
 	public void setup()
@@ -96,15 +96,15 @@ public class CTFflag
 	public void colorize() 
 	{
 		Block current = myloc.getBlock();
-		if (team == 1) 
+		if (getTeam() == 1) 
 		{
 			color = 14; // red team
-			flagType = ChatColor.RED + "RED";
+			setFlagType(ChatColor.RED + "RED");
 		}
 		else
 		{
 			color = 11; //blue team
-			flagType = ChatColor.BLUE + "BLUE";
+			setFlagType(ChatColor.BLUE + "BLUE");
 		}
 		
 		setFlagBlock(current);
@@ -112,11 +112,11 @@ public class CTFflag
 	
 	public void fall() 
 	{
-		arena.tellPlayers("&b{0} &7has dropped the &6{1} &7flag!", riding.getName(), flagType);
+		arena.tellPlayers("&b{0} &7has dropped the &6{1} &7flag!", getRiding().getName(), getFlagType());
 		timer = 15;
-		toloc = riding.getLocation();
-		pickedUp = false;
-		riding = null;
+		toloc = getRiding().getLocation();
+		setPickedUp(false);
+		setRiding(null);
 		
 		myloc = toloc.clone();
 	    		
@@ -147,38 +147,39 @@ public class CTFflag
 	
 	public void checkNear(List<ArenaPlayer> arenaplayers)
 	{
-		if (stopped)
+		if (isStopped())
 			return;
 		
-		if (!pickedUp) 
+		if (!isPickedUp()) 
 		{
 			for (int i = 0; i < arenaplayers.size(); i++)
 			{
-				Player pl = arenaplayers.get(i).player;
+				Player pl = arenaplayers.get(i).getPlayer();
 				if (pl != null)
 				{
 					if (Util.pointDistance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0)
 					{
-						if (!arenaplayers.get(i).out)
+						if (!arenaplayers.get(i).isOut())
 						{
-							if (arenaplayers.get(i).team != team) 
+							if (arenaplayers.get(i).getTeam() != getTeam()) 
 							{
 								//if the guy is on the other team
-								pickedUp = true;
-								riding = pl;
+								setPickedUp(true);
+								setRiding(pl);
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", arenaplayers.get(i).player.getName(), flagType);
+								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", arenaplayers.get(i).getPlayer().getName(), getFlagType());
 								return;
 							}
 							else
 							{
-								if (!myloc.equals(returnto)) 
+								if (!myloc.equals(getReturnto())) 
 								{ 
 									//if the flag is not at its flagstand
 									pl.sendMessage(ChatColor.GRAY + "Flag Returned! " + ChatColor.RED + " +50 XP");
-									arenaplayers.get(i).gameXP += 50;
-									arena.tellPlayers("&b{0} &7returned the &6{1} &7flag!", pl.getName(), flagType);
+									arenaplayers.get(i).setGameXP(
+											arenaplayers.get(i).getGameXP() + 50);
+									arena.tellPlayers("&b{0} &7returned the &6{1} &7flag!", pl.getName(), getFlagType());
 									respawn();
 									return;
 								}
@@ -188,12 +189,12 @@ public class CTFflag
 				}
 			}
 		}
-		if (pickedUp)
+		if (isPickedUp())
 		{
-			if (riding.isOnline() && !riding.isDead()) 
+			if (getRiding().isOnline() && !getRiding().isDead()) 
 			{
 				//if player is alive
-				toloc = riding.getLocation().clone().add(0, 3, 0);
+				toloc = getRiding().getLocation().clone().add(0, 3, 0);
 			}
 			else
 			{
@@ -207,7 +208,7 @@ public class CTFflag
 	
 	public void despawn() 
 	{
-		stopped = true;
+		setStopped(true);
 		
 		Block last = lastloc.getBlock();
 		last.setTypeIdAndData(lastBlockType, lastBlockDat, false);
@@ -215,12 +216,12 @@ public class CTFflag
 	
 	public void tick()
 	{
-		if (stopped)
+		if (isStopped())
 			return;
 		
-		if (!pickedUp) 
+		if (!isPickedUp()) 
 		{
-			if (!myloc.equals(returnto)) 
+			if (!myloc.equals(getReturnto())) 
 			{
 				//if the flag is not at its flagstand
 				timer--;
@@ -228,7 +229,7 @@ public class CTFflag
 				{
 					respawn();
 					
-					arena.tellPlayers("&7The {0} &7flag has respawned!", flagType);
+					arena.tellPlayers("&7The {0} &7flag has respawned!", getFlagType());
 				}
 				else
 				{
@@ -240,7 +241,7 @@ public class CTFflag
 	
 	public void setFlag() 
 	{
-		if (stopped)
+		if (isStopped())
 			return;
 		
 		Block last = lastloc.getBlock();
@@ -271,5 +272,53 @@ public class CTFflag
 			loc.getBlockY() == loc2.getBlockY() &&
 			loc.getBlockZ() == loc2.getBlockZ() &&
 			loc.getWorld().equals(loc2.getWorld()));	
+	}
+
+	public int getTeam() {
+		return team;
+	}
+
+	public void setTeam(int team) {
+		this.team = team;
+	}
+
+	public boolean isPickedUp() {
+		return pickedUp;
+	}
+
+	public void setPickedUp(boolean pickedUp) {
+		this.pickedUp = pickedUp;
+	}
+
+	public Player getRiding() {
+		return riding;
+	}
+
+	public void setRiding(Player riding) {
+		this.riding = riding;
+	}
+
+	public String getFlagType() {
+		return flagType;
+	}
+
+	public void setFlagType(String flagType) {
+		this.flagType = flagType;
+	}
+
+	public boolean isStopped() {
+		return stopped;
+	}
+
+	public void setStopped(boolean stopped) {
+		this.stopped = stopped;
+	}
+
+	public Location getReturnto() {
+		return returnto;
+	}
+
+	public void setReturnto(Location returnto) {
+		this.returnto = returnto;
 	}
 }

@@ -10,11 +10,11 @@ public class PVPArena extends Arena
 	{
 		super(az);
 		
-		type = "Pvp";
-		starttimer = 120;
-		gametimer = 0;
-		maxgametime = 60 * 10;
-		maxDeaths = 3;
+		setType("Pvp");
+		setStarttimer(120);
+		setGametimer(0);
+		setMaxgametime(60 * 10);
+		setMaxDeaths(3);
 	}
 	
 	@Override
@@ -26,7 +26,7 @@ public class PVPArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (starttimer <= 0)
+		if (getStarttimer() <= 0)
 		{
 			if (!simpleTeamCheck(false)) 
 			{

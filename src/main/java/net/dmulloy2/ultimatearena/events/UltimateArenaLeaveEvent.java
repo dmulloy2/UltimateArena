@@ -37,17 +37,17 @@ public class UltimateArenaLeaveEvent extends Event
 	
 	public String getArenaType()
 	{
-		return arena.type;
+		return arena.getType();
 	}
 	
 	public Player getPlayer()
 	{
-		return arenaPlayer.player;
+		return arenaPlayer.getPlayer();
 	}
 	
 	public boolean onWinningTeam()
 	{
-		return arenaPlayer.team == arena.winningTeam;
+		return arenaPlayer.getTeam() == arena.getWinningTeam();
 	}
 
 	@Override

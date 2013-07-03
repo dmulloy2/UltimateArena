@@ -37,12 +37,12 @@ public class PCommandKick extends UltimateArenaCommand
 				if (a != null)
 				{
 					a.endPlayer(ap, false);
-					ap.out = true;
-					ap.deaths = 999999999;
-					ap.points = 0;
-					ap.kills = 0;
-					ap.gameXP = 0;
-					sendMessage(ChatColor.GRAY + "Kicked player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " from arena: " + ChatColor.GOLD + a.name);
+					ap.setOut(true);
+					ap.setDeaths(999999999);
+					ap.setPoints(0);
+					ap.setKills(0);
+					ap.setGameXP(0);
+					sendMessage(ChatColor.GRAY + "Kicked player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " from arena: " + ChatColor.GOLD + a.getName());
 				}
 			}
 			else

@@ -5,10 +5,10 @@ import org.bukkit.World;
 
 public class ArenaSpawn
 {
-	public int x;
-	public int y;
-	public int z;
-	public World world;
+	private int x;
+	private int y;
+	private int z;
+	private World world;
 	
 	public ArenaSpawn(World world, int x, int y, int z) 
 	{

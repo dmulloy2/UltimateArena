@@ -29,27 +29,27 @@ public class PCommandList extends UltimateArenaCommand
 			
 		for (int i = 0; i < arenas.size(); i++) 
 		{
-			String arena = arenas.get(i).arenaName;
-			String type = arenas.get(i).arenaType;
+			String arena = arenas.get(i).getArenaName();
+			String type = arenas.get(i).getArenaType();
 				
 			String arenaType = ChatColor.GOLD + "[" + ChatColor.RED + type + " Arena" + ChatColor.GOLD + "]";
 			String arenaName = ChatColor.RED + arena;
 			String arenaMode = "";
-			String plays = ChatColor.YELLOW + "[" + arenas.get(i).timesPlayed + "]";
+			String plays = ChatColor.YELLOW + "[" + arenas.get(i).getTimesPlayed() + "]";
 			arenaMode = ChatColor.GREEN + "[FREE]";
-			if (arenas.get(i).disabled)
+			if (arenas.get(i).isDisabled())
 				arenaMode = ChatColor.DARK_RED + "[DISABLED]";
 				
 			for (int ii = 0; ii < activearenas.size(); ii++) 
 			{
 				Arena ar = activearenas.get(ii);
-				if (ar.az.equals(arenas.get(i))) 
+				if (ar.getArenaZone().equals(arenas.get(i))) 
 				{
-					if (!ar.disabled)
+					if (!ar.isDisabled())
 					{
-						if (ar.starttimer > 0)
+						if (ar.getStarttimer() > 0)
 						{
-							arenaMode = ChatColor.YELLOW + "[LOBBY  |  " + Integer.toString(ar.starttimer) + " seconds]";
+							arenaMode = ChatColor.YELLOW + "[LOBBY  |  " + Integer.toString(ar.getStarttimer()) + " seconds]";
 						}
 						else
 						{

@@ -17,7 +17,7 @@ import net.dmulloy2.ultimatearena.util.InventoryHelper;
 
 public class ArenaConfig
 {
-	public int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
+	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
 	
 	public boolean allowTeamKilling;
 	
@@ -55,14 +55,14 @@ public class ArenaConfig
 					fc.save(file);
 				}
 				
-				maxWave = fc.getInt("maxWave");
+				this.maxWave = fc.getInt("maxWave");
 			}
 			
-			gameTime = fc.getInt("gameTime");
-			lobbyTime = fc.getInt("lobbyTime");
-			maxDeaths = fc.getInt("maxDeaths");
-			allowTeamKilling = fc.getBoolean("allowTeamKilling");
-			cashReward = fc.getInt("cashReward");
+			this.gameTime = fc.getInt("gameTime");
+			this.lobbyTime = fc.getInt("lobbyTime");
+			this.maxDeaths = fc.getInt("maxDeaths");
+			this.allowTeamKilling = fc.getBoolean("allowTeamKilling");
+			this.cashReward = fc.getInt("cashReward");
 					
 			List<String> words = fc.getStringList("rewards");
 			for (String word : words)
@@ -102,9 +102,9 @@ public class ArenaConfig
 	{
 		for (ArenaReward a : rewards)
 		{
-			Material mat = Material.getMaterial(a.type);
-			int amt = a.amt;
-			byte dat = a.data;
+			Material mat = Material.getMaterial(a.getType());
+			int amt = a.getAmount();
+			byte dat = a.getData();
 			PlayerInventory inv = player.getInventory();
 			MaterialData data = new MaterialData(mat.getId());
 			
@@ -142,5 +142,30 @@ public class ArenaConfig
 				}
 			}
 		}
+	}
+
+	public int getGameTime() 
+	{
+		return gameTime;
+	}
+
+	public int getLobbyTime() 
+	{
+		return lobbyTime;
+	}
+
+	public int getMaxDeaths() 
+	{
+		return maxDeaths;
+	}
+
+	public int getMaxWave()
+	{
+		return maxWave;
+	}
+
+	public int getCashReward()
+	{
+		return cashReward;
 	}
 }

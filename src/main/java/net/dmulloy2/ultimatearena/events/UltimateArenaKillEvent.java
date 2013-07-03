@@ -46,27 +46,27 @@ public class UltimateArenaKillEvent extends Event
 	
 	public String getArenaType()
 	{
-		return arena.type;
+		return arena.getType();
 	}
 	
 	public Player getKillerPlayer()
 	{
-		return killer.player;
+		return killer.getPlayer();
 	}
 	
 	public Player getKilledPlayer()
 	{
-		return killed.player;
+		return killed.getPlayer();
 	}
 	
 	public ItemStack getWeapon()
 	{
-		return killer.player.getItemInHand();
+		return killer.getPlayer().getItemInHand();
 	}
 	
 	public int getHeartsLeft()
 	{
-		return (int) (killer.player.getHealth() / 2);
+		return (int) (killer.getPlayer().getHealth() / 2);
 	}
 
 	@Override

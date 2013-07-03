@@ -38,22 +38,22 @@ public class UltimateArenaDeathEvent extends Event
 	
 	public String getArenaType()
 	{
-		return arena.type;
+		return arena.getType();
 	}
 	
 	public Player getPlayer()
 	{
-		return arenaPlayer.player;
+		return arenaPlayer.getPlayer();
 	}
 	
 	public ArenaClass getArenaClass()
 	{
-		return arenaPlayer.mclass;
+		return arenaPlayer.getArenaClass();
 	}
 	
 	public int getDeaths()
 	{
-		return arenaPlayer.deaths;
+		return arenaPlayer.getDeaths();
 	}
 	
 	@Override

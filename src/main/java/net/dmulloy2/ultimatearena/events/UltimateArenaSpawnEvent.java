@@ -43,12 +43,12 @@ public class UltimateArenaSpawnEvent extends Event
 	
 	public String getArenaType()
 	{
-		return arena.type;
+		return arena.getType();
 	}
 	
 	public Player getPlayer()
 	{
-		return arenaPlayer.player;
+		return arenaPlayer.getPlayer();
 	}
 	
 	public ArenaSpawn getSpawn()
@@ -63,7 +63,7 @@ public class UltimateArenaSpawnEvent extends Event
 	
 	public ArenaClass getArenaClass()
 	{
-		return arenaPlayer.mclass;
+		return arenaPlayer.getArenaClass();
 	}
 	
 	@Override

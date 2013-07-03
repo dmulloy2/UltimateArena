@@ -57,7 +57,7 @@ public class UltimateArenaAPI
 	 */
 	public final int getKills(ArenaPlayer a)
 	{
-		return a.kills;
+		return a.getKills();
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class UltimateArenaAPI
 	 */
 	public final int getDeaths(ArenaPlayer a)
 	{
-		return a.deaths;
+		return a.getDeaths();
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class UltimateArenaAPI
 	 */
 	public final int getTeam(ArenaPlayer a)
 	{
-		return a.team;
+		return a.getTeam();
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class UltimateArenaAPI
 	 */
 	public final int getKillStreak(ArenaPlayer a)
 	{
-		return a.killstreak;
+		return a.getKillstreak();
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class UltimateArenaAPI
 	 */
 	public String getArenaName(ArenaPlayer a)
 	{
-		return a.inArena.name;
+		return a.getArena().getName();
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class UltimateArenaAPI
 	 */
 	public String getArenaType(ArenaPlayer a)
 	{
-		return a.inArena.type;
+		return a.getArena().getType();
 	}
 	
 	/**

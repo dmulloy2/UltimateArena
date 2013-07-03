@@ -29,23 +29,23 @@ public class PCommandClass extends UltimateArenaCommand
 		
 		if (args.length == 0)
 		{
-			if (ap.mclass == null)
+			if (ap.getArenaClass() == null)
 			{
 				sendMessage("&cYou do not have a class!");
 				return;
 			}
 			
-			sendMessage("&eYour current class is: &a{0}&e!", ap.mclass.name);
+			sendMessage("&eYour current class is: &a{0}&e!", ap.getArenaClass().getName());
 			return;
 		}
 		else if (args.length == 1)
 		{
 			for (ArenaClass cl : plugin.classes)
 			{
-				if (cl.name.equalsIgnoreCase(args[0]))
+				if (cl.getName().equalsIgnoreCase(args[0]))
 				{
 					ap.setClass(cl, true);
-					sendMessage("&eYou have successfully set your class to: &a{0}&e!", cl.name);
+					sendMessage("&eYou have successfully set your class to: &a{0}&e!", cl.getName());
 					return;
 				}
 			}

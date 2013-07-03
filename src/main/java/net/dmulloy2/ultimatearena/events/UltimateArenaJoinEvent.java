@@ -37,12 +37,12 @@ public class UltimateArenaJoinEvent extends Event
 	
 	public String getArenaType()
 	{
-		return arena.type;
+		return arena.getType();
 	}
 	
 	public Player getPlayer()
 	{
-		return arenaPlayer.player;
+		return arenaPlayer.getPlayer();
 	}
 
 	@Override

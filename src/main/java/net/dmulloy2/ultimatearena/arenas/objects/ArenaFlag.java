@@ -59,11 +59,11 @@ public class ArenaFlag extends FlagBase
 		
 		if (capped)
 		{
-			notify.setData((byte) color);
+			getNotify().setData((byte) color);
 		}
 		else
 		{
-			notify.setData((byte) 8);
+			getNotify().setData((byte) 8);
 		}
 	}
 	
@@ -77,13 +77,13 @@ public class ArenaFlag extends FlagBase
 		{
 			for (int i = 0; i < arenaplayers.size(); i++)
 			{
-				Player pl = arenaplayers.get(i).player;
+				Player pl = arenaplayers.get(i).getPlayer();
 				if (pl != null) 
 				{
 					if (Util.pointDistance(pl.getLocation(), getLoc()) < 4.5 && pl.getHealth() > 0)
 					{
 						players.add(pl);
-						if (arenaplayers.get(i).team == 1)
+						if (arenaplayers.get(i).getTeam() == 1)
 						{
 							team1++;
 						}

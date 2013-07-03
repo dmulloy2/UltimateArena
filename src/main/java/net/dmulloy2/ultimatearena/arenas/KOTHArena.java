@@ -18,40 +18,40 @@ public class KOTHArena extends Arena
 	{
 		super(az);
 		
-		type = "Koth";
-		allowTeamKilling = true;
-		starttimer = 180;
-		gametimer = 0;
-		maxgametime = 60 * 20;
-		maxDeaths = 900; //'dont think anyone will get 900 deaths :P
+		setType("Koth");
+		setAllowTeamKilling(true);
+		setStarttimer(180);
+		setGametimer(0);
+		setMaxgametime(60 * 20);
+		setMaxDeaths(900); //'dont think anyone will get 900 deaths :P
 		MAXPOWER = 60;
 		
-		for (int i = 0; i < this.az.flags.size(); i++)
+		for (int i = 0; i < this.getArenaZone().getFlags().size(); i++)
 		{
-			this.flags.add( new KothFlag(this, this.az.flags.get(i)) );
+			this.getFlags().add( new KothFlag(this, this.getArenaZone().getFlags().get(i)) );
 		}
-		for (int i = 0; i < this.az.spawns.size(); i++) 
+		for (int i = 0; i < this.getArenaZone().getSpawns().size(); i++) 
 		{
-			this.spawns.add( new ArenaSpawn(this.az.spawns.get(i).getWorld(), this.az.spawns.get(i).getBlockX(), this.az.spawns.get(i).getBlockY(), this.az.spawns.get(i).getBlockZ()) );
+			this.getSpawns().add( new ArenaSpawn(this.getArenaZone().getSpawns().get(i).getWorld(), this.getArenaZone().getSpawns().get(i).getBlockX(), this.getArenaZone().getSpawns().get(i).getBlockY(), this.getArenaZone().getSpawns().get(i).getBlockZ()) );
 		}
 	}
 	
 	@Override
 	public void doKillStreak(ArenaPlayer ap) 
 	{
-		Player pl = Util.matchPlayer(ap.player.getName());
+		Player pl = Util.matchPlayer(ap.getPlayer().getName());
 		if (pl != null) 
 		{
-			if (ap.killstreak == 2) 
+			if (ap.getKillstreak() == 2) 
 			{
 				giveItem(pl, Material.POTION.getId(), (byte)9, 1, "2 kills! Unlocked strength potion!");
 			}
-			if (ap.killstreak == 4) 
+			if (ap.getKillstreak() == 4) 
 			{
 				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "4 kills! Unlocked Health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 kills! Unlocked food!");
 			}
-			if (ap.killstreak == 12) 
+			if (ap.getKillstreak() == 12) 
 			{
 				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "12 kills! Unlocked Health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "12 kills! Unlocked food!");
@@ -62,7 +62,7 @@ public class KOTHArena extends Arena
 	@Override
 	public void reward(ArenaPlayer p, Player pl, boolean half) 
 	{
-		if (p.points >= MAXPOWER) 
+		if (p.getPoints() >= MAXPOWER) 
 		{ 
 			//if you scored at least 60 points
 			super.reward(p, pl, half);
@@ -79,19 +79,19 @@ public class KOTHArena extends Arena
 	@Override
 	public void onStart()
 	{
-		for (ArenaPlayer ap : arenaplayers)
+		for (ArenaPlayer ap : getArenaplayers())
 		{
-			spawn(ap.username, false);
+			spawn(ap.getUsername(), false);
 		}
 	}
 	
 	@Override
 	public void check()
 	{
-		for (ArenaFlag flag : flags)
+		for (ArenaFlag flag : getFlags())
 		{
 			flag.step();
-			flag.checkNear(arenaplayers);
+			flag.checkNear(getArenaplayers());
 		}
 
 		checkPlayerPoints(MAXPOWER);

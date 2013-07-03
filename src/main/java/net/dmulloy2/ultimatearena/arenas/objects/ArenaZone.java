@@ -13,58 +13,58 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 
 public class ArenaZone
 {
-	public int amtLobbys = 2;
-	public int amtSpawnpoints = 2;
-	public int stepnum;
-	public int specialType = 20;
-	public int timesPlayed = 0;
-	public int liked;
-	public int disliked;
-	public int maxPlayers = 24;
+	private int amtLobbys = 2;
+	private int amtSpawnpoints = 2;
+//	private int stepnum;
+	private int specialType = 20;
+	private int timesPlayed = 0;
+	private int liked;
+	private int disliked;
+	private int maxPlayers = 24;
 	
-	public boolean loaded = false;
-	public boolean disabled = false;
+	private boolean loaded = false;
+	private boolean disabled = false;
 	
-	public String step;
-	public String player;
-	public String defaultClass;
-	public String arenaName = "";
-	public String arenaType = "";
+	private String step;
+	private String player;
+	private String defaultClass;
+	private String arenaName = "";
+	private String arenaType = "";
 	
-	public Location lobby1 = null;
-	public Location lobby2 = null;
-	public Location arena1 = null;
-	public Location arena2 = null;
-	public Location flag1point = null;
-	public Location flag2point = null;
-	public Location team1spawn = null;
-	public Location team2spawn = null;
-	public Location lobbyREDspawn = null;
-	public Location lobbyBLUspawn = null;
+	private Location lobby1 = null;
+	private Location lobby2 = null;
+	private Location arena1 = null;
+	private Location arena2 = null;
+//	private Location flag1point = null;
+//	private Location flag2point = null;
+	private Location team1spawn = null;
+	private Location team2spawn = null;
+	private Location lobbyREDspawn = null;
+	private Location lobbyBLUspawn = null;
 	
-	public Field lobby;
-	public Field arena;
+	private Field lobby;
+	private Field arena;
 	
-	public List<String> voted = new ArrayList<String>();
-	public List<String> steps = new ArrayList<String>();
-	public List<Location> spawns = new ArrayList<Location>();
-	public List<Location> flags = new ArrayList<Location>();
+	private List<String> voted = new ArrayList<String>();
+//	private List<String> steps = new ArrayList<String>();
+	private List<Location> spawns = new ArrayList<Location>();
+	private List<Location> flags = new ArrayList<Location>();
 	
-	public World world;
+	private World world;
 	
-	public UltimateArena plugin;
+	private final UltimateArena plugin;
 	
-	public ArenaZone(UltimateArena plugin, File file)
+	public ArenaZone(final UltimateArena plugin, File file)
 	{
-		this.arenaName = getName(file);
+		this.setArenaName(getName(file));
 		this.plugin = plugin;
 		
 		initialize();
 	}
 	
-	public ArenaZone(UltimateArena plugin, String str) 
+	public ArenaZone(final UltimateArena plugin, String str) 
 	{
-		this.arenaName = str;
+		this.setArenaName(str);
 		this.plugin = plugin;
 	}
 	
@@ -72,18 +72,18 @@ public class ArenaZone
 	{
 		this.lobby = new Field();
 		this.arena = new Field();
-		this.defaultClass = plugin.classes.get(0).name;
+		this.setDefaultClass(getPlugin().classes.get(0).getName());
 		
 		load();
 		
-		if (loaded)
+		if (isLoaded())
 		{
-			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
-			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
+			lobby.setParam(getLobby1().getWorld(), getLobby1().getBlockX(), getLobby1().getBlockZ(), getLobby2().getBlockX(), getLobby2().getBlockZ());
+			arena.setParam(getArena1().getWorld(), getArena1().getBlockX(), getArena1().getBlockZ(), getArena2().getBlockX(), getArena2().getBlockZ());
 		}
 		else
 		{
-			plugin.getLogger().warning("Arena: " + arenaName + " has failed to load!");
+			getPlugin().getLogger().warning("Arena: " + getArenaName() + " has failed to load!");
 		}
 	}
 	
@@ -94,21 +94,280 @@ public class ArenaZone
 	
 	public void save()
 	{
-		plugin.getFileHelper().save(this);
+		getPlugin().getFileHelper().save(this);
 	}
 	
 	public void load()
 	{
-		plugin.getFileHelper().load(this);
+		getPlugin().getFileHelper().load(this);
 	}
 
 	public boolean canLike(Player player)
 	{
-		return !voted.contains(player.getName());
+		return !getVoted().contains(player.getName());
 	}
 	
 	public String getName(File file)
 	{
 		return file.getName().replaceAll(".dat", "");
+	}
+
+	public int getAmtLobbys() 
+	{
+		return amtLobbys;
+	}
+
+	public void setAmtLobbys(int amtLobbys)
+	{
+		this.amtLobbys = amtLobbys;
+	}
+
+	public int getAmtSpawnpoints()
+	{
+		return amtSpawnpoints;
+	}
+
+	public void setAmtSpawnpoints(int amtSpawnpoints) 
+	{
+		this.amtSpawnpoints = amtSpawnpoints;
+	}
+
+	public int getSpecialType() 
+	{
+		return specialType;
+	}
+
+	public void setSpecialType(int specialType) 
+	{
+		this.specialType = specialType;
+	}
+
+	public int getTimesPlayed() 
+	{
+		return timesPlayed;
+	}
+
+	public void setTimesPlayed(int timesPlayed) 
+	{
+		this.timesPlayed = timesPlayed;
+	}
+
+	public int getLiked()
+	{
+		return liked;
+	}
+
+	public void setLiked(int liked) 
+	{
+		this.liked = liked;
+	}
+
+	public int getDisliked() {
+		return disliked;
+	}
+
+	public void setDisliked(int disliked) 
+	{
+		this.disliked = disliked;
+	}
+
+	public int getMaxPlayers()
+	{
+		return maxPlayers;
+	}
+
+	public void setMaxPlayers(int maxPlayers)
+	{
+		this.maxPlayers = maxPlayers;
+	}
+
+	public boolean isDisabled() 
+	{
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) 
+	{
+		this.disabled = disabled;
+	}
+
+	public String getStep() 
+	{
+		return step;
+	}
+
+	public void setStep(String step)
+	{
+		this.step = step;
+	}
+
+	public String getPlayer() 
+	{
+		return player;
+	}
+
+	public void setPlayer(String player) 
+	{
+		this.player = player;
+	}
+
+	public String getDefaultClass()
+	{
+		return defaultClass;
+	}
+
+	public void setDefaultClass(String defaultClass) 
+	{
+		this.defaultClass = defaultClass;
+	}
+
+	public String getArenaType() 
+	{
+		return arenaType;
+	}
+
+	public void setArenaType(String arenaType) 
+	{
+		this.arenaType = arenaType;
+	}
+
+	public String getArenaName()
+	{
+		return arenaName;
+	}
+
+	public void setArenaName(String arenaName) 
+	{
+		this.arenaName = arenaName;
+	}
+
+	public World getWorld() 
+	{
+		return world;
+	}
+	
+	public Location getLobby1()
+	{
+		return lobby1;
+	}
+
+	public void setLobby1(Location lobby1) 
+	{
+		this.lobby1 = lobby1;
+	}
+
+	public Location getLobby2()
+	{
+		return lobby2;
+	}
+
+	public void setLobby2(Location lobby2)
+	{
+		this.lobby2 = lobby2;
+	}
+
+	public Location getArena1()
+	{
+		return arena1;
+	}
+
+	public void setArena1(Location arena1) 
+	{
+		this.arena1 = arena1;
+	}
+
+	public Location getArena2() 
+	{
+		return arena2;
+	}
+
+	public void setArena2(Location arena2) 
+	{
+		this.arena2 = arena2;
+	}
+
+	public Location getLobbyREDspawn()
+	{
+		return lobbyREDspawn;
+	}
+
+	public void setLobbyREDspawn(Location lobbyREDspawn) 
+	{
+		this.lobbyREDspawn = lobbyREDspawn;
+	}
+
+	public Location getLobbyBLUspawn()
+	{
+		return lobbyBLUspawn;
+	}
+
+	public void setLobbyBLUspawn(Location lobbyBLUspawn) 
+	{
+		this.lobbyBLUspawn = lobbyBLUspawn;
+	}
+
+	public Location getTeam1spawn() 
+	{
+		return team1spawn;
+	}
+
+	public void setTeam1spawn(Location team1spawn) 
+	{
+		this.team1spawn = team1spawn;
+	}
+
+	public Location getTeam2spawn() 
+	{
+		return team2spawn;
+	}
+
+	public void setTeam2spawn(Location team2spawn) 
+	{
+		this.team2spawn = team2spawn;
+	}
+
+	public List<Location> getSpawns()
+	{
+		return spawns;
+	}
+
+	public void setSpawns(List<Location> spawns) 
+	{
+		this.spawns = spawns;
+	}
+
+	public List<Location> getFlags()
+	{
+		return flags;
+	}
+
+	public void setFlags(List<Location> flags) 
+	{
+		this.flags = flags;
+	}
+
+	public boolean isLoaded()
+	{
+		return loaded;
+	}
+
+	public void setLoaded(boolean loaded) 
+	{
+		this.loaded = loaded;
+	}
+
+	public UltimateArena getPlugin() 
+	{
+		return plugin;
+	}
+
+	public List<String> getVoted() 
+	{
+		return voted;
+	}
+
+	public void setWorld(World world)
+	{
+		this.world = world;	
 	}
 }

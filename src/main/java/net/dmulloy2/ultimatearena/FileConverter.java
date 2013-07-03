@@ -742,14 +742,14 @@ public class FileConverter
 					ArenaReward reward = rewards.get(i);
 					
 					StringBuilder line = new StringBuilder();
-					line.append(reward.type);
+					line.append(reward.getType());
 					
-					if (reward.data > 0)
+					if (reward.getData() > 0)
 					{
-						line.append(":" + reward.data);
+						line.append(":" + reward.getData());
 					}
 					
-					line.append("," + reward.amt);
+					line.append("," + reward.getAmount());
 					
 					words.add(line.toString());
 				}
@@ -774,14 +774,14 @@ public class FileConverter
 					ArenaReward reward = rewards.get(i);
 					
 					StringBuilder line = new StringBuilder();
-					line.append(reward.type);
+					line.append(reward.getType());
 					
-					if (reward.data > 0)
+					if (reward.getData() > 0)
 					{
-						line.append(":" + reward.data);
+						line.append(":" + reward.getData());
 					}
 					
-					line.append("," + reward.amt);
+					line.append("," + reward.getAmount());
 					
 					words.add(line.toString());
 				}

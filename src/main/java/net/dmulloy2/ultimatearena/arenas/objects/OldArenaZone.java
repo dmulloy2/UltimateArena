@@ -63,7 +63,7 @@ public class OldArenaZone
 		
 		try
 		{
-			this.defaultClass = plugin.classes.get(0).name;
+			this.defaultClass = plugin.classes.get(0).getName();
 		}
 		catch(Exception e) 
 		{	
@@ -194,7 +194,7 @@ public class OldArenaZone
 			}
 			out.println("--config--");
 			out.println("maxPlayers=24");
-			out.println("defaultClass=" + plugin.classes.get(0).name);
+			out.println("defaultClass=" + plugin.classes.get(0).getName());
 		}
 		catch (IOException e1)
 		{

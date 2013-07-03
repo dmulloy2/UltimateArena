@@ -11,33 +11,33 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 public class ArenaCreator 
 {
-	public String step;
-	public String player;
-	public String msg = "";
-	public String arenaName = "";
-	public String arenaType = "";
+	private String step;
+	private String player;
+	private String msg = "";
+	private String arenaName = "";
+	private String arenaType = "";
 	
-	public Location lobby1 = null;
-	public Location lobby2 = null;
-	public Location arena1 = null;
-	public Location arena2 = null;
-	public Location flag1point = null;
-	public Location flag2point = null;
-	public Location team1spawn = null;
-	public Location team2spawn = null;
-	public Location lobbyREDspawn = null;
-	public Location lobbyBLUspawn = null;
+	private Location lobby1 = null;
+	private Location lobby2 = null;
+	private Location arena1 = null;
+	private Location arena2 = null;
+//	private Location flag1point = null;
+//	private Location flag2point = null;
+	private Location team1spawn = null;
+	private Location team2spawn = null;
+	private Location lobbyREDspawn = null;
+	private Location lobbyBLUspawn = null;
 	
-	public int amtLobbys = 2;
-	public int amtSpawnpoints = 2;
+	private int amtLobbys = 2;
+	private int amtSpawnpoints = 2;
 
-	public ArrayList<String> steps = new ArrayList<String>();
-	public ArrayList<Location> spawns = new ArrayList<Location>();
-	public ArrayList<Location> flags = new ArrayList<Location>();
+	private ArrayList<String> steps = new ArrayList<String>();
+	private ArrayList<Location> spawns = new ArrayList<Location>();
+	private ArrayList<Location> flags = new ArrayList<Location>();
 	
-	public int stepnum;
+	private int stepnum;
 	
-	public UltimateArena plugin;
+	private final UltimateArena plugin;
 	
 	public ArenaCreator(UltimateArena plugin, Player player)
 	{
@@ -47,7 +47,7 @@ public class ArenaCreator
 	
 	public void setArena(String arenaName, String arenaType)
 	{
-		this.arenaName = arenaName;
+		this.setArenaName(arenaName);
 		this.arenaType = arenaType;
 		
 		this.steps.add("Lobby");
@@ -117,27 +117,27 @@ public class ArenaCreator
 	{
 		try
 		{
-			ArenaZone az = new ArenaZone(plugin, arenaName);
-			az.arenaType = arenaType;
-			az.lobbyBLUspawn = lobbyBLUspawn;
-			az.lobbyREDspawn = lobbyREDspawn;
-			az.team1spawn = team1spawn;
-			az.team2spawn = team2spawn;
-			az.lobby1 = lobby1;
-			az.lobby2 = lobby2;
-			az.arena1 = arena1;
-			az.arena2 = arena2;
-			az.spawns = (ArrayList<Location>) spawns.clone();
-			az.flags = (ArrayList<Location>) flags.clone();
-			az.maxPlayers = 24;
-			az.defaultClass = plugin.classes.get(0).name;
-			az.world = lobby1.getWorld();
+			ArenaZone az = new ArenaZone(plugin, getArenaName());
+			az.setArenaType(arenaType);
+			az.setLobbyBLUspawn(lobbyBLUspawn);
+			az.setLobbyREDspawn(lobbyREDspawn);
+			az.setTeam1spawn(team1spawn);
+			az.setTeam2spawn(team2spawn);
+			az.setLobby1(lobby1);
+			az.setLobby2(lobby2);
+			az.setArena1(arena1);
+			az.setArena2(arena2);
+			az.setSpawns((ArrayList<Location>) spawns.clone());
+			az.setFlags((ArrayList<Location>) flags.clone());
+			az.setMaxPlayers(24);
+			az.setDefaultClass(plugin.classes.get(0).getName());
+			az.setWorld(lobby1.getWorld());
 			az.save();
 			az.initialize();
-			plugin.getLogger().info("Arena created and saved: " + arenaName + "  Type: " + arenaType);
+			plugin.getLogger().info("Arena created and saved: " + getArenaName() + "  Type: " + arenaType);
 			plugin.loadedArena.add(az);
 			player.sendMessage(ChatColor.GRAY + "Finished arena!");
-			player.sendMessage(ChatColor.GRAY + "Use " + ChatColor.GOLD + "/ua join " + arenaName + ChatColor.GRAY + " to play!");
+			player.sendMessage(ChatColor.GRAY + "Use " + ChatColor.GOLD + "/ua join " + getArenaName() + ChatColor.GRAY + " to play!");
 		}
 		catch(Exception e)
 		{
@@ -384,22 +384,22 @@ public class ArenaCreator
 	public void setPoint(Player player) 
 	{
 		Location loc = player.getLocation();
-		msg = "";
+		setMsg("");
 		if (lobby1 == null)
 		{
-			lobby1 = loc; msg = "Lobby 1 point set, please set one more!";
+			lobby1 = loc; setMsg("Lobby 1 point set, please set one more!");
 		}
 		else if (lobby2 == null)
 		{
-			lobby2 = loc; msg = "Lobby 2 point set, if two points are set, use" + ChatColor.GOLD + " /ua done";
+			lobby2 = loc; setMsg("Lobby 2 point set, if two points are set, use" + ChatColor.GOLD + " /ua done");
 		}
 		else if (arena1 == null) 
 		{
-			arena1 = loc; msg = "Arena 1 point set, please set a second one!";
+			arena1 = loc; setMsg("Arena 1 point set, please set a second one!");
 		}
 		else if (arena2 == null)
 		{
-			arena2 = loc; msg = "Arena 2 point set, if two points are set, use" + ChatColor.GOLD + " /ua done";
+			arena2 = loc; setMsg("Arena 2 point set, if two points are set, use" + ChatColor.GOLD + " /ua done");
 		}
 		else
 		{
@@ -407,14 +407,14 @@ public class ArenaCreator
 			{
 				if (lobbyREDspawn == null) 
 				{
-					lobbyREDspawn = loc; msg = "Red Team Lobby point set";
+					lobbyREDspawn = loc; setMsg("Red Team Lobby point set");
 					if (amtLobbys > 1) 
 					{
-						msg += ", please set a second one for the BLU team";
+						setMsg(getMsg() + ", please set a second one for the BLU team");
 					}
 					else
 					{
-						msg += ", if the lobby points are done, use" + ChatColor.GOLD + " /ua done";
+						setMsg(getMsg() + (", if the lobby points are done, use" + ChatColor.GOLD + " /ua done"));
 					}
 					return;
 				}
@@ -422,7 +422,7 @@ public class ArenaCreator
 				{
 					if (amtLobbys>1)
 					{
-						msg = "Blu team lobby point set!, if the lobby points are done, use" + ChatColor.GOLD + " /ua done";
+						setMsg("Blu team lobby point set!, if the lobby points are done, use" + ChatColor.GOLD + " /ua done");
 						lobbyBLUspawn = loc;
 						return;
 					}
@@ -431,14 +431,14 @@ public class ArenaCreator
 				{
 					if (team1spawn == null)
 					{
-						team1spawn = loc; msg = "RED spawn point set";
+						team1spawn = loc; setMsg("RED spawn point set");
 						if (amtSpawnpoints > 1)
 						{
-							msg += ", please set a second one for the BLU team";
+							setMsg(getMsg() + ", please set a second one for the BLU team");
 						}
 						else
 						{
-							msg += ", if the spawn points are done, use" + ChatColor.GOLD + " /ua done";
+							setMsg(getMsg() + (", if the spawn points are done, use" + ChatColor.GOLD + " /ua done"));
 						}
 						return;
 					}
@@ -447,7 +447,7 @@ public class ArenaCreator
 						if (amtSpawnpoints > 1) 
 						{
 							team2spawn = loc;
-							msg = "BLUE spawn point set!, if the spawn points are done, use" + ChatColor.GOLD + " /ua done";
+							setMsg("BLUE spawn point set!, if the spawn points are done, use" + ChatColor.GOLD + " /ua done");
 							return;
 						}
 					}
@@ -475,7 +475,7 @@ public class ArenaCreator
 					if (flags.size() == 0) {
 						this.flags.add(player.getLocation());
 						player.sendMessage("Added the flag point!");
-						msg = "please type " + ChatColor.GOLD + "/ua done";
+						setMsg("please type " + ChatColor.GOLD + "/ua done");
 						return;
 					}
 				}
@@ -514,5 +514,30 @@ public class ArenaCreator
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public String getMsg()
+	{
+		return msg;
+	}
+	
+	public void setMsg(String msg)
+	{
+		this.msg = msg;
+	}
+	
+	public String getPlayer()
+	{
+		return player;
+	}
+
+	public String getArenaName()
+	{
+		return arenaName;
+	}
+
+	public void setArenaName(String arenaName) 
+	{
+		this.arenaName = arenaName;
 	}
 }

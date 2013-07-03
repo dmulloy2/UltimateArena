@@ -49,14 +49,14 @@ public class ArenaSign
 		{
 			sign.setLine(0, "[UltimateArena]");
 			sign.setLine(1, "Click to join");
-			sign.setLine(2, zone.arenaName);
+			sign.setLine(2, zone.getArenaName());
 			sign.setLine(3, "");
 		}
 		else
 		{
 			sign.setLine(0, "[Arena Stats]");
-			sign.setLine(1, zone.arenaName);
-			sign.setLine(2, "Type: " + zone.arenaType);
+			sign.setLine(1, zone.getArenaName());
+			sign.setLine(2, "Type: " + zone.getArenaType());
 			sign.setLine(3, getStatus());
 		}
 		
@@ -66,10 +66,10 @@ public class ArenaSign
 	public String getStatus()
 	{
 		StringBuilder line = new StringBuilder();
-		if (plugin.getArena(zone.arenaName) != null)
+		if (plugin.getArena(zone.getArenaName()) != null)
 		{
-			Arena a = plugin.getArena(zone.arenaName);
-			if (a.starttimer > 1)
+			Arena a = plugin.getArena(zone.getArenaName());
+			if (a.getStarttimer() > 1)
 			{
 				line.append("LOBBY (");
 			}
@@ -77,18 +77,18 @@ public class ArenaSign
 			{
 				line.append("INGAME (");
 			}
-			line.append(a.amtPlayersInArena + "/" + zone.maxPlayers + ")");
+			line.append(a.getAmtPlayersInArena() + "/" + zone.getMaxPlayers() + ")");
 		}
 		else
 		{
-			if (zone.disabled)
+			if (zone.isDisabled())
 			{
 				line.append("DISABLED (0/0)");
 			}
 			else
 			{
 				line.append("IDLE (0/");
-				line.append(zone.maxPlayers);
+				line.append(zone.getMaxPlayers());
 				line.append(")");
 			}
 		}
@@ -108,12 +108,12 @@ public class ArenaSign
 	
 	public String getArena()
 	{
-		return zone.arenaName;
+		return zone.getArenaName();
 	}
 	
 	public String getArenaType()
 	{
-		return zone.arenaType;
+		return zone.getArenaType();
 	}
 	
 	public boolean isJoinSign()

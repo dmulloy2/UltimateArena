@@ -88,9 +88,9 @@ public class EntityListener implements Listener
 						{
 							shooter.getItemInHand().setDurability((short) 0);
 						}
-						if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(shooter).team) 
+						if (plugin.getArenaPlayer(defender).getTeam() == plugin.getArenaPlayer(shooter).getTeam()) 
 						{
-							if (!a.allowTeamKilling) 
+							if (!a.isAllowTeamKilling()) 
 							{
 								event.setCancelled(true);
 								shooter.sendMessage(ChatColor.RED + "You cannot hurt your teammate!");
@@ -112,9 +112,9 @@ public class EntityListener implements Listener
 					{
 						event.setCancelled(false);
 						Arena a = plugin.getArena(defender);
-						if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(shooter).team)
+						if (plugin.getArenaPlayer(defender).getTeam() == plugin.getArenaPlayer(shooter).getTeam())
 						{
-							if (!a.allowTeamKilling) 
+							if (!a.isAllowTeamKilling()) 
 							{
 								event.setCancelled(true);
 								shooter.sendMessage(ChatColor.RED + "You cannot hurt your teammate!");
@@ -135,14 +135,14 @@ public class EntityListener implements Listener
 			{
 				event.setCancelled(false);
 				Arena a = plugin.getArena(defender);
-				if (a.starttimer >= 0)
+				if (a.getStarttimer() >= 0)
 				{
 					event.setCancelled(true);
 					return;
 				}
-				if (plugin.getArenaPlayer(defender).team == plugin.getArenaPlayer(attacker).team) 
+				if (plugin.getArenaPlayer(defender).getTeam() == plugin.getArenaPlayer(attacker).getTeam()) 
 				{
-					if (!a.allowTeamKilling)
+					if (!a.isAllowTeamKilling())
 					{
 						event.setCancelled(true);
 						if (attacker.getItemInHand().getType().equals(Material.GOLD_AXE))
@@ -201,14 +201,14 @@ public class EntityListener implements Listener
 								event.getDrops().clear();
 								
 								ArenaPlayer dp = plugin.getArenaPlayer(dead);
-								dp.killstreak = 0;
-								dp.deaths++;
+								dp.setKillstreak(0);
+								dp.setDeaths(dp.getDeaths() + 1);
 									
 								String line1 = ChatColor.GREEN + attackerName + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getName();
 								String line2 = ChatColor.RED + dead.getName() + " You have been killed by " + attackerName;
 								String line3 = ChatColor.RED + "----------------------------";
-								String line4 = ChatColor.RED + "Kills: " + dp.kills;
-								String line5 = ChatColor.RED + "Deaths: " + dp.deaths;
+								String line4 = ChatColor.RED + "Kills: " + dp.getKills();
+								String line5 = ChatColor.RED + "Deaths: " + dp.getDeaths();
 								String line6 = ChatColor.RED + "----------------------------";
 									
 								dead.sendMessage(line1);
@@ -224,13 +224,14 @@ public class EntityListener implements Listener
 									if (plugin.isInArena(attacker))
 									{
 										ArenaPlayer ap = plugin.getArenaPlayer(attacker);
-										ap.kills++;
-										ap.killstreak++;
-										ap.gameXP += 100;
+										ap.setKills(ap.getKills() + 1);
+										ap.setKillstreak(ap
+												.getKillstreak() + 1);
+										ap.setGameXP(ap.getGameXP() + 100);
 										
 										line2  = ChatColor.RED + "killed " + dead.getName() + " +100 XP";
-										line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).kills;
-										line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).deaths;
+										line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).getKills();
+										line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).getDeaths();
 										
 										attacker.sendMessage(line1);
 										attacker.sendMessage(line2);
@@ -273,13 +274,14 @@ public class EntityListener implements Listener
 													Player deadplayer = (Player)dead;
 													ArenaPlayer dp = plugin.getArenaPlayer(deadplayer);
 													
-													dp.killstreak = 0;
-													dp.deaths++;
+													dp.setKillstreak(0);
+													dp.setDeaths(dp
+															.getDeaths() + 1);
 														
 													String line1 = ChatColor.GREEN + deadplayer.getName() + ChatColor.WHITE + " has been killed by " + ChatColor.RED + gunnerp;
 													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(deadplayer).kills;
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(deadplayer).deaths;
+													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(deadplayer).getKills();
+													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(deadplayer).getDeaths();
 													String line5 = ChatColor.RED + "----------------------------";
 												
 													deadplayer.sendMessage(line1);
@@ -295,14 +297,23 @@ public class EntityListener implements Listener
 											{
 												if (plugin.isInArena(gunner))
 												{
-													plugin.getArenaPlayer(gunner).killstreak++;
-													plugin.getArenaPlayer(gunner).kills++;
-													plugin.getArenaPlayer(gunner).gameXP += 25;
+													plugin.getArenaPlayer(gunner)
+															.setKillstreak(
+																	plugin.getArenaPlayer(gunner)
+																			.getKillstreak() + 1);
+													plugin.getArenaPlayer(gunner)
+															.setKills(
+																	plugin.getArenaPlayer(gunner)
+																			.getKills() + 1);
+													plugin.getArenaPlayer(gunner)
+															.setGameXP(
+																	plugin.getArenaPlayer(gunner)
+																			.getGameXP() + 25);
 														
 													String line1 = ChatColor.GREEN + gunnerp + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getType().getName();
 													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(gunner).kills;
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(gunner).deaths;
+													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(gunner).getKills();
+													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(gunner).getDeaths();
 													String line5 = ChatColor.RED + "----------------------------";
 													
 													gunner.sendMessage(line1);
@@ -324,13 +335,13 @@ public class EntityListener implements Listener
 							if (plugin.isInArena(dead))
 							{
 								event.getDrops().clear();
-								plugin.getArenaPlayer(dead).killstreak = 0;
+								plugin.getArenaPlayer(dead).setKillstreak(0);
 								
-								plugin.getArenaPlayer(dead).deaths++;
+								plugin.getArenaPlayer(dead).setDeaths(plugin.getArenaPlayer(dead).getDeaths() + 1);
 								String line2 = ChatColor.RED + dead.getName() + " You have been killed by " + dc.toString();
 								String line3 = ChatColor.RED + "----------------------------";
-								String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(dead).kills;
-								String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(dead).deaths;
+								String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(dead).getKills();
+								String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(dead).getDeaths();
 								String line6 = ChatColor.RED + "----------------------------";
 									
 								dead.sendMessage(line2);
@@ -371,12 +382,15 @@ public class EntityListener implements Listener
 												if (plugin.isInArena(dead.getLocation()))
 												{
 													Player deadplayer = (Player)dead;
-													plugin.getArenaPlayer(deadplayer).killstreak = 0;
-													plugin.getArenaPlayer(deadplayer).deaths++;
+													plugin.getArenaPlayer(deadplayer).setKillstreak(0);
+													plugin.getArenaPlayer(deadplayer)
+															.setDeaths(
+																	plugin.getArenaPlayer(deadplayer)
+																			.getDeaths() + 1);
 													String line1 = ChatColor.GREEN + deadplayer.getName() + ChatColor.WHITE + " has been killed by " + ChatColor.RED + gunnerp;
 													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(deadplayer).kills;
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(deadplayer).deaths;
+													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(deadplayer).getKills();
+													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(deadplayer).getDeaths();
 													String line5 = ChatColor.RED + "----------------------------";
 												
 													deadplayer.sendMessage(line1);
@@ -392,14 +406,23 @@ public class EntityListener implements Listener
 											{
 												if (plugin.isInArena(gunner))
 												{
-													plugin.getArenaPlayer(gunner).killstreak++;
-													plugin.getArenaPlayer(gunner).kills++;
-													plugin.getArenaPlayer(gunner).gameXP += 25;
+													plugin.getArenaPlayer(gunner)
+															.setKillstreak(
+																	plugin.getArenaPlayer(gunner)
+																			.getKillstreak() + 1);
+													plugin.getArenaPlayer(gunner)
+															.setKills(
+																	plugin.getArenaPlayer(gunner)
+																			.getKills() + 1);
+													plugin.getArenaPlayer(gunner)
+															.setGameXP(
+																	plugin.getArenaPlayer(gunner)
+																			.getGameXP() + 25);
 														
 													String line1 = ChatColor.GREEN + gunnerp + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getType().getName();
 													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(gunner).kills;
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(gunner).deaths;
+													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(gunner).getKills();
+													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(gunner).getDeaths();
 													String line5 = ChatColor.RED + "----------------------------";
 													
 													gunner.sendMessage(line1);
@@ -440,17 +463,20 @@ public class EntityListener implements Listener
 									event.getDrops().clear();
 									if (plugin.isInArena(attacker.getLocation()))
 									{
-										plugin.getArenaPlayer(attacker).kills++;
-										plugin.getArenaPlayer(attacker).killstreak++;
-										plugin.getArenaPlayer(attacker).gameXP += 25;
+										plugin.getArenaPlayer(attacker).setKills(
+												plugin.getArenaPlayer(attacker).getKills() + 1);
+										plugin.getArenaPlayer(attacker).setKillstreak(
+												plugin.getArenaPlayer(attacker).getKillstreak() + 1);
+										plugin.getArenaPlayer(attacker).setGameXP(
+												plugin.getArenaPlayer(attacker).getGameXP() + 25);
 										
 										String attstr = dead.getType().getName();
 										
 										String line1 = ChatColor.GREEN + attacker.getName() + ChatColor.WHITE + " killed " + ChatColor.RED + attstr;
 										String line2 = ChatColor.RED + "killed " + attstr + " +25 XP";
 										String line3 = ChatColor.RED + "----------------------------";
-										String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).kills;
-										String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).deaths;
+										String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).getKills();
+										String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).getDeaths();
 										String line6 = ChatColor.RED + "----------------------------";
 											
 										attacker.sendMessage(line1);
@@ -481,17 +507,22 @@ public class EntityListener implements Listener
 										event.getDrops().clear();
 										if (plugin.isInArena(attacker.getLocation())) 
 										{
-											plugin.getArenaPlayer(attacker).kills++;
-											plugin.getArenaPlayer(attacker).killstreak++;
-											plugin.getArenaPlayer(attacker).gameXP += 25;
+											plugin.getArenaPlayer(attacker).setKills(
+													plugin.getArenaPlayer(attacker).getKills() + 1);
+											plugin.getArenaPlayer(attacker)
+													.setKillstreak(
+															plugin.getArenaPlayer(attacker)
+																	.getKillstreak() + 1);
+											plugin.getArenaPlayer(attacker).setGameXP(
+													plugin.getArenaPlayer(attacker).getGameXP() + 25);
 											
 											String attstr = dead.getType().getName();
 												
 											String line1 = ChatColor.GREEN + attacker.getName() + ChatColor.WHITE + " killed " + ChatColor.RED + attstr;
 											String line2 = ChatColor.RED + "killed " + attstr + " +25 XP";
 											String line3 = ChatColor.RED + "----------------------------";
-											String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).kills;
-											String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).deaths;
+											String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).getKills();
+											String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).getDeaths();
 											String line6 = ChatColor.RED + "----------------------------";
 											
 											attacker.sendMessage(line1);
