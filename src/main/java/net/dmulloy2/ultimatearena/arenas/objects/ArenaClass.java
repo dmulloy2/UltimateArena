@@ -119,7 +119,7 @@ public class ArenaClass
 				int value3 = readAmt(tool1);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool1);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool2 = fc.getString(toolPath + 2);
@@ -130,7 +130,7 @@ public class ArenaClass
 				int value3 = readAmt(tool2);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool2);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool3 = fc.getString(toolPath + 3);
@@ -141,7 +141,7 @@ public class ArenaClass
 				int value3 = readAmt(tool3);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool3);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool4 = fc.getString(toolPath + 4);
@@ -152,7 +152,7 @@ public class ArenaClass
 				int value3 = readAmt(tool4);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool4);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool5 = fc.getString(toolPath + 5);
@@ -163,7 +163,7 @@ public class ArenaClass
 				int value3 = readAmt(tool5);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool5);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool6 = fc.getString(toolPath + 6);
@@ -174,7 +174,7 @@ public class ArenaClass
 				int value3 = readAmt(tool6);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool6);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool7 = fc.getString(toolPath + 7);
@@ -185,7 +185,7 @@ public class ArenaClass
 				int value3 = readAmt(tool7);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool7);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool8 = fc.getString(toolPath + 8);
@@ -196,7 +196,7 @@ public class ArenaClass
 				int value3 = readAmt(tool8);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool8);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			String tool9 = fc.getString(toolPath + 9);
@@ -207,7 +207,7 @@ public class ArenaClass
 				int value3 = readAmt(tool9);
 				List<CompositeEnchantment> value4 = readToolEnchantments(tool9);
 				
-				weapons.add(buildItemStack(value, value2, (byte) value3, value4));
+				weapons.add(buildItemStack(value, value3, (byte) value2, value4));
 			}
 			
 			useEssentials = fc.getBoolean("useEssentials");

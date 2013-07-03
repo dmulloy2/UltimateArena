@@ -732,10 +732,10 @@ public abstract class Arena
 	
 	public void start()
 	{
-		getPlugin().outConsole("Starting arena: {0} Players: {1}", getName(), getAmtPlayersInArena());
-		
 		if (start == false) 
 		{
+			getPlugin().outConsole("Starting arena: {0} Players: {1}", getName(), getAmtPlayersInArena());
+			
 			this.start = true;
 			this.setStartingAmount(this.getAmtPlayersInArena());
 			this.setAmtPlayersStartingInArena(this.getStartingAmount());
