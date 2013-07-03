@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandDelete extends UltimateArenaCommand
+public class CmdDelete extends UltimateArenaCommand
 {
-	public PCommandDelete(UltimateArena plugin) 
+	public CmdDelete(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "delete";

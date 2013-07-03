@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandSetDone extends UltimateArenaCommand
+public class CmdSetDone extends UltimateArenaCommand
 {
-	public PCommandSetDone(UltimateArena plugin) 
+	public CmdSetDone(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "done";

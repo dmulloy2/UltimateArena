@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandSetPoint extends UltimateArenaCommand
+public class CmdSetPoint extends UltimateArenaCommand
 {	
-	public PCommandSetPoint(UltimateArena plugin) 
+	public CmdSetPoint(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "setpoint";

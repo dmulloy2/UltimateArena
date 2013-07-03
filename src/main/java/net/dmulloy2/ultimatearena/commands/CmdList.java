@@ -8,9 +8,9 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
-public class PCommandList extends UltimateArenaCommand
+public class CmdList extends UltimateArenaCommand
 {
-	public PCommandList(UltimateArena plugin)
+	public CmdList(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "list";

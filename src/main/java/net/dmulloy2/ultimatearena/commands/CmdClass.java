@@ -4,9 +4,9 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 
-public class PCommandClass extends UltimateArenaCommand
+public class CmdClass extends UltimateArenaCommand
 {
-	public PCommandClass(UltimateArena plugin)
+	public CmdClass(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "class";

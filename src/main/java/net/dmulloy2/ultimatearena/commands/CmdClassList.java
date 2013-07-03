@@ -6,9 +6,9 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.inventory.ItemStack;
 
-public class PCommandClassList extends UltimateArenaCommand
+public class CmdClassList extends UltimateArenaCommand
 {
-	public PCommandClassList(UltimateArena plugin)
+	public CmdClassList(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "classlist";

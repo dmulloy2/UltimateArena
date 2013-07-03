@@ -5,9 +5,9 @@ import org.bukkit.ChatColor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
-public class PCommandLike extends UltimateArenaCommand
+public class CmdLike extends UltimateArenaCommand
 {	
-	public PCommandLike(UltimateArena plugin)
+	public CmdLike(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "like";

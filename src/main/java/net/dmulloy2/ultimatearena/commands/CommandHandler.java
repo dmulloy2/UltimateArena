@@ -75,7 +75,7 @@ public class CommandHandler implements CommandExecutor
 		} 
 		else 
 		{
-			new PCommandHelp(plugin).execute(sender, args);
+			new CmdHelp(plugin).execute(sender, args);
 		}
 		
 		return true;

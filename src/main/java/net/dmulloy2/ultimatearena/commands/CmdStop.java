@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandStop extends UltimateArenaCommand
+public class CmdStop extends UltimateArenaCommand
 {
-	public PCommandStop(UltimateArena plugin) 
+	public CmdStop(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "stop";

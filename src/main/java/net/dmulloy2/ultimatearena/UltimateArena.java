@@ -99,32 +99,32 @@ public class UltimateArena extends JavaPlugin
 
 		// Add Commands
 		commandHandler.setCommandPrefix("ua");
-		commandHandler.registerCommand(new PCommandHelp(this));
-		commandHandler.registerCommand(new PCommandInfo(this));
-		commandHandler.registerCommand(new PCommandList(this));
-		commandHandler.registerCommand(new PCommandJoin(this));
-		commandHandler.registerCommand(new PCommandLeave(this));
-		commandHandler.registerCommand(new PCommandStats(this));
-		commandHandler.registerCommand(new PCommandLike(this));
-		commandHandler.registerCommand(new PCommandDislike(this));
+		commandHandler.registerCommand(new CmdHelp(this));
+		commandHandler.registerCommand(new CmdInfo(this));
+		commandHandler.registerCommand(new CmdList(this));
+		commandHandler.registerCommand(new CmdJoin(this));
+		commandHandler.registerCommand(new CmdLeave(this));
+		commandHandler.registerCommand(new CmdStats(this));
+		commandHandler.registerCommand(new CmdLike(this));
+		commandHandler.registerCommand(new CmdDislike(this));
 		
-		commandHandler.registerCommand(new PCommandCreate(this));
-		commandHandler.registerCommand(new PCommandSetPoint(this));
-		commandHandler.registerCommand(new PCommandSetDone(this));
-		commandHandler.registerCommand(new PCommandDelete(this));
-		commandHandler.registerCommand(new PCommandStop(this));
+		commandHandler.registerCommand(new CmdCreate(this));
+		commandHandler.registerCommand(new CmdSetPoint(this));
+		commandHandler.registerCommand(new CmdSetDone(this));
+		commandHandler.registerCommand(new CmdDelete(this));
+		commandHandler.registerCommand(new CmdStop(this));
 		
-		commandHandler.registerCommand(new PCommandForceStop(this));
-		commandHandler.registerCommand(new PCommandReload(this));
-		commandHandler.registerCommand(new PCommandForceJoin(this));
-		commandHandler.registerCommand(new PCommandDisable(this));
-		commandHandler.registerCommand(new PCommandEnable(this));
-		commandHandler.registerCommand(new PCommandKick(this));
-		commandHandler.registerCommand(new PCommandStart(this));
-		commandHandler.registerCommand(new PCommandPause(this));
+		commandHandler.registerCommand(new CmdForceStop(this));
+		commandHandler.registerCommand(new CmdReload(this));
+		commandHandler.registerCommand(new CmdForceJoin(this));
+		commandHandler.registerCommand(new CmdDisable(this));
+		commandHandler.registerCommand(new CmdEnable(this));
+		commandHandler.registerCommand(new CmdKick(this));
+		commandHandler.registerCommand(new CmdStart(this));
+		commandHandler.registerCommand(new CmdPause(this));
 		
-		commandHandler.registerCommand(new PCommandClassList(this));
-		commandHandler.registerCommand(new PCommandClass(this));
+		commandHandler.registerCommand(new CmdClassList(this));
+		commandHandler.registerCommand(new CmdClass(this));
 		
 		// Load saved players
 		loadPlayers();

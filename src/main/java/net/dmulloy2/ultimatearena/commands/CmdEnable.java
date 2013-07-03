@@ -7,9 +7,9 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandEnable extends UltimateArenaCommand
+public class CmdEnable extends UltimateArenaCommand
 {	
-	public PCommandEnable(UltimateArena plugin) 
+	public CmdEnable(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "enable";

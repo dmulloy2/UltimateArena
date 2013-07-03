@@ -8,9 +8,9 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 
-public class PCommandInfo extends UltimateArenaCommand
+public class CmdInfo extends UltimateArenaCommand
 {	
-	public PCommandInfo(UltimateArena plugin)
+	public CmdInfo(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "info";

@@ -5,9 +5,9 @@ import org.bukkit.ChatColor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandForceJoin extends UltimateArenaCommand
+public class CmdForceJoin extends UltimateArenaCommand
 {
-	public PCommandForceJoin(UltimateArena plugin)
+	public CmdForceJoin(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "forcejoin";

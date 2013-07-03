@@ -2,9 +2,9 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 
-public class PCommandJoin extends UltimateArenaCommand
+public class CmdJoin extends UltimateArenaCommand
 {
-	public PCommandJoin(UltimateArena plugin) 
+	public CmdJoin(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "join";

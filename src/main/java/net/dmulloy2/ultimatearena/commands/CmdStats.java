@@ -6,9 +6,9 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaStatistics;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
-public class PCommandStats extends UltimateArenaCommand
+public class CmdStats extends UltimateArenaCommand
 {	
-	public PCommandStats(UltimateArena plugin)
+	public CmdStats(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "stats";

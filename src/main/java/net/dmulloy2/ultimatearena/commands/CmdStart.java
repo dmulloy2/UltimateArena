@@ -6,16 +6,18 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandPause extends UltimateArenaCommand
+public class CmdStart extends UltimateArenaCommand
 {
-	public PCommandPause(UltimateArena plugin) 
+	public CmdStart(UltimateArena plugin) 
 	{
 		super(plugin);
-		this.name = "pause";
+		this.name = "start";
 		this.requiredArgs.add("arena");
 		this.mode = "admin";
-		this.description = "pause the start timer on an arena";
-		this.permission = PermissionType.CMD_PAUSE.permission;
+		this.description = "force start an arena";
+		this.permission = PermissionType.CMD_START.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override
@@ -27,9 +29,9 @@ public class PCommandPause extends UltimateArenaCommand
 		{
 			player.sendMessage(ChatColor.GOLD + "No arena with that name...");
 			return;
-		}		
-		
-		arena.setPauseStartTimer(!arena.isPauseStartTimer());
-		player.sendMessage(ChatColor.GOLD + "Start timer for arena " + ChatColor.AQUA + arena.getName() + ChatColor.GOLD + " is now " + (arena.isPauseStartTimer() ? "paused" : "unpaused"));
-	}	
+		}
+			
+		arena.start();
+		player.sendMessage(ChatColor.GOLD + "Starting arena.. " + ChatColor.AQUA + arena.getName() );
+	}
 }

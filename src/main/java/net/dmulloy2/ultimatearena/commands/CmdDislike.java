@@ -5,9 +5,9 @@ import org.bukkit.ChatColor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
-public class PCommandDislike extends UltimateArenaCommand
+public class CmdDislike extends UltimateArenaCommand
 {	
-	public PCommandDislike(UltimateArena plugin)
+	public CmdDislike(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "dislike";

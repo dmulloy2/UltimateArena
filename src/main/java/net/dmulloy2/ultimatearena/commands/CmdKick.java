@@ -9,9 +9,9 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 import net.dmulloy2.ultimatearena.util.Util;
 
-public class PCommandKick extends UltimateArenaCommand
+public class CmdKick extends UltimateArenaCommand
 {
-	public PCommandKick(UltimateArena plugin) 
+	public CmdKick(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "kick";

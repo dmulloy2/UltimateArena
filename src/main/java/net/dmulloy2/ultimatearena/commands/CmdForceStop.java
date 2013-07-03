@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandForceStop extends UltimateArenaCommand
+public class CmdForceStop extends UltimateArenaCommand
 {
-	public PCommandForceStop(UltimateArena plugin) 
+	public CmdForceStop(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "forcestop";

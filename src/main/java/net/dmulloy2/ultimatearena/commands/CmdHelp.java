@@ -4,9 +4,9 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 
-public class PCommandHelp extends UltimateArenaCommand
+public class CmdHelp extends UltimateArenaCommand
 {	
-	public PCommandHelp(UltimateArena plugin)
+	public CmdHelp(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "help";

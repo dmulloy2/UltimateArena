@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandCreate extends UltimateArenaCommand
+public class CmdCreate extends UltimateArenaCommand
 {
-	public PCommandCreate(UltimateArena plugin) 
+	public CmdCreate(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "create";

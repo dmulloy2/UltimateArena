@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
-public class PCommandReload extends UltimateArenaCommand
+public class CmdReload extends UltimateArenaCommand
 {
-	public PCommandReload(UltimateArena plugin) 
+	public CmdReload(UltimateArena plugin) 
 	{
 		super(plugin);
 		this.name = "reload";

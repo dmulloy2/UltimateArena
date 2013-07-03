@@ -2,9 +2,9 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 
-public class PCommandLeave extends UltimateArenaCommand
+public class CmdLeave extends UltimateArenaCommand
 {	
-	public PCommandLeave(UltimateArena plugin)
+	public CmdLeave(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "leave";

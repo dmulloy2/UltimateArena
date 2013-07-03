@@ -559,7 +559,7 @@ public abstract class Arena
 		setStopped(true);
 		onStop();
 		
-		getPlugin().getLogger().info("Stopping arena \"" + getName() + "\"!");
+		getPlugin().outConsole("Stopping arena: {0}!", name);
 
 		for (ArenaPlayer ap : getArenaplayers())
 		{
@@ -587,52 +587,11 @@ public abstract class Arena
 		
 		getPlugin().activeArena.remove(this);
 		
-		getPlugin().getLogger().info("Arena \"" + getName() + "\" has been stopped");
+		getPlugin().broadcast("&6Arena &b{0} &6has concluded!", name);
 	}
 	
 	public void onStop() {}
-	
-	/*public void checkPlayers() 
-	{
-		// Check all players, first to see if they need food, or are on fire
-		// Check if you're a healer, and heals you
-		// Checks if a player is out of the arena
-		if (!stopped) 
-		{
-			for (ArenaPlayer ap : arenaplayers)
-			{
-				if (ap != null && !ap.isOut())
-				{
-					if (!ap.isOut())
-					{
-						Player player = Util.matchPlayer(ap.getPlayer().getName());
-						if (player != null)
-						{
-							if (starttimer > 0) 
-							{
-								player.setFireTicks(0);
-								player.setFoodLevel(20);
-								ap.decideHat(player);
-							}
 
-							if (ap.getArenaClass().name.equals("healer"))
-							{
-								ap.getPlayer().setHealth(ap.getPlayer().getHealth()+1);
-							}
-								
-							if (plugin.isInArena(player.getLocation()))
-							{
-								plugin.getLogger().info(ap.getPlayer().getName() + " got out of the Arena! Putting him back in!");
-								ap.spawn();
-								spawn(ap.getPlayer().getName(), false);
-							}
-						}
-					}
-				}
-			}
-		}
-	}*/
-	
 	public void normalize(Player p)
 	{
 		// Removes all armor and inventory
@@ -831,43 +790,43 @@ public abstract class Arena
 					// Timer Stuff
 					if (!isPauseStartTimer()) 
 					{
-						if (getStarttimer() > 0 && getStarttimer() < 11) 
+						if (getStarttimer() == 120) 
 						{
-							player.sendMessage(ChatColor.GOLD + Integer.toString(getStarttimer()) + ChatColor.GRAY + " second(s) until start!");
-						}
-						if (getStarttimer() == 30) 
-						{
-							player.sendMessage(ChatColor.GOLD + "30" + ChatColor.GRAY + " second(s) until start!");
+							ap.sendMessage("&6120 &7seconds until start!");
 						}
 						if (getStarttimer() == 60)
 						{
-							player.sendMessage(ChatColor.GOLD + "60" + ChatColor.GRAY + " second(s) until start!");
+							ap.sendMessage("&660 &7seconds until start!");
 						}
 						if (getStarttimer() == 45)
 						{
-							player.sendMessage(ChatColor.GOLD + "45" + ChatColor.GRAY + " second(s) until start!");
+							ap.sendMessage("&645 &7seconds until start!");
+						}
+						if (getStarttimer() == 30) 
+						{
+							ap.sendMessage("&630 &7seconds until start!");
 						}
 						if (getStarttimer() == 15)
 						{
-							player.sendMessage(ChatColor.GOLD + "15" + ChatColor.GRAY + " second(s) until start!");
+							ap.sendMessage("&615 &7seconds until start!");
 						}
-						if (getStarttimer() == 120) 
+						if (getStarttimer() > 0 && getStarttimer() < 11) 
 						{
-							player.sendMessage(ChatColor.GOLD + "120" + ChatColor.GRAY + " second(s) until start!");
+							ap.sendMessage("&6{0} &7second(s) until start!", getStarttimer());
 						}
 					}
 							
 					if (getGametimer() > 0 && getGametimer() < 21)
 					{
-						player.sendMessage(ChatColor.GOLD + Integer.toString(getGametimer()) + ChatColor.GRAY + " second(s) until end!");
+						ap.sendMessage("&6{0} &7second(s) until end!", getGametimer());
 					}
 					if (getGametimer() == 60 && getMaxgametime() > 60)
 					{
-						player.sendMessage(ChatColor.GOLD + Integer.toString((getGametimer()-60)/60) + ChatColor.GRAY + " minute(s) until end!");
+						ap.sendMessage("&6{0} &7minute(s) until end!", (getGametimer() - 60) / 60);
 					}
 					if (getGametimer() == getMaxgametime()/2) 
 					{
-						player.sendMessage(ChatColor.GOLD + Integer.toString(getMaxgametime()/2) + ChatColor.GRAY + " second(s) until end!");
+						ap.sendMessage("&6{0} &7second(s) until end!", getMaxgametime() / 2);
 					}
 							
 					// TP players back when dead
