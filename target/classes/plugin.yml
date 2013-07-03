@@ -1,8 +1,8 @@
 name: UltimateArena
-main: com.orange451.UltimateArena.UltimateArena
+main: net.dmulloy2.ultimatearena.UltimateArena
 version: "2.4.3"
-authors: [dmulloy2, orange451]
-softdepend: [PVPGunPlus, Vault, Essentials]
+author: dmulloy2
+softdepend: [SwornGuns, Vault, Essentials]
 description: The Ultimate in Minecraft death sports and spleef!
 commands:
   ua:
