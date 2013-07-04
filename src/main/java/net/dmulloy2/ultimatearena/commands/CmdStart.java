@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import org.bukkit.ChatColor;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
@@ -27,11 +25,12 @@ public class CmdStart extends UltimateArenaCommand
 		Arena arena = plugin.getArena(name);
 		if (arena == null)
 		{
-			player.sendMessage(ChatColor.GOLD + "No arena with that name...");
+			sendMessage("&cCould not find an arena by the name \"{0}\"!", name);
 			return;
 		}
 			
-		arena.start();
-		player.sendMessage(ChatColor.GOLD + "Starting arena.. " + ChatColor.AQUA + arena.getName() );
+		sendMessage("&6Starting Arena &b{0}&6...", arena.getName());
+		
+		arena.forceStart();
 	}
 }

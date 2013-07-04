@@ -12,7 +12,6 @@ public class CmdClassList extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "classlist";
-		this.aliases.add("cl");
 		this.aliases.add("classes");
 		this.description = "List UltimateArena classes";
 		

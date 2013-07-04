@@ -16,6 +16,6 @@ joinTimer:
 # Input - boolean
 saveInventories: false
 
-# Whether or not PVPGun ammo is unlimited
+# Whether or not SwornGuns ammo is unlimited
 # Default - true; Input - boolean
 unlimitedAmmo: true

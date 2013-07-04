@@ -10,6 +10,7 @@ public class CmdClass extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "class";
+		this.aliases.add("cl");
 		this.optionalArgs.add("class");
 		this.description = "Switch UltimateArena classes";
 		

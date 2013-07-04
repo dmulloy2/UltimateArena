@@ -42,6 +42,7 @@ public class EntityListener implements Listener
 		}
 	}
 
+	// TODO: Rewrite this
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) 
 	{
@@ -163,6 +164,7 @@ public class EntityListener implements Listener
 		}
 	}
 	
+	// TODO: Rewrite this
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeath(EntityDeathEvent event)
 	{

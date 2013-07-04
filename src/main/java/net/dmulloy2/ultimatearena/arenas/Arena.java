@@ -907,6 +907,16 @@ public class Arena
 		
 		stop();
 	}
+	
+	public void forceStart()
+	{
+		plugin.outConsole("Forcefully starting arena: {0}!", name);
+		
+		setStarttimer(0);
+		
+		start();
+		setGametimer(getGametimer() - 1);
+	}
 
 	public String getName()
 	{

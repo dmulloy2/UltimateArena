@@ -55,6 +55,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
+	// TODO: Remove this? Doesn't seem necessary
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerKick(PlayerKickEvent event) 
 	{
@@ -81,7 +82,6 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	// dmulloy2 improved method.
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) 
 	{
@@ -98,7 +98,6 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	// dmulloy2 improved method.
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) 
 	{
@@ -157,7 +156,7 @@ public class PlayerListener implements Listener
 						}
 					}
 				}
-				if (action.equals(Action.LEFT_CLICK_BLOCK)) 
+				else if (action.equals(Action.LEFT_CLICK_BLOCK)) 
 				{
 					if (event.hasBlock())
 					{
