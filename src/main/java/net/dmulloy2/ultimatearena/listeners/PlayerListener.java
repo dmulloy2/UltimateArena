@@ -44,8 +44,9 @@ public class PlayerListener implements Listener
 		{
 			plugin.onQuit(pl);
 			
-			for (ArenaJoinTask task : plugin.waiting)
+			for (int i = 0; i < plugin.waiting.size(); i++)
 			{
+				ArenaJoinTask task = plugin.waiting.get(i);
 				if (task.getPlayer().getName().equals(pl.getName()))
 				{
 					task.cancel();
@@ -298,8 +299,9 @@ public class PlayerListener implements Listener
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player p = event.getPlayer();
-		for (ArenaJoinTask task : plugin.waiting)
+		for (int i = 0; i < plugin.waiting.size(); i++)
 		{
+			ArenaJoinTask task = plugin.waiting.get(i);
 			if (task.getPlayer().getName().equals(p.getName()))
 			{
 				task.cancel();
