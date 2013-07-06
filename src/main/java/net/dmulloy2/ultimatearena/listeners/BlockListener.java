@@ -55,7 +55,6 @@ public class BlockListener implements Listener
 					player.sendMessage(ChatColor.RED + "You cannot break this!");
 					event.setCancelled(true);
 				}
-				// TODO: Hunger games block logging?
 			}
 			else
 			{
@@ -94,7 +93,6 @@ public class BlockListener implements Listener
 					player.sendMessage(ChatColor.RED + "You cannot place this!");
 					event.setCancelled(true);
 				}
-				// TODO: Hunger games block logging?
 			}
 			else
 			{

@@ -1,26 +1,29 @@
 package net.dmulloy2.ultimatearena.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.events.UltimateArenaKillEvent;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.inventory.ItemStack;
+
+/**
+ * @author dmulloy2
+ */
 
 public class EntityListener implements Listener
 {
@@ -33,514 +36,260 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityExplode(EntityExplodeEvent event) 
 	{
-		if (plugin.isInArena(event.getLocation()))
+		if (! event.isCancelled())
 		{
-			if (!event.blockList().isEmpty())
+			if (plugin.isInArena(event.getLocation()))
 			{
-				event.setCancelled(true);
-			}
-		}
-	}
-
-	// TODO: Rewrite this
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) 
-	{
-		Entity att = event.getDamager();
-		if (att instanceof Player)
-		{
-			Player attacker = (Player)att;
-			if (plugin.isInArena(attacker)) 
-			{
-				ItemStack itm = attacker.getItemInHand();
-				itm.setDurability((short) 0);
-			}
-		}
-		
-		if (!(event.getEntity() instanceof Player)) 
-				return;
-			
-		Player defender = (Player)event.getEntity();
-		if (!(att instanceof Player)) 
-		{
-			if (att instanceof LivingEntity)
-			{
-				LivingEntity attacker = (LivingEntity)att;
-				if (plugin.isInArena(attacker.getLocation()))
-				{
-					if (plugin.isInArena(defender.getLocation()))
-					{
-						event.setCancelled(false);
-					}
-				}
-			}
-				
-			if (att instanceof Arrow)
-			{
-				Arrow attacker = (Arrow)att;
-				if (attacker.getShooter() instanceof Player)
-				{
-					Player shooter = (Player) attacker.getShooter();
-					if ((plugin.isInArena(defender)) && (plugin.isInArena(shooter)))
-					{
-						event.setCancelled(false);
-						Arena a = plugin.getArena(defender);
-						if (shooter.getItemInHand().getType().equals(Material.BOW))
-						{
-							shooter.getItemInHand().setDurability((short) 0);
-						}
-						if (plugin.getArenaPlayer(defender).getTeam() == plugin.getArenaPlayer(shooter).getTeam()) 
-						{
-							if (!a.isAllowTeamKilling()) 
-							{
-								event.setCancelled(true);
-								shooter.sendMessage(ChatColor.RED + "You cannot hurt your teammate!");
-							}
-						}
-					}
-				}
-				
-				return;
-			}
-				
-			if (att instanceof Snowball)
-			{
-				Snowball attacker = (Snowball)att;
-				if (attacker.getShooter() instanceof Player)
-				{
-					Player shooter = (Player) attacker.getShooter();
-					if ((plugin.isInArena(defender)) && (plugin.isInArena(shooter))) 
-					{
-						event.setCancelled(false);
-						Arena a = plugin.getArena(defender);
-						if (plugin.getArenaPlayer(defender).getTeam() == plugin.getArenaPlayer(shooter).getTeam())
-						{
-							if (!a.isAllowTeamKilling()) 
-							{
-								event.setCancelled(true);
-								shooter.sendMessage(ChatColor.RED + "You cannot hurt your teammate!");
-							}
-						}
-					}
-				}
-					
-				return;
-			}
-			
-			return;
-		}
-		else
-		{
-			Player attacker = (Player)att;
-			if ((plugin.isInArena(defender)) && (plugin.isInArena(attacker)))
-			{
-				event.setCancelled(false);
-				Arena a = plugin.getArena(defender);
-				if (a.getStarttimer() >= 0)
+				if (!event.blockList().isEmpty())
 				{
 					event.setCancelled(true);
-					return;
-				}
-				if (plugin.getArenaPlayer(defender).getTeam() == plugin.getArenaPlayer(attacker).getTeam()) 
-				{
-					if (!a.isAllowTeamKilling())
-					{
-						event.setCancelled(true);
-						if (attacker.getItemInHand().getType().equals(Material.GOLD_AXE))
-						{
-							if ((defender.getHealth() + 2) <= 20)
-							{
-								defender.setHealth(defender.getHealth() + 2);
-								attacker.sendMessage(ChatColor.GRAY + "You have healed " + ChatColor.GOLD + defender.getName() + ChatColor.GRAY + " for 1 heart");
-							}
-						}
-						else
-						{
-							attacker.sendMessage(ChatColor.RED + "You cannot hurt your teammate!");
-						}
-					}
 				}
 			}
 		}
 	}
 	
-	// TODO: Rewrite this
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDeath(EntityDeathEvent event)
+	public void onExplosionPrime(ExplosionPrimeEvent event)
 	{
-		Entity died = event.getEntity();
-		if (died instanceof Player)
+		if (! event.isCancelled())
 		{
-			Player pdied = (Player)died;
-			if (plugin.isInArena(pdied)) 
+			if (plugin.isInArena(event.getEntity().getLocation()))
 			{
-				event.getDrops().clear();
-				plugin.getArena(pdied).onPlayerDeath(plugin.getArenaPlayer(pdied));
+				event.setCancelled(true);
 			}
 		}
-		
-		EntityDamageEvent dev = event.getEntity().getLastDamageCause();
-		if (dev != null)
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityDamageByEntityHighest(EntityDamageByEntityEvent event)
+	{
+		if (! event.isCancelled() && event.getDamage() > 0.0D)
 		{
-			if (dev.getEntity() != null)
+			Entity attacker = event.getDamager();
+			Entity damaged = event.getEntity();
+			if ((attacker instanceof Player) && (damaged instanceof Player))
 			{
-				if (dev.getEntity() instanceof Player)
+				Player att = (Player)attacker;
+				Player dmgd = (Player)damaged;
+				if (plugin.isInArena(att))
 				{
-					Player dead = (Player)event.getEntity();
-					if (dev.getCause() != null) 
+					ArenaPlayer ap = plugin.getArenaPlayer(att);
+					if (ap != null && !ap.isOut())
 					{
-						DamageCause dc = dev.getCause();
-						if (dc.equals(DamageCause.ENTITY_ATTACK)) 
+						if (plugin.isInArena(dmgd))
 						{
-							Entity damager = ((EntityDamageByEntityEvent)dev).getDamager();
-							if (plugin.isInArena(dead))
+							ArenaPlayer dp = plugin.getArenaPlayer(dmgd);
+							if (dp != null && !dp.isOut())
 							{
-								String attackerName = damager.getType().getName();
-								if (damager instanceof Player) 
+								Arena arena = ap.getArena();
+								if (arena.isInLobby())
 								{
-									attackerName = ((Player)damager).getName();
+									ap.sendMessage("&cYou cannot PVP in the lobby!");
+									event.setCancelled(true);
+									return;
 								}
-								event.getDrops().clear();
 								
-								ArenaPlayer dp = plugin.getArenaPlayer(dead);
-								dp.setKillstreak(0);
-								dp.setDeaths(dp.getDeaths() + 1);
-									
-								String line1 = ChatColor.GREEN + attackerName + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getName();
-								String line2 = ChatColor.RED + dead.getName() + " You have been killed by " + attackerName;
-								String line3 = ChatColor.RED + "----------------------------";
-								String line4 = ChatColor.RED + "Kills: " + dp.getKills();
-								String line5 = ChatColor.RED + "Deaths: " + dp.getDeaths();
-								String line6 = ChatColor.RED + "----------------------------";
-									
-								dead.sendMessage(line1);
-								dead.sendMessage(line2);
-								dead.sendMessage(line3);
-								dead.sendMessage(line4);
-								dead.sendMessage(line5);
-								dead.sendMessage(line6);
-									
-								if (damager instanceof Player) 
+								if (! arena.isAllowTeamKilling())
 								{
-									Player attacker = (Player)((EntityDamageByEntityEvent)dev).getDamager();
-									if (plugin.isInArena(attacker))
+									if (dp.getTeam() == ap.getTeam())
 									{
-										ArenaPlayer ap = plugin.getArenaPlayer(attacker);
-										ap.setKills(ap.getKills() + 1);
-										ap.setKillstreak(ap
-												.getKillstreak() + 1);
-										ap.setGameXP(ap.getGameXP() + 100);
-										
-										line2  = ChatColor.RED + "killed " + dead.getName() + " +100 XP";
-										line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).getKills();
-										line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).getDeaths();
-										
-										attacker.sendMessage(line1);
-										attacker.sendMessage(line2);
-										attacker.sendMessage(line3);
-										attacker.sendMessage(line4);
-										attacker.sendMessage(line5);
-										attacker.sendMessage(line6);
-										Arena ar = plugin.getArena(attacker);
-										ar.doKillStreak(plugin.getArenaPlayer(attacker));
-											
-										// Call kill event
-										UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, ap, ar);
-										plugin.getServer().getPluginManager().callEvent(killEvent);
+										ap.sendMessage("&cYou cannot hurt your team mate!");
+										event.setCancelled(true);
+										return;
 									}
 								}
 							}
-							
-							return;
-						}
-						else if (dc.equals(DamageCause.PROJECTILE))
-						{
-							if (((EntityDamageByEntityEvent)dev).getDamager().getType().toString().toLowerCase().equals("snowball"))
-							{
-								Entity bullet = ((EntityDamageByEntityEvent)dev).getDamager();
-								if (bullet instanceof Snowball) 
-								{
-									if (((Snowball)((EntityDamageByEntityEvent)dev).getDamager()).getShooter() instanceof Player) 
-									{
-										Player gunner = (Player) ((Snowball)((EntityDamageByEntityEvent)dev).getDamager()).getShooter();
-										if (gunner != null && plugin.isInArena(gunner))
-										{
-											String gunnerp = gunner.getName();
-											event.getDrops().clear();
-												
-											//Dead player
-											if (dead instanceof Player)
-											{
-												if (plugin.isInArena(dead.getLocation()))
-												{
-													Player deadplayer = (Player)dead;
-													ArenaPlayer dp = plugin.getArenaPlayer(deadplayer);
-													
-													dp.setKillstreak(0);
-													dp.setDeaths(dp
-															.getDeaths() + 1);
-														
-													String line1 = ChatColor.GREEN + deadplayer.getName() + ChatColor.WHITE + " has been killed by " + ChatColor.RED + gunnerp;
-													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(deadplayer).getKills();
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(deadplayer).getDeaths();
-													String line5 = ChatColor.RED + "----------------------------";
-												
-													deadplayer.sendMessage(line1);
-													deadplayer.sendMessage(line2);
-													deadplayer.sendMessage(line3);
-													deadplayer.sendMessage(line4);
-													deadplayer.sendMessage(line5);
-												}
-											}
-												
-											//Killer
-											if (gunner instanceof Player)
-											{
-												if (plugin.isInArena(gunner))
-												{
-													plugin.getArenaPlayer(gunner)
-															.setKillstreak(
-																	plugin.getArenaPlayer(gunner)
-																			.getKillstreak() + 1);
-													plugin.getArenaPlayer(gunner)
-															.setKills(
-																	plugin.getArenaPlayer(gunner)
-																			.getKills() + 1);
-													plugin.getArenaPlayer(gunner)
-															.setGameXP(
-																	plugin.getArenaPlayer(gunner)
-																			.getGameXP() + 25);
-														
-													String line1 = ChatColor.GREEN + gunnerp + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getType().getName();
-													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(gunner).getKills();
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(gunner).getDeaths();
-													String line5 = ChatColor.RED + "----------------------------";
-													
-													gunner.sendMessage(line1);
-													gunner.sendMessage(line2);
-													gunner.sendMessage(line3);
-													gunner.sendMessage(line4);
-													gunner.sendMessage(line5);
-												}
-											}
-										}
-									}
-								}
-							}
-							
-							return;
 						}
 						else
 						{
-							if (plugin.isInArena(dead))
-							{
-								event.getDrops().clear();
-								plugin.getArenaPlayer(dead).setKillstreak(0);
-								
-								plugin.getArenaPlayer(dead).setDeaths(plugin.getArenaPlayer(dead).getDeaths() + 1);
-								String line2 = ChatColor.RED + dead.getName() + " You have been killed by " + dc.toString();
-								String line3 = ChatColor.RED + "----------------------------";
-								String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(dead).getKills();
-								String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(dead).getDeaths();
-								String line6 = ChatColor.RED + "----------------------------";
-									
-								dead.sendMessage(line2);
-								dead.sendMessage(line3);
-								dead.sendMessage(line4);
-								dead.sendMessage(line5);
-								dead.sendMessage(line6);
-							}
-							
+							ap.sendMessage("&cYou cannot hurt players not in the arena!");
+							event.setCancelled(true);
 							return;
 						}
 					}
 				}
 				else
 				{
-					LivingEntity dead = (LivingEntity) event.getEntity();
-					if (dev.getCause() != null) 
+					if (plugin.isInArena(dmgd))
 					{
-						DamageCause dc = dev.getCause();
-						if (dc.equals(DamageCause.PROJECTILE))
+						att.sendMessage(ChatColor.RED + "You cannot hurt players while they are in an arena!");
+						event.setCancelled(true);
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDamageByEntityMonitor(EntityDamageByEntityEvent event)
+	{
+		if (event.getDamager() instanceof Player)
+		{
+			Player player = (Player)event.getDamager();
+			ItemStack inHand = player.getItemInHand();
+			if (inHand.getType().getMaxDurability() != 0)
+			{
+				inHand.setDurability((short) 0);
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityDeath(EntityDeathEvent event)
+	{
+		Entity died = event.getEntity();
+		if (died == null)
+			return;
+		
+		if (plugin.isInArena(died.getLocation())) // Clear drops in arena
+		{
+			event.getDrops().clear();
+			event.setDroppedExp(0);
+		}
+		
+		if (died instanceof Player) // A player died
+		{
+			Player pdied = (Player)died;
+			plugin.debug("Player {0} has died.", pdied.getName());
+			if (plugin.isInArena(pdied))
+			{
+				ArenaPlayer dp = plugin.getArenaPlayer(pdied);
+				dp.setKillstreak(0);
+				dp.setDeaths(dp.getDeaths() + 1);
+				
+				Arena ar = plugin.getArena(pdied);
+				ar.onPlayerDeath(dp);
+				
+				if (pdied.getKiller() instanceof Player) 
+				{
+					Player killer = (Player)pdied.getKiller();
+					plugin.debug("Killer: {0}", killer.getName());
+					if (killer.getName() == pdied.getName()) // Suicide
+					{
+						plugin.debug("Player {0} has committed suicide!", pdied.getName());
+						
+						List<String> lines = new ArrayList<String>();
+						lines.add(FormatUtil.format("&a{0} &fhas commited &csuicide!", pdied.getName()));
+						lines.add(FormatUtil.format("&c----------------------------"));
+						lines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
+						lines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
+						lines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+						lines.add(FormatUtil.format("&c----------------------------"));
+						
+						for (String line : lines)
 						{
-							if (((EntityDamageByEntityEvent)dev).getDamager().getType().toString().equalsIgnoreCase("snowball"))
-							{
-								Entity bullet = ((EntityDamageByEntityEvent)dev).getDamager();
-								if (bullet instanceof Snowball) 
-								{
-									if (((Snowball)((EntityDamageByEntityEvent)dev).getDamager()).getShooter() instanceof Player) 
-									{
-										Player gunner = (Player) ((Snowball)((EntityDamageByEntityEvent)dev).getDamager()).getShooter();
-										if (gunner != null)
-										{
-											String gunnerp = gunner.getName();
-											event.getDrops().clear();
-											
-											//Dead player
-											if (dead instanceof Player)
-											{
-												if (plugin.isInArena(dead.getLocation()))
-												{
-													Player deadplayer = (Player)dead;
-													plugin.getArenaPlayer(deadplayer).setKillstreak(0);
-													plugin.getArenaPlayer(deadplayer)
-															.setDeaths(
-																	plugin.getArenaPlayer(deadplayer)
-																			.getDeaths() + 1);
-													String line1 = ChatColor.GREEN + deadplayer.getName() + ChatColor.WHITE + " has been killed by " + ChatColor.RED + gunnerp;
-													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(deadplayer).getKills();
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(deadplayer).getDeaths();
-													String line5 = ChatColor.RED + "----------------------------";
-												
-													deadplayer.sendMessage(line1);
-													deadplayer.sendMessage(line2);
-													deadplayer.sendMessage(line3);
-													deadplayer.sendMessage(line4);
-													deadplayer.sendMessage(line5);
-												}
-											}
-												
-											//Killer
-											if (gunner instanceof Player)
-											{
-												if (plugin.isInArena(gunner))
-												{
-													plugin.getArenaPlayer(gunner)
-															.setKillstreak(
-																	plugin.getArenaPlayer(gunner)
-																			.getKillstreak() + 1);
-													plugin.getArenaPlayer(gunner)
-															.setKills(
-																	plugin.getArenaPlayer(gunner)
-																			.getKills() + 1);
-													plugin.getArenaPlayer(gunner)
-															.setGameXP(
-																	plugin.getArenaPlayer(gunner)
-																			.getGameXP() + 25);
-														
-													String line1 = ChatColor.GREEN + gunnerp + ChatColor.WHITE + " killed " + ChatColor.RED + dead.getType().getName();
-													String line2 = ChatColor.RED + "----------------------------";
-													String line3 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(gunner).getKills();
-													String line4 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(gunner).getDeaths();
-													String line5 = ChatColor.RED + "----------------------------";
-													
-													gunner.sendMessage(line1);
-													gunner.sendMessage(line2);
-													gunner.sendMessage(line3);
-													gunner.sendMessage(line4);
-													gunner.sendMessage(line5);
-												}
-											}
-											
-											if ((gunner instanceof Player) && (dead instanceof Player))
-											{
-												if ((gunner != null) && (dead != null))
-												{
-													ArenaPlayer ag = plugin.getArenaPlayer(gunner);
-													ArenaPlayer ad = plugin.getArenaPlayer((Player)dead);
-													Arena ar = plugin.getArena(gunner);
-														
-													UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(ad, ag, ar);
-													plugin.getServer().getPluginManager().callEvent(killEvent);
-												}
-											}
-										}
-									}
-								}
-							}
-							
-							return;
+							pdied.sendMessage(line);
 						}
-						else if (dc.equals(DamageCause.ENTITY_ATTACK)) 
+					}
+					else // PVP
+					{
+						plugin.debug("PVP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
+						
+						List<String> deadlines = new ArrayList<String>();
+						deadlines.add(FormatUtil.format("&c{0} &fhas killed &a{1}", killer.getName(), pdied.getName()));
+						deadlines.add(FormatUtil.format("&c----------------------------"));
+						deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
+						deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
+						deadlines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+						deadlines.add(FormatUtil.format("&c----------------------------"));
+						
+						for (String deadline : deadlines)
 						{
-							Entity damager = ((EntityDamageByEntityEvent)dev).getDamager();
-							if (damager instanceof Player) 
-							{
-								Player attacker = (Player)((EntityDamageByEntityEvent)dev).getDamager();
-								if (plugin.isInArena(attacker)) 
-								{
-									event.getDrops().clear();
-									if (plugin.isInArena(attacker.getLocation()))
-									{
-										plugin.getArenaPlayer(attacker).setKills(
-												plugin.getArenaPlayer(attacker).getKills() + 1);
-										plugin.getArenaPlayer(attacker).setKillstreak(
-												plugin.getArenaPlayer(attacker).getKillstreak() + 1);
-										plugin.getArenaPlayer(attacker).setGameXP(
-												plugin.getArenaPlayer(attacker).getGameXP() + 25);
-										
-										String attstr = dead.getType().getName();
-										
-										String line1 = ChatColor.GREEN + attacker.getName() + ChatColor.WHITE + " killed " + ChatColor.RED + attstr;
-										String line2 = ChatColor.RED + "killed " + attstr + " +25 XP";
-										String line3 = ChatColor.RED + "----------------------------";
-										String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).getKills();
-										String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).getDeaths();
-										String line6 = ChatColor.RED + "----------------------------";
-											
-										attacker.sendMessage(line1);
-										attacker.sendMessage(line2);
-										attacker.sendMessage(line3);
-										attacker.sendMessage(line4);
-										attacker.sendMessage(line5);
-										attacker.sendMessage(line6);
-											
-										Arena ar = plugin.getArena(attacker);
-										ar.doKillStreak(plugin.getArenaPlayer(attacker));
-									}
-								}
-							}
-							
-							return;
+							pdied.sendMessage(deadline);
 						}
-						else if (dc.equals(DamageCause.PROJECTILE)) 
+						
+						// Handle killer
+						ArenaPlayer kp = plugin.getArenaPlayer(killer);
+						kp.setKills(kp.getKills() + 1);
+						kp.setKillstreak(kp.getKillstreak() + 1);
+						
+						List<String> killerlines = new ArrayList<String>();
+						killerlines.add(FormatUtil.format("&a{0} &fhas killed &c{1}", killer.getName(), pdied.getName()));
+						killerlines.add(FormatUtil.format("&c----------------------------"));
+						killerlines.add(FormatUtil.format("&cKills: &f{0}", kp.getKills()));
+						killerlines.add(FormatUtil.format("&cDeaths: &f{0}", kp.getDeaths()));
+						killerlines.add(FormatUtil.format("&cStreak: &f{0}", kp.getKillstreak()));
+						killerlines.add(FormatUtil.format("&c----------------------------"));
+						
+						for (String killerline : killerlines)
 						{
-							Entity damager = ((EntityDamageByEntityEvent)dev).getDamager();
-							if (damager instanceof Arrow) 
-							{
-								if (((Arrow)((EntityDamageByEntityEvent)dev).getDamager()).getShooter() instanceof Player) 
-								{
-									Player attacker = (Player) ((Arrow)((EntityDamageByEntityEvent)dev).getDamager()).getShooter();
-									if (plugin.isInArena(attacker))
-									{
-										event.getDrops().clear();
-										if (plugin.isInArena(attacker.getLocation())) 
-										{
-											plugin.getArenaPlayer(attacker).setKills(
-													plugin.getArenaPlayer(attacker).getKills() + 1);
-											plugin.getArenaPlayer(attacker)
-													.setKillstreak(
-															plugin.getArenaPlayer(attacker)
-																	.getKillstreak() + 1);
-											plugin.getArenaPlayer(attacker).setGameXP(
-													plugin.getArenaPlayer(attacker).getGameXP() + 25);
-											
-											String attstr = dead.getType().getName();
-												
-											String line1 = ChatColor.GREEN + attacker.getName() + ChatColor.WHITE + " killed " + ChatColor.RED + attstr;
-											String line2 = ChatColor.RED + "killed " + attstr + " +25 XP";
-											String line3 = ChatColor.RED + "----------------------------";
-											String line4 = ChatColor.RED + "Kills: " + plugin.getArenaPlayer(attacker).getKills();
-											String line5 = ChatColor.RED + "Deaths: " + plugin.getArenaPlayer(attacker).getDeaths();
-											String line6 = ChatColor.RED + "----------------------------";
-											
-											attacker.sendMessage(line1);
-											attacker.sendMessage(line2);
-											attacker.sendMessage(line3);
-											attacker.sendMessage(line4);
-											attacker.sendMessage(line5);
-											attacker.sendMessage(line6);
-												
-											Arena ar = plugin.getArena(attacker);
-											ar.doKillStreak(plugin.getArenaPlayer(attacker));
-										}
-									}
-								}
-							}
+							killer.sendMessage(killerline);
 						}
+					}
+				}
+				else
+				{
+					if (pdied.getKiller() instanceof LivingEntity)
+					{
+						LivingEntity lentity = (LivingEntity)pdied.getKiller();
+						plugin.debug("Player {0} was killed by {1}", pdied.getName(), FormatUtil.getFriendlyName(lentity.getType()));
+						
+						List<String> deadlines = new ArrayList<String>();
+						
+						String name = FormatUtil.getFriendlyName(lentity.getType());
+						deadlines.add(FormatUtil.format("&a{0} &fwas killed by &c{0}", pdied.getName(), FormatUtil.getArticle(name) + name));
+						deadlines.add(FormatUtil.format("&c----------------------------"));
+						deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
+						deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
+						deadlines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+						deadlines.add(FormatUtil.format("&c----------------------------"));
+						
+						for (String deadline : deadlines)
+						{
+							pdied.sendMessage(deadline);
+						}
+					}
+					else
+					{
+						List<String> deadlines = new ArrayList<String>();
+						
+						String dc = pdied.getLastDamageCause().getCause().toString();
+						plugin.debug("Player {0} was killed by {1}", pdied.getName(), FormatUtil.getFriendlyName(dc));
+						
+						deadlines.add(FormatUtil.format("&a{0} &fwas killed by &c{0}", pdied.getName(), FormatUtil.getFriendlyName(dc)));
+						deadlines.add(FormatUtil.format("&c----------------------------"));
+						deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
+						deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
+						deadlines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+						deadlines.add(FormatUtil.format("&c----------------------------"));
+						
+						for (String deadline : deadlines)
+						{
+							pdied.sendMessage(deadline);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (died instanceof LivingEntity)
+			{
+				LivingEntity lentity = (LivingEntity)died;
+				if (lentity.getKiller() instanceof Player)
+				{
+					Player killer = (Player)lentity.getKiller();
+					plugin.debug("{0} has been killed by {1}", FormatUtil.getFriendlyName(lentity.getType()), killer.getName());
+					
+					ArenaPlayer ak = plugin.getArenaPlayer(killer);
+					ak.setKills(ak.getKills() + 1);
+					ak.setKillstreak(ak.getKillstreak() + 1);
+					ak.getArena().doKillStreak(ak);
+					
+					List<String> lines = new ArrayList<String>();
+					
+					String name = FormatUtil.getFriendlyName(lentity.getType());
+					lines.add(FormatUtil.format("&a{0} &fhas killed {1} &c{2}", killer.getName(), FormatUtil.getArticle(name), name));
+					lines.add(FormatUtil.format("&c----------------------------"));
+					lines.add(FormatUtil.format("&cKills: &f{0}", ak.getKills()));
+					lines.add(FormatUtil.format("&cDeaths: &f{0}", ak.getDeaths()));
+					lines.add(FormatUtil.format("&cStreak: &f{0}", ak.getKillstreak()));
+					lines.add(FormatUtil.format("&c----------------------------"));
+					
+					for (String line : lines)
+					{
+						killer.sendMessage(line);
 					}
 				}
 			}

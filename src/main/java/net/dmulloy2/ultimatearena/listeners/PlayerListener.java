@@ -22,11 +22,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerListener implements Listener 
 {
@@ -55,24 +55,7 @@ public class PlayerListener implements Listener
 			}
 		}
 	}
-	
-	// TODO: Remove this? Doesn't seem necessary
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerKick(PlayerKickEvent event) 
-	{
-		Player player = event.getPlayer();
-		if (plugin.isInArena(player)) 
-		{
-			if (plugin.isInArena(player.getLocation())) 
-			{
-				if (event.getReason().equals("You moved too quickly :( (Hacking?)")) 
-				{
-					event.setCancelled(true);
-				}
-			}
-		}
-	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event) 
 	{
@@ -86,9 +69,9 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) 
 	{
-		Player pl = event.getPlayer();
-		if (pl != null)
+		if (! event.isCancelled())
 		{
+			Player pl = event.getPlayer();
 			if (plugin.isInArena(pl))
 			{
 				if (! plugin.getArena(pl).getType().equals("Hunger"))
@@ -102,9 +85,9 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) 
 	{
-		Player pl = event.getPlayer();
-		if (pl != null)
+		if (! event.isCancelled())
 		{
+			Player pl = event.getPlayer();
 			if (plugin.isInArena(pl)) 
 			{
 				if (! plugin.getArena(pl).getType().equals("Hunger"))
@@ -115,7 +98,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) 
 	{
 		Action action = event.getAction();
@@ -185,7 +168,7 @@ public class PlayerListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerInteract1(PlayerInteractEvent event)
+	public void onSignInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
 		Action action = event.getAction();
@@ -267,27 +250,24 @@ public class PlayerListener implements Listener
 	public void onPlayerRespawn(PlayerRespawnEvent event) 
 	{
 		Player pl = event.getPlayer();
-		if (pl != null)
+		if (plugin.isInArena(pl)) 
 		{
-			if (plugin.isInArena(pl)) 
+			ArenaPlayer apl = plugin.getArenaPlayer(pl);
+			if (apl != null && !apl.isOut()) 
 			{
-				ArenaPlayer apl = plugin.getArenaPlayer(pl);
-				if (apl != null && !apl.isOut()) 
+				if (plugin.getArenaPlayer(pl).getDeaths() < plugin.getArena(pl).getMaxDeaths()) 
 				{
-					if (plugin.getArenaPlayer(pl).getDeaths() < plugin.getArena(pl).getMaxDeaths()) 
+					Arena are = plugin.getArena(pl);
+					if (are != null && !are.isStopped())
 					{
-						Arena are = plugin.getArena(pl);
-						if (are != null && !are.isStopped())
+						if (are.getGametimer() > 1) 
 						{
-							if (are.getGametimer() > 1) 
+							if (are.getSpawn(apl) != null)
 							{
-								if (are.getSpawn(apl) != null)
-								{
-									event.setRespawnLocation(are.getSpawn(apl));
-								}
-								
-								are.spawn(pl.getName(), false);
+								event.setRespawnLocation(are.getSpawn(apl));
 							}
+								
+							are.spawn(pl.getName(), false);
 						}
 					}
 				}
@@ -312,19 +292,44 @@ public class PlayerListener implements Listener
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerTeleport(PlayerTeleportEvent event)
+	{
+		if (! event.isCancelled())
+		{
+			Player player = event.getPlayer();
+			if (plugin.isInArena(player))
+			{
+				if (event.getCause() != PlayerTeleportEvent.TeleportCause.PLUGIN)
+				{
+					ArenaPlayer ap = plugin.getArenaPlayer(player);
+					if (ap != null && !ap.isOut())
+					{
+						ap.sendMessage("&cYou cannot teleport while ingame!");
+						event.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
+	
+	// TODO: Add a bypass permission?
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
-		Player player = event.getPlayer();
-		String cmd = event.getMessage().toLowerCase();
-		
-		String[] check = cmd.split(" ");
-		if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
+		if (! event.isCancelled())
 		{
-			player.sendMessage(ChatColor.GRAY + "You cannot use non-ua commands in an arena!");
-			player.sendMessage(ChatColor.GRAY + "If you wish to use commands again, use " + ChatColor.LIGHT_PURPLE + "/ua leave");
-			event.setCancelled(true);
-			return;
+			Player player = event.getPlayer();
+			String cmd = event.getMessage().toLowerCase();
+			
+			String[] check = cmd.split(" ");
+			if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
+			{
+				player.sendMessage(ChatColor.GRAY + "You cannot use non-ua commands in an arena!");
+				player.sendMessage(ChatColor.GRAY + "If you wish to use commands again, use " + ChatColor.LIGHT_PURPLE + "/ua leave");
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}	
 }

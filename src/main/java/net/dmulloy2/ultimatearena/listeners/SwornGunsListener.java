@@ -8,6 +8,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+/**
+ * @author dmulloy2
+ */
+
 public class SwornGunsListener implements Listener
 {
 	private final UltimateArena plugin;

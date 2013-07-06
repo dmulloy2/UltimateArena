@@ -193,6 +193,7 @@ public class UltimateArena extends JavaPlugin
 		outConsole("{0} has been disabled ({1}ms)", getDescription().getFullName(), finish - start);
 	}
 	
+	// Console logging
 	public void outConsole(Level level, String string, Object...objects)
 	{
 		String out = FormatUtil.formatLog(string, objects);
@@ -221,6 +222,7 @@ public class UltimateArena extends JavaPlugin
 		debug("Broadcasted message: {0}", broadcast);
 	}
 	
+	// Create Directories
 	public void createDirectories()
 	{
 		File arenaFile = new File(getDataFolder(), "arenas");
@@ -252,6 +254,7 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 	
+	// Load saved players
 	public void loadPlayers()
 	{
 		savedPlayers = fileHelper.getSavedPlayers();
@@ -272,6 +275,7 @@ public class UltimateArena extends JavaPlugin
 		outConsole("Loaded {0} saved players!", savedPlayers.size());
 	}
 
+	// Save players in arenas
 	public void onQuit(Player player)
 	{
 		if (isPlayerCreatingArena(player)) 
@@ -297,6 +301,7 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 	
+	// Normalize saved players
 	public void onJoin(Player player) 
 	{
 		/**Normalize Player If Saved**/
