@@ -110,6 +110,7 @@ public class ArenaClass
 				}
 			}
 			
+			// TODO: Potions and optimization
 			String toolPath = "tools.";
 			String tool1 = fc.getString(toolPath + 1);
 			if (tool1 != null)
