@@ -48,7 +48,7 @@ public class INFECTArena extends PVPArena
 //				apl.setPlayer(Util.matchPlayer(apl.getUsername()));
 				apl.setTeam(2);
 //				spawn(apl.player.getName(), true);
-				apl.getPlayer().sendMessage(ChatColor.BLUE + "You have been chosen for the infected!");
+				apl.sendMessage("&9You have been chosen for the infected!");
 				onSpawn(apl);
 				tellPlayers("&c{0} &bis the zombie!", apl.getPlayer().getName());
 			}
@@ -59,7 +59,7 @@ public class INFECTArena extends PVPArena
 		}
 		else
 		{
-			this.tellPlayers(ChatColor.RED + "Error starting!");
+			this.tellPlayers("&cError starting!");
 			stop();
 		}
 	}
@@ -92,13 +92,13 @@ public class INFECTArena extends PVPArena
 				if (this.getTeam1size() == 0)
 				{
 					this.setWinningTeam(2);
-					this.tellPlayers(ChatColor.BLUE + "Infected Win!");
+					this.tellPlayers("&9Infected Win!");
 					this.stop();
 					this.rewardTeam(2, ChatColor.YELLOW + "You win!", true);
 				}
 				else
 				{
-					this.tellPlayers(ChatColor.BLUE + "One team is empty! game ended!");
+					this.tellPlayers("&9One team is empty! game ended!");
 					this.stop();
 				}
 			}
@@ -106,7 +106,7 @@ public class INFECTArena extends PVPArena
 			{
 				if (this.getAmtPlayersStartingInArena() <= 1) 
 				{
-					this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
+					this.tellPlayers("&9Not enough people to play!");
 					this.stop();
 				}
 			}
@@ -130,7 +130,7 @@ public class INFECTArena extends PVPArena
 	{
 		if (pl.getTeam() == 1)
 		{
-			pl.getPlayer().sendMessage(ChatColor.AQUA + "You have joined the Infected!");
+			pl.sendMessage("&bYou have joined the Infected!");
 		}
 		pl.setTeam(2);
 	}

@@ -3,19 +3,20 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.Util;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class MOBArena extends Arena 
 {
@@ -103,11 +104,10 @@ public class MOBArena extends Arena
 
 		if (pl != null) 
 		{
-			PlayerInventory inv = pl.getInventory();
-			if (amtGold > 0) { inv.addItem(new ItemStack(Material.GOLD_INGOT, amtGold)); }
-			if (amtSlime > 0) { inv.addItem(new ItemStack(Material.SLIME_BALL, amtSlime)); }
-			if (amtGlowStone > 0) { inv.addItem(new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone)); }
-			if (amtGunPowder > 0) { inv.addItem(new ItemStack(Material.SULPHUR, amtGunPowder)); }
+			if (amtGold > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold)); }
+			if (amtSlime > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime)); }
+			if (amtGlowStone > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone)); }
+			if (amtGunPowder > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder)); }
 		}
 	}
 	
@@ -135,7 +135,7 @@ public class MOBArena extends Arena
 	@Override
 	public void doKillStreak(ArenaPlayer ap)
 	{
-		Player pl = Util.matchPlayer(ap.getPlayer().getName());
+		Player pl = ap.getPlayer();
 		if (pl != null) 
 		{
 			if (ap.getKillstreak() == 8)
@@ -196,7 +196,17 @@ public class MOBArena extends Arena
 							Location loc = this.getArenaZone().getSpawns().get(Util.random(this.getArenaZone().getSpawns().size()));
 							String mob = this.spawning.get(Util.random(spawning.size()));
 							LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
-							this.mobs.add(newMob);
+							
+							if (newMob.getType() == EntityType.SKELETON)
+							{
+								if (Util.random(2) == 0)
+								{
+									// Wither skeletons! >:D
+									((Skeleton)newMob).setSkeletonType(Skeleton.SkeletonType.WITHER);
+								}
+							}
+							
+							mobs.add(newMob);
 						}
 					}
 				}
@@ -204,7 +214,7 @@ public class MOBArena extends Arena
 				
 			if (getAmtPlayersInArena() == 0) 
 			{
-				getPlugin().getLogger().info("Stopping Mob arena");
+				getPlugin().outConsole("Stopping Mob arena");
 				stop();
 			}
 			if (getWave() > getMaxwave()) 

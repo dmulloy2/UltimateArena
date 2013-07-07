@@ -6,9 +6,11 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.events.UltimateArenaKillEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -55,6 +57,7 @@ public class EntityListener implements Listener
 		{
 			if (plugin.isInArena(event.getEntity().getLocation()))
 			{
+				// TODO: Does this affect creepers?
 				event.setCancelled(true);
 			}
 		}
@@ -128,9 +131,22 @@ public class EntityListener implements Listener
 		{
 			Player player = (Player)event.getDamager();
 			ItemStack inHand = player.getItemInHand();
-			if (inHand.getType().getMaxDurability() != 0)
+			if (inHand != null && inHand.getType() != Material.AIR)
 			{
-				inHand.setDurability((short) 0);
+				if (inHand.getType().getMaxDurability() != 0)
+				{
+					// TODO: Make sure this works
+					inHand.setDurability((short) 0);
+				}
+			}
+			
+			for (ItemStack armor : player.getInventory().getArmorContents())
+			{
+				if (armor != null && armor.getType() != Material.AIR)
+				{
+					// TODO: Make sure this works
+					armor.setDurability((short) 0);
+				}
 			}
 		}
 	}
@@ -177,6 +193,7 @@ public class EntityListener implements Listener
 							lines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							lines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
 							lines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+							lines.add(FormatUtil.format("&cGameXP: &f{0}", dp.getGameXP()));
 							lines.add(FormatUtil.format("&c----------------------------"));
 							
 							for (String line : lines)
@@ -194,6 +211,7 @@ public class EntityListener implements Listener
 							deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
 							deadlines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+							deadlines.add(FormatUtil.format("&cGameXP: &f{0}", dp.getGameXP()));
 							deadlines.add(FormatUtil.format("&c----------------------------"));
 							
 							for (String deadline : deadlines)
@@ -207,6 +225,8 @@ public class EntityListener implements Listener
 							{
 								kp.setKills(kp.getKills() + 1);
 								kp.setKillstreak(kp.getKillstreak() + 1);
+								kp.getArena().doKillStreak(kp);
+								kp.addXP(100);
 								
 								List<String> killerlines = new ArrayList<String>();
 								killerlines.add(FormatUtil.format("&a{0} &fhas killed &c{1}", killer.getName(), pdied.getName()));
@@ -214,12 +234,16 @@ public class EntityListener implements Listener
 								killerlines.add(FormatUtil.format("&cKills: &f{0}", kp.getKills()));
 								killerlines.add(FormatUtil.format("&cDeaths: &f{0}", kp.getDeaths()));
 								killerlines.add(FormatUtil.format("&cStreak: &f{0}", kp.getKillstreak()));
+								killerlines.add(FormatUtil.format("&cGameXP: &f{0}", kp.getGameXP()));
 								killerlines.add(FormatUtil.format("&c----------------------------"));
 								
 								for (String killerline : killerlines)
 								{
 									killer.sendMessage(killerline);
 								}
+								
+								UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, kp, ar);
+								plugin.getServer().getPluginManager().callEvent(killEvent);
 							}
 						}
 					}
@@ -238,6 +262,7 @@ public class EntityListener implements Listener
 							deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
 							deadlines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+							deadlines.add(FormatUtil.format("&cGameXP: &f{0}", dp.getGameXP()));
 							deadlines.add(FormatUtil.format("&c----------------------------"));
 							
 							for (String deadline : deadlines)
@@ -257,6 +282,7 @@ public class EntityListener implements Listener
 							deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
 							deadlines.add(FormatUtil.format("&cStreak: &f{0}", dp.getKillstreak()));
+							deadlines.add(FormatUtil.format("&cGameXP: &f{0}", dp.getGameXP()));
 							deadlines.add(FormatUtil.format("&c----------------------------"));
 							
 							for (String deadline : deadlines)
@@ -283,6 +309,7 @@ public class EntityListener implements Listener
 						ArenaPlayer ak = plugin.getArenaPlayer(killer);
 						if (ak != null && !ak.isOut())
 						{
+							ak.addXP(25);
 							ak.setKills(ak.getKills() + 1);
 							ak.setKillstreak(ak.getKillstreak() + 1);
 							ak.getArena().doKillStreak(ak);
@@ -295,6 +322,7 @@ public class EntityListener implements Listener
 							lines.add(FormatUtil.format("&cKills: &f{0}", ak.getKills()));
 							lines.add(FormatUtil.format("&cDeaths: &f{0}", ak.getDeaths()));
 							lines.add(FormatUtil.format("&cStreak: &f{0}", ak.getKillstreak()));
+							lines.add(FormatUtil.format("&cGameXP: &f{0}", ak.getGameXP()));
 							lines.add(FormatUtil.format("&c----------------------------"));
 							
 							for (String line : lines)

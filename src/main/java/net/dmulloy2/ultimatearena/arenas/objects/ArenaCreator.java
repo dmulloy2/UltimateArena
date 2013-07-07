@@ -21,8 +21,6 @@ public class ArenaCreator
 	private Location lobby2 = null;
 	private Location arena1 = null;
 	private Location arena2 = null;
-//	private Location flag1point = null;
-//	private Location flag2point = null;
 	private Location team1spawn = null;
 	private Location team2spawn = null;
 	private Location lobbyREDspawn = null;

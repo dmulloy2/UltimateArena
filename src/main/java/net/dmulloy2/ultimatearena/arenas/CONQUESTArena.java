@@ -130,7 +130,8 @@ public class CONQUESTArena extends Arena
 			{
 				if (!getArenaplayers().get(i).isOut()){ 
 					Player pl1 = getArenaplayers().get(i).getPlayer();
-					if (pl1 != null) {
+					if (pl1 != null) 
+					{
 						if (getArenaplayers().get(i).getTeam() == 1) 
 						{
 							pl1.sendMessage(ChatColor.RED + "Your power is now: " + ChatColor.GOLD + REDTEAMPOWER);

@@ -64,7 +64,8 @@ public class BOMBArena extends Arena
 				if (!getArenaplayers().get(i).isOut())
 				{ 
 					Player pl1 = getArenaplayers().get(i).getPlayer();
-					if (pl1 != null) {
+					if (pl1 != null) 
+					{
 						if (getArenaplayers().get(i).getTeam() == 1) 
 						{
 							pl1.sendMessage(ChatColor.RED + "Your power is now: " + ChatColor.GOLD + REDTEAMPOWER);
@@ -111,7 +112,8 @@ public class BOMBArena extends Arena
 			for (int i = 0; i < getArenaplayers().size(); i++)
 			{
 				ArenaPlayer ap = getArenaplayers().get(i);
-				if (!ap.isOut()) {
+				if (!ap.isOut()) 
+				{
 					if (ap.getTeam() == 1)
 					{
 						ap.setOut(true);

@@ -419,7 +419,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		for (ArenaConfig ac : configs)
 		{
-			if (ac.arenaName.equalsIgnoreCase(type))
+			if (ac.getArenaName().equalsIgnoreCase(type))
 				return ac;
 		}
 		

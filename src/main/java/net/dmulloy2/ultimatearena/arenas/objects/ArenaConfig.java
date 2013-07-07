@@ -4,32 +4,30 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.util.InventoryHelper;
+
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
-
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
 
 public class ArenaConfig
 {
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
 	
-	public boolean allowTeamKilling;
+	private boolean allowTeamKilling;
 	
-	public List<ArenaReward> rewards = new ArrayList<ArenaReward>();
+	private List<ArenaReward> rewards = new ArrayList<ArenaReward>();
 	
-	public boolean loaded = false;
+	private boolean loaded = false;
 	
-	public String arenaName;
-	public File file;
-	public UltimateArena plugin;
+	private String arenaName;
+	private File file;
+	private final UltimateArena plugin;
 	
-	public ArenaConfig(UltimateArena plugin, String str, File file)
+	public ArenaConfig(final UltimateArena plugin, String str, File file)
 	{
 		this.arenaName = str;
 		this.file = file;
@@ -102,31 +100,30 @@ public class ArenaConfig
 	{
 		for (ArenaReward a : rewards)
 		{
-			Material mat = Material.getMaterial(a.getType());
-			int amt = a.getAmount();
-			byte dat = a.getData();
-			PlayerInventory inv = player.getInventory();
-			MaterialData data = new MaterialData(mat.getId());
+			ItemStack stack = new ItemStack(a.getType());
 			
-			if (amt < 1)
-				amt = 1;
-			
-			if (dat > 0)
+			// Calculate Amount
+			int amount = 1;
+			if (a.getAmount() != 0)
 			{
-				data.setData(dat);
+				amount = a.getAmount();
 			}
 			
 			if (half)
-				amt = (int)(Math.floor(amt / 2.0));
-					
-			ItemStack itemStack = new ItemStack(mat, amt);
-			if (dat > 0) itemStack.setData(data);
-					
-			int slot = InventoryHelper.getFirstFreeSlot(inv);
-			if (slot > -1)
 			{
-				inv.setItem(slot, itemStack);
+				amount = (int) Math.floor(amount / 2.0);
 			}
+			
+			stack.setAmount(amount);
+			
+			if (a.getData() != 0)
+			{
+				MaterialData data = new MaterialData(a.getType());
+				data.setData(a.getData());
+				stack.setData(data);
+			}
+			
+			InventoryHelper.addItem(player, stack);
 		}
 		
 		// dmulloy2 new method
@@ -167,5 +164,15 @@ public class ArenaConfig
 	public int getCashReward()
 	{
 		return cashReward;
+	}
+
+	public boolean isAllowTeamKilling() 
+	{
+		return allowTeamKilling;
+	}
+	
+	public String getArenaName()
+	{
+		return arenaName;
 	}
 }

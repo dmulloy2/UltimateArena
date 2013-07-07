@@ -399,4 +399,14 @@ public class ArenaPlayer
 	{
 		player.sendMessage(FormatUtil.format(string, objects));
 	}
+	
+	public void addXP(int xp)
+	{
+		setGameXP(getGameXP() + xp);
+	}
+	
+	public void subtractXP(int xp)
+	{
+		setGameXP(getGameXP() - xp);
+	}
 }

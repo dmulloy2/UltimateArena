@@ -90,7 +90,7 @@ public class Arena
 			this.setGametimer(config.getGameTime());
 			this.setStarttimer(config.getLobbyTime());
 			this.setMaxDeaths(config.getMaxDeaths());
-			this.setAllowTeamKilling(config.allowTeamKilling);
+			this.setAllowTeamKilling(config.isAllowTeamKilling());
 			this.setMaxwave(config.getMaxWave());
 			
 			if (this.getMaxDeaths() < 1) 
@@ -500,21 +500,17 @@ public class Arena
 	/** Gives the player an item **/
 	public void giveItem(Player pl, int id, byte dat, int amt, String type)
 	{
-		PlayerInventory inv = pl.getInventory();
-		int slot = InventoryHelper.getFirstFreeSlot(inv);
-		if (slot != -1) 
+		pl.sendMessage(ChatColor.GOLD + type);
+		
+		ItemStack item = new ItemStack(id, amt);
+		if (dat != 0)
 		{
-			pl.sendMessage(ChatColor.GOLD + type);
-			if (dat == 0)
-				inv.addItem(new ItemStack(id, amt));
-			else
-			{
-				MaterialData data = new MaterialData(id);
-				data.setData(dat);
-				ItemStack itm = data.toItemStack(amt);
-				pl.getInventory().setItem(slot, itm);
-			}
+			MaterialData data = new MaterialData(id);
+			data.setData(dat);
+			item.setData(data);
 		}
+
+		InventoryHelper.addItem(pl, item);
 	}
 	
 	/** Basic Killstreak System **/
