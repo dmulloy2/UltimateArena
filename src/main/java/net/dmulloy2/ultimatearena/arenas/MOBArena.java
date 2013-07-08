@@ -165,7 +165,7 @@ public class MOBArena extends Arena
 				
 			if (ap.getKillstreak() == 40) 
 			{
-				givePotion(pl, "regen", 1, 1, false, "40 kills! Unlocked regeb potion!");
+				givePotion(pl, "regen", 1, 1, false, "40 kills! Unlocked regen potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "40 kills! Unlocked food!");
 			}
 				
