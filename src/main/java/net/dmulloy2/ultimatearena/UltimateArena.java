@@ -43,12 +43,8 @@ import net.dmulloy2.ultimatearena.arenas.*;
 import net.dmulloy2.ultimatearena.arenas.objects.*;
 import net.dmulloy2.ultimatearena.commands.*;
 import net.dmulloy2.ultimatearena.listeners.*;
-import net.dmulloy2.ultimatearena.permissions.PermissionHandler;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
-import net.dmulloy2.ultimatearena.util.ItemHelper;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.ultimatearena.permissions.*;
+import net.dmulloy2.ultimatearena.util.*;
 
 public class UltimateArena extends JavaPlugin
 {
@@ -76,12 +72,7 @@ public class UltimateArena extends JavaPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
-		
-		// Test ItemHelper (just for shits and giggles)
-		ItemHelper.readItem("261, 1 ,inf:1, power:2 ,arrowkb:2");
-		ItemHelper.readPotion("potion: regen, 1, 1, true");
-		ItemHelper.readPotion("potion: regen, 1, 1, false");
-		
+
 		// IO Stuff
 		createDirectories();
 		saveDefaultConfig();
