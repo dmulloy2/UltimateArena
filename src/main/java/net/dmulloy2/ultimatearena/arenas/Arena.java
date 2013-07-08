@@ -3,6 +3,12 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.objects.*;
+import net.dmulloy2.ultimatearena.events.*;
+import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.util.*;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -16,14 +22,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.objects.*;
-import net.dmulloy2.ultimatearena.events.*;
-import net.dmulloy2.ultimatearena.util.*;
 
 /** Data Container for an Arena **/
 public class Arena 
@@ -169,16 +172,26 @@ public class Arena
 	/** Announce the Arena **/
 	public void announce() 
 	{
-		if (announced == 0) 
+		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
-			getPlugin().broadcast("&b{0} &6arena has been created!", getArenaZone().getArenaType());
+			if (! plugin.isInArena(player))
+			{
+				if (plugin.getPermissionHandler().hasPermission(player, PermissionType.JOIN.permission))
+				{
+					if (announced == 0) 
+					{
+						player.sendMessage(FormatUtil.format("&b{0} &6arena has been created!", getArenaZone().getArenaType()));
+					}
+					else
+					{
+						player.sendMessage(FormatUtil.format("&6Hurry up and join the &b{0} &6arena!", getArenaZone().getArenaType()));
+					}
+					
+					player.sendMessage(FormatUtil.format("&6Type &b/ua join {0} &6to join!", getArenaZone().getArenaName()));
+				}
+			}
 		}
-		else
-		{
-			getPlugin().broadcast("&6Hurry up and join the &b{0} &6arena!", getArenaZone().getArenaType());
-		}
-		
-		getPlugin().broadcast("&6Type &b/ua join {0} &6to join!", getArenaZone().getArenaName());
+
 		announced++;
 	}
 	
@@ -513,6 +526,22 @@ public class Arena
 		InventoryHelper.addItem(pl, item);
 	}
 	
+	public void givePotion(Player pl, String s, int amt, int level, boolean splash, String message)
+	{
+		pl.sendMessage(ChatColor.GOLD + message);
+		
+		org.bukkit.potion.PotionType type = PotionType.toType(s);
+		if (type != null)
+		{
+			Potion potion = new Potion(1);
+			potion.setType(type);
+			potion.setLevel(level);
+			potion.setSplash(splash);
+			
+			InventoryHelper.addItem(pl, potion.toItemStack(amt));
+		}
+	}
+	
 	/** Basic Killstreak System **/
 	public void doKillStreak(ArenaPlayer ap) 
 	{
@@ -526,11 +555,11 @@ public class Arena
 				return;
 				
 			if (ap.getKillstreak() == 2)
-				giveItem(pl, Material.POTION.getId(), (byte)9, 1, "2 kills! Unlocked strength potion!");
+				givePotion(pl, "strength", 1, 1, false, "2 kills! Unlocked strength potion!");
 				
 			if (ap.getKillstreak() == 4)
 			{
-				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "4 kills! Unlocked Health potion!");
+				givePotion(pl, "heal", 1, 1, false, "4 kills! Unlocked health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 kills! Unlocked Food!");
 			}
 			if (ap.getKillstreak() == 5) 
@@ -553,7 +582,7 @@ public class Arena
 			}
 			if (ap.getKillstreak() == 12)
 			{
-				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "12 kills! Unlocked Health potion!");
+				givePotion(pl, "regen", 1, 1, false, "12 kills! Unlocked regen potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "12 kills! Unlocked Food!");
 			}
 		}
@@ -872,6 +901,17 @@ public class Arena
 								}
 							}
 						}
+					}
+					
+					// XP Bar
+					if (isInGame())
+					{
+						ap.getPlayer().setLevel(getGametimer());
+					}
+					
+					if (isInLobby())
+					{
+						ap.getPlayer().setLevel(getStarttimer());
 					}
 				}
 			}

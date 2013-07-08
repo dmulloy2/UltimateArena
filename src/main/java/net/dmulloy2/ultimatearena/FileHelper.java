@@ -832,8 +832,6 @@ public class FileHelper
 				
 				az.setSpecialType(fc.getInt("specialType"));
 				
-				fc.set("specialType", 80);
-				
 				for (int i = 0; i < 4; i++) 
 				{
 					String path = "flags." + i + ".";

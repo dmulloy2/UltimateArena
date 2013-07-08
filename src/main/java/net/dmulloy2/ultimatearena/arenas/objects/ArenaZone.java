@@ -15,7 +15,6 @@ public class ArenaZone
 {
 	private int amtLobbys = 2;
 	private int amtSpawnpoints = 2;
-//	private int stepnum;
 	private int specialType = 20;
 	private int timesPlayed = 0;
 	private int liked;
@@ -35,8 +34,6 @@ public class ArenaZone
 	private Location lobby2 = null;
 	private Location arena1 = null;
 	private Location arena2 = null;
-//	private Location flag1point = null;
-//	private Location flag2point = null;
 	private Location team1spawn = null;
 	private Location team2spawn = null;
 	private Location lobbyREDspawn = null;
@@ -46,7 +43,6 @@ public class ArenaZone
 	private Field arena;
 	
 	private List<String> voted = new ArrayList<String>();
-//	private List<String> steps = new ArrayList<String>();
 	private List<Location> spawns = new ArrayList<Location>();
 	private List<Location> flags = new ArrayList<Location>();
 	

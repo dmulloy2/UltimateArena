@@ -44,16 +44,16 @@ public class KOTHArena extends Arena
 		{
 			if (ap.getKillstreak() == 2) 
 			{
-				giveItem(pl, Material.POTION.getId(), (byte)9, 1, "2 kills! Unlocked strength potion!");
+				givePotion(pl, "strength", 1, 1, false, "2 kills! Unlocked strength potion!");
 			}
 			if (ap.getKillstreak() == 4) 
 			{
-				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "4 kills! Unlocked Health potion!");
+				givePotion(pl, "heal", 1, 1, false, "4 kills! Unlocked health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 kills! Unlocked food!");
 			}
 			if (ap.getKillstreak() == 12) 
 			{
-				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "12 kills! Unlocked Health potion!");
+				givePotion(pl, "regen", 1, 1, false, "12 kills! Unlocked regen potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "12 kills! Unlocked food!");
 			}
 		}

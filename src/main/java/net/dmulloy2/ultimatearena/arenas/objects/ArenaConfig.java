@@ -3,15 +3,16 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.ItemHelper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 public class ArenaConfig
 {
@@ -19,7 +20,7 @@ public class ArenaConfig
 	
 	private boolean allowTeamKilling;
 	
-	private List<ArenaReward> rewards = new ArrayList<ArenaReward>();
+	private List<ItemStack> rewards = new ArrayList<ItemStack>();
 	
 	private boolean loaded = false;
 	
@@ -36,7 +37,7 @@ public class ArenaConfig
 		this.loaded = load();
 		if (!loaded)
 		{
-			plugin.getLogger().warning("Could not load config for " + arenaName + "!");
+			plugin.outConsole(Level.SEVERE, "Could not load config for " + arenaName + "!");
 		}
 	}
 	
@@ -47,12 +48,6 @@ public class ArenaConfig
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			if (arenaName.equals("mob"))
 			{
-				if (fc.get("maxWave") == null)
-				{
-					fc.set("maxWave", 15);
-					fc.save(file);
-				}
-				
 				this.maxWave = fc.getInt("maxWave");
 			}
 			
@@ -65,63 +60,28 @@ public class ArenaConfig
 			List<String> words = fc.getStringList("rewards");
 			for (String word : words)
 			{
-				int id = 0;
-				byte dat = 0;
-				int amt = 0;
-						
-				String[] split = word.split(",");
-				if (split[0].contains(":"))
-				{
-					String[] split2 = split[0].split(":");
-					id = Integer.parseInt(split2[0]);
-					dat = Byte.parseByte(split2[1]);
-					amt = Integer.parseInt(split[1]);
-				}
-				else
-				{
-					id = Integer.parseInt(split[0]);
-					amt = Integer.parseInt(split[1]);
-				}
-						
-				ArenaReward reward = new ArenaReward(id, dat, amt);
-				rewards.add(reward);
+				ItemStack stack = ItemHelper.readItem(word);
+				rewards.add(stack);
 			}
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error loading config: " + e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Failed to load config for \"{0}\": {1}", arenaName, e.getMessage());
 			return false;
 		}
 		
+		plugin.debug("Loaded ArenaConfig for type: {0}!", arenaName);
 		return true;
 	}
 	
 	public void giveRewards(Player player, boolean half) 
 	{
-		for (ArenaReward a : rewards)
+		for (ItemStack stack : rewards)
 		{
-			ItemStack stack = new ItemStack(a.getType());
+			if (stack == null)
+				continue;
 			
-			// Calculate Amount
-			int amount = 1;
-			if (a.getAmount() != 0)
-			{
-				amount = a.getAmount();
-			}
-			
-			if (half)
-			{
-				amount = (int) Math.floor(amount / 2.0);
-			}
-			
-			stack.setAmount(amount);
-			
-			if (a.getData() != 0)
-			{
-				MaterialData data = new MaterialData(a.getType());
-				data.setData(a.getData());
-				stack.setData(data);
-			}
+			if (half) stack.setAmount((int) Math.floor(stack.getAmount() / 2));
 			
 			InventoryHelper.addItem(player, stack);
 		}
@@ -174,5 +134,10 @@ public class ArenaConfig
 	public String getArenaName()
 	{
 		return arenaName;
+	}
+	
+	public boolean isLoaded()
+	{
+		return loaded;
 	}
 }

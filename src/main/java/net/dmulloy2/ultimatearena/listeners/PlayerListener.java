@@ -26,7 +26,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PlayerListener implements Listener 
 {
@@ -132,10 +131,11 @@ public class PlayerListener implements Listener
 										player.sendMessage(ChatColor.RED + "You do not have the necessary perms for this class");
 									}
 								} 
-								else 
+								/*else 
 								{
+									// TODO: Is this really necessary?
 									player.sendMessage(ChatColor.RED + "Error: \"" + line1 + "\" is not a class!");
-								}
+								}*/
 							}
 						}
 					}
@@ -167,7 +167,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onSignInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
@@ -264,6 +264,7 @@ public class PlayerListener implements Listener
 						{
 							if (are.getSpawn(apl) != null)
 							{
+								// TODO: Make sure this actually works
 								event.setRespawnLocation(are.getSpawn(apl));
 							}
 								
@@ -292,7 +293,8 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	// TODO: Make this actually work
+	/*@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
 		if (! event.isCancelled())
@@ -311,7 +313,7 @@ public class PlayerListener implements Listener
 				}
 			}
 		}
-	}
+	}*/
 	
 	// TODO: Add a bypass permission?
 	@EventHandler(priority = EventPriority.LOWEST)

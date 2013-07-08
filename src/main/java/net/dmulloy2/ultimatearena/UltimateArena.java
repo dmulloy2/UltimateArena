@@ -27,6 +27,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -46,6 +47,7 @@ import net.dmulloy2.ultimatearena.permissions.PermissionHandler;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.ItemHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 
 public class UltimateArena extends JavaPlugin
@@ -74,6 +76,11 @@ public class UltimateArena extends JavaPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
+		
+		// Test ItemHelper (just for shits and giggles)
+		ItemHelper.readItem("261, 1 ,inf:1, power:2 ,arrowkb:2");
+		ItemHelper.readPotion("potion: regen, 1, 1, true");
+		ItemHelper.readPotion("potion: regen, 1, 1, false");
 		
 		// IO Stuff
 		createDirectories();
@@ -350,7 +357,6 @@ public class UltimateArena extends JavaPlugin
 		for (String fieldType : fieldTypes)
 		{
 			loadConfig(fieldType);
-			debug("Loaded arena config for {0}!", fieldType);
 		}
 		
 		outConsole("Loaded {0} arena config files!", fieldTypes.size());
@@ -389,8 +395,10 @@ public class UltimateArena extends JavaPlugin
 		}
 		
 		ArenaConfig a = new ArenaConfig(this, str, file);
-		debug("Loaded ArenaConfig for {0}!", str);
-		configs.add(a);
+		if (a.isLoaded())
+		{
+			configs.add(a);
+		}
 	}
 	
 	public void loadClasses() 
@@ -408,8 +416,10 @@ public class UltimateArena extends JavaPlugin
 		for (File file : children)
 		{
 			ArenaClass ac = new ArenaClass(this, file);
-			debug("Loaded class {0}!", ac.getName());
-	        classes.add(ac);
+			if (ac.isLoaded())
+			{
+				classes.add(ac);
+			}
 		}
 		
 		outConsole("Loaded {0} Arena Classes!", children.length);
@@ -1002,11 +1012,17 @@ public class UltimateArena extends JavaPlugin
 		PlayerInventory inv = player.getInventory();
 		for (ItemStack itemStack : itemContents)
 		{
+			if (itemStack == null || itemStack.getType() == Material.AIR)
+				continue;
+			
 			inv.addItem(itemStack);
 		}
 		
 		for (ItemStack armor : armorContents)
 		{
+			if (armor == null || armor.getType() == Material.AIR)
+				continue;
+			
 			String type = armor.getType().toString().toLowerCase();
 			if (type.contains("helmet"))
 			{

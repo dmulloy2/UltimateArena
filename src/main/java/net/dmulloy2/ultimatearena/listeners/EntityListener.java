@@ -20,7 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -42,27 +41,14 @@ public class EntityListener implements Listener
 		{
 			if (plugin.isInArena(event.getLocation()))
 			{
-				if (!event.blockList().isEmpty())
+				if (! event.blockList().isEmpty())
 				{
 					event.setCancelled(true);
 				}
 			}
 		}
 	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onExplosionPrime(ExplosionPrimeEvent event)
-	{
-		if (! event.isCancelled())
-		{
-			if (plugin.isInArena(event.getEntity().getLocation()))
-			{
-				// TODO: Does this affect creepers?
-				event.setCancelled(true);
-			}
-		}
-	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityHighest(EntityDamageByEntityEvent event)
 	{
@@ -158,16 +144,17 @@ public class EntityListener implements Listener
 		if (died == null)
 			return;
 		
-		if (plugin.isInArena(died.getLocation())) // Clear drops in arena
+		// Clear the drops if in an arena
+		if (plugin.isInArena(died.getLocation()))
 		{
+			// TODO: Make sure this works
 			event.getDrops().clear();
 			event.setDroppedExp(0);
 		}
 		
-		if (died instanceof Player) // A player died
+		if (died instanceof Player)
 		{
 			Player pdied = (Player)died;
-			plugin.debug("Player {0} has died.", pdied.getName());
 			if (plugin.isInArena(pdied))
 			{
 				ArenaPlayer dp = plugin.getArenaPlayer(pdied);
@@ -182,7 +169,6 @@ public class EntityListener implements Listener
 					if (pdied.getKiller() instanceof Player) 
 					{
 						Player killer = (Player)pdied.getKiller();
-						plugin.debug("Killer: {0}", killer.getName());
 						if (killer.getName() == pdied.getName()) // Suicide
 						{
 							plugin.debug("Player {0} has committed suicide!", pdied.getName());

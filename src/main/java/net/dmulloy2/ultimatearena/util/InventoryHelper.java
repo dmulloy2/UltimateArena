@@ -99,6 +99,7 @@ public class InventoryHelper
 				if (combined[j] == null)
 				{
 					combined[j] = items[i].clone();
+					combined[j].setData(items[i].getData());
 					break;
 				}
 				if (combined[j].isSimilar(items[i]))
@@ -142,6 +143,7 @@ public class InventoryHelper
 						if (item.getAmount() > maxAmount)
 						{
 							final ItemStack stack = item.clone();
+							stack.setData(item.getData());
 							stack.setAmount(maxAmount);
 							inventory.setItem(firstFree, stack);
 							item.setAmount(item.getAmount() - maxAmount);

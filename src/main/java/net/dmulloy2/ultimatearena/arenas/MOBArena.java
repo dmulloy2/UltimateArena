@@ -139,17 +139,17 @@ public class MOBArena extends Arena
 		if (pl != null) 
 		{
 			if (ap.getKillstreak() == 8)
-				giveItem(pl, Material.POTION.getId(), (byte)9, 1, "8 kills! Unlocked strength potion!");
+				givePotion(pl, "strength", 1, 1, false, "8 kills! Unlocked strength potion!");
 			
 			if (ap.getKillstreak() == 12)
-				giveItem(pl, Material.POTION.getId(), (byte)2, 1, "12 kills! Unlocked swiftness potion!");
+				givePotion(pl, "speed", 1, 1, false, "12 kills! Unlocked swiftness potion!");
 				
 			if (ap.getKillstreak() == 16)
-					giveItem(pl, Material.POTION.getId(), (byte)3, 1, "16 kills! Unlocked antifire!");
+				givePotion(pl, "fireres", 1, 1, false, "16 kills! Unlocked antifire!");
 			
 			if (ap.getKillstreak() == 24) 
 			{
-				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "24 kills! Unlocked Health potion!");
+				givePotion(pl, "heal", 1, 1, false, "24 kills! Unlocked health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "24 kills! Unlocked food!");
 			}
 				
@@ -165,7 +165,7 @@ public class MOBArena extends Arena
 				
 			if (ap.getKillstreak() == 40) 
 			{
-				giveItem(pl, Material.POTION.getId(), (byte)1, 1, "40 kills! Unlocked Health potion!");
+				givePotion(pl, "regen", 1, 1, false, "40 kills! Unlocked regeb potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "40 kills! Unlocked food!");
 			}
 				
