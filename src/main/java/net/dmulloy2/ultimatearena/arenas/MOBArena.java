@@ -7,6 +7,7 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
+import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -101,13 +102,33 @@ public class MOBArena extends Arena
 		int amtSlime = (int) Math.floor(p.getGameXP() / 550.0);
 		int amtGlowStone = (int) Math.floor(p.getGameXP() / 450.0);
 		int amtGunPowder = (int) Math.floor(p.getGameXP() / 425.0);
+		int amtCash = (int) Math.floor(p.getGameXP() / 10.0);
 
 		if (pl != null) 
 		{
-			if (amtGold > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold)); }
-			if (amtSlime > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime)); }
-			if (amtGlowStone > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone)); }
-			if (amtGunPowder > 0) { InventoryHelper.addItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder)); }
+			if (amtGold > 0) 
+				InventoryHelper.addItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold));
+			
+			if (amtSlime > 0) 
+				InventoryHelper.addItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime));
+			
+			if (amtGlowStone > 0) 
+				InventoryHelper.addItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
+			
+			if (amtGunPowder > 0) 
+				InventoryHelper.addItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder));
+			
+			if (amtCash > 0 && getPlugin().getConfig().getBoolean("moneyrewards"))
+			{ 
+				Economy eco = getPlugin().getEconomy();
+				if (eco != null)
+				{
+					eco.depositPlayer(pl.getName(), amtCash);
+					
+					String cash = eco.format(amtCash);
+					p.sendMessage("&a{0} has been added to your balance!", cash);
+				}
+			}
 		}
 	}
 	

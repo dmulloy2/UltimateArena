@@ -10,7 +10,7 @@ public class CmdStart extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "start";
-		this.requiredArgs.add("arena");
+		this.optionalArgs.add("arena");
 		this.mode = "admin";
 		this.description = "force start an arena";
 		this.permission = PermissionType.CMD_START.permission;
@@ -21,16 +21,43 @@ public class CmdStart extends UltimateArenaCommand
 	@Override
 	public void perform() 
 	{
-		String name = args[0];
-		Arena arena = plugin.getArena(name);
+		Arena arena = null;
+		if (isPlayer())
+		{
+			if (args.length == 0)
+			{
+				if (! plugin.isInArena(player))
+				{
+					sendMessage("&cPlease specify a valid arena!");
+					return;
+				}
+				
+				arena = plugin.getArena(player);
+			}
+			else
+			{
+				arena = plugin.getArena(args[0]);
+			}
+		}
+		else
+		{
+			if (args.length == 0)
+			{
+				sendMessage("&cPlease specify a valid arena!");
+				return;
+			}
+			
+			arena = plugin.getArena(args[0]);
+		}
+
 		if (arena == null)
 		{
-			sendMessage("&cCould not find an arena by the name \"{0}\"!", name);
+			sendMessage("&cCould not find an arena by the name \"{0}\"!", args[0]);
 			return;
 		}
 			
 		sendMessage("&6Starting Arena &b{0}&6...", arena.getName());
 		
-		arena.forceStart();
+		arena.forceStart(player);
 	}
 }

@@ -944,14 +944,22 @@ public class Arena
 		stop();
 	}
 	
-	public void forceStart()
+	public void forceStart(Player player)
 	{
+		if (isInGame())
+		{
+			player.sendMessage(FormatUtil.format("&cThis arena is already in progress!"));
+			return;
+		}
+		
 		plugin.outConsole("Forcefully starting arena: {0}!", name);
 		
 		setStarttimer(0);
 		
 		start();
 		setGametimer(getGametimer() - 1);
+		
+		player.sendMessage(FormatUtil.format("&6You have forced the start of arena &b{0}&6!", name));
 	}
 
 	public String getName()
