@@ -34,12 +34,14 @@ public class CmdDisable extends UltimateArenaCommand
 				if (aa.getName().equals(at)) 
 				{
 					aa.onDisable();
-					sendMessage(ChatColor.GRAY + "Disabled " + at);
+					sendpMessage(ChatColor.GRAY + "Disabled " + at);
+					return;
 				}
 				else if (aa.getArenaZone().getArenaType().equals(at)) 
 				{
 					aa.onDisable();
-					sendMessage(ChatColor.GRAY + " Disabled " + at);
+					sendpMessage(ChatColor.GRAY + " Disabled " + at);
+					return;
 				}
 			}
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++) 
@@ -48,12 +50,14 @@ public class CmdDisable extends UltimateArenaCommand
 				if (aa.getArenaType().equals(at))
 				{
 					aa.setDisabled(true);
-					sendMessage(ChatColor.GRAY + "Disabled " + at);
+					sendpMessage(ChatColor.GRAY + "Disabled " + at);
+					return;
 				}
 				else if (aa.getArenaName().equals(at)) 
 				{
 					aa.setDisabled(true);
-					sendMessage(ChatColor.GRAY + "Disabled " + at);
+					sendpMessage(ChatColor.GRAY + "Disabled " + at);
+					return;
 				}
 			}
 		}
@@ -63,7 +67,10 @@ public class CmdDisable extends UltimateArenaCommand
 				plugin.activeArena.get(ii).onDisable();
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
 				plugin.loadedArena.get(ii).setDisabled(true);
-			sendMessage(ChatColor.GRAY + "Disabled ALL arenas");
+			sendpMessage(ChatColor.GRAY + "Disabled ALL arenas");
+			return;
 		}
+		
+		err("&cCould not find an arena by that name/type!");
 	}
 }

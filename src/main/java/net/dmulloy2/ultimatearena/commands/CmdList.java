@@ -23,9 +23,10 @@ public class CmdList extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		sendMessage(ChatColor.DARK_RED + "==== " + ChatColor.GOLD + "UltimateArenas" + ChatColor.DARK_RED + " ====");
-		List<ArenaZone> arenas = this.plugin.loadedArena;
-		List<Arena> activearenas = this.plugin.activeArena;
+		sendMessage("&4====[ &6UltimateArenas &4]====");
+		
+		List<ArenaZone> arenas = plugin.loadedArena;
+		List<Arena> activearenas = plugin.activeArena;
 			
 		for (int i = 0; i < arenas.size(); i++) 
 		{

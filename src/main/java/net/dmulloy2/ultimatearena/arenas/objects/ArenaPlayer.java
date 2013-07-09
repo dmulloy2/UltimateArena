@@ -50,7 +50,7 @@ public class ArenaPlayer
 	private List<ItemStack> savedInventory = new ArrayList<ItemStack>();
 	private List<ItemStack> savedArmor = new ArrayList<ItemStack>();
 	
-	public ArenaPlayer(Player player, Arena arena)
+	public ArenaPlayer(Player player, Arena arena, final UltimateArena plugin)
 	{
 		this.player = player;
 		this.username = player.getName();
@@ -58,7 +58,7 @@ public class ArenaPlayer
 		this.baselevel = player.getLevel();
 		
 		this.arena = arena;
-		this.plugin = arena.getPlugin();
+		this.plugin = plugin;
 		this.mclass = plugin.getArenaClass(arena.getArenaZone().getDefaultClass());
 	}
 	
@@ -397,7 +397,7 @@ public class ArenaPlayer
 	
 	public void sendMessage(String string, Object...objects)
 	{
-		player.sendMessage(FormatUtil.format(string, objects));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 	
 	public void addXP(int xp)
@@ -408,5 +408,15 @@ public class ArenaPlayer
 	public void subtractXP(int xp)
 	{
 		setGameXP(getGameXP() - xp);
+	}
+	
+	public double getKDR()
+	{
+		if (deaths == 0)
+		{
+			return kills;
+		}
+
+		return (kills / deaths);
 	}
 }

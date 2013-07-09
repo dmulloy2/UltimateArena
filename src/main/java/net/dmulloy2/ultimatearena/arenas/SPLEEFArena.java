@@ -2,15 +2,15 @@ package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.Random;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import net.dmulloy2.ultimatearena.Field3D;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.util.Util;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 public class SPLEEFArena extends FFAArena 
 {
@@ -89,9 +89,9 @@ public class SPLEEFArena extends FFAArena
 		}
 		if (!checkEmpty())
 		{
-			for (int i = 0; i < getArenaplayers().size(); i++)
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
-				ArenaPlayer apl = getArenaplayers().get(i);
+				ArenaPlayer apl = arenaPlayers.get(i);
 				Player pl = apl.getPlayer();
 				Location ploc = pl.getLocation();
 				if (pl.getHealth() > 0) 
@@ -105,7 +105,7 @@ public class SPLEEFArena extends FFAArena
 		}
 		else
 		{
-			rewardTeam(-1, ChatColor.BLUE + "You won!", false);
+			rewardTeam(-1, "&9You won!", false);
 			stop();
 		}
 	}

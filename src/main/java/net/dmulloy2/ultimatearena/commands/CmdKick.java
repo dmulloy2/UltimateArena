@@ -1,13 +1,12 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 import net.dmulloy2.ultimatearena.util.Util;
+
+import org.bukkit.entity.Player;
 
 public class CmdKick extends UltimateArenaCommand
 {
@@ -42,17 +41,18 @@ public class CmdKick extends UltimateArenaCommand
 					ap.setPoints(0);
 					ap.setKills(0);
 					ap.setGameXP(0);
-					sendMessage(ChatColor.GRAY + "Kicked player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " from arena: " + ChatColor.GOLD + a.getName());
+					
+					sendpMessage("&7Kicked player &6{0} &7from arena &6{1}&7!", p.getName(), a.getName());
 				}
 			}
 			else
 			{
-				sendMessage(ChatColor.GRAY + "Player: " + ChatColor.GOLD + p.getName() + ChatColor.GRAY + " is not in an Arena");
+				err("Player: {0} is not in an Arena!", p.getName());
 			}
 		}
 		else
 		{
-			sendMessage(ChatColor.GRAY + "Player: \"" + ChatColor.GOLD + args[0] + ChatColor.GRAY + "\" is not online");
+			err("Could not find an online player by the name of {0}!", args[0]);
 		}
 	}
 }

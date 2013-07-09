@@ -134,6 +134,5 @@ public class UltimateArenaAPI
 		Bukkit.getLogger().info("Successfully hooked into UltimateArena!");
 		
 		return new UltimateArenaAPI(p);
-		
 	}
 }

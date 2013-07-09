@@ -67,6 +67,8 @@ public class UltimateArena extends JavaPlugin
 	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
 	
 	public WhiteListCommands wcmd = new WhiteListCommands();
+	
+	private @Getter String prefix = ChatColor.GOLD + "[" + ChatColor.DARK_RED + "" + ChatColor.BOLD + "UA" + ChatColor.GOLD + "] ";
 
 	@Override
 	public void onEnable()
@@ -215,7 +217,7 @@ public class UltimateArena extends JavaPlugin
 	public void broadcast(String string, Object...objects)
 	{
 		String broadcast = FormatUtil.format(string, objects);
-		getServer().broadcastMessage(broadcast);
+		getServer().broadcastMessage(prefix + broadcast);
 		
 		debug("Broadcasted message: {0}", broadcast);
 	}
@@ -322,7 +324,7 @@ public class UltimateArena extends JavaPlugin
 		}
 		else
 		{
-			player.sendMessage(ChatColor.RED + "Error, you are not in an arena");
+			player.sendMessage(prefix + ChatColor.RED + "Error, you are not in an arena");
 		}
 	}
 	
@@ -505,13 +507,13 @@ public class UltimateArena extends JavaPlugin
 				}
 			}
 			
-			player.sendMessage(ChatColor.YELLOW + "Successfully deleted arena: " + str + "!");
+			player.sendMessage(prefix + ChatColor.YELLOW + "Successfully deleted arena: " + str + "!");
 			
 			outConsole("Successfully deleted arena: {0}!", str);
 		}
 		else
 		{
-			player.sendMessage(ChatColor.RED + "Could not find an arena by the name of \"" + str + "\"!");
+			player.sendMessage(prefix + ChatColor.RED + "Could not find an arena by the name of \"" + str + "\"!");
 		}
 	}
 	
@@ -558,7 +560,7 @@ public class UltimateArena extends JavaPlugin
 				ArenaPlayer ap = a.getArenaPlayer(player);
 				if (ap != null) 
 				{
-					a.getArenaplayers().remove(ap);
+					a.getArenaPlayers().remove(ap);
 				}
 			}
 		}
@@ -569,9 +571,9 @@ public class UltimateArena extends JavaPlugin
 		for (int i=0; i<activeArena.size(); i++)
 		{
 			Arena a = activeArena.get(i);
-			for (int ii=0; ii<a.getArenaplayers().size(); ii++)
+			for (int ii=0; ii<a.getArenaPlayers().size(); ii++)
 			{
-				ArenaPlayer ap = a.getArenaplayers().get(ii);
+				ArenaPlayer ap = a.getArenaPlayers().get(ii);
 				if (ap != null)
 				{
 					Player player = Util.matchPlayer(ap.getPlayer().getName());
@@ -579,7 +581,7 @@ public class UltimateArena extends JavaPlugin
 					{
 						if (player.getName().equals(str))
 						{
-							a.getArenaplayers().remove(ap);
+							a.getArenaPlayers().remove(ap);
 						}
 					}
 				}
@@ -607,13 +609,13 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (!permissionHandler.hasPermission(player, PermissionType.JOIN.permission))
 		{
-			player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+			player.sendMessage(prefix + ChatColor.RED + "You do not have permission to do this!");
 			return;
 		}
 		
 		if (isPlayerCreatingArena(player))
 		{
-			player.sendMessage(ChatColor.RED + "You are in the middle of making an arena!");
+			player.sendMessage(prefix + ChatColor.RED + "You are in the middle of making an arena!");
 			return;
 		}
 		
@@ -621,7 +623,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			if (!getConfig().getBoolean("saveInventories"))
 			{
-				player.sendMessage(ChatColor.RED + "Please clear your inventory!");
+				player.sendMessage(prefix + ChatColor.RED + "Please clear your inventory!");
 				return;
 			}
 		}
@@ -629,20 +631,20 @@ public class UltimateArena extends JavaPlugin
 		ArenaZone a = getArenaZone(name);
 		if (a == null)
 		{
-			player.sendMessage(ChatColor.RED + "That arena doesn't exist!");
+			player.sendMessage(prefix + ChatColor.RED + "That arena doesn't exist!");
 			return;
 		}
 		
 		if (isInArena(player))
 		{
-			player.sendMessage(ChatColor.RED + "You're already in an arena!");
+			player.sendMessage(prefix + ChatColor.RED + "You're already in an arena!");
 			return;
 		}
 		
 		ArenaPlayer ap = getArenaPlayer(player);
 		if (ap != null)
 		{
-			player.sendMessage(ChatColor.RED + "You cannot leave and rejoin an arena!");
+			player.sendMessage(prefix + ChatColor.RED + "You cannot leave and rejoin an arena!");
 			return;
 		}
 		
@@ -650,7 +652,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			if (task.getPlayer().getName().equals(player.getName()))
 			{
-				player.sendMessage(ChatColor.RED + "You are already waiting!");
+				player.sendMessage(prefix + ChatColor.RED + "You are already waiting!");
 				return;
 			}
 		}
@@ -664,7 +666,7 @@ public class UltimateArena extends JavaPlugin
 			join.runTaskLater(this, wait);
 			waiting.add(join);
 			
-			String message = FormatUtil.format("&6Please stand still for {0} seconds!", seconds);
+			String message = FormatUtil.format(prefix + "&6Please stand still for {0} seconds!", seconds);
 			player.sendMessage(message);
 		}
 		else
@@ -682,7 +684,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			if (getArena(name).getStarttimer() < 1 && !forced) 
 			{
-				player.sendMessage(ChatColor.RED + "This arena has already started!");
+				player.sendMessage(prefix + ChatColor.RED + "This arena has already started!");
 			}
 			else
 			{
@@ -695,7 +697,7 @@ public class UltimateArena extends JavaPlugin
 				}
 				else
 				{
-					player.sendMessage(ChatColor.RED + "This arena is full, sorry!");
+					player.sendMessage(prefix + ChatColor.RED + "This arena is full, sorry!");
 				}
 			}
 		}
@@ -770,7 +772,7 @@ public class UltimateArena extends JavaPlugin
 			}
 			else
 			{
-				player.sendMessage(ChatColor.RED + "Error, This arena is disabled!");
+				player.sendMessage(prefix + ChatColor.RED + "Error, This arena is disabled!");
 			}
 		}
 	}
@@ -824,12 +826,12 @@ public class UltimateArena extends JavaPlugin
 			ac.setPoint(player);
 			if (!ac.getMsg().equals(""))
 			{
-				player.sendMessage(ChatColor.GRAY + ac.getMsg());
+				player.sendMessage(prefix + ChatColor.GRAY + ac.getMsg());
 			}
 		}
 		else
 		{
-			player.sendMessage(ChatColor.RED + "Error, you aren't editing a field!");
+			player.sendMessage(prefix + ChatColor.RED + "Error, you aren't editing a field!");
 		}
 	}
 	
@@ -842,7 +844,7 @@ public class UltimateArena extends JavaPlugin
 		}
 		else
 		{
-			player.sendMessage(ChatColor.RED + "Error, you aren't editing a field!");
+			player.sendMessage(prefix + ChatColor.RED + "Error, you aren't editing a field!");
 		}
 	}
 	
@@ -859,7 +861,7 @@ public class UltimateArena extends JavaPlugin
 			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
 			{
 				makingArena.remove(ac);
-				player.sendMessage(FormatUtil.format("&eStopping the creation of {0}!", ac.getArenaName()));
+				player.sendMessage(prefix + FormatUtil.format("&eStopping the creation of {0}!", ac.getArenaName()));
 			}
 		}
 	}
@@ -880,13 +882,13 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (isPlayerCreatingArena(player))
 		{
-			player.sendMessage(ChatColor.RED + "You are already creating an arena!");
+			player.sendMessage(prefix + ChatColor.RED + "You are already creating an arena!");
 			return;
 		}
 		
 		if (!fieldTypes.contains(type.toLowerCase()))
 		{
-			player.sendMessage(ChatColor.RED + "This is not a valid field type!");
+			player.sendMessage(prefix + ChatColor.RED + "This is not a valid field type!");
 			return;
 		}
 		
@@ -894,7 +896,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			if (az.getArenaName().equalsIgnoreCase(name))
 			{
-				player.sendMessage(ChatColor.RED + "An arena by this name already exists!");
+				player.sendMessage(prefix + ChatColor.RED + "An arena by this name already exists!");
 				return;
 			}
 		}

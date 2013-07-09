@@ -27,7 +27,7 @@ public class CmdHelp extends UltimateArenaCommand
 			mmode = args[0];
 			if (!mmode.equalsIgnoreCase("admin") && !mmode.equalsIgnoreCase("build"))
 			{
-				sendMessage("&cInvalid mode! Try: " + getUsageTemplate(false));
+				err("&cInvalid mode! Try: " + getUsageTemplate(false));
 				return;
 			}
 		}

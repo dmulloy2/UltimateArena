@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.events.UltimateArenaKillEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -116,22 +117,60 @@ public class EntityListener implements Listener
 		if (event.getDamager() instanceof Player)
 		{
 			Player player = (Player)event.getDamager();
-			ItemStack inHand = player.getItemInHand();
-			if (inHand != null && inHand.getType() != Material.AIR)
+			if (plugin.isInArena(player))
 			{
-				if (inHand.getType().getMaxDurability() != 0)
+				ItemStack inHand = player.getItemInHand();
+				if (inHand != null && inHand.getType() != Material.AIR)
 				{
-					// TODO: Make sure this works
-					inHand.setDurability((short) 0);
+					if (inHand.getType().getMaxDurability() != 0)
+					{
+						inHand.setDurability((short) 0);
+					}
 				}
-			}
 			
-			for (ItemStack armor : player.getInventory().getArmorContents())
-			{
-				if (armor != null && armor.getType() != Material.AIR)
+				for (ItemStack armor : player.getInventory().getArmorContents())
 				{
-					// TODO: Make sure this works
-					armor.setDurability((short) 0);
+					if (armor != null && armor.getType() != Material.AIR)
+					{
+						armor.setDurability((short) 0);
+					}
+				}
+				
+				// Healer
+				Entity damaged = event.getEntity();
+				if (damaged instanceof Player)
+				{
+					ArenaPlayer dp = plugin.getArenaPlayer((Player)damaged);
+					if (dp != null && ! dp.isOut())
+					{
+						ArenaPlayer ap = plugin.getArenaPlayer(player);
+						if (ap != null && ! ap.isOut())
+						{
+							if (ap.getTeam() == dp.getTeam())
+							{
+								ArenaClass ac = ap.getArenaClass();
+								if (ac != null)
+								{
+									if (ac.getName().equalsIgnoreCase("healer"))
+									{
+										if (inHand != null)
+										{
+											if (inHand.getType() == Material.GOLD_AXE)
+											{
+												Player pl = dp.getPlayer();
+												if ((pl.getHealth() + 2.0D) <= 20.0D)
+												{
+													pl.setHealth(player.getHealth() + 2.0D);
+													
+													ap.sendMessage("&7You have healed &6{0} &7for &61&7 heart!", pl.getName());
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -172,9 +211,9 @@ public class EntityListener implements Listener
 						if (killer.getName() == pdied.getName()) // Suicide
 						{
 							plugin.debug("Player {0} has committed suicide!", pdied.getName());
+							ar.tellPlayers("&c{0} &fcommited &csuicide!", pdied.getName());
 							
 							List<String> lines = new ArrayList<String>();
-							lines.add(FormatUtil.format("&a{0} &fhas commited &csuicide!", pdied.getName()));
 							lines.add(FormatUtil.format("&c----------------------------"));
 							lines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							lines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
@@ -190,9 +229,9 @@ public class EntityListener implements Listener
 						else // PVP
 						{
 							plugin.debug("PVP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
+							ar.tellPlayers("&a{0} &fkilled &c{1}", killer.getName(), pdied.getName());
 							
 							List<String> deadlines = new ArrayList<String>();
-							deadlines.add(FormatUtil.format("&c{0} &fhas killed &a{1}", killer.getName(), pdied.getName()));
 							deadlines.add(FormatUtil.format("&c----------------------------"));
 							deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
@@ -215,7 +254,6 @@ public class EntityListener implements Listener
 								kp.addXP(100);
 								
 								List<String> killerlines = new ArrayList<String>();
-								killerlines.add(FormatUtil.format("&a{0} &fhas killed &c{1}", killer.getName(), pdied.getName()));
 								killerlines.add(FormatUtil.format("&c----------------------------"));
 								killerlines.add(FormatUtil.format("&cKills: &f{0}", kp.getKills()));
 								killerlines.add(FormatUtil.format("&cDeaths: &f{0}", kp.getDeaths()));
@@ -238,12 +276,12 @@ public class EntityListener implements Listener
 						if (pdied.getKiller() instanceof LivingEntity)
 						{
 							LivingEntity lentity = (LivingEntity)pdied.getKiller();
+							String name = FormatUtil.getFriendlyName(lentity.getType());
+							
 							plugin.debug("Player {0} was killed by {1}", pdied.getName(), FormatUtil.getFriendlyName(lentity.getType()));
+							ar.tellPlayers("&a{0} &fwas killed by {1} &c{2}", pdied.getName(), FormatUtil.getArticle(name), name);
 							
 							List<String> deadlines = new ArrayList<String>();
-							
-							String name = FormatUtil.getFriendlyName(lentity.getType());
-							deadlines.add(FormatUtil.format("&a{0} &fwas killed by &c{0}", pdied.getName(), FormatUtil.getArticle(name) + name));
 							deadlines.add(FormatUtil.format("&c----------------------------"));
 							deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
@@ -260,10 +298,10 @@ public class EntityListener implements Listener
 						{
 							List<String> deadlines = new ArrayList<String>();
 							
-							String dc = pdied.getLastDamageCause().getCause().toString();
-							plugin.debug("Player {0} was killed by {1}", pdied.getName(), FormatUtil.getFriendlyName(dc));
+							String dc = FormatUtil.getFriendlyName(pdied.getLastDamageCause().getCause().toString());
+							plugin.debug("Player {0} was killed by {1}", dc);
+							ar.tellPlayers("&a{0} &fwas killed by &c{0}", pdied.getName(), dc);
 							
-							deadlines.add(FormatUtil.format("&a{0} &fwas killed by &c{0}", pdied.getName(), FormatUtil.getFriendlyName(dc)));
 							deadlines.add(FormatUtil.format("&c----------------------------"));
 							deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&cDeaths: &f{0}", dp.getDeaths()));
@@ -303,7 +341,7 @@ public class EntityListener implements Listener
 							List<String> lines = new ArrayList<String>();
 							
 							String name = FormatUtil.getFriendlyName(lentity.getType());
-							lines.add(FormatUtil.format("&a{0} &fhas killed {1} &c{2}", killer.getName(), FormatUtil.getArticle(name), name));
+							lines.add(FormatUtil.format("&a{0} &fkilled {1} &c{2}", killer.getName(), FormatUtil.getArticle(name), name));
 							lines.add(FormatUtil.format("&c----------------------------"));
 							lines.add(FormatUtil.format("&cKills: &f{0}", ak.getKills()));
 							lines.add(FormatUtil.format("&cDeaths: &f{0}", ak.getDeaths()));

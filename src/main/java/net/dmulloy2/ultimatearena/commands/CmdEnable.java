@@ -35,11 +35,13 @@ public class CmdEnable extends UltimateArenaCommand
 				{
 					aa.setDisabled(false);
 					sendMessage(ChatColor.GRAY + "Enabled " + at);
+					return;
 				}
 				else if (aa.getArenaZone().getArenaType().equals(at))
 				{
 					aa.setDisabled(false);
 					sendMessage(ChatColor.GRAY + "Enabled " + at);
+					return;
 				}
 			}
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
@@ -49,11 +51,13 @@ public class CmdEnable extends UltimateArenaCommand
 				{
 					aa.setDisabled(false);
 					sendMessage(ChatColor.GRAY + "Enabled " + at);
+					return;
 				}
 				else if (aa.getArenaName().equals(at)) 
 				{
 					aa.setDisabled(false);
 					sendMessage(ChatColor.GRAY + "Enabled " + at);
+					return;
 				}
 			}
 		}
@@ -64,6 +68,9 @@ public class CmdEnable extends UltimateArenaCommand
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
 				plugin.loadedArena.get(ii).setDisabled(false);
 			sendMessage(ChatColor.GRAY + "Enabled ALL arenas");
+			return;
 		}
+		
+		err("Could not find an arena/type by that name!");
 	}
 }

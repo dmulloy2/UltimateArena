@@ -28,7 +28,7 @@ public class CmdStart extends UltimateArenaCommand
 			{
 				if (! plugin.isInArena(player))
 				{
-					sendMessage("&cPlease specify a valid arena!");
+					err("Please specify a valid arena!");
 					return;
 				}
 				
@@ -43,7 +43,7 @@ public class CmdStart extends UltimateArenaCommand
 		{
 			if (args.length == 0)
 			{
-				sendMessage("&cPlease specify a valid arena!");
+				err("Please specify a valid arena!");
 				return;
 			}
 			
@@ -52,11 +52,11 @@ public class CmdStart extends UltimateArenaCommand
 
 		if (arena == null)
 		{
-			sendMessage("&cCould not find an arena by the name \"{0}\"!", args[0]);
+			err("Could not find an arena by the name \"{0}\"!", args[0]);
 			return;
 		}
 			
-		sendMessage("&6Starting Arena &b{0}&6...", arena.getName());
+		sendpMessage("&6Starting Arena &b{0}&6...", arena.getName());
 		
 		arena.forceStart(player);
 	}

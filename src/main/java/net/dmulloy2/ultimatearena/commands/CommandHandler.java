@@ -71,7 +71,8 @@ public class CommandHandler implements CommandExecutor
 					return true;
 				}
 			}
-			sender.sendMessage(ChatColor.YELLOW + "Unknown UltimateArena command \"" + args[0] + "\". Try /ua help!");
+			
+			sender.sendMessage(plugin.getPrefix() + ChatColor.RED + "Unknown UltimateArena command \"" + args[0] + "\". Try /ua help!");
 		} 
 		else 
 		{

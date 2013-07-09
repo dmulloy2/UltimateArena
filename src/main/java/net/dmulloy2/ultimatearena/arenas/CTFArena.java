@@ -1,11 +1,10 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import org.bukkit.ChatColor;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.CTFFlagBase;
+
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class CTFArena extends Arena
 {
@@ -33,7 +32,7 @@ public class CTFArena extends Arena
 		flagblue.initialize();
 		
 		
-		ExecuteMove = new ExecuteMove().runTaskTimer(getPlugin(), 12, 1);
+		ExecuteMove = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}
 	
 	@Override
@@ -43,14 +42,14 @@ public class CTFArena extends Arena
 		{
 			if (!simpleTeamCheck(false)) 
 			{
-				this.tellPlayers(ChatColor.BLUE + "One team is empty! game ended!");
+				this.tellPlayers("&9One team is empty! game ended!");
 				this.stop();
 			}
 			else
 			{
 				if (this.getAmtPlayersStartingInArena() <= 1) 
 				{
-					this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
+					this.tellPlayers("&9Not enough people to play!");
 					this.stop();
 				}
 			}
@@ -59,12 +58,14 @@ public class CTFArena extends Arena
 		if (redcap >= 3 || bluecap >= 3) 
 		{
 			this.setWinningTeam(1);
-			lastcap = ChatColor.RED + "RED";
+			this.lastcap = "&cRED";
+			
 			if (bluecap >= 3) 
 			{
 				this.setWinningTeam(2);
-				lastcap = ChatColor.BLUE + "BLUE";
+				this.lastcap = "&9BLUE";
 			}
+			
 			winGame();
 		}
 		else
@@ -90,7 +91,7 @@ public class CTFArena extends Arena
 			return;
 		}
 		
-		this.tellPlayers(lastcap + ChatColor.GRAY + " team won the game!");
+		this.tellPlayers(lastcap + "&7team won the game!");
 		this.stop();
 		this.rewardTeam(this.getWinningTeam(), "You win!", false);
 	}
@@ -116,8 +117,8 @@ public class CTFArena extends Arena
 		{
 			if (!isStopped())
 			{
-				flagred.checkNear(getArenaplayers());
-				flagblue.checkNear(getArenaplayers());
+				flagred.checkNear(arenaPlayers);
+				flagblue.checkNear(arenaPlayers);
 			}
 			else
 			{

@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import org.bukkit.ChatColor;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
@@ -25,19 +23,19 @@ public class CmdDislike extends UltimateArenaCommand
 		{
 			if (az.canLike(player))
 			{
-				sendMessage("&cYou have disliked: " + az.getArenaName());
+				sendpMessage("&cYou have disliked: " + az.getArenaName());
 				
 				az.setDisliked(az.getDisliked() + 1);
 				az.getVoted().add(player.getName());
 			}
 			else
 			{
-				sendMessage(ChatColor.RED + "You already voted for this arena!");
+				err("You already voted for this arena!");
 			}
 		}
 		else
 		{
-			sendMessage(ChatColor.RED + "This arena doesn't exist!");
+			err("This arena doesn't exist!");
 		}
 	}
 }

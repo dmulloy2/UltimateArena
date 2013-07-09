@@ -1,6 +1,5 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -11,9 +10,6 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 public class INFECTArena extends PVPArena
 {
-
-	ArenaPlayer originalZombie = null;
-	
 	public INFECTArena(ArenaZone az)
 	{
 		super(az);
@@ -42,12 +38,10 @@ public class INFECTArena extends PVPArena
 	{
 		if (tries < 16)
 		{
-			ArenaPlayer apl = this.getArenaplayers().get(Util.random(this.getArenaplayers().size()));
+			ArenaPlayer apl = arenaPlayers.get(Util.random(arenaPlayers.size()));
 			if (apl != null && apl.getPlayer().isOnline())
 			{
-//				apl.setPlayer(Util.matchPlayer(apl.getUsername()));
 				apl.setTeam(2);
-//				spawn(apl.player.getName(), true);
 				apl.sendMessage("&9You have been chosen for the infected!");
 				onSpawn(apl);
 				tellPlayers("&c{0} &bis the zombie!", apl.getPlayer().getName());
@@ -71,11 +65,12 @@ public class INFECTArena extends PVPArena
 		{
 			Player pl = apl.getPlayer();
 			normalize(apl.getPlayer());
-			//pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2400, 1));
+
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 2));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 1));
+			
 			spawn(apl.getPlayer().getName(), true);
 			normalize(apl.getPlayer());
 			apl.decideHat(apl.getPlayer());
@@ -94,7 +89,7 @@ public class INFECTArena extends PVPArena
 					this.setWinningTeam(2);
 					this.tellPlayers("&9Infected Win!");
 					this.stop();
-					this.rewardTeam(2, ChatColor.YELLOW + "You win!", true);
+					this.rewardTeam(2, "&9You win!", true);
 				}
 				else
 				{
@@ -122,7 +117,7 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onOutOfTime() 
 	{
-		this.rewardTeam(1, ChatColor.BLUE + "You survived!", false);
+		this.rewardTeam(1, "&9You survived!", false);
 	}
 	
 	@Override

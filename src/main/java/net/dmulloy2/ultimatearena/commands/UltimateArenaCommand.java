@@ -55,13 +55,13 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		
 		if (mustBePlayer && !isPlayer())
 		{
-			sendMessage("&cYou must be a player to execute this command!");
+			err("You must be a player to execute this command!");
 			return;
 		}
 		
 		if (requiredArgs.size() > args.length) 
 		{
-			sendMessage("&cInvalid Arguments! (" + getUsageTemplate(false) + "&c)");
+			invalidArgs();
 			return;
 		}
 		
@@ -69,7 +69,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 			perform();
 		else
 		{
-			sendMessage("&cYou do not have permission to perform this command!");
+			err("You do not have permission to perform this command!");
 			log(Level.WARNING, sender.getName() + " was denied access to a command!");
 		}
 	}
@@ -127,18 +127,38 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		return FormatUtil.format(ret.toString());
 	}
 	
-	protected final void sendMessage(String message, Object...objects)
+	protected final void sendpMessage(String message, Object... objects)
+	{
+		sender.sendMessage(plugin.getPrefix() + FormatUtil.format(message, objects));
+	}
+	
+	protected final void sendMessage(String message, Object... objects)
 	{
 		sender.sendMessage(FormatUtil.format(message, objects));
 	}
 	
-	protected final void log(Level level, String string)
+	protected final void log(Level level, String string, Object... objects)
 	{
-		plugin.getLogger().log(level, string);
+		plugin.outConsole(level, string, objects);
 	}
 	
-	protected final void log(String string)
+	protected final void log(String string, Object... objects)
 	{
-		plugin.getLogger().info(string);
+		log(Level.INFO, string, objects);
+	}
+	
+	protected final void debug(String string, Object... objects)
+	{
+		plugin.debug(string, objects);
+	}
+	
+	protected final void err(String string, Object... objects)
+	{
+		sendpMessage("&c" + string, objects);
+	}
+	
+	protected final void invalidArgs()
+	{
+		err("Invalid arguments! Try: " + getUsageTemplate(false));
 	}
 }

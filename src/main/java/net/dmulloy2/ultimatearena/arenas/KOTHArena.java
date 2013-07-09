@@ -79,7 +79,7 @@ public class KOTHArena extends Arena
 	@Override
 	public void onStart()
 	{
-		for (ArenaPlayer ap : getArenaplayers())
+		for (ArenaPlayer ap : arenaPlayers)
 		{
 			spawn(ap.getUsername(), false);
 		}
@@ -91,7 +91,7 @@ public class KOTHArena extends Arena
 		for (ArenaFlag flag : getFlags())
 		{
 			flag.step();
-			flag.checkNear(getArenaplayers());
+			flag.checkNear(arenaPlayers);
 		}
 
 		checkPlayerPoints(MAXPOWER);

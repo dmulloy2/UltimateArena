@@ -2,16 +2,16 @@ package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.Random;
 
-import org.bukkit.ChatColor;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.util.Util;
+
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class HUNGERArena extends Arena 
 {
@@ -80,17 +80,17 @@ public class HUNGERArena extends Arena
 				{
 					this.setWinningTeam(-1);
 					stop();
-					for (int i = 0; i < getArenaplayers().size(); i++) 
+					for (int i = 0; i < arenaPlayers.size(); i++) 
 					{
-						spawn(getArenaplayers().get(i).getUsername(), false);
+						spawn(arenaPlayers.get(i).getUsername(), false);
 					}
 					if (this.getAmtPlayersStartingInArena() > 1)
 					{
-						this.rewardTeam(getWinningTeam(), ChatColor.BLUE + "You won!", false);
+						this.rewardTeam(getWinningTeam(), "&9You won!", false);
 					}
 					else
 					{
-						this.tellPlayers(ChatColor.BLUE + "Not enough people to play!");
+						this.tellPlayers("&9Not enough people to play!");
 					}
 				}
 			}
@@ -101,6 +101,8 @@ public class HUNGERArena extends Arena
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
 		super.onPlayerDeath(pl);
+		
 		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
+		tellPlayers("&cTribute &6{0} &chas fallen!", pl.getUsername());
 	}
 }

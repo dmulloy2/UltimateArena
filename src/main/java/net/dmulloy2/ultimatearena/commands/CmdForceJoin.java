@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import org.bukkit.ChatColor;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
@@ -22,7 +20,7 @@ public class CmdForceJoin extends UltimateArenaCommand
 	public void perform() 
 	{
 		String name = args[0];
-		player.sendMessage(ChatColor.GOLD + "Attempthing to join arena: " + name);
+		sendpMessage("Attempthing to join arena: " + name);
 		plugin.joinBattle(true, player, name);
 	}
 }

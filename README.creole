@@ -69,10 +69,6 @@ http://dev.bukkit.org/bukkit-mods/ultimatearena/
 ** Get the arena, arenaplayer, player, arena type, their class, and their death count
 ----
 
-==PVPGunPlus
-This plugin works great with PVPGunPlus!!!
-Found here: http://dev.bukkit.org/server-mods/pvpgun/
-----
 
 ==Disclaimers
 * UltimateArena mobarena's and pvparena's are in no way associated with the other fight plugins, MobArena, and PVPArena.).

@@ -22,7 +22,7 @@ public class CmdClass extends UltimateArenaCommand
 	{
 		if (! plugin.isInArena(player))
 		{
-			sendMessage("&cYou are not in an arena!");
+			err("You are not in an arena!");
 			return;
 		}
 		
@@ -32,11 +32,11 @@ public class CmdClass extends UltimateArenaCommand
 		{
 			if (ap.getArenaClass() == null)
 			{
-				sendMessage("&cYou do not have a class!");
+				err("You do not have a class!");
 				return;
 			}
 			
-			sendMessage("&eYour current class is: &a{0}&e!", ap.getArenaClass().getName());
+			sendpMessage("&eYour current class is: &a{0}&e!", ap.getArenaClass().getName());
 			return;
 		}
 		else if (args.length == 1)
@@ -46,17 +46,17 @@ public class CmdClass extends UltimateArenaCommand
 				if (cl.getName().equalsIgnoreCase(args[0]))
 				{
 					ap.setClass(cl, true);
-					sendMessage("&eYou have successfully set your class to: &a{0}&e!", cl.getName());
+					sendpMessage("&eYou have successfully set your class to: &a{0}&e!", cl.getName());
 					return;
 				}
 			}
 			
-			sendMessage("&cInvalid class \"{0}\"!", args[0]);
+			err("Invalid class \"{0}\"!", args[0]);
 			return;
 		}
 		else
 		{
-			sendMessage("&cInvalid input! Try /ua class <class>");
+			err("Invalid input! Try /ua class <class>");
 			return;
 		}
 	}

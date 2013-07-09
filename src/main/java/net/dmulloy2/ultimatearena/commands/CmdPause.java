@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import org.bukkit.ChatColor;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
@@ -25,11 +23,11 @@ public class CmdPause extends UltimateArenaCommand
 		Arena arena = plugin.getArena(name);
 		if (arena == null)
 		{
-			player.sendMessage(ChatColor.GOLD + "No arena with that name...");
+			err("No arena with that name...");
 			return;
 		}		
 		
 		arena.setPauseStartTimer(!arena.isPauseStartTimer());
-		player.sendMessage(ChatColor.GOLD + "Start timer for arena " + ChatColor.AQUA + arena.getName() + ChatColor.GOLD + " is now " + (arena.isPauseStartTimer() ? "paused" : "unpaused"));
+		sendpMessage("Start timer for arena &b{0} &6is now &b{1}&6!", arena.getName(), (arena.isPauseStartTimer() ? "paused" : "unpaused"));
 	}	
 }

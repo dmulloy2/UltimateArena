@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import org.bukkit.ChatColor;
-
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
 public class PVPArena extends Arena 
@@ -32,7 +30,7 @@ public class PVPArena extends Arena
 			{
 				this.setWinningTeam(-1);
 				this.stop();
-				this.rewardTeam(-1, ChatColor.BLUE + "You won!", false);
+				this.rewardTeam(-1, "&9You won!", false);
 			}
 		}
 	}

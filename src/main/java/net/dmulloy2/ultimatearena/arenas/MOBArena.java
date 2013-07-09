@@ -9,7 +9,6 @@ import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -118,9 +117,9 @@ public class MOBArena extends Arena
 			if (amtGunPowder > 0) 
 				InventoryHelper.addItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder));
 			
-			if (amtCash > 0 && getPlugin().getConfig().getBoolean("moneyrewards"))
+			if (amtCash > 0 && plugin.getConfig().getBoolean("moneyrewards"))
 			{ 
-				Economy eco = getPlugin().getEconomy();
+				Economy eco = plugin.getEconomy();
 				if (eco != null)
 				{
 					eco.depositPlayer(pl.getName(), amtCash);
@@ -136,7 +135,7 @@ public class MOBArena extends Arena
 	public void onOutOfTime()
 	{
 		this.setWinningTeam(-1);
-		this.rewardTeam(getWinningTeam(), ChatColor.BLUE + "You won!", false);
+		this.rewardTeam(getWinningTeam(), "&9You won!", false);
 	}
 	
 	@Override
@@ -176,7 +175,7 @@ public class MOBArena extends Arena
 				
 			if (ap.getKillstreak() == 32) 
 			{
-				pl.sendMessage(ChatColor.GOLD + "32 kills! Unlocked attackdogs!");
+				ap.sendMessage("32 kills! Unlocked attackdogs!");
 				for (int i = 0; i < 3; i++)
 				{
 					Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
@@ -220,7 +219,7 @@ public class MOBArena extends Arena
 							
 							if (newMob.getType() == EntityType.SKELETON)
 							{
-								if (Util.random(2) == 0)
+								if (Util.random(2) == 0 && getWave() >= 12)
 								{
 									// Wither skeletons! >:D
 									((Skeleton)newMob).setSkeletonType(Skeleton.SkeletonType.WITHER);
@@ -235,15 +234,16 @@ public class MOBArena extends Arena
 				
 			if (getAmtPlayersInArena() == 0) 
 			{
-				getPlugin().outConsole("Stopping Mob arena");
+				plugin.outConsole("Stopping Mob arena");
 				stop();
 			}
+			
 			if (getWave() > getMaxwave()) 
 			{
 				setWinningTeam(-1);
-				tellPlayers(ChatColor.GOLD + "You have beat the mob arena!");
+				tellPlayers("&aYou have beat the mob arena!");
 				stop();
-				rewardTeam(-1, ChatColor.BLUE + "You won!", false);
+				rewardTeam(-1, "&0You won!", false);
 			}
 		}
 	}

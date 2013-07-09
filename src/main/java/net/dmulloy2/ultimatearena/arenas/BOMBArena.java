@@ -1,12 +1,8 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.BombFlag;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class BOMBArena extends Arena 
 {
@@ -49,31 +45,26 @@ public class BOMBArena extends Arena
 	public void onOutOfTime() 
 	{
 		setWinningTeam(2);
-		rewardTeam(2, ChatColor.BLUE + "You won!", false);
+		rewardTeam(2, "&9You won!", false);
 	}
 	
 	public synchronized void onPlayerDeath(ArenaPlayer pl)
 	{
-		getPlugin().debug("Bomb: Player {0} has died!", pl.getUsername());
-		
 		if (pl.getTeam() == 1) 
 		{
 			REDTEAMPOWER--;
-			for (int i = 0; i < getArenaplayers().size(); i++) 
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
-				if (!getArenaplayers().get(i).isOut())
-				{ 
-					Player pl1 = getArenaplayers().get(i).getPlayer();
-					if (pl1 != null) 
+				ArenaPlayer apl = arenaPlayers.get(i);
+				if (apl != null && ! apl.isOut())
+				{
+					if (apl.getTeam() == 1)
 					{
-						if (getArenaplayers().get(i).getTeam() == 1) 
-						{
-							pl1.sendMessage(ChatColor.RED + "Your power is now: " + ChatColor.GOLD + REDTEAMPOWER);
-						}
-						else
-						{
-							pl1.sendMessage(ChatColor.RED + "Other teams' power is now: " + ChatColor.GOLD + REDTEAMPOWER);
-						}
+						apl.sendMessage("&cYour power is now: &6{0}", REDTEAMPOWER);
+					}
+					else
+					{
+						apl.sendMessage("&cThe other team's power is now: &6{0}", REDTEAMPOWER);
 					}
 				}
 			}
@@ -93,42 +84,40 @@ public class BOMBArena extends Arena
 		{
 			simpleTeamCheck(true);
 		}
-		bomb1.checkNear(getArenaplayers());
-		bomb2.checkNear(getArenaplayers());
+		bomb1.checkNear(arenaPlayers);
+		bomb2.checkNear(arenaPlayers);
 		
 		if (bomb1.isExploded() && bomb2.isExploded())
 		{
 			setWinningTeam(1);
-			tellPlayers(ChatColor.GRAY + "Red team won!");
+			tellPlayers("&6Red team won!");
 			stop();
-			rewardTeam(1, ChatColor.BLUE + "You won!", false);
+			rewardTeam(1, "&9You won!", false);
 			return;
 		}
 		
 		if (REDTEAMPOWER <= 0) 
 		{
 			setWinningTeam(2);
-			tellPlayers(ChatColor.GRAY + "Blue team won!");
-			for (int i = 0; i < getArenaplayers().size(); i++)
+			tellPlayers("&6Blue team won!");
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
-				ArenaPlayer ap = getArenaplayers().get(i);
+				ArenaPlayer ap = arenaPlayers.get(i);
 				if (!ap.isOut()) 
 				{
 					if (ap.getTeam() == 1)
 					{
 						ap.setOut(true);
 						setUpdatedTeams(true);
-						Player p = Util.matchPlayer(ap.getPlayer().getName());
-						if (p != null) 
-						{
-							p.sendMessage(ChatColor.RED + "Your team lost! :(");
-							endPlayer(ap, false);
-						}
+
+						ap.sendMessage("&cYour team lost!");
+						endPlayer(ap, false);
 					}
 				}
 			}
+			
 			stop();
-			rewardTeam(2, ChatColor.BLUE + "You won!", false);
+			rewardTeam(2, "&9You won!", false);
 		}
 	}
 }

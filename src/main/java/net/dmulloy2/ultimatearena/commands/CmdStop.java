@@ -24,7 +24,7 @@ public class CmdStop extends UltimateArenaCommand
 		}
 		else
 		{
-			sendMessage("&cYou are not creating an arena!");
+			err("You are not creating an arena!");
 		}
 	}
 }

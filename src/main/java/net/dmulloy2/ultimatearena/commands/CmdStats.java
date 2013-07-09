@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import org.bukkit.ChatColor;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaStatistics;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
@@ -29,7 +27,7 @@ public class CmdStats extends UltimateArenaCommand
 		}
 		else
 		{
-			sendMessage(ChatColor.RED + "This arena doesn't exist!");
+			err("This arena doesn't exist!");
 		}
 	}
 }
