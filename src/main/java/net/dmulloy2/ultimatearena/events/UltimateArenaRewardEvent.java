@@ -26,16 +26,29 @@ public class UltimateArenaRewardEvent extends Event implements Cancellable
 		this.player = player;
 		this.rewards = rewards;
 	}
+	
+	/**
+	 * Get the player who was rewarded
+	 * @return Player who was rewarded
+	 */
 	public final Player getPlayer()
 	{
 		return player;
 	}
 	
+	/**
+	 * Get the rewards
+	 * @return Rewards
+	 */
 	public final List<ItemStack> getRewards()
 	{
 		return rewards;
 	}
 	
+	/**
+	 * Add a reward
+	 * @param stack - ItemStack to add
+	 */
 	public void addReward(ItemStack stack)
 	{
 		rewards.add(stack);

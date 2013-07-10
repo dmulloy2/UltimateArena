@@ -31,36 +31,65 @@ public class UltimateArenaSpawnEvent extends Event
 		this.spawn = spawn;
 	}
 	
+	/**
+	 * Get the ArenaPlayer getting spawned
+	 * @return ArenaPlayer getting spawned
+	 */
 	public ArenaPlayer getArenaPlayer()
 	{
 		return arenaPlayer;
 	}
 	
+	/**
+	 * Get the Arena the ArenaPlayer is in
+	 * @return Arena the ArenaPlayer is in
+	 */
 	public Arena getArena()
 	{
 		return arena;
 	}
 	
+	/**
+	 * Get the type of the arena
+	 * @return Type of the arena
+	 */
 	public String getArenaType()
 	{
 		return arena.getType();
 	}
 	
+	
+	/**
+	 * Get the Player getting spawned
+	 * @return Player getting spawned
+	 */
 	public Player getPlayer()
 	{
 		return arenaPlayer.getPlayer();
 	}
 	
+	/**
+	 * Get the ArenaSpawn
+	 * @return ArenaSpawn
+	 */
 	public ArenaSpawn getSpawn()
 	{
 		return spawn;
 	}
 	
+	/**
+	 * Get the Location
+	 * @return Location
+	 */
 	public Location getArenaSpawnAsLocation()
 	{
 		return spawn.getLocation();
 	}
 	
+	/**
+	 * Get the player's ArenaClass
+	 * @return Player's ArenaClass
+	 */
 	public ArenaClass getArenaClass()
 	{
 		return arenaPlayer.getArenaClass();

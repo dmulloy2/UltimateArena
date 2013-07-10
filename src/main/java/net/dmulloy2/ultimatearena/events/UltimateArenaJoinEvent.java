@@ -7,6 +7,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * @author dmulloy2
+ */
+
 public class UltimateArenaJoinEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
@@ -25,21 +29,37 @@ public class UltimateArenaJoinEvent extends Event
 		this.arena = arena;
 	}
 	
+	/**
+	 * Get the ArenaPlayer who joined
+	 * @return The ArenaPlayer who joined
+	 */
 	public ArenaPlayer getArenaPlayer()
 	{
 		return arenaPlayer;
 	}
 	
+	/**
+	 * Get the Arena joined
+	 * @return The arena joined
+	 */
 	public Arena getArena()
 	{
 		return arena;
 	}
 	
+	/**
+	 * Get the type of the Arena joined
+	 * @return The type of the arena joined
+	 */
 	public String getArenaType()
 	{
 		return arena.getType();
 	}
 	
+	/**
+	 * Get the player that joined
+	 * @return The player that joined
+	 */
 	public Player getPlayer()
 	{
 		return arenaPlayer.getPlayer();

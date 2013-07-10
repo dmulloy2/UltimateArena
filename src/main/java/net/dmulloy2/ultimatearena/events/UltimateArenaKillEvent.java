@@ -8,6 +8,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * @author dmulloy2
+ */
+
 public class UltimateArenaKillEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
@@ -29,41 +33,73 @@ public class UltimateArenaKillEvent extends Event
 		this.arena = arena;
 	}
 	
+	/**
+	 * Get the ArenaPlayer instance of the killer
+	 * @return ArenaPlayer instance of the killer
+	 */
 	public ArenaPlayer getKiller()
 	{
 		return killer;
 	}
 	
+	/**
+	 * Get the ArenaPlayer instance of the dead
+	 * @return ArenaPlayer instance of the dead
+	 */
 	public ArenaPlayer getKilled()
 	{
 		return killed;
 	}
 	
+	/**
+	 * Get the arena the event occured in
+	 * @return Arena the event occured in
+	 */
 	public Arena getArena()
 	{
 		return arena;
 	}
 	
+	/**
+	 * Get the type of the arena the event occured in
+	 * @return Type of the arena the event occured in
+	 */
 	public String getArenaType()
 	{
 		return arena.getType();
 	}
 	
+	/**
+	 * Get the Player instance of the killer
+	 * @return Player instance of the killer
+	 */
 	public Player getKillerPlayer()
 	{
 		return killer.getPlayer();
 	}
 	
+	/**
+	 * Get the Player instance of the dead
+	 * @return Player instance of the dead
+	 */
 	public Player getKilledPlayer()
 	{
 		return killed.getPlayer();
 	}
 	
+	/**
+	 * Get the weapon used to kill
+	 * @return Weapon used to kill
+	 */
 	public ItemStack getWeapon()
 	{
 		return killer.getPlayer().getItemInHand();
 	}
 	
+	/**
+	 * Get the hearts the killer had left
+	 * @return Hearts the killer had left
+	 */
 	public int getHeartsLeft()
 	{
 		return (int) (killer.getPlayer().getHealth() / 2);

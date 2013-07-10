@@ -45,24 +45,24 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class UltimateArena extends JavaPlugin
 {
-	private @Getter Economy economy;
 	private @Getter FileHelper fileHelper;
+	private @Getter Economy economy;
 	
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	
-	public int arenasPlayed = 0;
-	
-	public List<ArenaClass> classes = new ArrayList<ArenaClass>();
-	public List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
-	public List<ArenaZone> loadedArena = new ArrayList<ArenaZone>();
-	public List<Arena> activeArena = new ArrayList<Arena>();
 	public List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
+	public List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
-	public List<String> fieldTypes = new ArrayList<String>();
+	public List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	public List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
+	public List<ArenaZone> loadedArena = new ArrayList<ArenaZone>();
+	public List<String> fieldTypes = new ArrayList<String>();
+	public List<Arena> activeArena = new ArrayList<Arena>();
 	
 	public WhiteListCommands wcmd = new WhiteListCommands();
+	
+	public int arenasPlayed = 0;
 	
 	private @Getter String prefix = ChatColor.GOLD + "[" + ChatColor.DARK_RED + "" + ChatColor.BOLD + "UA" + ChatColor.GOLD + "] ";
 
