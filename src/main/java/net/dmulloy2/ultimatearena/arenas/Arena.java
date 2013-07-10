@@ -335,18 +335,20 @@ public abstract class Arena
 								Location loc = getSpawn(ap);
 								if (loc != null) 
 								{
+									plugin.debug("Spawning player: {0}", name);
+									
 									Location nloc = new Location(loc.getWorld(), loc.getX() + 0.25, loc.getY() + 1.0, loc.getZ() + 0.25);
 									teleport(p, nloc);
-									
-									plugin.debug("Spawning player: {0}", name);
 									
 									// Call spawn event
 									ArenaSpawn aSpawn = new ArenaSpawn(nloc.getWorld(), nloc.getBlockX(), nloc.getBlockY(), nloc.getBlockZ());
 									UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, aSpawn);
 									plugin.getServer().getPluginManager().callEvent(spawnEvent);
 								}
+								
 								ap.spawn();
-								if (!alreadyspawned)
+								
+								if (! alreadyspawned)
 								{
 									onSpawn(ap);
 								}
@@ -898,17 +900,19 @@ public abstract class Arena
 								}
 							}
 						}
-					}
-					
-					// XP Bar
-					if (isInGame())
-					{
-						ap.getPlayer().setLevel(getGametimer());
-					}
-					
-					if (isInLobby())
-					{
-						ap.getPlayer().setLevel(getStarttimer());
+						else
+						{
+							// TODO: Make sure this works
+							/*if (isInGame())
+							{
+								ap.getPlayer().setLevel(getGametimer());
+							}
+							
+							if (isInLobby())
+							{
+								ap.getPlayer().setLevel(getStarttimer());
+							}*/
+						}
 					}
 				}
 			}

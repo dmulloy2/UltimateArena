@@ -28,7 +28,7 @@ public class KOTHArena extends Arena
 		
 		for (int i = 0; i < this.getArenaZone().getFlags().size(); i++)
 		{
-			this.getFlags().add( new KothFlag(this, this.getArenaZone().getFlags().get(i)) );
+			this.getFlags().add( new KothFlag(this, this.getArenaZone().getFlags().get(i), plugin) );
 		}
 		for (int i = 0; i < this.getArenaZone().getSpawns().size(); i++) 
 		{

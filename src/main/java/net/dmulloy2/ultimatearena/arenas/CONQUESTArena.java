@@ -27,7 +27,7 @@ public class CONQUESTArena extends Arena
 		
 		for (int i = 0; i < this.getArenaZone().getFlags().size(); i++) 
 		{
-			this.getFlags().add( new ArenaFlag(this, this.getArenaZone().getFlags().get(i)) );
+			this.getFlags().add( new ArenaFlag(this, this.getArenaZone().getFlags().get(i), plugin) );
 		}
 	}
 	

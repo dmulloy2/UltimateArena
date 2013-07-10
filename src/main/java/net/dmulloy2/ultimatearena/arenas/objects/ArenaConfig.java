@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.ItemHelper;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -76,6 +77,12 @@ public class ArenaConfig
 	
 	public void giveRewards(Player player, boolean half) 
 	{
+		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
+		if (event.isCancelled())
+			return;
+		
+		List<ItemStack> rewards = event.getRewards();
+		
 		for (ItemStack stack : rewards)
 		{
 			if (stack == null)
@@ -95,7 +102,7 @@ public class ArenaConfig
 				{
 					plugin.getEconomy().depositPlayer(player.getName(), cashReward);
 					String format = plugin.getEconomy().format(cashReward);
-					player.sendMessage(ChatColor.GREEN + format + " has been added to your balance!");
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
 				}
 			}
 		}

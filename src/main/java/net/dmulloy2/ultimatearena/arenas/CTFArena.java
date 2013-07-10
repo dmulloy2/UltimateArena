@@ -25,8 +25,8 @@ public class CTFArena extends Arena
 		setMaxgametime(60 * 15);
 		setMaxDeaths(990);
 
-		flagred = new CTFFlagBase(this, az.getFlags().get(0), 1);
-		flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2);
+		flagred = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
+		flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
 			
 		flagred.initialize();
 		flagblue.initialize();

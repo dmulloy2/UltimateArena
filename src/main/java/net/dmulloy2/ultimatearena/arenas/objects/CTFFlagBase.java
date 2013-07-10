@@ -2,16 +2,16 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 
 import java.util.List;
 
-import org.bukkit.ChatColor;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.arenas.CTFArena;
+import net.dmulloy2.ultimatearena.util.Util;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.CTFArena;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class CTFFlagBase extends FlagBase 
 {
@@ -21,9 +21,9 @@ public class CTFFlagBase extends FlagBase
 	
 	private int team;
 	
-	public CTFFlagBase(Arena arena, Location loc, int team) 
+	public CTFFlagBase(Arena arena, Location loc, int team, final UltimateArena plugin) 
 	{
-		super(arena, loc);
+		super(arena, loc, plugin);
 		this.arena = arena;
 		this.team = team;
 		this.ctf = (CTFArena)arena;
@@ -67,7 +67,7 @@ public class CTFFlagBase extends FlagBase
 						{ 
 							//if hes close to my flag stand, REWARD!
 							enemyflag.respawn();
-							p.sendMessage(ChatColor.GRAY + "Flag Captured! " + ChatColor.RED + " +500 XP");
+							a.sendMessage("&7Flag Captured! &c+ 500 XP");
 							
 							p.removePotionEffect(PotionEffectType.SLOW);
 							p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
@@ -79,7 +79,7 @@ public class CTFFlagBase extends FlagBase
 								{
 									if (ap.getTeam() == a.getTeam())
 									{
-										ap.getPlayer().sendMessage(ChatColor.GREEN + "Unlocked 10 seconds of crits!");
+										ap.sendMessage("&aUnlocked 10 seconds of crits!");
 										ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
 										ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
 									}
@@ -87,7 +87,8 @@ public class CTFFlagBase extends FlagBase
 							}
 								
 							a.setGameXP(a.getGameXP() + 500);
-							getArena().tellPlayers(ChatColor.GREEN + a.getPlayer().getName() + ChatColor.GRAY + " captured the " + enemyflag.getFlagType() + ChatColor.GRAY + " flag");
+							arena.tellPlayers("&a{0} &7captured the {1} &7flag!", a.getUsername(), enemyflag.getFlagType());
+
 							if (team == 1)
 							{
 								ctf.redcap++;

@@ -20,8 +20,8 @@ public class BOMBArena extends Arena
 		setMaxgametime(60 * 15);
 		setMaxDeaths(990);
 		
-		bomb1 = new BombFlag(this, az.getFlags().get(0));
-		bomb2 = new BombFlag(this, az.getFlags().get(1));
+		bomb1 = new BombFlag(this, az.getFlags().get(0), plugin);
+		bomb2 = new BombFlag(this, az.getFlags().get(1), plugin);
 		bomb1.setBnum(1);
 		bomb2.setBnum(2);
 	}

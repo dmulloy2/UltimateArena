@@ -321,6 +321,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			Arena a = getArena(player);
 			a.endPlayer(getArenaPlayer(player), false);
+			a.tellPlayers("&b{0} has left the arena!", player.getName());
 		}
 		else
 		{

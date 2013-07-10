@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
 import org.bukkit.Location;
@@ -13,13 +14,16 @@ public class FlagBase
 	private Location loc;
 	private Block notify = null;
 	protected Arena arena;
+	protected final UltimateArena plugin;
 	
-	public FlagBase(Arena arena, Location loc) 
+	public FlagBase(Arena arena, Location loc, final UltimateArena plugin) 
 	{
 		this.arena = arena;
 		
 		Location safe = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
 		this.setLoc(safe.clone().subtract(0, 1, 0));
+		
+		this.plugin = plugin;
 		
 		setup();
 	}

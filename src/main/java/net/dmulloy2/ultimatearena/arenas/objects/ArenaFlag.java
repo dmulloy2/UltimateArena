@@ -3,13 +3,14 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.Util;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
-import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class ArenaFlag extends FlagBase
 {
@@ -20,9 +21,9 @@ public class ArenaFlag extends FlagBase
 	
 	public boolean capped = false;
 	
-	public ArenaFlag(Arena arena, Location loc) 
+	public ArenaFlag(Arena arena, Location loc, final UltimateArena plugin) 
 	{
-		super(arena, loc);
+		super(arena, loc, plugin);
 	}
 	
 	public synchronized void setup() 
@@ -115,9 +116,10 @@ public class ArenaFlag extends FlagBase
 			added += (team1-team2) * 5;
 			for (int i = 0; i < players.size(); i++)
 			{
+				Player player = players.get(i);
 				if (percent < 100) 
 				{
-					players.get(i).sendMessage(ChatColor.GRAY + "Capping! " + ChatColor.GOLD + percent  +"%");
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Capping! &6{0}%", percent));
 				}
 			}
 		}
@@ -126,9 +128,10 @@ public class ArenaFlag extends FlagBase
 			added -= (team2-team1) * 5;
 			for (int i = 0; i < players.size(); i++) 
 			{
+				Player player = players.get(i);
 				if (percent < 100) 
 				{
-					players.get(i).sendMessage(ChatColor.GRAY + "Capping! " + ChatColor.GOLD + percent  +"%");
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Capping! &6{0}%", percent));
 				}
 			}
 		}

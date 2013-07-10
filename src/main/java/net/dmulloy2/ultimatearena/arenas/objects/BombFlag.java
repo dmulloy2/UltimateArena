@@ -7,6 +7,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -21,9 +22,9 @@ public class BombFlag extends ArenaFlag
 	private boolean fused = false;
 	private boolean exploded = false;
 	
-	public BombFlag(Arena arena, Location loc)
+	public BombFlag(Arena arena, Location loc, final UltimateArena plugin)
 	{
-		super(arena, loc);
+		super(arena, loc, plugin);
 	}
 	
 	@Override
@@ -104,7 +105,7 @@ public class BombFlag extends ArenaFlag
 					{ 
 						//team 1 is fusing
 						fuser++;
-						pl.sendMessage(FormatUtil.format("&7Fusing Bomb &6{0}! &7(&d{1}&7/&d10)", getBnum(), fuser));
+						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Fusing Bomb &6{0}! &7(&d{1}&7/&d10)", getBnum(), fuser));
 						if (fuser > 10)
 						{
 							fuser = 0;
@@ -119,7 +120,7 @@ public class BombFlag extends ArenaFlag
 					if (fused) 
 					{
 						fuser++;
-						pl.sendMessage(FormatUtil.format("&7Defusing Bomb &6{0}! &7(&d{1}&7/&d10)", getBnum(), fuser));
+						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Defusing Bomb &6{0}! &7(&d{1}&7/&d10)", getBnum(), fuser));
 						if (fuser > 10)
 						{
 							fuser = 0;

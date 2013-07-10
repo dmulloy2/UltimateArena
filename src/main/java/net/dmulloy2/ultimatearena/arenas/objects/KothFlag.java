@@ -2,19 +2,20 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 
 import java.util.ArrayList;
 
-import org.bukkit.ChatColor;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.KOTHArena;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.Util;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import net.dmulloy2.ultimatearena.arenas.KOTHArena;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class KothFlag extends ArenaFlag
 {
 	private KOTHArena marena;
-	public KothFlag(KOTHArena arena, Location loc)
+	public KothFlag(KOTHArena arena, Location loc, final UltimateArena plugin)
 	{
-		super(arena, loc);
+		super(arena, loc, plugin);
 		this.marena = arena;
 	}
 	
@@ -43,7 +44,9 @@ public class KothFlag extends ArenaFlag
 			{
 				Player pl = capturer.getPlayer();
 				capturer.setPoints(capturer.getPoints() + 1);
-				pl.sendMessage(ChatColor.GRAY + "You have capped for 1 point! " + ChatColor.LIGHT_PURPLE + capturer.getPoints() + " / " + marena.MAXPOWER);
+				
+				pl.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&7You have capped for &d1 &7point! (&d{0}&7/&d{1}&7)", capturer.getPoints(), marena.MAXPOWER));
 			}
 		}
 	}

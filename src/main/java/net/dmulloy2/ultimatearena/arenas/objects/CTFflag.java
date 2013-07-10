@@ -2,6 +2,9 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.util.Util;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,10 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.util.Util;
 
 public class CTFflag
 {
@@ -36,14 +35,11 @@ public class CTFflag
 	
 	private byte color;
 	private byte lastBlockDat;
-	
-	private final UltimateArena plugin;
-	
+
 	public CTFflag(Arena a, Location loc, int team)
 	{
 		this.setTeam(team);
 		this.arena = a;
-		this.plugin = arena.getArenaZone().getPlugin();
 		
 		this.setReturnto(loc.clone());
 		this.myloc = loc.clone();
@@ -57,19 +53,12 @@ public class CTFflag
 	
 	public void respawn() 
 	{
-		try
-		{
-			timer = 15;
-			setPickedUp(false);
-			setRiding(null);
-			toloc = getReturnto().clone();
-			myloc = toloc.clone();
-			setFlag();
-		}
-		catch(Exception e) 
-		{
-			plugin.getLogger().severe("Error respawning flag: " + e.getMessage());
-		}
+		timer = 15;
+		setPickedUp(false);
+		setRiding(null);
+		toloc = getReturnto().clone();
+		myloc = toloc.clone();
+		setFlag();
 	}
 	
 	public void notifyTime() 
@@ -274,51 +263,63 @@ public class CTFflag
 			loc.getWorld().equals(loc2.getWorld()));	
 	}
 
-	public int getTeam() {
+	public int getTeam() 
+	{
 		return team;
 	}
 
-	public void setTeam(int team) {
+	public void setTeam(int team) 
+	{
 		this.team = team;
 	}
 
-	public boolean isPickedUp() {
+	public boolean isPickedUp()
+	{
 		return pickedUp;
 	}
 
-	public void setPickedUp(boolean pickedUp) {
+	public void setPickedUp(boolean pickedUp)
+	{
 		this.pickedUp = pickedUp;
 	}
 
-	public Player getRiding() {
+	public Player getRiding()
+	{
 		return riding;
 	}
 
-	public void setRiding(Player riding) {
+	public void setRiding(Player riding) 
+	{
 		this.riding = riding;
 	}
 
-	public String getFlagType() {
+	public String getFlagType() 
+	{
 		return flagType;
 	}
 
-	public void setFlagType(String flagType) {
+	public void setFlagType(String flagType)
+	{
 		this.flagType = flagType;
 	}
 
-	public boolean isStopped() {
+	public boolean isStopped()
+	{
 		return stopped;
 	}
 
-	public void setStopped(boolean stopped) {
+	public void setStopped(boolean stopped) 
+	{
 		this.stopped = stopped;
 	}
 
-	public Location getReturnto() {
+	public Location getReturnto()
+	{
 		return returnto;
 	}
 
-	public void setReturnto(Location returnto) {
+	public void setReturnto(Location returnto) 
+	{
 		this.returnto = returnto;
 	}
 }
