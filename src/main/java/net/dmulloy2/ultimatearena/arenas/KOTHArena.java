@@ -7,6 +7,7 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaFlag;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.arenas.objects.KothFlag;
 import net.dmulloy2.ultimatearena.util.Util;
 
@@ -18,7 +19,7 @@ public class KOTHArena extends Arena
 	{
 		super(az);
 		
-		setType("Koth");
+		this.type = FieldType.KOTH;
 		setAllowTeamKilling(true);
 		setStarttimer(180);
 		setGametimer(0);

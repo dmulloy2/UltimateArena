@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.arenas;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.CTFFlagBase;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -19,7 +20,7 @@ public class CTFArena extends Arena
 	{
 		super(az);
 		
-		setType("Ctf");
+		this.type = FieldType.CTF;
 		setStarttimer(120);
 		setGametimer(0);
 		setMaxgametime(60 * 15);

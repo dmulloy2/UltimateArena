@@ -57,7 +57,6 @@ public class UltimateArena extends JavaPlugin
 	public List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	public List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
 	public List<ArenaZone> loadedArena = new ArrayList<ArenaZone>();
-	public List<String> fieldTypes = new ArrayList<String>();
 	public List<Arena> activeArena = new ArrayList<Arena>();
 	
 	public WhiteListCommands wcmd = new WhiteListCommands();
@@ -80,18 +79,6 @@ public class UltimateArena extends JavaPlugin
 		commandHandler = new CommandHandler(this);
 		
 		fileHelper = new FileHelper(this);
-		
-		// Add fields
-		fieldTypes.add("pvp");
-		fieldTypes.add("mob");
-		fieldTypes.add("cq");
-		fieldTypes.add("koth");
-		fieldTypes.add("bomb");
-		fieldTypes.add("ffa");
-		fieldTypes.add("spleef");
-		fieldTypes.add("infect");
-		fieldTypes.add("ctf");
-		fieldTypes.add("hunger");
 
 		// Add Commands
 		commandHandler.setCommandPrefix("ua");
@@ -286,6 +273,8 @@ public class UltimateArena extends JavaPlugin
 	{
 		File folder = new File(getDataFolder(), "arenas");
 		File[] children = folder.listFiles();
+		
+		int total = 0;
 		for (File file : children)
 		{
 			ArenaZone az = new ArenaZone(this, file);
@@ -293,20 +282,23 @@ public class UltimateArena extends JavaPlugin
 			{
 				loadedArena.add(az);
 				debug("Successfully loaded arena {0}!", az.getArenaName());
+				total++;
 			}
 		}
 		
-		outConsole("Loaded {0} arena files!", children.length);
+		outConsole("Loaded {0} arena files!", total);
 	}
 	
 	public void loadConfigs() 
 	{
-		for (String fieldType : fieldTypes)
+		int total = 0;
+		for (FieldType type : FieldType.values())
 		{
-			loadConfig(fieldType);
+			if (loadConfig(FieldType.getName(type)))
+				total++;
 		}
 		
-		outConsole("Loaded {0} arena config files!", fieldTypes.size());
+		outConsole("Loaded {0} arena config files!", total);
 		
 		loadWhiteListedCommands();
 	}
@@ -328,10 +320,10 @@ public class UltimateArena extends JavaPlugin
 			debug("Added whitelisted command: \"{0}\"!", whiteListed);
 		}
 		
-		outConsole("Loaded {0} whitelisted commands!", whiteListedCommands.size());
+		outConsole("Loaded {0} whitelisted commands!", wcmd.size());
 	}
 	
-	public void loadConfig(String str)
+	public boolean loadConfig(String str)
 	{
 		File folder = new File(getDataFolder(), "configs");
 		File file = new File(folder, str + "Config.yml");
@@ -345,7 +337,10 @@ public class UltimateArena extends JavaPlugin
 		if (a.isLoaded())
 		{
 			configs.add(a);
+			return true;
 		}
+		
+		return false;
 	}
 	
 	public void loadClasses() 
@@ -360,16 +355,18 @@ public class UltimateArena extends JavaPlugin
 
 		children = folder.listFiles();
 
+		int total = 0;
 		for (File file : children)
 		{
 			ArenaClass ac = new ArenaClass(this, file);
 			if (ac.isLoaded())
 			{
 				classes.add(ac);
+				total++;
 			}
 		}
 		
-		outConsole("Loaded {0} Arena Classes!", children.length);
+		outConsole("Loaded {0} Arena Classes!", total);
 	}
 	
 	public ArenaConfig getConfig(String type) 
@@ -840,7 +837,7 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 		
-		if (!fieldTypes.contains(type.toLowerCase()))
+		if (!FieldType.contains(type.toLowerCase()))
 		{
 			player.sendMessage(prefix + ChatColor.RED + "This is not a valid field type!");
 			return;
@@ -901,7 +898,6 @@ public class UltimateArena extends JavaPlugin
 		loadedArena.clear();
 		activeArena.clear();
 		makingArena.clear();
-		fieldTypes.clear();
 		arenaSigns.clear();
 		waiting.clear();
 		classes.clear();

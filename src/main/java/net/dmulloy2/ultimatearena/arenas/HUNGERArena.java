@@ -5,6 +5,7 @@ import java.util.Random;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Color;
@@ -19,7 +20,7 @@ public class HUNGERArena extends Arena
 	{
 		super(az);
 		
-		setType("Hunger");
+		this.type = FieldType.HUNGER;
 		setStarttimer(120);
 		setMaxgametime(60 * 10 * 3);
 		setMaxDeaths(1);

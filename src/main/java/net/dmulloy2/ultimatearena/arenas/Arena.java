@@ -60,7 +60,7 @@ public abstract class Arena
 
 	private World world;
 
-	private String type;
+	protected FieldType type;
 	private String name;
 
 	protected final UltimateArena plugin;
@@ -710,7 +710,7 @@ public abstract class Arena
 		
 		if (config == null)
 		{
-			config = plugin.getConfig(getType());
+			config = plugin.getConfig(FieldType.getName(type));
 			reloadConfig();
 		}
 		
@@ -1033,7 +1033,7 @@ public abstract class Arena
 		this.disabled = disabled;
 	}
 
-	public String getType() 
+	public FieldType getType() 
 	{
 		return type;
 	}
@@ -1178,7 +1178,7 @@ public abstract class Arena
 		this.pauseStartTimer = pauseStartTimer;
 	}
 	
-	public void setType(String type)
+	public void setType(FieldType type)
 	{
 		this.type = type;
 	}

@@ -5,6 +5,7 @@ import java.util.Random;
 import net.dmulloy2.ultimatearena.Field3D;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
@@ -21,7 +22,7 @@ public class SPLEEFArena extends FFAArena
 	{
 		super(az);
 		
-		setType("Spleef");
+		this.type = FieldType.SPLEEF;
 		setMaxDeaths(2);
 
 		spleefGround = new Field3D();

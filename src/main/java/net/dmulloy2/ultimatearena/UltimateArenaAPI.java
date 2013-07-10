@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 public class UltimateArenaAPI 
 {
@@ -100,7 +101,7 @@ public class UltimateArenaAPI
 	 * @param a - ArenaPlayer instance
 	 * @return The type of the arena the player is in
 	 */
-	public String getArenaType(ArenaPlayer a)
+	public FieldType getArenaType(ArenaPlayer a)
 	{
 		return a.getArena().getType();
 	}

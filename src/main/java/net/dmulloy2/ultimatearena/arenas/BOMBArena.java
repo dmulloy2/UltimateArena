@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.arenas;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.BombFlag;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 public class BOMBArena extends Arena 
 {
@@ -14,7 +15,7 @@ public class BOMBArena extends Arena
 	{
 		super(az);
 		
-		setType("Bomb");
+		this.type = FieldType.BOMB;
 		setStarttimer(120);
 		setGametimer(0);
 		setMaxgametime(60 * 15);

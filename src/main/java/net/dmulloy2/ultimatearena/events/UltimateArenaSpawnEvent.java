@@ -4,6 +4,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -53,7 +54,7 @@ public class UltimateArenaSpawnEvent extends Event
 	 * Get the type of the arena
 	 * @return Type of the arena
 	 */
-	public String getArenaType()
+	public FieldType getArenaType()
 	{
 		return arena.getType();
 	}

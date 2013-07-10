@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Color;
@@ -18,7 +19,7 @@ public class FFAArena extends Arena
 	{
 		super(az);
 		
-		setType("Ffa");
+		this.type = FieldType.FFA;
 		setStarttimer(120);
 		setMaxgametime(60 * 10);
 		setMaxDeaths(4);

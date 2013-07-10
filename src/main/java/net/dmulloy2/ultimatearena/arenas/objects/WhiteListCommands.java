@@ -43,4 +43,9 @@ public class WhiteListCommands
 	{
 		allowedCommand.clear();
 	}
+	
+	public int size()
+	{
+		return allowedCommand.size();
+	}
 }

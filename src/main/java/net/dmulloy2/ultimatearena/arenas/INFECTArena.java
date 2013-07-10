@@ -6,6 +6,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 public class INFECTArena extends PVPArena
@@ -14,7 +15,7 @@ public class INFECTArena extends PVPArena
 	{
 		super(az);
 		
-		setType("Infect");
+		this.type = FieldType.INFECT;
 		setStarttimer(80);
 		setGametimer(0);
 		setMaxgametime((60 * 2) + 10); //2 minutes and 10 seconds (by default)

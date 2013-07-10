@@ -6,6 +6,7 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaFlag;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class CONQUESTArena extends Arena
 	{
 		super(az);
 		
-		setType("Cq");
+		this.type = FieldType.CONQUEST;
 		setStarttimer(180);
 		setGametimer(0);
 		setMaxgametime(60 * 20);

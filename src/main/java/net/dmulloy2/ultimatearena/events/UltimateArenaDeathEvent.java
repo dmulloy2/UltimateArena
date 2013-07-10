@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.events;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -48,7 +49,7 @@ public class UltimateArenaDeathEvent extends Event
 	 * Gets the type of the arena in which the event occured
 	 * @return The type of the arena in which the event occured
 	 */
-	public String getArenaType()
+	public FieldType getArenaType()
 	{
 		return arena.getType();
 	}

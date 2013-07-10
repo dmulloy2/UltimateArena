@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.arenas;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 public class PVPArena extends Arena 
 {
@@ -8,7 +9,7 @@ public class PVPArena extends Arena
 	{
 		super(az);
 		
-		setType("Pvp");
+		this.type = FieldType.PVP;
 		setStarttimer(120);
 		setGametimer(0);
 		setMaxgametime(60 * 10);

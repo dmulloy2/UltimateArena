@@ -4,6 +4,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
@@ -50,7 +51,7 @@ public class BlockListener implements Listener
 			if (plugin.isInArena(player) && plugin.getArena(player) != null)
 			{
 				Arena arena = plugin.getArena(player);
-				if (!arena.getType().equalsIgnoreCase("Hunger"))
+				if (! FieldType.getName(arena.getType()).equalsIgnoreCase("Hunger"))
 				{
 					player.sendMessage(ChatColor.RED + "You cannot break this!");
 					event.setCancelled(true);
@@ -88,7 +89,7 @@ public class BlockListener implements Listener
 			if (plugin.isInArena(player) && plugin.getArena(player) != null)
 			{
 				Arena arena = plugin.getArena(player);
-				if (!arena.getType().equalsIgnoreCase("Hunger"))
+				if (! FieldType.getName(arena.getType()).equalsIgnoreCase("Hunger"))
 				{
 					player.sendMessage(ChatColor.RED + "You cannot place this!");
 					event.setCancelled(true);

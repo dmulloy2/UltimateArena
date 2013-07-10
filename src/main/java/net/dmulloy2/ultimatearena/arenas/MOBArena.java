@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
@@ -30,7 +31,7 @@ public class MOBArena extends Arena
 	{
 		super(az);
 		
-		setType("Mob");
+		this.type = FieldType.MOB;
 		setStarttimer(80);
 		setMaxgametime(60 * 10);
 		setMaxDeaths(0);
