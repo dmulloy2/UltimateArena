@@ -666,7 +666,7 @@ public class UltimateArena extends JavaPlugin
 			
 			if (!disabled)
 			{
-				String arenaType = a.getArenaType().toLowerCase();
+				String arenaType = a.getType().name().toLowerCase();
 				if (arenaType.equals("pvp"))
 				{
 					ar = new PVPArena(a);

@@ -31,7 +31,7 @@ public class CmdList extends UltimateArenaCommand
 		for (int i = 0; i < arenas.size(); i++) 
 		{
 			String arena = arenas.get(i).getArenaName();
-			String type = arenas.get(i).getArenaType();
+			String type = arenas.get(i).getType().name();
 				
 			String arenaType = ChatColor.GOLD + "[" + ChatColor.RED + type + " Arena" + ChatColor.GOLD + "]";
 			String arenaName = ChatColor.RED + arena;

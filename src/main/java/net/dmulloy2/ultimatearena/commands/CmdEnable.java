@@ -37,7 +37,7 @@ public class CmdEnable extends UltimateArenaCommand
 					sendMessage(ChatColor.GRAY + "Enabled " + at);
 					return;
 				}
-				else if (aa.getArenaZone().getArenaType().equals(at))
+				else if (aa.getArenaZone().getType().name().equals(at))
 				{
 					aa.setDisabled(false);
 					sendMessage(ChatColor.GRAY + "Enabled " + at);
@@ -47,7 +47,7 @@ public class CmdEnable extends UltimateArenaCommand
 			for (int ii = 0; ii < plugin.loadedArena.size(); ii++)
 			{
 				ArenaZone aa = plugin.loadedArena.get(ii);
-				if (aa.getArenaType().equals(at))
+				if (aa.getType().name().equals(at))
 				{
 					aa.setDisabled(false);
 					sendMessage(ChatColor.GRAY + "Enabled " + at);

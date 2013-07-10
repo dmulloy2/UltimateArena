@@ -15,7 +15,7 @@ public class ArenaCreator
 	private String player;
 	private String msg = "";
 	private String arenaName = "";
-	private String arenaType = "";
+	private FieldType arenaType;
 	
 	private Location lobby1 = null;
 	private Location lobby2 = null;
@@ -46,7 +46,7 @@ public class ArenaCreator
 	public void setArena(String arenaName, String arenaType)
 	{
 		this.setArenaName(arenaName);
-		this.arenaType = arenaType;
+		this.arenaType = FieldType.getByName(arenaType);
 		
 		this.steps.add("Lobby");
 		this.steps.add("Arena");

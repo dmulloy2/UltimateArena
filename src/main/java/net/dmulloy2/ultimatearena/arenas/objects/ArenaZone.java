@@ -28,7 +28,7 @@ public class ArenaZone
 	private String player;
 	private String defaultClass;
 	private String arenaName = "";
-	private String arenaType = "";
+	private FieldType type;
 	
 	private Location lobby1 = null;
 	private Location lobby2 = null;
@@ -158,7 +158,8 @@ public class ArenaZone
 		this.liked = liked;
 	}
 
-	public int getDisliked() {
+	public int getDisliked()
+	{
 		return disliked;
 	}
 
@@ -217,14 +218,14 @@ public class ArenaZone
 		this.defaultClass = defaultClass;
 	}
 
-	public String getArenaType() 
+	public FieldType getType() 
 	{
-		return arenaType;
+		return type;
 	}
 
-	public void setArenaType(String arenaType) 
+	public void setArenaType(FieldType type) 
 	{
-		this.arenaType = arenaType;
+		this.type = type;
 	}
 
 	public String getArenaName()

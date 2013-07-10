@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -467,7 +468,7 @@ public class FileHelper
 
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			
-			fc.set("type", az.getArenaType());
+			fc.set("type", az.getType().name());
 			fc.set("world", az.getWorld().getName());
 			
 			Location lobby1 = az.getLobby1();
@@ -486,7 +487,7 @@ public class FileHelper
 			fc.set("arena2.x", arena2.getBlockX());
 			fc.set("arena2.z", arena2.getBlockZ());
 			
-			String arenaType = az.getArenaType();
+			String arenaType = az.getType().name();
 			if (arenaType.equals("pvp"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
@@ -730,7 +731,7 @@ public class FileHelper
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			
 			String arenaType = fc.getString("type");
-			az.setArenaType(arenaType);
+			az.setArenaType(FieldType.getByName(fc.getString("type")));
 			
 			World world = plugin.getServer().getWorld(fc.getString("world"));
 			az.setWorld(world);

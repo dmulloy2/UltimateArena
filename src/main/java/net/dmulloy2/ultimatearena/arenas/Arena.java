@@ -178,11 +178,11 @@ public abstract class Arena
 				{
 					if (announced == 0) 
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&b{0} &6arena has been created!", getArenaZone().getArenaType()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&b{0} &6arena has been created!", getType().name()));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Hurry up and join the &b{0} &6arena!", getArenaZone().getArenaType()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Hurry up and join the &b{0} &6arena!", getType().name()));
 					}
 					
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Type &b/ua join {0} &6to join!", getArenaZone().getArenaName()));
@@ -563,7 +563,7 @@ public abstract class Arena
 			}
 			if (ap.getKillstreak() == 5) 
 			{
-				if (!(this.getArenaZone().getArenaType().equalsIgnoreCase("cq"))) 
+				if (!(getType().name().equalsIgnoreCase("cq"))) 
 				{
 					pl.sendMessage(plugin.getPrefix() + "5 kills! Unlocked Zombies!");
 					for (int i = 0; i < 4; i++)
