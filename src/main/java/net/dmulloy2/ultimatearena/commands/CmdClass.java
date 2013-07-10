@@ -36,7 +36,7 @@ public class CmdClass extends UltimateArenaCommand
 				return;
 			}
 			
-			sendpMessage("&eYour current class is: &a{0}&e!", ap.getArenaClass().getName());
+			sendpMessage("&7Your current class is: &6{0}&7!", ap.getArenaClass().getName());
 			return;
 		}
 		else if (args.length == 1)
@@ -46,7 +46,14 @@ public class CmdClass extends UltimateArenaCommand
 				if (cl.getName().equalsIgnoreCase(args[0]))
 				{
 					ap.setClass(cl, true);
-					sendpMessage("&eYou have successfully set your class to: &a{0}&e!", cl.getName());
+					if (ap.getArena().isInLobby())
+					{
+						sendpMessage("&7You will spawn as a(n): &6{0}", cl.getName());
+					}
+					else
+					{
+						sendpMessage("&7You have set your class to: &6{0}");
+					}
 					return;
 				}
 			}

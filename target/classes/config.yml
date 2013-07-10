@@ -19,3 +19,11 @@ saveInventories: false
 # Whether or not SwornGuns ammo is unlimited
 # Default - true; Input - boolean
 unlimitedAmmo: true
+
+# Extra output to console
+# Default - false; Input - boolean
+debug: false
+
+# Timer XP bar
+# Default - false; Input - boolean
+timerXPBar: false

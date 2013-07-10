@@ -885,6 +885,9 @@ public abstract class Arena
 					{
 						ap.sendMessage("&6{0} &7second(s) until end!", getMaxgametime() / 2);
 					}
+					
+					// XP Bar
+					decideXPBar(ap);
 							
 					// End dead players
 					if (!isStopped()) 
@@ -900,19 +903,6 @@ public abstract class Arena
 								}
 							}
 						}
-						else
-						{
-							// TODO: Make sure this works
-							/*if (isInGame())
-							{
-								ap.getPlayer().setLevel(getGametimer());
-							}
-							
-							if (isInLobby())
-							{
-								ap.getPlayer().setLevel(getStarttimer());
-							}*/
-						}
 					}
 				}
 			}
@@ -923,14 +913,41 @@ public abstract class Arena
 			plugin.forceStop(getArenaZone().getArenaName());
 	}
 	
+	/** Timer XP bar **/
+	public void decideXPBar(ArenaPlayer ap)
+	{
+		if (ap != null && ! ap.isOut())
+		{
+			if (plugin.getConfig().getBoolean("timerXPBar", false))
+			{
+				if (isInGame())
+				{
+					ap.getPlayer().setLevel(getGametimer());
+				}
+					
+				if (isInLobby())
+				{
+					ap.getPlayer().setLevel(getStarttimer());
+				}
+			}
+		}
+	}
+	
 	/** Return a player's xp after leaving an arena **/
 	public void returnXP(Player player)
 	{
 		plugin.debug("Returning XP for player: {0}", player.getName());
 		
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
-		if (ap != null)
-			player.setLevel(ap.getBaselevel());
+		
+		// Clear XP
+		player.setExp((float) 0);
+		player.setLevel(0);
+		
+		// Give Base XP
+		player.setLevel(ap.getBaselevel());
+		
+		// TODO: Reward with extra XP based on ingame XP?
 	}
 
 	public void forceStart(Player player)

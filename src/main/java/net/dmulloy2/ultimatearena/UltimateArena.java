@@ -924,7 +924,10 @@ public class UltimateArena extends JavaPlugin
 		{
 			setupEconomy();
 			
-			outConsole("Enabled economy integration through {0}!", economy.getName());
+			if (economy != null)
+			{
+				outConsole("Economy integration through {0} was succesful!", economy.getName());
+			}
 		}
 	}
 	

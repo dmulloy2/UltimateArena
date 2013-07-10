@@ -4,6 +4,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.inventory.ItemStack;
 
 public class CmdClassList extends UltimateArenaCommand
@@ -25,10 +26,11 @@ public class CmdClassList extends UltimateArenaCommand
 
 		for (ArenaClass ac : plugin.classes)
 		{
-			sendMessage("&4===[ &6{0} &4]===", ac.getName());
+			String name = WordUtils.capitalize(ac.getName());
+			sendMessage("&4===[ &6{0} &4]===", name);
 			for (ItemStack weapon : ac.getWeapons())
 			{
-				String name = FormatUtil.getFriendlyName(weapon.getType());
+				name = FormatUtil.getFriendlyName(weapon.getType());
 				sendMessage("&6- {0}", name);
 			}
 		}

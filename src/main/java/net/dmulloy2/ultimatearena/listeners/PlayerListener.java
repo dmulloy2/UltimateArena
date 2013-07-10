@@ -113,18 +113,13 @@ public class PlayerListener implements Listener
 									if (arc.checkPermission(player))
 									{
 										ac.setClass(arc, false);
-										player.sendMessage(ChatColor.GRAY + "You will spawn as a(n): " + ChatColor.GOLD + line1);
+										ac.sendMessage("&7You will spawn as a(n): &6{0}", arc.getName());
 									}
 									else 
 									{
-										player.sendMessage(ChatColor.RED + "You do not have the necessary perms for this class");
+										ac.sendMessage("&cYou do not have the necessary perms for this class");
 									}
 								} 
-								/*else 
-								{
-									// TODO: Is this really necessary?
-									player.sendMessage(ChatColor.RED + "Error: \"" + line1 + "\" is not a class!");
-								}*/
 							}
 						}
 					}
