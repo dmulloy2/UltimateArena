@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -29,10 +30,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class EntityListener implements Listener
 {
+	private List<String> deadPlayers;
 	private final UltimateArena plugin;
 	public EntityListener(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
+		this.deadPlayers = new ArrayList<String>();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -194,6 +197,11 @@ public class EntityListener implements Listener
 		if (died instanceof Player)
 		{
 			Player pdied = (Player)died;
+			if (deadPlayers.contains(pdied.getName())) // Stop multikilling
+				return;
+			
+			new DeadPlayerTask(pdied.getName()).runTaskLater(plugin, 60L);
+			
 			if (plugin.isInArena(pdied))
 			{
 				ArenaPlayer dp = plugin.getArenaPlayer(pdied);
@@ -357,6 +365,22 @@ public class EntityListener implements Listener
 					}
 				}
 			}
+		}
+	}
+	
+	public class DeadPlayerTask extends BukkitRunnable
+	{
+		private final String player;
+		public DeadPlayerTask(final String player)
+		{
+			this.player = player;
+			deadPlayers.add(player);
+		}
+		
+		@Override
+		public void run()
+		{
+			deadPlayers.remove(player);
 		}
 	}
 }

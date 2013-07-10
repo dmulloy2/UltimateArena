@@ -690,7 +690,7 @@ public abstract class Arena
 		}
 	}
 
-	public void onStart() 
+	public void onStart()
 	{
 		setAmtPlayersStartingInArena(arenaPlayers.size());
 	}
