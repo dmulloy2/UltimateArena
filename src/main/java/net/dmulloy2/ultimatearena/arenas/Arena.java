@@ -932,19 +932,7 @@ public abstract class Arena
 		if (ap != null)
 			player.setLevel(ap.getBaselevel());
 	}
-	
-	/** Save players on shutdown **/
-	public void onShutdown()
-	{	
-		for (ArenaPlayer pl : arenaPlayers)
-		{
-			SavedArenaPlayer playerToSave = new SavedArenaPlayer(pl.getPlayer().getName(), pl.getBaselevel(), pl.getSpawnBack(), pl.getSavedInventory(), pl.getSavedArmor());
-			plugin.getFileHelper().savePlayer(playerToSave);
-		}
-		
-		stop();
-	}
-	
+
 	public void forceStart(Player player)
 	{
 		if (isInGame())

@@ -414,9 +414,9 @@ public class ArenaPlayer
 	{
 		if (deaths == 0)
 		{
-			return kills;
+			return (double) kills;
 		}
 
-		return (kills / deaths);
+		return ((double) kills / (double) deaths);
 	}
 }

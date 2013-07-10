@@ -23,28 +23,25 @@ import java.util.List;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import net.milkbowl.vault.economy.Economy;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import net.dmulloy2.ultimatearena.arenas.*;
 import net.dmulloy2.ultimatearena.arenas.objects.*;
 import net.dmulloy2.ultimatearena.commands.*;
 import net.dmulloy2.ultimatearena.listeners.*;
 import net.dmulloy2.ultimatearena.permissions.*;
 import net.dmulloy2.ultimatearena.util.*;
+import net.milkbowl.vault.economy.Economy;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class UltimateArena extends JavaPlugin
 {
@@ -64,7 +61,6 @@ public class UltimateArena extends JavaPlugin
 	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	public List<String> fieldTypes = new ArrayList<String>();
 	public List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
-	public List<SavedArenaPlayer> savedPlayers = new ArrayList<SavedArenaPlayer>();
 	
 	public WhiteListCommands wcmd = new WhiteListCommands();
 	
@@ -76,7 +72,7 @@ public class UltimateArena extends JavaPlugin
 		long start = System.currentTimeMillis();
 
 		// IO Stuff
-		createDirectories();
+		checkDirectories();
 		saveDefaultConfig();
 
 		// Register Handlers and Helpers
@@ -126,9 +122,6 @@ public class UltimateArena extends JavaPlugin
 		commandHandler.registerCommand(new CmdClassList(this));
 		commandHandler.registerCommand(new CmdClass(this));
 		
-		// Load saved players
-		loadPlayers();
-
 		// SwornGuns
 		PluginManager pm = getServer().getPluginManager();
 		if (pm.isPluginEnabled("SwornGuns"))
@@ -171,12 +164,8 @@ public class UltimateArena extends JavaPlugin
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
 
-		// Stop Arenas
-		for (Arena arena : activeArena)
-		{
-			arena.onShutdown();
-			debug("Stopped arena {0} on shutdown!", arena.getName());
-		}
+		// Stop all arenas
+		forceStop();
 		
 		// Save Signs
 		for (ArenaSign sign : arenaSigns)
@@ -223,7 +212,7 @@ public class UltimateArena extends JavaPlugin
 	}
 	
 	// Create Directories
-	public void createDirectories()
+	public void checkDirectories()
 	{
 		File arenaFile = new File(getDataFolder(), "arenas");
 		if (!arenaFile.exists())
@@ -233,10 +222,19 @@ public class UltimateArena extends JavaPlugin
 		}
 		
 		File playersFile = new File(getDataFolder(), "players");
-		if (!playersFile.exists())
+		if (playersFile.exists())
 		{
-			playersFile.mkdir();
-			debug("Created players directory!");
+			File[] children = playersFile.listFiles();
+			if (children != null && children.length > 0)
+			{
+				for (File file : children)
+				{
+					file.delete();
+				}
+			}
+			
+			playersFile.delete();
+			debug("Deleted players directory!");
 		}
 		
 		File classFile = new File(getDataFolder(), "classes");
@@ -253,27 +251,6 @@ public class UltimateArena extends JavaPlugin
 			debug("Created configs directory!");
 		}
 	}
-	
-	// Load saved players
-	public void loadPlayers()
-	{
-		savedPlayers = fileHelper.getSavedPlayers();
-		if (savedPlayers.size() > 0)
-		{
-			for (Player player : getServer().getOnlinePlayers())
-			{
-				for (SavedArenaPlayer savedArenaPlayer : savedPlayers)
-				{
-					if (savedArenaPlayer.getName().equals(player.getName()))
-					{
-						normalizeSavedPlayer(savedArenaPlayer);
-					}
-				}
-			}
-		}
-		
-		outConsole("Loaded {0} saved players!", savedPlayers.size());
-	}
 
 	// Save players in arenas
 	public void onQuit(Player player)
@@ -286,35 +263,11 @@ public class UltimateArena extends JavaPlugin
 		
 		if (isInArena(player))
 		{
-			Arena ar = getArena(player);
-			ArenaPlayer ap = getArenaPlayer(player);
-			if (ap != null)
-			{
-				outConsole("Player {0} leaving arena {1} from quit", player.getName(), ar.getName());
-				SavedArenaPlayer loggedOut = new SavedArenaPlayer(player.getName(), ap.getBaselevel(), ap.getSpawnBack(), ap.getSavedInventory(), ap.getSavedArmor());
-						
-				savedPlayers.add(loggedOut);
-				fileHelper.savePlayer(loggedOut);
-						
-				removeFromArena(player.getName());
-			}
+			debug("Player {0} leaving arena from quit", player.getName());
+			leaveArena(player);
 		}
 	}
-	
-	// Normalize saved players
-	public void onJoin(Player player) 
-	{
-		/**Normalize Player If Saved**/
-		for (int i=0; i<savedPlayers.size(); i++)
-		{
-			SavedArenaPlayer savedArenaPlayer = savedPlayers.get(i);
-			if (savedArenaPlayer.getName().equals(player.getName()))
-			{
-				normalizeSavedPlayer(savedArenaPlayer);
-			}
-		}
-	}
-	
+
 	public void leaveArena(Player player)
 	{
 		if (isInArena(player))
@@ -945,7 +898,6 @@ public class UltimateArena extends JavaPlugin
 	
 	public void clearMemory()
 	{
-		savedPlayers.clear();
 		loadedArena.clear();
 		activeArena.clear();
 		makingArena.clear();
@@ -969,7 +921,11 @@ public class UltimateArena extends JavaPlugin
 	private void checkVault(PluginManager pm) 
 	{
 		if (pm.isPluginEnabled("Vault"))
+		{
 			setupEconomy();
+			
+			outConsole("Enabled economy integration through {0}!", economy.getName());
+		}
 	}
 	
     /**Set up vault economy**/
@@ -985,64 +941,6 @@ public class UltimateArena extends JavaPlugin
  
 		return economy != null;
 	}
-    
-    private void normalizeSavedPlayer(SavedArenaPlayer savedArenaPlayer)
-    {
-    	outConsole("Normalizing saved player: \"{0}\"!", savedArenaPlayer.getName());
-    	
-    	Player player = Util.matchPlayer(savedArenaPlayer.getName());
-    	
-    	int levels = savedArenaPlayer.getLevels();
-		Location loc = savedArenaPlayer.getLocation();
-				
-		normalize(player);
-		player.setLevel(levels);
-		player.teleport(loc);
-		removePotions(player);
-		
-		List<ItemStack> itemContents = savedArenaPlayer.getSavedInventory();
-		List<ItemStack> armorContents = savedArenaPlayer.getSavedArmor();
-		
-		PlayerInventory inv = player.getInventory();
-		for (ItemStack itemStack : itemContents)
-		{
-			if (itemStack == null || itemStack.getType() == Material.AIR)
-				continue;
-			
-			inv.addItem(itemStack);
-		}
-		
-		for (ItemStack armor : armorContents)
-		{
-			if (armor == null || armor.getType() == Material.AIR)
-				continue;
-			
-			String type = armor.getType().toString().toLowerCase();
-			if (type.contains("helmet"))
-			{
-				inv.setHelmet(armor);
-			}
-			
-			if (type.contains("chestplate"))
-			{
-				inv.setChestplate(armor);
-			}
-			
-			if (type.contains("leggings"))
-			{
-				inv.setLeggings(armor);
-			}
-			
-			if (type.contains("boots"))
-			{
-				inv.setBoots(armor);
-			}
-		}
-				
-		fileHelper.deletePlayer(player);
-				
-		savedPlayers.remove(savedArenaPlayer);
-    }
     
     /** Updaters **/
     public class ArenaUpdateTask extends BukkitRunnable
