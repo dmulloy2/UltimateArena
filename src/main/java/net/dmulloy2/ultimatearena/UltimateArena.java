@@ -152,7 +152,7 @@ public class UltimateArena extends JavaPlugin
 		getServer().getScheduler().cancelTasks(this);
 
 		// Stop all arenas
-		forceStop();
+		stopAll();
 		
 		// Save Signs
 		for (ArenaSign sign : arenaSigns)
@@ -239,7 +239,7 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 
-	// Save players in arenas
+	// Normalize player if in arena
 	public void onQuit(Player player)
 	{
 		if (isPlayerCreatingArena(player)) 
@@ -380,33 +380,19 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 
-	public void forceStop()
+	public void stopAll()
 	{
 		for (int i=0; i<activeArena.size(); i++)
 		{
 			Arena arena = activeArena.get(i);
 			if (arena != null)
 			{
-				arena.setStartingAmount(0);
 				arena.stop();
 			}
 		}
 		activeArena.clear();
 	}
-	
-	public void forceStop(String str)
-	{
-		for (int i=0; i<activeArena.size(); i++)
-		{
-			Arena arena = activeArena.get(i);
-			if (arena != null)
-			{
-				arena.setForceStop(true);
-				arena.stop();
-			}
-		}
-	}
-	
+
 	public ArenaSign getArenaSign(Location loc)
 	{
 		for (ArenaSign sign : arenaSigns)
@@ -444,7 +430,14 @@ public class UltimateArena extends JavaPlugin
 		File file = new File(folder, str + ".dat");
 		if (file.exists())
 		{
-			forceStop(str);
+			for (int i = 0; i < activeArena.size(); i++)
+			{
+				Arena a = activeArena.get(i);
+				if (a.getName().equalsIgnoreCase(str))
+				{
+					a.stop();
+				}
+			}
 				
 			loadedArena.remove(getArenaZone(str));
 				

@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
 public class CmdForceStop extends UltimateArenaCommand
@@ -23,11 +24,22 @@ public class CmdForceStop extends UltimateArenaCommand
 	{
 		if (args.length > 0)
 		{
-			plugin.forceStop(args[0]);
+			boolean found = false;
+			for (int i = 0; i < plugin.activeArena.size(); i++)
+			{
+				Arena a = plugin.activeArena.get(i);
+				a.stop();
+				found = true;
+			}
+			
+			if (! found)
+			{
+				err("No arena by that name exists!");
+			}
 		}
 		else
 		{
-			plugin.forceStop();
+			plugin.stopAll();
 		}
 	}
 }

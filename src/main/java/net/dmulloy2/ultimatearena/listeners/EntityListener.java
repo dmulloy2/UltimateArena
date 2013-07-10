@@ -196,8 +196,10 @@ public class EntityListener implements Listener
 		
 		if (died instanceof Player)
 		{
+			// Stops multikilling
+			// TODO: A more permanent solution for this
 			Player pdied = (Player)died;
-			if (deadPlayers.contains(pdied.getName())) // Stop multikilling
+			if (deadPlayers.contains(pdied.getName()))
 				return;
 			
 			new DeadPlayerTask(pdied.getName()).runTaskLater(plugin, 60L);

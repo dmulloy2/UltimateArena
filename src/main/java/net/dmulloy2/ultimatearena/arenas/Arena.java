@@ -607,6 +607,8 @@ public abstract class Arena
 	/** Ends the Arena **/
 	public void stop()
 	{
+		if (isStopped()) return; // No need to stop multiple times
+		
 		setStopped(true);
 		onStop();
 		
@@ -738,7 +740,7 @@ public abstract class Arena
 		if (getGametimer() <= 0) 
 		{
 			onPreOutOfTime();
-			plugin.forceStop(getArenaZone().getArenaName());
+			stop();
 			onOutOfTime();
 		}
 	}
@@ -910,7 +912,7 @@ public abstract class Arena
 		
 		// Stop the arena if there are no players
 		if (this.getAmtPlayersInArena() == 0)
-			plugin.forceStop(getArenaZone().getArenaName());
+			stop();
 	}
 	
 	/** Timer XP bar **/
