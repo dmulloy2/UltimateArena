@@ -710,7 +710,7 @@ public abstract class Arena
 		
 		if (config == null)
 		{
-			config = plugin.getConfig(FieldType.getName(type));
+			config = plugin.getConfig(type.name);
 			reloadConfig();
 		}
 		

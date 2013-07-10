@@ -294,7 +294,7 @@ public class UltimateArena extends JavaPlugin
 		int total = 0;
 		for (FieldType type : FieldType.values())
 		{
-			if (loadConfig(FieldType.getName(type)))
+			if (loadConfig(type.name))
 				total++;
 		}
 		

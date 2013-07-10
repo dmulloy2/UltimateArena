@@ -8,7 +8,6 @@ import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -64,7 +63,7 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl))
 			{
 				Arena arena = plugin.getArena(pl);
-				if (! FieldType.getName(arena.getType()).equalsIgnoreCase("Hunger"))
+				if (! arena.getType().name.equalsIgnoreCase("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -81,7 +80,7 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl)) 
 			{
 				Arena arena = plugin.getArena(pl);
-				if (! FieldType.getName(arena.getType()).equalsIgnoreCase("Hunger"))
+				if (! arena.getType().name.equalsIgnoreCase("Hunger"))
 				{
 					event.setCancelled(true);
 				}
