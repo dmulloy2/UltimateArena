@@ -1,5 +1,17 @@
-# Ultimate Arena Global Configuration
+######################################################
+#+--------------------------------------------------+#
+#|                                                  |#
+#|                   UltimateArena                  |#
+#|               Global Configuration               |#
+#|                                                  |#
+#+--------------------------------------------------+#
+######################################################
+
 # By dmulloy2
+# If you get configuration errors, check here:
+# <insert github link here>
+# This configuration follows standard YAML procedure, found here:
+# <insert yaml link here>
 
 # Whether or not cash rewards are given upon completion
 # Input - boolean

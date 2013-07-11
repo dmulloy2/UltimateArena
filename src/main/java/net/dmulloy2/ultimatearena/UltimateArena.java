@@ -35,6 +35,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
@@ -459,6 +460,11 @@ public class UltimateArena extends JavaPlugin
 		{
 			player.sendMessage(prefix + ChatColor.RED + "Could not find an arena by the name of \"" + str + "\"!");
 		}
+	}
+	
+	public boolean isInArena(Entity entity)
+	{
+		return isInArena(entity.getLocation());
 	}
 	
 	public boolean isInArena(Block block) 

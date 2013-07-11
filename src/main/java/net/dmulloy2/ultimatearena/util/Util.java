@@ -10,8 +10,18 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+/**
+ * Base Util class
+ * @author dmulloy2
+ */
+
 public class Util 
 {
+	/**
+	 * Gets the OfflinePlayer from a given string
+	 * @param pl - String to match with a player
+	 * @return Player from the given string, null if none exists
+	 */
 	public static Player matchPlayer(String pl)
 	{
 		List<Player> players = Bukkit.matchPlayer(pl);
@@ -22,6 +32,11 @@ public class Util
 		return null;
 	}
 	
+	/**
+	 * Gets the OfflinePlayer from a given string
+	 * @param pl - String to match with a player
+	 * @return Player from the given string, null if none exists
+	 */	
 	public static OfflinePlayer matchOfflinePlayer(String pl)
 	{
 		if (matchPlayer(pl) != null)
@@ -36,22 +51,49 @@ public class Util
 		return null;
 	}
 	
+	/**
+	 * Returns whether or not a player is banned
+	 * @param p - OfflinePlayer to check for banned status
+	 * @return Whether or not the player is banned
+	 */
 	public static boolean isBanned(OfflinePlayer p)
 	{
-		for (OfflinePlayer banned : Bukkit.getBannedPlayers()) 
+		return isBanned(p.getName());
+	}
+
+	/**
+	 * Returns whether or not a player is banned
+	 * @param p - Player name to check for banned status
+	 * @return Whether or not the player is banned
+	 */
+	public static boolean isBanned(String p)
+	{
+		for (OfflinePlayer banned : Bukkit.getBannedPlayers())
 		{
-			if (p.getName().equalsIgnoreCase(banned.getName()))
+			if (p.equalsIgnoreCase(banned.getName()))
 				return true;
 		}
+		
 		return false;
 	}
 
+	/**
+	 * Returns a random integer out of x
+	 * @param x - Integer the random should be out of
+	 * @return A random integer out of x
+	 */
 	public static int random(int x)
 	{
 		Random rand = new Random();
 		return rand.nextInt(x);
 	}
 
+	/**
+	 * Returns how far two locations are from each other
+	 * @param loc1 - First location to compare
+	 * @param loc2 - Second location to compare
+	 * @return Integer value of how far away they are
+	 */
 	public static int pointDistance(Location loc1, Location loc2)
 	{
 		int p1x = (int) loc1.getX();
@@ -73,6 +115,12 @@ public class Util
 		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist); 
 	}
 
+	/**
+	 * Plays an effect to all online players
+	 * @param effect - Effect type to play
+	 * @param loc - Location where the effect should be played
+	 * @param i - Data
+	 */
 	public static void playEffect(Effect effect, Location loc, int i) 
 	{
 		for (Player player : Bukkit.getOnlinePlayers())
@@ -81,6 +129,12 @@ public class Util
 		}
 	}
 	
+	/**
+	 * Returns whether or not two locations are identical
+	 * @param loc1 - First location
+	 * @param loc2 - Second location
+	 * @return Whether or not the two locations are identical
+	 */
 	public static boolean checkLocation(Location loc1, Location loc2)
 	{
 		Block block1 = loc1.getBlock();

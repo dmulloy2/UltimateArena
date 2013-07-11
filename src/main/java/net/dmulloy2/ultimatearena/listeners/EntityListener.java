@@ -187,7 +187,7 @@ public class EntityListener implements Listener
 			return;
 		
 		// Clear the drops if in an arena
-		if (plugin.isInArena(died.getLocation()))
+		if (plugin.isInArena(died))
 		{
 			// TODO: Make sure this works
 			event.getDrops().clear();
@@ -239,7 +239,8 @@ public class EntityListener implements Listener
 						else // PVP
 						{
 							plugin.debug("PVP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
-							ar.tellPlayers("&a{0} &fkilled &c{1}", killer.getName(), pdied.getName());
+							
+							ar.tellPlayers("&a{0} &fkilled &c{1} &fwith {2}", killer.getName(), pdied.getName(), getWeapon(killer));
 							
 							List<String> deadlines = new ArrayList<String>();
 							deadlines.add(FormatUtil.format("&c----------------------------"));
@@ -368,6 +369,25 @@ public class EntityListener implements Listener
 				}
 			}
 		}
+	}
+	
+	private String getWeapon(Player player)
+	{
+		StringBuilder ret = new StringBuilder();
+		
+		ItemStack inHand = player.getItemInHand();
+		if (inHand == null || inHand.getType() == Material.AIR)
+		{
+			ret.append("&chis fists");
+		}
+		else
+		{
+			String name = FormatUtil.getFriendlyName(inHand.getType());
+			String article = FormatUtil.getArticle(name);
+			ret.append("&f" + article + " &c" + name);
+		}
+		
+		return ret.toString();
 	}
 	
 	public class DeadPlayerTask extends BukkitRunnable

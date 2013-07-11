@@ -9,7 +9,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
-import net.dmulloy2.ultimatearena.util.ItemHelper;
+import net.dmulloy2.ultimatearena.util.ItemUtil;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -61,7 +61,7 @@ public class ArenaConfig
 			List<String> words = fc.getStringList("rewards");
 			for (String word : words)
 			{
-				ItemStack stack = ItemHelper.readItem(word);
+				ItemStack stack = ItemUtil.readItem(word);
 				rewards.add(stack);
 			}
 		}

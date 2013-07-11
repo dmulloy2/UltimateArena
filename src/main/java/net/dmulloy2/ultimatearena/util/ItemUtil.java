@@ -6,8 +6,6 @@ import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.arenas.objects.EnchantmentType;
 
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -15,12 +13,17 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 /**
+ * Util that deals with Items
  * @author dmulloy2
  */
 
-public class ItemHelper
+public class ItemUtil
 {
-	/** Read ItemStacks from Configuration **/
+	/**
+	 * Reads an ItemStack from configuration
+	 * @param string - String to read
+	 * @return ItemStack from given string
+	 */
 	public static ItemStack readItem(String string)
 	{
 		int id = 0;
@@ -110,6 +113,11 @@ public class ItemHelper
 		return ret;
 	}
 	
+	/**
+	 * Reads a potion from configuration
+	 * @param string - String to read
+	 * @return ItemStack from string (will be a potion)
+	 */
 	public static ItemStack readPotion(String string)
 	{
 		string = string.replaceAll(" ", "");
@@ -172,22 +180,19 @@ public class ItemHelper
 		
 		return null;
 	}
-	
-	public static String getFriendlyName(Material mat)
-	{
-		String ret = mat.toString();
-		ret = ret.toLowerCase();
-		ret = ret.replaceAll("_", " ");
-		return (WordUtils.capitalize(ret));
-	}
-	
+
+	/**
+	 * Returns the basic data of an ItemStack in string form
+	 * @param stack - ItemStack to "convert" to a string
+	 * @return ItemStack's data in string form
+	 */
 	public static String itemToString(ItemStack stack)
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("ID: " + stack.getTypeId());
-		ret.append(" DAT: " + stack.getData().getData());
-		ret.append(" AMT: " + stack.getAmount());
-		ret.append(" ENCHANTMENTS:");
+		ret.append("Type: " + FormatUtil.getFriendlyName(stack.getType()));
+		ret.append(" Data: " + stack.getData().getData());
+		ret.append(" Amount: " + stack.getAmount());
+		ret.append(" Enchants:");
 		for (Entry<Enchantment, Integer> enchantment : stack.getEnchantments().entrySet())
 		{
 			ret.append(" " + EnchantmentType.toName(enchantment.getKey()) + ": " + enchantment.getValue());
@@ -196,6 +201,11 @@ public class ItemHelper
 		return ret.toString();
 	}
 	
+	/**
+	 * Returns the data of a potion in string form
+	 * @param potion - Potion to "convert" to a string
+	 * @return Potion's data in string form
+	 */
 	public static String potionToString(Potion potion)
 	{
 		StringBuilder ret = new StringBuilder();
@@ -207,6 +217,11 @@ public class ItemHelper
 		return ret.toString();
 	}
 	
+	/**
+	 * Returns an ItemStack's enchantments in string form
+	 * @param stack - ItemStack to get enchantments
+	 * @return ItemStack's enchantments in string form
+	 */
 	public static String getEnchantments(ItemStack stack)
 	{
 		StringBuilder ret = new StringBuilder();

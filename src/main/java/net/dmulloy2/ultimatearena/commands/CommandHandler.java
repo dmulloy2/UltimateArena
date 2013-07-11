@@ -20,7 +20,7 @@ public class CommandHandler implements CommandExecutor
 	private String commandPrefix;
 	private List<UltimateArenaCommand> registeredCommands;
 	
-	public CommandHandler(UltimateArena plugin)
+	public CommandHandler(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
 		registeredCommands = new ArrayList<UltimateArenaCommand>();

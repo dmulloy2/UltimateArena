@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.util.ItemUtil;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -19,8 +22,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.earth2me.essentials.IEssentials;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.util.ItemHelper;
 
 public class ArenaClass 
 {
@@ -123,7 +124,7 @@ public class ArenaClass
 					entry = entry.replaceAll(" ", "");
 					if (entry.startsWith("potion:"))
 					{
-						ItemStack stack = ItemHelper.readPotion(entry);
+						ItemStack stack = ItemUtil.readPotion(entry);
 						if (stack != null)
 						{
 							weapons.add(stack);
@@ -131,7 +132,7 @@ public class ArenaClass
 					}
 					else
 					{
-						ItemStack stack = ItemHelper.readItem(entry);
+						ItemStack stack = ItemUtil.readItem(entry);
 						if (stack != null)
 						{
 							weapons.add(stack);
