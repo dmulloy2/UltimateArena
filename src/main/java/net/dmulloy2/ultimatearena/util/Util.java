@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 /**
@@ -135,11 +134,11 @@ public class Util
 	 * @param loc2 - Second location
 	 * @return Whether or not the two locations are identical
 	 */
-	public static boolean checkLocation(Location loc1, Location loc2)
+	public static boolean checkLocation(Location loc, Location loc2) 
 	{
-		Block block1 = loc1.getBlock();
-		Block block2 = loc2.getBlock();
-		
-		return (block1.getLocation().equals(block2.getLocation()));
+		return (loc.getBlockX() == loc2.getBlockX() &&
+			loc.getBlockY() == loc2.getBlockY() &&
+			loc.getBlockZ() == loc2.getBlockZ() &&
+			loc.getWorld().getUID() == loc2.getWorld().getUID());
 	}
 }

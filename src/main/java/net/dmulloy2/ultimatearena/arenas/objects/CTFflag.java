@@ -87,12 +87,12 @@ public class CTFflag
 		Block current = myloc.getBlock();
 		if (getTeam() == 1) 
 		{
-			color = 14; // red team
+			color = 14; // Red team
 			setFlagType(ChatColor.RED + "RED");
 		}
 		else
 		{
-			color = 11; //blue team
+			color = 11; // Blue team
 			setFlagType(ChatColor.BLUE + "BLUE");
 		}
 		
@@ -150,24 +150,24 @@ public class CTFflag
 					{
 						if (!arenaplayers.get(i).isOut())
 						{
-							if (arenaplayers.get(i).getTeam() != getTeam()) 
+							ArenaPlayer apl = arenaplayers.get(i);
+							if (apl.getTeam() != getTeam()) 
 							{
-								//if the guy is on the other team
+								// If the guy is on the other team
 								setPickedUp(true);
 								setRiding(pl);
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", arenaplayers.get(i).getPlayer().getName(), getFlagType());
+								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", apl.getUsername(), getFlagType());
 								return;
 							}
 							else
 							{
 								if (!myloc.equals(getReturnto())) 
 								{ 
-									//if the flag is not at its flagstand
-									pl.sendMessage(ChatColor.GRAY + "Flag Returned! " + ChatColor.RED + " +50 XP");
-									arenaplayers.get(i).setGameXP(
-											arenaplayers.get(i).getGameXP() + 50);
+									// If the flag is not at its flagstand
+									apl.sendMessage("&aFlag Returned! &c+50 XP");
+									arenaplayers.get(i).setGameXP(arenaplayers.get(i).getGameXP() + 50);
 									arena.tellPlayers("&b{0} &7returned the &6{1} &7flag!", pl.getName(), getFlagType());
 									respawn();
 									return;
@@ -236,7 +236,7 @@ public class CTFflag
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
 
-    	if (!locequals(lastloc, myloc))
+    	if (! Util.checkLocation(lastloc, myloc))
     	{
 	    	last.setTypeIdAndData(lastBlockType, lastBlockDat, true);
 	    	lastBlockDat = current.getData();
@@ -253,14 +253,6 @@ public class CTFflag
 			c.setTypeIdAndData(Material.LAPIS_BLOCK.getId(), (byte)0, true);
 		if (color == 14)
 			c.setTypeIdAndData(Material.NETHERRACK.getId(), (byte)0, true);
-	}
-
-	public boolean locequals(Location loc, Location loc2) 
-	{
-		return (loc.getBlockX() == loc2.getBlockX() &&
-			loc.getBlockY() == loc2.getBlockY() &&
-			loc.getBlockZ() == loc2.getBlockZ() &&
-			loc.getWorld().equals(loc2.getWorld()));	
 	}
 
 	public int getTeam() 

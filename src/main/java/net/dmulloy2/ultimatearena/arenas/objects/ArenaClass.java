@@ -115,12 +115,12 @@ public class ArenaClass
 				}
 			}
 			
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 9; i++)
 			{
 				String path = "tools." + i;
-				String entry = fc.getString(path);
-				if (entry != null)
+				if (fc.isSet(path))
 				{
+					String entry = fc.getString(path);
 					entry = entry.replaceAll(" ", "");
 					if (entry.startsWith("potion:"))
 					{

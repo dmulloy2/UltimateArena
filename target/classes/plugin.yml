@@ -1,6 +1,6 @@
 name: UltimateArena
 main: net.dmulloy2.ultimatearena.UltimateArena
-version: "2.5-SNAPSHOT"
+version: "2.5"
 author: dmulloy2
 softdepend: [SwornGuns, Vault, Essentials]
 description: The Ultimate in Minecraft death sports and spleef!

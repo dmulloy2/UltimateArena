@@ -199,8 +199,9 @@ public abstract class Arena
 		int amt1 = 0;
 		int amt2 = 0;
 		
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut())
 			{
 				if (ap.getTeam() == 1)
@@ -213,7 +214,7 @@ public abstract class Arena
 				}
 			}
 		}
-		
+
 		if (amt1 > amt2) 
 		{
 			return 2;
@@ -272,8 +273,9 @@ public abstract class Arena
 	public void spawnAll() 
 	{
 		plugin.outConsole("Spawning players for Arena: {0}", getArenaZone().getArenaName());
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut())
 				spawn(ap.getPlayer().getName(), false);
 		}
@@ -324,9 +326,10 @@ public abstract class Arena
 			Player p = Util.matchPlayer(name);
 			if (p != null) 
 			{
-				for (ArenaPlayer ap : arenaPlayers)
+				for (int i = 0; i < arenaPlayers.size(); i++)
 				{
-					if (ap.getPlayer().getName().equals(name))
+					ArenaPlayer ap = arenaPlayers.get(i);
+					if (ap.getUsername().equals(name))
 					{
 						if (ap != null && !ap.isOut())
 						{
@@ -390,8 +393,9 @@ public abstract class Arena
 	/** Rewards the Winning Team **/
 	public void rewardTeam(int team, String string, boolean half)
 	{
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && ap.canReward())
 			{
 				if (ap.getTeam() == team || team == -1)
@@ -410,8 +414,9 @@ public abstract class Arena
 	/** Sets the Winning Team **/
 	public void setWinningTeam(int team)
 	{
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut())
 			{
 				ap.setCanReward(false);
@@ -428,8 +433,9 @@ public abstract class Arena
 	/** Check if any player has enough points to win **/
 	public void checkPlayerPoints(int max)
 	{
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut())
 			{
 				if (ap.getPoints() >= max)
@@ -460,8 +466,9 @@ public abstract class Arena
 	/** Tells all the players in the arena a message **/
 	public void tellPlayers(String string, Object...objects) 
 	{
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut()) 
 			{
 				Player player = Util.matchPlayer(ap.getPlayer().getName());
@@ -476,8 +483,9 @@ public abstract class Arena
 	/** Kills all players in the arena near a point **/
 	public void killAllNear(Location loc, int rad)
 	{
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut()) 
 			{
 				Player player = Util.matchPlayer(ap.getPlayer().getName());
@@ -614,8 +622,9 @@ public abstract class Arena
 		
 		plugin.outConsole("Stopping arena: {0}!", name);
 
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null)
 			{
 				Player player = Util.matchPlayer(ap.getPlayer().getName());
@@ -771,15 +780,16 @@ public abstract class Arena
 		checkTimers();
 		
 		// Get how many people are in the arena
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut())
 			{
 				Player player = Util.matchPlayer(ap.getPlayer().getName());
 				if (player != null)
 				{
 					if (ap.getTeam() == 1)
-						setTeam1size(getTeam1size() + 1);
+						team1size++;
 					else
 						team2size++;
 				}
@@ -790,8 +800,9 @@ public abstract class Arena
 
 		setAmtPlayersInArena(0);
 
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut())
 			{
 				Player player = ap.getPlayer();

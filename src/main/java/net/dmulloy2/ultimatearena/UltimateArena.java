@@ -372,8 +372,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public ArenaConfig getConfig(String type) 
 	{
-		for (ArenaConfig ac : configs)
+		for (int i = 0; i < configs.size(); i++)
 		{
+			ArenaConfig ac = configs.get(i);
 			if (ac.getArenaName().equalsIgnoreCase(type))
 				return ac;
 		}
@@ -383,7 +384,7 @@ public class UltimateArena extends JavaPlugin
 
 	public void stopAll()
 	{
-		for (int i=0; i<activeArena.size(); i++)
+		for (int i = 0; i < activeArena.size(); i++)
 		{
 			Arena arena = activeArena.get(i);
 			if (arena != null)
@@ -396,8 +397,9 @@ public class UltimateArena extends JavaPlugin
 
 	public ArenaSign getArenaSign(Location loc)
 	{
-		for (ArenaSign sign : arenaSigns)
+		for (int i = 0; i < arenaSigns.size(); i++)
 		{
+			ArenaSign sign = arenaSigns.get(i);
 			if (Util.checkLocation(sign.getLocation(), loc))
 				return sign;
 		}
@@ -416,8 +418,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public ArenaClass getArenaClass(String line)
 	{
-		for (ArenaClass ac : classes)
+		for (int i = 0; i < classes.size(); i++)
 		{
+			ArenaClass ac = classes.get(i);
 			if (ac.getName().equalsIgnoreCase(line))
 				return ac;
 		}
@@ -444,8 +447,9 @@ public class UltimateArena extends JavaPlugin
 				
 			file.delete();
 			
-			for (ArenaSign as : arenaSigns)
+			for (int i = 0; i < arenaSigns.size(); i++)
 			{
+				ArenaSign as = arenaSigns.get(i);
 				if (as.getArena().equalsIgnoreCase(str))
 				{
 					deleteSign(as);
@@ -474,8 +478,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public Arena getArenaInside(Block block)
 	{
-		for (ArenaZone az : loadedArena)
+		for (int i = 0; i < loadedArena.size(); i++)
 		{
+			ArenaZone az = loadedArena.get(i);
 			if (az.checkLocation(block.getLocation()))
 				return getArena(az.getArenaName());
 		}
@@ -485,8 +490,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public boolean isInArena(Location loc)
 	{
-		for (ArenaZone az : loadedArena)
+		for (int i = 0; i < loadedArena.size(); i++)
 		{
+			ArenaZone az = loadedArena.get(i);
 			if (az.checkLocation(loc))
 				return true;
 		}
@@ -503,7 +509,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (player != null) 
 		{
-			for (int i=0; i<activeArena.size(); i++)
+			for (int i = 0; i < activeArena.size(); i++)
 			{
 				Arena a = activeArena.get(i);
 				a.setStartingAmount(a.getStartingAmount() - 1);
@@ -518,10 +524,10 @@ public class UltimateArena extends JavaPlugin
 	
 	public void removeFromArena(String str) 
 	{
-		for (int i=0; i<activeArena.size(); i++)
+		for (int i = 0; i < activeArena.size(); i++)
 		{
 			Arena a = activeArena.get(i);
-			for (int ii=0; ii<a.getArenaPlayers().size(); ii++)
+			for (int ii = 0; ii < a.getArenaPlayers().size(); ii++)
 			{
 				ArenaPlayer ap = a.getArenaPlayers().get(ii);
 				if (ap != null)
@@ -541,7 +547,7 @@ public class UltimateArena extends JavaPlugin
 
 	public ArenaPlayer getArenaPlayer(Player player) 
 	{
-		for (int i=0; i<activeArena.size(); i++)
+		for (int i = 0; i < activeArena.size(); i++)
 		{
 			Arena a = activeArena.get(i);
 			ArenaPlayer ap = a.getArenaPlayer(player);
@@ -598,8 +604,9 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 		
-		for (ArenaJoinTask task : waiting)
+		for (int i = 0; i < waiting.size(); i++)
 		{
+			ArenaJoinTask task = waiting.get(i);
 			if (task.getPlayer().getName().equals(player.getName()))
 			{
 				player.sendMessage(prefix + ChatColor.RED + "You are already waiting!");
@@ -655,15 +662,18 @@ public class UltimateArena extends JavaPlugin
 		{
 			Arena ar = null;
 			boolean disabled = false;
-			for (Arena aar : activeArena)
+			for (int i = 0; i < activeArena.size(); i++)
 			{
+				Arena aar = activeArena.get(i);
 				if (aar.isDisabled() && aar.getArenaZone().equals(a))
 				{
 					disabled = true;
 				}
 			}
-			for (ArenaZone aaz : loadedArena)
+			
+			for (int ii = 0; ii < loadedArena.size(); ii++)
 			{
+				ArenaZone aaz = loadedArena.get(ii);
 				if (aaz.isDisabled() && aaz.equals(a))
 				{
 					disabled = true;
@@ -726,20 +736,17 @@ public class UltimateArena extends JavaPlugin
 			}
 		}
 	}
-	
+
 	public Arena getArena(Player player)
 	{
-		for (Arena ac : activeArena)
+		for (int i = 0; i < activeArena.size(); i++)
 		{
-			ArenaPlayer ap = ac.getArenaPlayer(player);
+			Arena a = activeArena.get(i);
+			ArenaPlayer ap = a.getArenaPlayer(player);
 			if (ap != null)
 			{
-				Player pl = Util.matchPlayer(ap.getPlayer().getName());
-				if (pl != null && pl.isOnline())
-				{
-					if (pl.getName().equals(player.getName()))
-						return ac;
-				}
+				if (ap.getUsername().equals(player.getName()))
+					return a;
 			}
 		}
 		
@@ -748,8 +755,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public Arena getArena(String name) 
 	{
-		for (Arena ac : activeArena)
+		for (int i = 0; i < activeArena.size(); i++)
 		{
+			Arena ac = activeArena.get(i);
 			if (ac.getName().equals(name))
 				return ac;
 		}
@@ -759,8 +767,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public ArenaZone getArenaZone(String name)
 	{
-		for (ArenaZone az : loadedArena)
+		for (int i = 0; i < loadedArena.size(); i++)
 		{
+			ArenaZone az = loadedArena.get(i);
 			if (az.getArenaName().equals(name)) 
 				return az;
 		}
@@ -805,7 +814,7 @@ public class UltimateArena extends JavaPlugin
 	
 	public void stopCreatingArena(Player player)
 	{ 
-		for (int i=0; i<makingArena.size(); i++)
+		for (int i = 0; i < makingArena.size(); i++)
 		{
 			ArenaCreator ac = makingArena.get(i);
 			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
@@ -818,7 +827,7 @@ public class UltimateArena extends JavaPlugin
 
 	public ArenaCreator getArenaCreator(Player player)
 	{
-		for (int i=0; i<makingArena.size(); i++)
+		for (int i = 0; i < makingArena.size(); i++)
 		{
 			ArenaCreator ac = makingArena.get(i);
 			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
@@ -842,8 +851,9 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 		
-		for (ArenaZone az : loadedArena)
+		for (int i = 0; i < loadedArena.size(); i++)
 		{
+			ArenaZone az = loadedArena.get(i);
 			if (az.getArenaName().equalsIgnoreCase(name))
 			{
 				player.sendMessage(prefix + ChatColor.RED + "An arena by this name already exists!");

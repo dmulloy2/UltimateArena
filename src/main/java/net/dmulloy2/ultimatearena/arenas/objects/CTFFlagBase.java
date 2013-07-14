@@ -58,14 +58,14 @@ public class CTFFlagBase extends FlagBase
 			{
 				if (a.getTeam() == team)
 				{ 
-					//if the arena player is on my team
+					// If the arena player is on my team
 					Player p = a.getPlayer();
 					if (enemyflag.getRiding().getName().equals(p.getName()))
 					{
-						//if the player selected is carrying the enemy flag
+						// If the player selected is carrying the enemy flag
 						if (Util.pointDistance(p.getLocation(), getLoc().clone().add(0, 1, 0)) < 2.75) 
 						{ 
-							//if hes close to my flag stand, REWARD!
+							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
 							a.sendMessage("&7Flag Captured! &c+ 500 XP");
 							

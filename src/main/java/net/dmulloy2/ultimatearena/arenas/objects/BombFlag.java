@@ -62,16 +62,18 @@ public class BombFlag extends ArenaFlag
 						if (amte == 0)
 							getArena().killAllNear(this.getLoc(), 12);
 					}
+					
 					setExploded(true);
 					fused = false;
 					getArena().tellPlayers("&cRED &7team blew up bomb &6{0}&7!", getBnum());
 				}
 			}
 		}
+		
 		boolean fuse = false;
 		boolean defuse = false;
 		ArenaPlayer capturer = null;
-		ArrayList<Player> players = new ArrayList<Player>();
+		List<Player> players = new ArrayList<Player>();
 		for (int i = 0; i < arenaplayers.size(); i++) 
 		{
 			ArenaPlayer apl = arenaplayers.get(i);

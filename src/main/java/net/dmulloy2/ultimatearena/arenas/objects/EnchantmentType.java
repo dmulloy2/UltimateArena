@@ -5,6 +5,10 @@ import java.util.Map.Entry;
 
 import org.bukkit.enchantments.Enchantment;
 
+/**
+ * @author dmulloy2
+ */
+
 public enum EnchantmentType 
 {
 	ARROW_DAMAGE("power"),
@@ -43,6 +47,7 @@ public enum EnchantmentType
 			if (e.toString().equals(enchant.getName()))
 				return e.name;
 		}
+		
 		return "";
 	}
 	
@@ -51,10 +56,9 @@ public enum EnchantmentType
 		for (EnchantmentType e : EnchantmentType.values())
 		{
 			if (e.name.equalsIgnoreCase(enchant))
-			{
 				return Enchantment.getByName(e.toString());
-			}
 		}
+		
 		return null;
 	}
 	

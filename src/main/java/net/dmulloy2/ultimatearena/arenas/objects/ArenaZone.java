@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -68,7 +69,9 @@ public class ArenaZone
 	{
 		this.lobby = new Field();
 		this.arena = new Field();
-		this.setDefaultClass(getPlugin().classes.get(0).getName());
+		
+		ArenaClass ac = plugin.classes.get(0);
+		this.setDefaultClass(ac.getName());
 		
 		load();
 		
@@ -79,7 +82,7 @@ public class ArenaZone
 		}
 		else
 		{
-			getPlugin().getLogger().warning("Arena: " + getArenaName() + " has failed to load!");
+			plugin.outConsole(Level.WARNING, "Arena {0} has failed to load!", arenaName);
 		}
 	}
 	

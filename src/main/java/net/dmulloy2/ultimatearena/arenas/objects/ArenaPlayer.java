@@ -202,10 +202,10 @@ public class ArenaPlayer
 			
 		if (mclass == null) 
 		{
-			p.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE, 1));
-			p.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS, 1));
-			p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS, 1));
-			p.getInventory().setItem(0, new ItemStack(Material.DIAMOND_SWORD, 1));
+			giveArmor(0, new ItemStack(Material.IRON_CHESTPLATE));
+			giveArmor(1, new ItemStack(Material.IRON_LEGGINGS));
+			giveArmor(2, new ItemStack(Material.IRON_BOOTS));
+			giveItem(0, new ItemStack(Material.DIAMOND_SWORD));
 			return;
 		}
 				
@@ -261,7 +261,8 @@ public class ArenaPlayer
 		return kills;
 	}
 
-	public void setKills(int kills) {
+	public void setKills(int kills) 
+	{
 		this.kills = kills;
 	}
 
@@ -412,11 +413,11 @@ public class ArenaPlayer
 	
 	public double getKDR()
 	{
+		double k = (double) kills;
 		if (deaths == 0)
-		{
-			return (double) kills;
-		}
-
-		return ((double) kills / (double) deaths);
+			return k;
+		
+		double d = (double) deaths;
+		return (k / d);
 	}
 }
