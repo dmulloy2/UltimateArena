@@ -10,6 +10,8 @@ public class CmdLeave extends UltimateArenaCommand
 		this.name = "leave";
 		this.aliases.add("l");
 		this.description = "leave an arena";
+		
+		this.mustBePlayer = true;
 	}
 	
 	@Override

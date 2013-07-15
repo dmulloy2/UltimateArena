@@ -12,13 +12,15 @@ public class CmdDislike extends UltimateArenaCommand
 		this.aliases.add("d");
 		this.requiredArgs.add("arena");
 		this.description = "dislike an arena";
+		
+		this.mustBePlayer = true;
 	}
 	
 	@Override
 	public void perform()
 	{
 		String arenaname = args[0];
-		ArenaZone az = this.plugin.getArenaZone(arenaname);
+		ArenaZone az = plugin.getArenaZone(arenaname);
 		if (az != null)
 		{
 			if (az.canLike(player))

@@ -14,6 +14,8 @@ public class CmdDelete extends UltimateArenaCommand
 		this.mode = "build";
 		this.description = "delete an arena";
 		this.permission = PermissionType.CMD_DELETE.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override

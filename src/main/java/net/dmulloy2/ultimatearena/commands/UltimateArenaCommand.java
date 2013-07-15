@@ -27,7 +27,8 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	
 	protected Permission permission;
 	
-	protected boolean mustBePlayer = true;
+	protected boolean mustBePlayer;
+	
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
 	protected List<String> aliases;
@@ -114,12 +115,10 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		ret.append(name);
 
 		for (String s : optionalArgs)
-		{
-			ret.append(String.format(" &6[" + s + "]"));
-		}
+			ret.append(" &6[" + s + "]");
 		
 		for (String s : requiredArgs)
-			ret.append(String.format(" &4<" + s + ">"));
+			ret.append(" &4<" + s + ">");
 		
 		if (displayHelp)
 			ret.append(" &e" + description);

@@ -11,6 +11,8 @@ public class CmdLike extends UltimateArenaCommand
 		this.name = "like";
 		this.requiredArgs.add("arena");
 		this.description = "like an arena";
+		
+		this.mustBePlayer = true;
 	}
 	
 	@Override

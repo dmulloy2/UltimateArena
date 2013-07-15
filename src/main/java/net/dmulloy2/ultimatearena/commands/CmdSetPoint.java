@@ -13,6 +13,8 @@ public class CmdSetPoint extends UltimateArenaCommand
 		this.mode = "build";
 		this.description = "set a point of your field";
 		this.permission = PermissionType.CMD_SET_POINT.permission;
+		
+		this.mustBePlayer = true;
 	}
 	
 	@Override

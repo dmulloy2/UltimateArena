@@ -143,14 +143,14 @@ public class CTFflag
 		{
 			for (int i = 0; i < arenaplayers.size(); i++)
 			{
-				Player pl = arenaplayers.get(i).getPlayer();
+				ArenaPlayer apl = arenaplayers.get(i);
+				Player pl = apl.getPlayer();
 				if (pl != null)
 				{
 					if (Util.pointDistance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0)
 					{
-						if (!arenaplayers.get(i).isOut())
+						if (! apl.isOut())
 						{
-							ArenaPlayer apl = arenaplayers.get(i);
 							if (apl.getTeam() != getTeam()) 
 							{
 								// If the guy is on the other team

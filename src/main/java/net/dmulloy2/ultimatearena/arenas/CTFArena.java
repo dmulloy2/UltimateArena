@@ -32,7 +32,6 @@ public class CTFArena extends Arena
 		flagred.initialize();
 		flagblue.initialize();
 		
-		
 		ExecuteMove = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}
 	

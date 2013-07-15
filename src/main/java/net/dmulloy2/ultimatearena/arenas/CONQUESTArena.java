@@ -89,8 +89,11 @@ public class CONQUESTArena extends Arena
 		}
 	}
 	
+	@Override
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
+		super.onPlayerDeath(pl);
+		
 		int majority = 0;
 		int red = 0;
 		int blu = 0;
@@ -173,8 +176,9 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void check() 
 	{
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && !ap.isOut())
 			{
 				if (BLUETEAMPOWER <= 0) 

@@ -100,7 +100,6 @@ public class UltimateArena extends JavaPlugin
 		
 		commandHandler.registerCommand(new CmdForceStop(this));
 		commandHandler.registerCommand(new CmdReload(this));
-		commandHandler.registerCommand(new CmdForceJoin(this));
 		commandHandler.registerCommand(new CmdDisable(this));
 		commandHandler.registerCommand(new CmdEnable(this));
 		commandHandler.registerCommand(new CmdKick(this));
@@ -561,7 +560,7 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 
-	public void fight(Player player, String name)
+	public void fight(Player player, String name, boolean forced)
 	{
 		if (!permissionHandler.hasPermission(player, PermissionType.JOIN.permission))
 		{
@@ -614,7 +613,7 @@ public class UltimateArena extends JavaPlugin
 			}
 		}
 		
-		ArenaJoinTask join = new ArenaJoinTask(this, player, name);
+		ArenaJoinTask join = new ArenaJoinTask(this, player, name, forced);
 		if (getConfig().getBoolean("joinTimer.enabled"))
 		{
 			int seconds = getConfig().getInt("joinTimer.wait");
@@ -632,30 +631,42 @@ public class UltimateArena extends JavaPlugin
 		}			
 	}
 	
-	public void joinBattle(boolean forced, Player player, String name) 
+	public void joinBattle(boolean forced, Player player, String name)
 	{
 		debug("Player {0} is attempting to join arena {1}. Forced: {2}", player.getName(), name, forced);
 		
-		ArenaZone a = getArenaZone(name);
-		if (getArena(name) != null)
+		ArenaZone az = getArenaZone(name);
+		Arena a = getArena(name);
+		if (a != null)
 		{
-			if (getArena(name).getStarttimer() < 1 && !forced) 
+			if (a.isInLobby())
 			{
-				player.sendMessage(prefix + ChatColor.RED + "This arena has already started!");
-			}
-			else
-			{
-				Arena tojoin = getArena(name);
-				int maxplayers = tojoin.getArenaZone().getMaxPlayers();
-				int players = tojoin.getAmtPlayersInArena();
-				if (players + 1 <= maxplayers)
+				if (a.getAmtPlayersInArena() + 1 <= az.getMaxPlayers())
 				{
-					getArena(name).addPlayer(player);
+					a.addPlayer(player);
 				}
 				else
 				{
-					player.sendMessage(prefix + ChatColor.RED + "This arena is full, sorry!");
+					if (! forced)
+					{
+						player.sendMessage(prefix + ChatColor.RED + "This arena is full!");
+					}
+					else
+					{
+						if (kickRandomPlayer(a))
+						{
+							a.addPlayer(player);
+						}
+						else
+						{
+							player.sendMessage(prefix + ChatColor.RED + "Could not join the arena!");
+						}
+					}
 				}
+			}
+			else
+			{
+				player.sendMessage(prefix + ChatColor.RED + "This arena has already started!");
 			}
 		}
 		else
@@ -682,46 +693,46 @@ public class UltimateArena extends JavaPlugin
 			
 			if (!disabled)
 			{
-				String arenaType = a.getType().name().toLowerCase();
+				String arenaType = az.getType().name().toLowerCase();
 				if (arenaType.equals("pvp"))
 				{
-					ar = new PVPArena(a);
+					ar = new PVPArena(az);
 				}
 				else if (arenaType.equals("mob")) 
 				{
-					ar = new MOBArena(a);
+					ar = new MOBArena(az);
 				}
 				else if (arenaType.equals("cq"))
 				{
-					ar = new CONQUESTArena(a);
+					ar = new CONQUESTArena(az);
 				}
 				else if (arenaType.equals("koth")) 
 				{
-					ar = new KOTHArena(a);
+					ar = new KOTHArena(az);
 				}
 				else if (arenaType.equals("bomb")) 
 				{
-					ar = new BOMBArena(a);
+					ar = new BOMBArena(az);
 				}
 				else if (arenaType.equals("ffa"))
 				{
-					ar = new FFAArena(a);
+					ar = new FFAArena(az);
 				}
 				else if (arenaType.equals("hunger")) 
 				{
-					ar = new HUNGERArena(a);
+					ar = new HUNGERArena(az);
 				}
 				else if (arenaType.equals("spleef")) 
 				{
-					ar = new SPLEEFArena(a);
+					ar = new SPLEEFArena(az);
 				}
 				else if (arenaType.equals("infect"))
 				{
-					ar = new INFECTArena(a);
+					ar = new INFECTArena(az);
 				}
 				else if (arenaType.equals("ctf"))
 				{	
-					ar = new CTFArena(a);
+					ar = new CTFArena(az);
 				}
 				if (ar != null) 
 				{
@@ -735,6 +746,30 @@ public class UltimateArena extends JavaPlugin
 				player.sendMessage(prefix + ChatColor.RED + "Error, This arena is disabled!");
 			}
 		}
+	}
+	
+	public boolean kickRandomPlayer(Arena arena)
+	{
+		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
+		List<ArenaPlayer> totalPlayers = arena.getArenaPlayers();
+		for (ArenaPlayer ap : totalPlayers)
+		{
+			if (! permissionHandler.hasPermission(ap.getPlayer(), PermissionType.CMD_FORCE_JOIN.permission))
+			{
+				validPlayers.add(ap);
+			}
+		}
+		
+		int rand = Util.random(validPlayers.size());
+		ArenaPlayer apl = validPlayers.get(rand);
+		if (apl != null)
+		{
+			apl.sendMessage("&cYou have been kicked from the arena!");
+			apl.getArena().endPlayer(apl, false);
+			return true;
+		}
+		
+		return false;
 	}
 
 	public Arena getArena(Player player)

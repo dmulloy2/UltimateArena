@@ -8,6 +8,7 @@ import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.permissions.PermissionType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -139,7 +140,7 @@ public class PlayerListener implements Listener
 								if (a instanceof SPLEEFArena)
 								{
 									SPLEEFArena spa = ((SPLEEFArena) a);
-									Field3D splf = spa.spleefGround;
+									Field3D splf = spa.getSpleefGround();
 									if (splf.isInside(block.getLocation())) 
 									{
 										block.setType(Material.AIR);
@@ -170,6 +171,8 @@ public class PlayerListener implements Listener
 					{
 						if (s.getLine(1).equalsIgnoreCase("Click to join"))
 						{
+							boolean force = plugin.getPermissionHandler()
+									.hasPermission(player, PermissionType.CMD_FORCE_JOIN.permission);
 							if (s.getLine(2).equalsIgnoreCase("Auto assign"))
 							{
 								boolean found = false;
@@ -179,7 +182,7 @@ public class PlayerListener implements Listener
 									{
 										if (a.getStarttimer() > 1)
 										{
-											plugin.fight(player, a.getName());
+											plugin.fight(player, a.getName(), force);
 											found = true;
 										}
 									}
@@ -191,7 +194,7 @@ public class PlayerListener implements Listener
 										ArenaZone az = plugin.loadedArena.get(0);
 										if (az != null)
 										{
-											plugin.fight(player, az.getArenaName());
+											plugin.fight(player, az.getArenaName(), force);
 											found = true;
 										}
 									}
@@ -205,7 +208,7 @@ public class PlayerListener implements Listener
 								{
 									if (a.getName().equalsIgnoreCase(name) && a.getStarttimer() > 1)
 									{
-										plugin.fight(player, a.getName());
+										plugin.fight(player, a.getName(), force);
 										found = true;
 									}
 								}
@@ -215,7 +218,7 @@ public class PlayerListener implements Listener
 									{
 										if (az != null && az.getArenaName().equalsIgnoreCase(name))
 										{
-											plugin.fight(player, az.getArenaName());
+											plugin.fight(player, az.getArenaName(), force);
 											found = true;
 										}
 									}

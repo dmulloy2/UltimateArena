@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.arenas.objects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.KOTHArena;
@@ -19,21 +20,23 @@ public class KothFlag extends ArenaFlag
 		this.marena = arena;
 	}
 	
-	public void checkNear(ArrayList<ArenaPlayer> arenaplayers) 
+	@Override
+	public void checkNear(List<ArenaPlayer> arenaplayers) 
 	{
 		int amt = 0;
 		ArenaPlayer capturer = null;
-		ArrayList<Player> players = new ArrayList<Player>();
+		List<Player> players = new ArrayList<Player>();
 		for (int i = 0; i < arenaplayers.size(); i++)
 		{
-			Player pl = arenaplayers.get(i).getPlayer();
+			ArenaPlayer apl = arenaplayers.get(i);
+			Player pl = apl.getPlayer();
 			if (pl != null)
 			{
 				if (Util.pointDistance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0) 
 				{
 					players.add(pl);
 					amt++;
-					capturer = arenaplayers.get(i);
+					capturer = apl;
 				}
 			}
 		}

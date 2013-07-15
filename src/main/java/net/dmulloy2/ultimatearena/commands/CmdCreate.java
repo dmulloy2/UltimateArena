@@ -15,13 +15,13 @@ public class CmdCreate extends UltimateArenaCommand
 		this.mode = "build";
 		this.description = "create an UltimateArena";
 		this.permission = PermissionType.CMD_CREATE.permission;
+		
+		this.mustBePlayer = true;
 	}
 	
 	@Override
 	public void perform()
 	{
-		String name = args[0];
-		String type = args[1];
-		plugin.createField(player, name, type);
+		plugin.createField(player, args[0], args[1]);
 	}
 }

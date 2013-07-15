@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
@@ -11,7 +12,6 @@ import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -56,7 +56,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error saving whitelisted cmds file: " + e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Error saving whitelisted cmds file: {0}", e.getMessage());
 		}
 	}
 	
@@ -244,112 +244,84 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error generating config \"" + field + "\": " + e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Error generating for type \"{0}\": {1}", field, e.getMessage());
 		}
 	}
 
 	/**Generate Stock Classes**/
 	public void generateStockClasses() 
 	{
-		File dir = new File(plugin.getDataFolder(), "classes");
-		if (!dir.exists())
-			dir.mkdir();
-		
-		File archerFile = new File(dir, "archer.yml");
-		if (!archerFile.exists())
-			try
-		{ 
+		try
+		{
+			File dir = new File(plugin.getDataFolder(), "classes");
+			File archerFile = new File(dir, "archer.yml");
+			if (! archerFile.exists())
+			{ 
 				archerFile.createNewFile(); 
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error saving archer file: " + e.getMessage()); 
-		}
-		generateClass(archerFile, "archer");
-		
-		File bruteFile = new File(dir, "brute.yml");
-		if (!bruteFile.exists())
-			try
-		{ 
+			}
+
+			generateClass(archerFile, "archer");
+			
+			File bruteFile = new File(dir, "brute.yml");
+			if (! bruteFile.exists())
+			{ 
 				bruteFile.createNewFile(); 
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error saving brute file: " + e.getMessage()); 
-		}
-		generateClass(bruteFile, "brute");
-		
-		File dumbassFile = new File(dir, "dumbass.yml");
-		if (!dumbassFile.exists())
-			try
-		{ 
+			}
+
+			generateClass(bruteFile, "brute");
+			
+			File dumbassFile = new File(dir, "dumbass.yml");
+			if (! dumbassFile.exists())
+			{ 
 				dumbassFile.createNewFile(); 
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error saving dumbass file: " + e.getMessage()); 
-		}
-		generateClass(dumbassFile, "dumbass");
-		
-		File gunnerFile = new File(dir, "gunner.yml");
-		if (!gunnerFile.exists())
-			try
-		{ 
+			}
+
+			generateClass(dumbassFile, "dumbass");
+			
+			File gunnerFile = new File(dir, "gunner.yml");
+			if (! gunnerFile.exists())
+			{ 
 				gunnerFile.createNewFile(); 
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error saving gunner file: " + e.getMessage()); 
-		}
-		generateClass(gunnerFile, "gunner");
-		
-		File healerFile = new File(dir, "healer.yml");
-		if (!healerFile.exists())
-			try
-		{ 
+			}
+
+			generateClass(gunnerFile, "gunner");
+			
+			File healerFile = new File(dir, "healer.yml");
+			if (! healerFile.exists())
+			{ 
 				healerFile.createNewFile(); 
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error saving healer file: " + e.getMessage()); 
-		}
-		generateClass(healerFile, "healer");
-		
-		File shotgunFile = new File(dir, "shotgun.yml");
-		if (!shotgunFile.exists())
-			try
-		{ 
+			}
+
+			generateClass(healerFile, "healer");
+			
+			File shotgunFile = new File(dir, "shotgun.yml");
+			if (! shotgunFile.exists())
+			{ 
 				shotgunFile.createNewFile(); 
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error saving shotgun file: " + e.getMessage()); 
-		}
-		generateClass(shotgunFile, "shotgun");
-		
-		File sniperFile = new File(dir, "sniper.yml");
-		if (!sniperFile.exists())
-			try
-		{ 
+			}
+
+			generateClass(shotgunFile, "shotgun");
+			
+			File sniperFile = new File(dir, "sniper.yml");
+			if (! sniperFile.exists())
+			{ 
 				sniperFile.createNewFile(); 
-		}
-		catch (Exception e)
-		{
-			plugin.getLogger().severe("Error saving sniper file: " + e.getMessage()); 
-		}
-		generateClass(sniperFile, "sniper");
-		
-		File spleefFile = new File(dir, "spleef.yml");
-		if (!spleefFile.exists())
-			try
-		{ 
+			}
+
+			generateClass(sniperFile, "sniper");
+			
+			File spleefFile = new File(dir, "spleef.yml");
+			if (! spleefFile.exists())
+			{ 
 				spleefFile.createNewFile(); 
+			}
+			
+			generateClass(spleefFile, "spleef");
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error saving spleef file: " + e.getMessage()); 
+			plugin.outConsole(Level.SEVERE, "Error generating stock classes: {0}", e.getMessage());
 		}
-		generateClass(spleefFile, "spleef");
 	}
 	
 	/**Generates a Class File**/
@@ -363,9 +335,9 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "261");
-				fc.set("tools.2", "262,1024");
-				fc.set("tools.3", "267");
+				fc.set("tools.1", "261,1,inf:1");
+				fc.set("tools.2", "262,1");
+				fc.set("tools.3", "267,1,sharp:2");
 			}
 			
 			if (type.equals("brute"))
@@ -373,9 +345,9 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "276");
-				fc.set("tools.2", "333:1,2");
-				fc.set("tools.3", "341,24");
+				fc.set("tools.1", "276,1");
+				fc.set("tools.2", "333,2");
+				fc.set("tools.3", "341,3");
 			}
 			
 			if (type.equals("dumbass"))
@@ -383,8 +355,8 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "283");
-				fc.set("tools.2", "259");
+				fc.set("tools.1", "283,1");
+				fc.set("tools.2", "259,1");
 			}
 			
 			if (type.equals("gunner"))
@@ -392,9 +364,9 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "292");
-				fc.set("tools.2", "318,7070");
-				fc.set("tools.3", "341,24");
+				fc.set("tools.1", "292,1");
+				fc.set("tools.2", "318,1");
+				fc.set("tools.3", "341,3");
 				fc.set("tools.4", "322,2");
 				fc.set("tools.5", "261,1,sharp:1");
 			}
@@ -404,9 +376,10 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "267");
-				fc.set("tools.2", "373:8261");
-				fc.set("tools.3", "373:16453");
+				fc.set("tools.1", "286,1");
+				fc.set("tools.2", "290,1");
+				fc.set("tools.3", "322,1");
+				fc.set("tools.4", "potion: regen, 1, 1, true");
 			}
 			
 			if (type.equals("shotgun"))
@@ -414,11 +387,11 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "291");
-				fc.set("tools.2", "295,1024");
-				fc.set("tools.3", "341,24");
+				fc.set("tools.1", "291,1");
+				fc.set("tools.2", "295,1");
+				fc.set("tools.3", "341,3");
 				fc.set("tools.4", "322,2");
-				fc.set("tools.5", "267");
+				fc.set("tools.5", "267,1");
 			}
 			
 			if (type.equals("sniper"))
@@ -426,11 +399,11 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "294");
-				fc.set("tools.2", "337,1024");
-				fc.set("tools.3", "341,24");
+				fc.set("tools.1", "294,1");
+				fc.set("tools.2", "337,1");
+				fc.set("tools.3", "341,3");
 				fc.set("tools.4", "322,2");
-				fc.set("tools.5", "267");
+				fc.set("tools.5", "267,1");
 			}
 			
 			if (type.equals("spleef"))
@@ -438,7 +411,7 @@ public class FileHelper
 				fc.set("armor.chestplate", "307");
 				fc.set("armor.leggings", "308");
 				fc.set("armor.boots", "309");
-				fc.set("tools.1", "277");
+				fc.set("tools.1", "277,1");
 			}
 			
 			fc.set("useEssentials", false);
@@ -448,11 +421,14 @@ public class FileHelper
 			
 			fc.set("permissionNode", "");
 			
+			fc.set("hasPotionEffects", false);
+			fc.set("potionEffects", "");
+			
 			fc.save(file);
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error saving \"" + type + "\" file: " + e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Error saving class file \"{0}\": {1}", type, e.getMessage());
 		}
 	}
 
@@ -614,7 +590,7 @@ public class FileHelper
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 				
-				fc.set("specialType", 80);
+				fc.set("specialType", az.getSpecialType());
 				
 				for (int i = 0; i < 4; i++) 
 				{
@@ -709,14 +685,14 @@ public class FileHelper
 				fc.set("team2.z", team2.getBlockZ());
 			}
 			
-			fc.set("maxPlayers", 24);
-			fc.set("defaultClass", plugin.classes.get(0).getName());
+			fc.set("maxPlayers", az.getMaxPlayers());
+			fc.set("defaultClass", az.getDefaultClass());
 			
 			fc.save(file);
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error saving arena \"" + az.getArenaName() + "\": " + e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Error saving arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
 		}
 	}
 	
@@ -879,19 +855,9 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error loading arena \"" + az.getArenaName() + "\": " + e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Error loading arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
 			az.setLoaded(false);
 		}
-	}
-	
-	/**Removes a player from the saved file**/
-	public void deletePlayer(Player player)
-	{
-		File folder = new File(plugin.getDataFolder(), "players");
-		File file = new File(folder, player.getName() + ".dat");
-		
-		if (file.exists())
-			file.delete();
 	}
 
 	public void saveSign(ArenaSign sign)
@@ -899,7 +865,11 @@ public class FileHelper
 		try
 		{
 			File signFile = new File(plugin.getDataFolder(), "signs.yml");
-			if (!signFile.exists()) signFile.createNewFile();
+			if (! signFile.exists())
+			{
+				plugin.debug("Creating a new sign save!");
+				signFile.createNewFile();
+			}
 			
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
 			
@@ -912,7 +882,7 @@ public class FileHelper
 			fc.set(locpath + "y", loc.getBlockY());
 			fc.set(locpath + "z", loc.getBlockZ());
 			
-			if (fc.get(path + "autoAssign") != null)
+			if (fc.isSet(path + "autoAssign"))
 				fc.set(path + "autoAssign", null);
 			
 			fc.set(path + "isJoin", sign.isJoinSign());
@@ -925,7 +895,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.getLogger().severe("Error saving signs: " + e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Error saving sign {0}: {1}", sign.getId(), e.getMessage());
 		}
 	}
 	
@@ -940,7 +910,7 @@ public class FileHelper
 		}
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-		for (int i=0; i<fc.getInt("total"); i++)
+		for (int i = 0; i < fc.getInt("total"); i++)
 		{
 			String path = "signs." + i + ".";
 			String locpath = path + "location.";
@@ -951,7 +921,7 @@ public class FileHelper
 			ArenaZone az = plugin.getArenaZone(fc.getString(path + "name"));
 			if (az != null)
 			{
-				if (fc.get("isJoin") == null)
+				if (! fc.isSet("isJoin"))
 				{
 					fc.set("isJoin", true);
 					fc.set("isStatus", false);
@@ -973,10 +943,8 @@ public class FileHelper
 	public void refreshSignSave()
 	{
 		File signFile = new File(plugin.getDataFolder(), "signs.yml");
-		if (!signFile.exists())
-			return;
-		
-		signFile.delete();
+		if (signFile.exists())
+			signFile.delete();
 		
 		try { signFile.createNewFile(); }
 		catch (Exception e) {}

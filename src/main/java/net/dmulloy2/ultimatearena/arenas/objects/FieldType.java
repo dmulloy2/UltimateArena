@@ -16,7 +16,7 @@ public enum FieldType
 	public String name;
 	FieldType(String name)
 	{
-		this.name= name;
+		this.name = name;
 	}
 	
 	public static FieldType getByName(String string)

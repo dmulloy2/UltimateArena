@@ -440,7 +440,7 @@ public abstract class Arena
 			{
 				if (ap.getPoints() >= max)
 				{
-					reward(ap, Util.matchPlayer(ap.getUsername()), false);
+					reward(ap, ap.getPlayer(), false);
 					tellPlayers("&7Player &6{0} &7has won!", ap.getUsername());
 					stop();
 				}
@@ -678,7 +678,7 @@ public abstract class Arena
 		Player player = ap.getPlayer();
 		if (player != null) 
 		{
-			teleport(player, ap.getSpawnBack().clone().add(0, 2.0, 0));
+			teleport(player, ap.getSpawnBack().clone().add(0, 0.5, 0));
 			normalize(player);
 			returnXP(player);
 			ap.returnInventory();

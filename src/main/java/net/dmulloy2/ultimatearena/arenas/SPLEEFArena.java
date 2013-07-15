@@ -15,8 +15,8 @@ import org.bukkit.entity.Player;
 
 public class SPLEEFArena extends FFAArena 
 {
-	public Field3D spleefGround;
-	public Field3D outZone;
+	private Field3D spleefGround;
+	private Field3D outZone;
 	
 	public SPLEEFArena(ArenaZone az)
 	{
@@ -25,15 +25,15 @@ public class SPLEEFArena extends FFAArena
 		this.type = FieldType.SPLEEF;
 		setMaxDeaths(2);
 
-		spleefGround = new Field3D();
+		this.spleefGround = new Field3D();
 		Location pos1 = az.getFlags().get(0);
 		Location pos2 = az.getFlags().get(1);
 		spleefGround.setParam(pos1.getWorld(), pos1.getBlockX(), pos1.getBlockY(), pos1.getBlockZ(), 
 				pos2.getBlockX(), pos2.getBlockY(), pos2.getBlockZ());
 		
-		spleefGround.setType(getArenaZone().getSpecialType());
+		getSpleefGround().setType(getArenaZone().getSpecialType());
 			
-		outZone = new Field3D();
+		this.outZone = new Field3D();
 		Location pos3 = az.getFlags().get(2);
 		Location pos4 = az.getFlags().get(3);
 		outZone.setParam(pos3.getWorld(), pos3.getBlockX(), pos3.getBlockY(), pos3.getBlockZ(),
@@ -59,9 +59,9 @@ public class SPLEEFArena extends FFAArena
 	{
 		Random rand = new Random();
 		Location ret = null;
-		int checkx = rand.nextInt(spleefGround.getWidth()-1);
-		int checkz = rand.nextInt(spleefGround.getLength()-1);
-		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
+		int checkx = rand.nextInt(getSpleefGround().getWidth()-1);
+		int checkz = rand.nextInt(getSpleefGround().getLength()-1);
+		Block b = getSpleefGround().getBlockAt(checkx + 1, 0, checkz + 1);
 		Material mat = b.getType();
 		if (mat.getId() == getArenaZone().getSpecialType())
 		{
@@ -69,7 +69,7 @@ public class SPLEEFArena extends FFAArena
 		}
 		else
 		{
-			if (repeat < (spleefGround.getWidth()*spleefGround.getHeight()) / 2) 
+			if (repeat < (getSpleefGround().getWidth()*getSpleefGround().getHeight()) / 2) 
 			{
 				ret = getBlockInSpleefArena(repeat+1);
 			}
@@ -109,5 +109,10 @@ public class SPLEEFArena extends FFAArena
 			rewardTeam(-1, "&9You won!", false);
 			stop();
 		}
+	}
+ 
+	public Field3D getSpleefGround()
+	{
+		return spleefGround;
 	}
 }

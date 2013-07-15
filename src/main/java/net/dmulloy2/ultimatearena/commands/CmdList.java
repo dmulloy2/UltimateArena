@@ -1,8 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.ChatColor;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -23,47 +22,54 @@ public class CmdList extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		sendMessage("&4====[ &6UltimateArenas &4]====");
+		List<String> lines = new ArrayList<String>();
+		StringBuilder line = new StringBuilder();
+		line.append("&4====[ &6UltimateArenas &4]====");
+		lines.add(line.toString());
 		
-		List<ArenaZone> arenas = plugin.loadedArena;
-		List<Arena> activearenas = plugin.activeArena;
-			
-		for (int i = 0; i < arenas.size(); i++) 
+		for (ArenaZone az : plugin.loadedArena)
 		{
-			String arena = arenas.get(i).getArenaName();
-			String type = arenas.get(i).getType().name();
-				
-			String arenaType = ChatColor.GOLD + "[" + ChatColor.RED + type + " Arena" + ChatColor.GOLD + "]";
-			String arenaName = ChatColor.RED + arena;
-			String arenaMode = "";
-			String plays = ChatColor.YELLOW + "[" + arenas.get(i).getTimesPlayed() + "]";
-			arenaMode = ChatColor.GREEN + "[FREE]";
-			if (arenas.get(i).isDisabled())
-				arenaMode = ChatColor.DARK_RED + "[DISABLED]";
-				
-			for (int ii = 0; ii < activearenas.size(); ii++) 
+			line = new StringBuilder();
+			line.append("&6[&c" + az.getType().name() + " Arena&6]");
+			line.append(" &c" + az.getArenaName());
+			
+			if (az.isDisabled())
 			{
-				Arena ar = activearenas.get(ii);
-				if (ar.getArenaZone().equals(arenas.get(i))) 
+				line.append(" &4[DISABLED]");
+			}
+			else
+			{
+				boolean active = false;
+				for (Arena a : plugin.activeArena)
 				{
-					if (!ar.isDisabled())
+					if (a.getName().equals(az.getArenaName()))
 					{
-						if (ar.getStarttimer() > 0)
+						if (a.isInLobby())
 						{
-							arenaMode = ChatColor.YELLOW + "[LOBBY  |  " + Integer.toString(ar.getStarttimer()) + " seconds]";
+							line.append(" &e[LOBBY | " + a.getStarttimer() + " seconds]");
 						}
 						else
 						{
-							arenaMode = ChatColor.DARK_RED + "[BUSY]";
+							line.append(" &e[INGAME]");
 						}
-					}
-					else
-					{
-						arenaMode = ChatColor.DARK_RED + "[DISABLED]";
+						
+						active = true;
 					}
 				}
+				
+				if (! active)
+				{
+					line.append(" &a[FREE]");
+				}
 			}
-			sendMessage(arenaType + " " + arenaName + " " + arenaMode + "        " + plays);
+			
+			line.append("        &e[" + az.getTimesPlayed() + "]");
+			lines.add(line.toString());
+		}
+		
+		for (String s : lines)
+		{
+			sendMessage(s);
 		}
 	}
 }

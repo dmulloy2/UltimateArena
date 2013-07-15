@@ -14,7 +14,7 @@ public class CmdClass extends UltimateArenaCommand
 		this.optionalArgs.add("class");
 		this.description = "Switch UltimateArena classes";
 		
-		this.mustBePlayer = false;
+		this.mustBePlayer =  true;
 	}
 	
 	@Override

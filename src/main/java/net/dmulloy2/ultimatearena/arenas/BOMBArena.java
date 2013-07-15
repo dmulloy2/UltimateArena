@@ -49,8 +49,11 @@ public class BOMBArena extends Arena
 		rewardTeam(2, "&9You won!", false);
 	}
 	
-	public synchronized void onPlayerDeath(ArenaPlayer pl)
+	@Override
+	public void onPlayerDeath(ArenaPlayer pl)
 	{
+		super.onPlayerDeath(pl);
+		
 		if (pl.getTeam() == 1) 
 		{
 			REDTEAMPOWER--;

@@ -124,6 +124,7 @@ public class ArenaCreator
 		az.setSpawns(spawns);
 		az.setFlags(flags);
 		az.setMaxPlayers(24);
+		az.setSpecialType(80);
 		az.setDefaultClass(plugin.classes.get(0).getName());
 		az.setWorld(lobby1.getWorld());
 		
@@ -148,7 +149,6 @@ public class ArenaCreator
 			{
 				sendMessage("&7Done setting up Lobby! please set 2 points for the arena");
 				stepUp();
-				return;
 			}
 			else
 			{
@@ -161,7 +161,6 @@ public class ArenaCreator
 			{
 				sendMessage("&7Done setting up Arena! please set a lobby spawn for RED team");
 				stepUp();
-				return;
 			}
 			else
 			{
@@ -199,7 +198,6 @@ public class ArenaCreator
 					}
 				}
 				stepUp();
-				return;
 			}
 			else
 			{
@@ -432,7 +430,7 @@ public class ArenaCreator
 						setMsg(getMsg() + (", if the spawn points are done, use &6/ua done"));
 					}
 					
-						return;
+					return;
 				}
 				if (team2spawn == null) 
 				{

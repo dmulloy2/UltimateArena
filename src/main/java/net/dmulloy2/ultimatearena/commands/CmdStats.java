@@ -13,13 +13,15 @@ public class CmdStats extends UltimateArenaCommand
 		this.aliases.add("stat");
 		this.requiredArgs.add("arena");
 		this.description = "view an arena''s stats";
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override
 	public void perform() 
 	{
 		String arenaname = args[0];
-		ArenaZone az = this.plugin.getArenaZone(arenaname);
+		ArenaZone az = plugin.getArenaZone(arenaname);
 		if (az != null) 
 		{
 			ArenaStatistics as = new ArenaStatistics(az);

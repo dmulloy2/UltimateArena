@@ -13,6 +13,8 @@ public class CmdSetDone extends UltimateArenaCommand
 		this.mode = "build";
 		this.description = "finalize a step in the UA creation process";
 		this.permission = PermissionType.CMD_SET_DONE.permission;
+		
+		this.mustBePlayer = true;
 	}
 	
 	@Override

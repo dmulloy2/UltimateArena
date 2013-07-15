@@ -31,7 +31,6 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onStart()
 	{
-		super.onStart();
 		chooseInfected(0);
 	}
 	
@@ -49,7 +48,7 @@ public class INFECTArena extends PVPArena
 			}
 			else
 			{
-				chooseInfected(tries+1);
+				chooseInfected(tries++);
 			}
 		}
 		else

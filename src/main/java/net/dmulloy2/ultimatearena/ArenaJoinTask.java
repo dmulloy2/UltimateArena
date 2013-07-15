@@ -8,19 +8,21 @@ public class ArenaJoinTask extends BukkitRunnable
 	private final UltimateArena plugin;
 	private final Player player;
 	private final String name;
+	private final boolean forced;
 	
-	public ArenaJoinTask(final UltimateArena plugin, final Player player, final String name) 
+	public ArenaJoinTask(final UltimateArena plugin, final Player player, final String name, final boolean forced) 
 	{
 		this.plugin = plugin;
 		this.player = player;
 		this.name = name;
+		this.forced = forced;
 	}
 
 	@Override
 	public void run() 
 	{
 		plugin.waiting.remove(this);
-		plugin.joinBattle(false, player, name);
+		plugin.joinBattle(forced, player, name);
 	}
 	
 	public final Player getPlayer()
@@ -31,5 +33,10 @@ public class ArenaJoinTask extends BukkitRunnable
 	public final String getArena()
 	{
 		return name;
+	}
+	
+	public final boolean isForced()
+	{
+		return forced;
 	}
 }
