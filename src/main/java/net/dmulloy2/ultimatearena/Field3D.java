@@ -76,7 +76,7 @@ public class Field3D extends Field
 			{
 				for (int iii = minz; iii <= maxz; iii++)
 				{
-					Block b = world.getBlockAt(i, iii, ii);
+					Block b = world.getBlockAt(i, ii, iii);
 					b.setTypeId(id);
 				}
 			}
@@ -90,6 +90,6 @@ public class Field3D extends Field
 
 	public int getHeight()
 	{
-		return height;
+		return Math.abs(height);
 	}
 }

@@ -15,8 +15,8 @@ public class Field
 	private int length;
 	
 	protected World world;
-	
-	public Field(World world, int maxx, int minx, int maxz, int minz)
+
+	public Field(World world, int maxx, int maxz, int minx, int minz)
 	{
 		setParam(world, maxx, minx, maxz, minz);
 	}
@@ -86,11 +86,11 @@ public class Field
 
 	public int getLength()
 	{
-		return length;
+		return Math.abs(length);
 	}
 
 	public int getWidth() 
 	{
-		return width;
+		return Math.abs(width);
 	}
 }

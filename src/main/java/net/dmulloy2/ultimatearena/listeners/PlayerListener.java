@@ -64,7 +64,7 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl))
 			{
 				Arena arena = plugin.getArena(pl);
-				if (! arena.getType().name.equalsIgnoreCase("Hunger"))
+				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -81,7 +81,7 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl)) 
 			{
 				Arena arena = plugin.getArena(pl);
-				if (! arena.getType().name.equalsIgnoreCase("Hunger"))
+				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					event.setCancelled(true);
 				}

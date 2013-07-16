@@ -30,7 +30,7 @@ public class CmdList extends UltimateArenaCommand
 		for (ArenaZone az : plugin.loadedArena)
 		{
 			line = new StringBuilder();
-			line.append("&6[&c" + az.getType().name() + " Arena&6]");
+			line.append("&6[&c" + az.getType().getName() + " Arena&6]");
 			line.append(" &c" + az.getArenaName());
 			
 			if (az.isDisabled())

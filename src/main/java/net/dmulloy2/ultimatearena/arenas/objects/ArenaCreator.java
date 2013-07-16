@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.arenas.objects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -29,9 +30,9 @@ public class ArenaCreator
 	private int amtLobbys = 2;
 	private int amtSpawnpoints = 2;
 
-	private ArrayList<String> steps = new ArrayList<String>();
-	private ArrayList<Location> spawns = new ArrayList<Location>();
-	private ArrayList<Location> flags = new ArrayList<Location>();
+	private List<String> steps = new ArrayList<String>();
+	private List<Location> spawns = new ArrayList<Location>();
+	private List<Location> flags = new ArrayList<Location>();
 	
 	private int stepnum;
 	
@@ -51,51 +52,51 @@ public class ArenaCreator
 		this.steps.add("Lobby");
 		this.steps.add("Arena");
 		this.steps.add("LobbySpawn1");
-		if (arenaType.equals("pvp") || arenaType.equals("infect")) 
+		if (arenaType.equalsIgnoreCase("pvp") || arenaType.equalsIgnoreCase("infect")) 
 		{
 			this.steps.add("LobbySpawn2");
 			this.steps.add("ArenaSpawn1");
 			this.steps.add("ArenaSpawn2");
 		}
-		if (arenaType.equals("ctf"))
-		{
-			this.steps.add("LobbySpawn2");
-			this.steps.add("ArenaSpawn1");
-			this.steps.add("ArenaSpawn2");
-			this.steps.add("FlagSpawn");
-		}
-		if (arenaType.equals("cq"))
+		if (arenaType.equalsIgnoreCase("ctf"))
 		{
 			this.steps.add("LobbySpawn2");
 			this.steps.add("ArenaSpawn1");
 			this.steps.add("ArenaSpawn2");
 			this.steps.add("FlagSpawn");
 		}
-		if (arenaType.equals("koth"))
+		if (arenaType.equalsIgnoreCase("cq"))
+		{
+			this.steps.add("LobbySpawn2");
+			this.steps.add("ArenaSpawn1");
+			this.steps.add("ArenaSpawn2");
+			this.steps.add("FlagSpawn");
+		}
+		if (arenaType.equalsIgnoreCase("koth"))
 		{
 			amtLobbys = 1;
 			this.steps.add("playerspawn");
 			this.steps.add("kothflag");
 		}
-		if (arenaType.equals("ffa") || arenaType.equals("hunger")) 
+		if (arenaType.equalsIgnoreCase("ffa") || arenaType.equalsIgnoreCase("hunger")) 
 		{
 			amtLobbys = 1;
 			this.steps.add("playerspawn");
 		}
-		if (arenaType.equals("spleef")) 
+		if (arenaType.equalsIgnoreCase("spleef")) 
 		{
 			amtLobbys = 1;
 			this.steps.add("spleefzone");
 			this.steps.add("outzone");
 		}
-		if (arenaType.equals("bomb"))
+		if (arenaType.equalsIgnoreCase("bomb"))
 		{
 			this.steps.add("LobbySpawn2");
 			this.steps.add("ArenaSpawn1");
 			this.steps.add("ArenaSpawn2");
 			this.steps.add("FlagSpawn");
 		}
-		if (arenaType.equals("mob"))
+		if (arenaType.equalsIgnoreCase("mob"))
 		{
 			amtLobbys = 1;
 			amtSpawnpoints = 1;
@@ -105,7 +106,7 @@ public class ArenaCreator
 		
 		this.step = steps.get(stepnum);
 		
-		sendMessage("&7Arena: &6{0} &7 has been initialized. Type: &6{1}", arenaName, arenaType);
+		sendMessage("&7Arena: &6{0} &7has been initialized. Type: &6{1}", arenaName, arenaType);
 		sendMessage("&7Please set two points for a lobby! &6/ua setpoint");
 	}
 	
@@ -128,15 +129,15 @@ public class ArenaCreator
 		az.setDefaultClass(plugin.classes.get(0).getName());
 		az.setWorld(lobby1.getWorld());
 		
-		az.initialize();
 		az.save();
+		az.initialize();
 		
 		plugin.loadedArena.add(az);
 		
 		sendMessage("&7Finished arena!");
 		sendMessage("&7Use &6/ua join {0} &7to play!", arenaName);
 		
-		plugin.outConsole("Created and saved arena {0}. Type {1}.", arenaName, arenaType);
+		plugin.outConsole("Created and saved arena {0}. Type {1}.", arenaName, arenaType.getName());
 		
 		plugin.makingArena.remove(this);
 	}
@@ -179,14 +180,14 @@ public class ArenaCreator
 				}
 				else
 				{
-					if (arenaType.equals("koth") || arenaType.equals("ffa") || arenaType.equals("hunger"))
+					if (arenaType.getName().equalsIgnoreCase("koth") || arenaType.getName().equalsIgnoreCase("ffa") || arenaType.getName().equalsIgnoreCase("hunger"))
 					{
 						sendMessage("&7Please add some player spawnpoints with &6/ua setpoint");
 						sendMessage("&7use &6/ua done&7 when done");
 					}
 					else
 					{
-						if (arenaType.equals("spleef"))
+						if (arenaType.getName().equalsIgnoreCase("spleef"))
 						{
 							sendMessage("&7Done with lobby spawns");
 							sendMessage("&7Please create 2 spleefzone points");
@@ -215,12 +216,12 @@ public class ArenaCreator
 					{
 						sendMessage("&7Done with player spawns");
 						stepUp();//get passed arenaspawn2 step, since it's created already :3 (fail coding, I know)
-						if (arenaType.equals("cq"))
+						if (arenaType.getName().equalsIgnoreCase("cq"))
 						{
 							sendMessage("&7Please add some flag points");
 							sendMessage("&7use &6/ua done&7 when done");
 						}
-						if (arenaType.equals("bomb") || arenaType.equals("ctf"))
+						if (arenaType.getName().equalsIgnoreCase("bomb") || arenaType.getName().equalsIgnoreCase("ctf"))
 						{
 							sendMessage("&7Please add 2 flag points");
 							sendMessage("&7use &6/ua done&7 when done");
@@ -235,7 +236,7 @@ public class ArenaCreator
 				else
 				{
 					sendMessage("&7Done with player spawns");
-					if (arenaType.equals("mob"))
+					if (arenaType.getName().equalsIgnoreCase("mob"))
 					{
 						sendMessage("&7Please set some mob spawnpoints");
 						sendMessage("&7use &6/ua done&7 when done");
@@ -255,7 +256,7 @@ public class ArenaCreator
 				{
 					stepUp();
 					sendMessage("&7Done with player spawns");
-					if (arenaType.equals("koth"))
+					if (arenaType.getName().equalsIgnoreCase("koth"))
 					{
 						sendMessage("&7please add a flag spawn");	
 					}
@@ -286,7 +287,7 @@ public class ArenaCreator
 				}
 				else
 				{
-					sendMessage("&cYou need 2 points set for the out-zone!");
+					sendMessage("&7You need 2 points set for the out-zone!");
 				}
 			}
 			if (step.equalsIgnoreCase("kothflag")) 
@@ -317,7 +318,7 @@ public class ArenaCreator
 			{
 				if (flags.size() > 0)
 				{
-					if (arenaType.equals("cq")) 
+					if (arenaType.getName().equalsIgnoreCase("cq")) 
 					{
 						if (flags.size() % 2 == 0) 
 						{
@@ -329,7 +330,7 @@ public class ArenaCreator
 							sendMessage("&7Done with flag spawnpoints!");
 						}
 					}
-					if (arenaType.equals("bomb") || arenaType.equals("ctf"))
+					if (arenaType.getName().equalsIgnoreCase("bomb") || arenaType.getName().equalsIgnoreCase("ctf"))
 					{
 						if (flags.size() != 2) 
 						{
@@ -478,7 +479,7 @@ public class ArenaCreator
 			}
 			if (step.equalsIgnoreCase("flagspawn"))
 			{
-				if (arenaType.equals("bomb") || arenaType.equals("ctf"))
+				if (arenaType.getName().equalsIgnoreCase("bomb") || arenaType.getName().equalsIgnoreCase("ctf"))
 				{
 					if (flags.size() < 2) 
 					{

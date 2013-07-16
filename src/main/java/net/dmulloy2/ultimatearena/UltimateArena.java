@@ -114,7 +114,7 @@ public class UltimateArena extends JavaPlugin
 		if (pm.isPluginEnabled("SwornGuns"))
 		{
 			pm.registerEvents(new SwornGunsListener(this), this);
-			debug("Found SwornGuns, enabling SwornGunsListener!");
+			debug("Enabling SwornGuns integration!");
 		}
 		
 		// Register Other Listeners
@@ -201,8 +201,17 @@ public class UltimateArena extends JavaPlugin
 	// Create Directories
 	public void checkDirectories()
 	{
+		debug("Checking directories!");
+		
+		File dataFile = getDataFolder();
+		if (! dataFile.exists())
+		{
+			dataFile.mkdir();
+			debug("Created data file!");
+		}
+		
 		File arenaFile = new File(getDataFolder(), "arenas");
-		if (!arenaFile.exists())
+		if (! arenaFile.exists())
 		{
 			arenaFile.mkdir();
 			debug("Created arenas directory!");
@@ -225,14 +234,14 @@ public class UltimateArena extends JavaPlugin
 		}
 		
 		File classFile = new File(getDataFolder(), "classes");
-		if (!classFile.exists())
+		if (! classFile.exists())
 		{
 			classFile.mkdir();
 			debug("Created classes directory!");
 		}
 		
 		File configsFile = new File(getDataFolder(), "configs");
-		if (!configsFile.exists())
+		if (! configsFile.exists())
 		{
 			configsFile.mkdir();
 			debug("Created configs directory!");
@@ -294,7 +303,7 @@ public class UltimateArena extends JavaPlugin
 		int total = 0;
 		for (FieldType type : FieldType.values())
 		{
-			if (loadConfig(type.name))
+			if (loadConfig(type.getName()))
 				total++;
 		}
 		
@@ -308,7 +317,7 @@ public class UltimateArena extends JavaPlugin
 		File file = new File(getDataFolder(), "whiteListedCommands.yml");
 		if (!file.exists())
 		{
-			outConsole("Whitelisted commands file not found! Generating you a new one!");
+			outConsole("Generating WhiteListedCommands file!");
 			fileHelper.generateWhitelistedCmds();
 		}
 		
@@ -329,7 +338,7 @@ public class UltimateArena extends JavaPlugin
 		File file = new File(folder, str + "Config.yml");
 		if (!file.exists())
 		{
-			outConsole("Could not find config for arena type \"{0}\"! Generating a new one!", str);
+			outConsole("Generating config for: {0}", str);
 			fileHelper.generateArenaConfig(str);
 		}
 		
@@ -350,7 +359,7 @@ public class UltimateArena extends JavaPlugin
 		if (children.length == 0)
 		{
 			fileHelper.generateStockClasses();
-			outConsole("No classes found! Generating stock classes!");
+			outConsole("Generating stock classes!");
 		}
 
 		children = folder.listFiles();
@@ -455,7 +464,7 @@ public class UltimateArena extends JavaPlugin
 				}
 			}
 			
-			player.sendMessage(prefix + ChatColor.YELLOW + "Successfully deleted arena: " + str + "!");
+			player.sendMessage(prefix + ChatColor.GRAY + "Successfully deleted arena: " + str + "!");
 			
 			outConsole("Successfully deleted arena: {0}!", str);
 		}
@@ -693,7 +702,7 @@ public class UltimateArena extends JavaPlugin
 			
 			if (!disabled)
 			{
-				String arenaType = az.getType().name().toLowerCase();
+				String arenaType = az.getType().getName().toLowerCase();
 				if (arenaType.equals("pvp"))
 				{
 					ar = new PVPArena(az);
@@ -820,7 +829,7 @@ public class UltimateArena extends JavaPlugin
 			ac.setPoint(player);
 			if (!ac.getMsg().equals(""))
 			{
-				player.sendMessage(prefix + ChatColor.GRAY + ac.getMsg());
+				player.sendMessage(prefix + FormatUtil.format("&7" + ac.getMsg()));
 			}
 		}
 		else
@@ -855,7 +864,7 @@ public class UltimateArena extends JavaPlugin
 			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
 			{
 				makingArena.remove(ac);
-				player.sendMessage(prefix + FormatUtil.format("&eStopping the creation of {0}!", ac.getArenaName()));
+				player.sendMessage(prefix + FormatUtil.format("&7Stopped the creation of arena: &6{0}&7!", ac.getArenaName()));
 			}
 		}
 	}
@@ -966,7 +975,7 @@ public class UltimateArena extends JavaPlugin
 			
 			if (economy != null)
 			{
-				outConsole("Economy integration through {0} was succesful!", economy.getName());
+				outConsole("Enabled economy through {0}!", economy.getName());
 			}
 		}
 	}

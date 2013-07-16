@@ -31,7 +31,7 @@ public class SPLEEFArena extends FFAArena
 		spleefGround.setParam(pos1.getWorld(), pos1.getBlockX(), pos1.getBlockY(), pos1.getBlockZ(), 
 				pos2.getBlockX(), pos2.getBlockY(), pos2.getBlockZ());
 		
-		getSpleefGround().setType(getArenaZone().getSpecialType());
+		spleefGround.setType(az.getSpecialType());
 			
 		this.outZone = new Field3D();
 		Location pos3 = az.getFlags().get(2);
@@ -44,6 +44,9 @@ public class SPLEEFArena extends FFAArena
 	public void spawn(String name, boolean alreadySpawned)
 	{
 		super.spawn(name, false);
+		if (isInLobby())
+			return;
+		
 		Player p = Util.matchPlayer(name);
 		if (p != null)
 		{
@@ -59,9 +62,12 @@ public class SPLEEFArena extends FFAArena
 	{
 		Random rand = new Random();
 		Location ret = null;
+		
 		int checkx = rand.nextInt(getSpleefGround().getWidth()-1);
 		int checkz = rand.nextInt(getSpleefGround().getLength()-1);
+		
 		Block b = getSpleefGround().getBlockAt(checkx + 1, 0, checkz + 1);
+		
 		Material mat = b.getType();
 		if (mat.getId() == getArenaZone().getSpecialType())
 		{
@@ -106,6 +112,8 @@ public class SPLEEFArena extends FFAArena
 		}
 		else
 		{
+			spleefGround.setType(az.getSpecialType()); // Refresh the ground
+			
 			rewardTeam(-1, "&9You won!", false);
 			stop();
 		}

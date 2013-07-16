@@ -33,6 +33,14 @@ public class PVPArena extends Arena
 				this.stop();
 				this.rewardTeam(-1, "&9You won!", false);
 			}
+			else
+			{
+				if (this.getAmtPlayersStartingInArena() <= 1) 
+				{
+					this.tellPlayers("&9Not enough people to play!");
+					this.stop();
+				}
+			}
 		}
 	}
 }

@@ -13,7 +13,7 @@ public enum FieldType
 	PVP("pvp"),
 	SPLEEF("spleef");
 	
-	public String name;
+	private String name;
 	FieldType(String name)
 	{
 		this.name = name;
@@ -23,7 +23,7 @@ public enum FieldType
 	{
 		for (FieldType type : FieldType.values())
 		{
-			if (type.name.equalsIgnoreCase(string))
+			if (type.getName().equalsIgnoreCase(string))
 				return type;
 		}
 		
@@ -33,5 +33,10 @@ public enum FieldType
 	public static boolean contains(String type)
 	{
 		return (getByName(type) != null);
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 }

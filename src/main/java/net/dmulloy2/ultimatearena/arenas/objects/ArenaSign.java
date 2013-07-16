@@ -56,7 +56,7 @@ public class ArenaSign
 		{
 			sign.setLine(0, "[Arena Stats]");
 			sign.setLine(1, zone.getArenaName());
-			sign.setLine(2, "Type: " + zone.getType().name());
+			sign.setLine(2, "Type: " + zone.getType().getName());
 			sign.setLine(3, getStatus());
 		}
 		

@@ -64,8 +64,8 @@ public abstract class Arena
 	private String name;
 
 	protected final UltimateArena plugin;
-	private ArenaConfig config;
-	private ArenaZone az;
+	protected ArenaConfig config;
+	protected ArenaZone az;
 	
 	public Arena(ArenaZone az) 
 	{
@@ -178,11 +178,11 @@ public abstract class Arena
 				{
 					if (announced == 0) 
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&b{0} &6arena has been created!", getType().name()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&b{0} &6arena has been created!", getType().getName()));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Hurry up and join the &b{0} &6arena!", getType().name()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Hurry up and join the &b{0} &6arena!", getType().getName()));
 					}
 					
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Type &b/ua join {0} &6to join!", getArenaZone().getArenaName()));
@@ -305,7 +305,8 @@ public abstract class Arena
 		}
 		catch (Exception e)
 		{
-			loc = getSpawns().get(Util.random(getSpawns().size())).getLocation().clone().add(0, 2, 0);
+//			This should be handled on a per-arena basis
+//			loc = getSpawns().get(Util.random(getSpawns().size())).getLocation().clone().add(0, 2, 0);
 		}
 		
 		if (loc != null)
@@ -571,7 +572,7 @@ public abstract class Arena
 			}
 			if (ap.getKillstreak() == 5) 
 			{
-				if (!(getType().name().equalsIgnoreCase("cq"))) 
+				if (!(getType().getName().equalsIgnoreCase("cq"))) 
 				{
 					pl.sendMessage(plugin.getPrefix() + "5 kills! Unlocked Zombies!");
 					for (int i = 0; i < 4; i++)
@@ -721,7 +722,7 @@ public abstract class Arena
 		
 		if (config == null)
 		{
-			config = plugin.getConfig(type.name);
+			config = plugin.getConfig(type.getName());
 			reloadConfig();
 		}
 		

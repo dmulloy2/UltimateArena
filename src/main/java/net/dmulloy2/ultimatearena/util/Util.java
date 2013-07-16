@@ -141,4 +141,14 @@ public class Util
 			loc.getBlockZ() == loc2.getBlockZ() &&
 			loc.getWorld().getUID() == loc2.getWorld().getUID());
 	}
+	
+	public static String locationToString(Location loc)
+	{
+		StringBuilder ret = new StringBuilder();
+		ret.append("World: " + loc.getWorld().getName());
+		ret.append(" X: " + loc.getBlockX());
+		ret.append(" Y: " + loc.getBlockY());
+		ret.append(" Z: " + loc.getBlockZ());
+		return ret.toString();
+	}
 }

@@ -444,7 +444,7 @@ public class FileHelper
 
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			
-			fc.set("type", az.getType().name());
+			fc.set("type", az.getType().getName());
 			fc.set("world", az.getWorld().getName());
 			
 			Location lobby1 = az.getLobby1();
@@ -463,7 +463,7 @@ public class FileHelper
 			fc.set("arena2.x", arena2.getBlockX());
 			fc.set("arena2.z", arena2.getBlockZ());
 			
-			String arenaType = az.getType().name();
+			String arenaType = az.getType().getName().toLowerCase();
 			if (arenaType.equals("pvp"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();

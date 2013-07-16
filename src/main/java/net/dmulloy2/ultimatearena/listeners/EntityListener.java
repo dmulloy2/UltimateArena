@@ -310,8 +310,8 @@ public class EntityListener implements Listener
 							List<String> deadlines = new ArrayList<String>();
 							
 							String dc = FormatUtil.getFriendlyName(pdied.getLastDamageCause().getCause().toString());
-							plugin.debug("Player {0} was killed by {1}", dc);
-							ar.tellPlayers("&a{0} &fwas killed by &c{0}", pdied.getName(), dc);
+							plugin.debug("Player {0} was killed by {1}", pdied.getName(), dc);
+							ar.tellPlayers("&a{0} &fwas killed by &c{1}", pdied.getName(), dc);
 							
 							deadlines.add(FormatUtil.format("&c----------------------------"));
 							deadlines.add(FormatUtil.format("&cKills: &f{0}", dp.getKills()));
