@@ -9,6 +9,7 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -224,7 +225,8 @@ public class PlayerListener implements Listener
 									}
 									if (!found)
 									{
-										player.sendMessage(ChatColor.RED + "No arena by the name of \"" + name + "\" exists!");
+										player.sendMessage(plugin.getPrefix() + 
+												FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
 									}
 								}
 							}
@@ -277,7 +279,8 @@ public class PlayerListener implements Listener
 				task.cancel();
 				plugin.waiting.remove(task);
 				
-				p.sendMessage(ChatColor.RED + "Cancelled!");
+				p.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&cCancelled!"));
 			}
 		}
 	}
@@ -316,8 +319,10 @@ public class PlayerListener implements Listener
 			String[] check = cmd.split(" ");
 			if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
 			{
-				player.sendMessage(ChatColor.GRAY + "You cannot use non-ua commands in an arena!");
-				player.sendMessage(ChatColor.GRAY + "If you wish to use commands again, use " + ChatColor.LIGHT_PURPLE + "/ua leave");
+				player.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&7You cannot use non-ua commands in an arena!"));
+				player.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&7If you wish to use commands again, use &6/ua leave"));
 				event.setCancelled(true);
 				return;
 			}

@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import net.dmulloy2.ultimatearena.Field;
+import net.dmulloy2.ultimatearena.UltimateArena;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import net.dmulloy2.ultimatearena.Field;
-import net.dmulloy2.ultimatearena.UltimateArena;
 
 public class ArenaZone
 {

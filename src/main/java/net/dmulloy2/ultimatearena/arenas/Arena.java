@@ -6,7 +6,7 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.*;
 import net.dmulloy2.ultimatearena.events.*;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.*;
 import net.dmulloy2.ultimatearena.util.*;
 
 import org.bukkit.GameMode;
