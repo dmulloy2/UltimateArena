@@ -464,7 +464,7 @@ public class UltimateArena extends JavaPlugin
 				}
 			}
 			
-			player.sendMessage(prefix + ChatColor.GRAY + "Successfully deleted arena: " + str + "!");
+			player.sendMessage(prefix + FormatUtil.format("&7Successfully deleted arena: &6{0}&7!", str));
 			
 			outConsole("Successfully deleted arena: {0}!", str);
 		}
