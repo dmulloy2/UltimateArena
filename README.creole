@@ -3,7 +3,7 @@
 ----
 
 ==Check out UltimateArena on BukkitDev!
-http://dev.bukkit.org/bukkit-mods/ultimatearena/
+http://dev.bukkit.org/bukkit-plugins/ultimatearena/
 
 ==First-Time Installation==
 * Download the latest UltimateArena.jar
@@ -77,7 +77,7 @@ http://dev.bukkit.org/bukkit-mods/ultimatearena/
 
 == Development Builds
 ** Development Builds can be found at our Continuous Integration server. These builds are not approved by the BukkitDev staff and are to be used at your own risk **
-** http://jenkins.minesworn.com/job/UltimateArena/ **
+** http://ci.minesworn.com/job/UltimateArena/ **
 ----
 
 ==Bug Reporting
