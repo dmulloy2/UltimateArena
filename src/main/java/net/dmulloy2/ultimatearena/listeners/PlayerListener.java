@@ -11,7 +11,6 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.PermissionType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
