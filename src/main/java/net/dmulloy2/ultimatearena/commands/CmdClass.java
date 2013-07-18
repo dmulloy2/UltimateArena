@@ -36,7 +36,7 @@ public class CmdClass extends UltimateArenaCommand
 				return;
 			}
 			
-			sendpMessage("&7Your current class is: &6{0}&7!", ap.getArenaClass().getName());
+			sendpMessage("&7Your current class is: &6{0}", ap.getArenaClass().getName());
 			return;
 		}
 		else if (args.length == 1)
@@ -52,7 +52,7 @@ public class CmdClass extends UltimateArenaCommand
 					}
 					else
 					{
-						sendpMessage("&7You have set your class to: &6{0}");
+						sendpMessage("&7You have set your class to: &6{0}", cl.getName());
 					}
 					return;
 				}
