@@ -159,7 +159,7 @@ public abstract class Arena
 		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
 		plugin.getServer().getPluginManager().callEvent(joinEvent);
 		
-		pl.sendMessage("&6You have joined the arena!");
+		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getUsername(), arenaPlayers.size(), az.getMaxPlayers());
 	}
 	
 	public int getTeam() 
@@ -273,6 +273,7 @@ public abstract class Arena
 	public void spawnAll() 
 	{
 		plugin.outConsole("Spawning players for Arena: {0}", getArenaZone().getArenaName());
+		
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
@@ -308,12 +309,7 @@ public abstract class Arena
 //			This should be handled on a per-arena basis
 //			loc = getSpawns().get(Util.random(getSpawns().size())).getLocation().clone().add(0, 2, 0);
 		}
-		
-		if (loc != null)
-		{
-			loc = loc.clone().add(0.25, 1, 0.25);
-		}	
-		
+
 		return loc;
 	}
 	
@@ -341,12 +337,11 @@ public abstract class Arena
 								{
 									plugin.debug("Spawning player: {0}", name);
 									
-									Location nloc = new Location(loc.getWorld(), loc.getX() + 0.25, loc.getY() + 1.0, loc.getZ() + 0.25);
-									teleport(p, nloc);
+									teleport(p, loc);
 									
 									// Call spawn event
-									ArenaSpawn aSpawn = new ArenaSpawn(nloc.getWorld(), nloc.getBlockX(), nloc.getBlockY(), nloc.getBlockZ());
-									UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, aSpawn);
+									ArenaSpawn spawn = new ArenaSpawn(loc);
+									UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
 									plugin.getServer().getPluginManager().callEvent(spawnEvent);
 								}
 								
@@ -394,6 +389,8 @@ public abstract class Arena
 	/** Rewards the Winning Team **/
 	public void rewardTeam(int team, String string, boolean half)
 	{
+		plugin.debug("Rewarding team {0}. Half: {1}", team, half);
+		
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
@@ -484,6 +481,8 @@ public abstract class Arena
 	/** Kills all players in the arena near a point **/
 	public void killAllNear(Location loc, int rad)
 	{
+		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
+		
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
@@ -503,6 +502,8 @@ public abstract class Arena
 	/** Spawns a player to a random spawnpoint **/
 	public void spawnRandom(String name)
 	{
+		plugin.debug("Spawning {0} randomly", name);
+		
 		if (getStarttimer() <= 0) 
 		{
 			Player p = Util.matchPlayer(name);
@@ -511,8 +512,15 @@ public abstract class Arena
 				ArenaPlayer ap = plugin.getArenaPlayer(p);
 				if (ap != null && !ap.isOut())
 				{
-					if (getSpawns().size() > 0) 
-						teleport(p, (getSpawns().get(Util.random(getSpawns().size())).getLocation().clone()).add(0, 2, 0));
+					if (! spawns.isEmpty())
+					{
+						int rand = Util.random(spawns.size());
+						ArenaSpawn spawn = spawns.get(rand);
+						if (spawn != null)
+						{
+							teleport(p, spawn.getLocation());
+						}
+					}
 				}
 			}
 		}
@@ -663,10 +671,14 @@ public abstract class Arena
 		plugin.normalize(p);
 	}
 	
-	/** Safely teleports a player **/
-	public void teleport(Player p, Location add) 
+	/**
+	 * Teleports a player to the most ideal location
+	 * @param p - Player to teleport
+	 * @param loc - Raw location
+	 */
+	public void teleport(Player p, Location loc) 
 	{
-		p.teleport(add.clone().add(0.5, 0, 0.5));
+		p.teleport(loc.clone().add(0.5D, 1.0D, 0.5D));
 	}
 	
 	public void check() {}
@@ -679,9 +691,10 @@ public abstract class Arena
 		Player player = ap.getPlayer();
 		if (player != null) 
 		{
-			teleport(player, ap.getSpawnBack().clone().add(0, 0.5, 0));
+			teleport(player, ap.getSpawnBack());
+			
 			normalize(player);
-			returnXP(player);
+			returnXP(ap);
 			ap.returnInventory();
 			
 			ap.sendMessage("&9Thanks for playing!");
@@ -699,6 +712,7 @@ public abstract class Arena
 		if (dead) 
 		{
 			ap.sendMessage("&9You have exceeded the death limit!");
+			tellPlayers("&b{0} has been eliminated!", ap.getUsername());
 		}
 	}
 
@@ -852,7 +866,7 @@ public abstract class Arena
 					// Make sure they are still in the Arena
 					if (!plugin.isInArena(player.getLocation()))
 					{
-						plugin.outConsole("Player {0} got out of the arena! Putting him back in!", ap.getUsername());
+						plugin.debug("Player {0} got out of the arena! Putting him back in!", ap.getUsername());
 
 						spawn(ap.getPlayer().getName(), false);
 						ap.setAmtkicked(ap.getAmtkicked() + 1);
@@ -948,20 +962,21 @@ public abstract class Arena
 	}
 	
 	/** Return a player's xp after leaving an arena **/
-	public void returnXP(Player player)
+	public void returnXP(ArenaPlayer ap)
 	{
-		plugin.debug("Returning XP for player: {0}", player.getName());
+		if (ap != null)
+		{
+			Player player = ap.getPlayer();
+			
+			plugin.debug("Returning XP for player: {0}. Levels: {1}", player.getName(), ap.getBaselevel());
+
+			// Clear XP
+			player.setExp((float) 0);
+			player.setLevel(0);
 		
-		ArenaPlayer ap = plugin.getArenaPlayer(player);
-		
-		// Clear XP
-		player.setExp((float) 0);
-		player.setLevel(0);
-		
-		// Give Base XP
-		player.setLevel(ap.getBaselevel());
-		
-		// TODO: Reward with extra XP based on ingame XP?
+			// Give Base XP
+			player.setLevel(ap.getBaselevel());
+		}
 	}
 
 	public void forceStart(Player player)

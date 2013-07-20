@@ -10,7 +10,6 @@ public class CmdStop extends UltimateArenaCommand
 		super(plugin);
 		this.name = "stop";
 		this.aliases.add("s");
-		this.mode = "build";
 		this.description = "stop building an arena";
 		this.permission = PermissionType.CMD_STOP.permission;
 		

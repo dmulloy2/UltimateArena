@@ -53,7 +53,7 @@ public class SPLEEFArena extends FFAArena
 			Location loc = getBlockInSpleefArena(0);
 			if (loc != null) 
 			{
-				teleport(p, loc.clone().add(0,2,0));
+				teleport(p, loc);
 			}
 		}
 	}

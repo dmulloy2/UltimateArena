@@ -56,7 +56,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error saving whitelisted cmds file: {0}", e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Could not generate white listed commands: {0}", e.getMessage());
 		}
 	}
 	
@@ -244,7 +244,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error generating for type \"{0}\": {1}", field, e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Could not generate configuration for \"{0}\": {1}", field, e.getMessage());
 		}
 	}
 
@@ -320,7 +320,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error generating stock classes: {0}", e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Could not generate stock classes: {0}", e.getMessage());
 		}
 	}
 	
@@ -428,7 +428,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error saving class file \"{0}\": {1}", type, e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Could not save class file \"{0}\": {1}", type, e.getMessage());
 		}
 	}
 
@@ -692,7 +692,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error saving arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Could not save arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
 		}
 	}
 	
@@ -855,7 +855,7 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error loading arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Could not load arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
 			az.setLoaded(false);
 		}
 	}
@@ -895,18 +895,19 @@ public class FileHelper
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error saving sign {0}: {1}", sign.getId(), e.getMessage());
+			plugin.outConsole(Level.SEVERE, "Could not save sign {0}: {1}", sign.getId(), e.getMessage());
 		}
 	}
 	
-	public List<ArenaSign> loadSigns()
+	public void loadSigns()
 	{
-		List<ArenaSign> signs = new ArrayList<ArenaSign>();
-		
+		plugin.debug("Loading join and status signs!");
+
 		File signFile = new File(plugin.getDataFolder(), "signs.yml");
-		if (!signFile.exists())
+		if (! signFile.exists())
 		{
-			return signs;
+			plugin.debug("Could not load signs save: No signs exist!");
+			return;
 		}
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
@@ -916,38 +917,45 @@ public class FileHelper
 			String locpath = path + "location.";
 			
 			World world = plugin.getServer().getWorld(fc.getString(locpath + "world"));
+			if (world == null)
+			{
+				plugin.outConsole(Level.WARNING, "Could not load sign {0}: World cannot be null", i);
+				continue;
+			}
+			
 			Location loc = new Location(world, fc.getInt(locpath + "x"), fc.getInt(locpath + "y"), fc.getInt(locpath + "z"));
 			
 			ArenaZone az = plugin.getArenaZone(fc.getString(path + "name"));
-			if (az != null)
+			if (az == null)
 			{
-				if (! fc.isSet("isJoin"))
-				{
-					fc.set("isJoin", true);
-					fc.set("isStatus", false);
-					fc.set("autoAssign", null);
-				}
-				
-				boolean isJoin = fc.getBoolean(path + "isJoin");
-				ArenaSign sign = new ArenaSign(plugin, loc, az, isJoin, i);
-				signs.add(sign);
+				plugin.outConsole(Level.WARNING, "Could not load sign {0}: ArenaZone cannot be null", i);
+				continue;
 			}
+
+			boolean isJoin = fc.getBoolean(path + "isJoin");
+			ArenaSign sign = new ArenaSign(plugin, loc, az, isJoin, i);
+			plugin.arenaSigns.add(sign);
 		}
-		
-		try { fc.save(signFile); }
-		catch (Exception e) {}
-		
-		return signs;
 	}
 	
 	public void refreshSignSave()
 	{
+		plugin.debug("Refreshing sign save!");
+		
 		File signFile = new File(plugin.getDataFolder(), "signs.yml");
 		if (signFile.exists())
+		{
 			signFile.delete();
+		}
 		
-		try { signFile.createNewFile(); }
-		catch (Exception e) {}
+		try
+		{
+			signFile.createNewFile(); 
+		}
+		catch (Exception e) 
+		{
+			plugin.outConsole(Level.SEVERE, "Could not refresh sign save: {0}", e.getMessage());
+		}
 		
 		for (ArenaSign sign : plugin.arenaSigns)
 		{

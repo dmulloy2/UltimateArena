@@ -12,7 +12,6 @@ public class CmdCreate extends UltimateArenaCommand
 		this.aliases.add("c");
 		this.requiredArgs.add("name");
 		this.requiredArgs.add("type");
-		this.mode = "build";
 		this.description = "create an UltimateArena";
 		this.permission = PermissionType.CMD_CREATE.permission;
 		

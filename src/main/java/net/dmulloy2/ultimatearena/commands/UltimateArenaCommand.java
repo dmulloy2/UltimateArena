@@ -23,7 +23,6 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	
 	protected String name;
 	protected String description;
-	protected String mode = "";
 	
 	protected Permission permission;
 	
@@ -95,11 +94,6 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	public List<String> getAliases() 
 	{
 		return aliases;
-	}
-	
-	public final String getMode()
-	{
-		return mode;
 	}
 	
 	public final String getName() 

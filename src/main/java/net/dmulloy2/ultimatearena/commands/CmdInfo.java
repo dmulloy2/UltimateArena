@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.WordUtils;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
-
-import org.bukkit.ChatColor;
 
 public class CmdInfo extends UltimateArenaCommand
 {	
@@ -23,7 +23,7 @@ public class CmdInfo extends UltimateArenaCommand
 		super(plugin);
 		this.name = "info";
 		this.optionalArgs.add("arena");
-		this.description = "view info on the arena you''re in";
+		this.description = "view info on the arena you are in";
 		
 		this.mustBePlayer = true;
 	}
@@ -38,7 +38,7 @@ public class CmdInfo extends UltimateArenaCommand
 				Arena ar = plugin.getArena(player);
 				if (ar != null) 
 				{
-					sendMessage("&4====[ &6{0} &4]====", ar.getName());
+					sendMessage("&4====[ &6{0} &4]====", WordUtils.capitalize(ar.getName()));
 
 					ArenaPlayer ap = plugin.getArenaPlayer(player);
 					if (ap != null)
@@ -88,12 +88,12 @@ public class CmdInfo extends UltimateArenaCommand
 			}
 			else
 			{
-				sendMessage(ChatColor.GRAY + "This arena isn't running!");
+				sendMessage("&7This arena isn't running!");
 			}
 		}
 		else
 		{
-			sendMessage(ChatColor.GRAY + "Please supply an arena name");
+			sendMessage("&7Please supply an arena name");
 		}
 	}
 	
@@ -131,8 +131,9 @@ public class CmdInfo extends UltimateArenaCommand
 			{
 				StringBuilder line = new StringBuilder();
 				line.append(FormatUtil.format("&6#{0}. ", pos));
-				line.append(FormatUtil.format(apl.getUsername().equals(sender.getName()) ? "&a" : "&c"));
-				line.append(FormatUtil.format(apl.getUsername()));
+				line.append(FormatUtil.format(decideColor(apl)));
+				line.append(FormatUtil.format(apl.getUsername().equals(sender.getName()) ? "&l" : ""));
+				line.append(FormatUtil.format(apl.getUsername() + "&r"));
 				line.append(FormatUtil.format("  &7Kills: &6{0}", apl.getKills()));
 				line.append(FormatUtil.format("  &7Deaths: &6{0}", apl.getDeaths()));
 				line.append(FormatUtil.format("  &7KDR: &6{0}", entry.getValue()));
@@ -142,5 +143,21 @@ public class CmdInfo extends UltimateArenaCommand
 		}
 		
 		return leaderboard;
+	}
+	
+	private String decideColor(ArenaPlayer pl)
+	{
+		if (pl.getTeam() == 1)
+		{
+			return "&c";
+		}
+		else if (pl.getTeam() == 2)
+		{
+			return "&9";
+		}
+		else
+		{
+			return "&d";
+		}
 	}
 }

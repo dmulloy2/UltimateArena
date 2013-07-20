@@ -1,47 +1,69 @@
 package net.dmulloy2.ultimatearena.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 
-public class CmdHelp extends UltimateArenaCommand
-{	
+/**
+ * @author dmulloy2
+ */
+
+public class CmdHelp extends PaginatedCommand 
+{
 	public CmdHelp(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "help";
-		this.aliases.add("h");
-		this.aliases.add("?");
-		this.optionalArgs.add("build/admin");
-		this.description = "display UA help";
-		
-		this.mustBePlayer = false;
+		this.optionalArgs.add("page");
+		this.description = "Shows " + plugin.getName() + " help";
+		this.linesPerPage = 6;
 	}
+
+	@Override
+	public int getListSize() 
+	{
+		return buildHelpMenu().size();
+	}
+
+	@Override
+	public String getHeader(int index) 
+	{
+		return FormatUtil.format("&4====[ &6UltimateArena Help &4(&6{0}&4/&6{1}&4) ]====", index, getPageCount());
+	}
+
+	@Override
+	public List<String> getLines(int startIndex, int endIndex) 
+	{
+		List<String> lines = new ArrayList<String>();
+		for (int i = startIndex; i < endIndex && i < getListSize(); i++) 
+		{
+			lines.add(buildHelpMenu().get(i));
+		}
+		
+		return lines;
+	}
+
 	
 	@Override
-	public void perform()
+	public String getLine(int index) 
 	{
-		String mmode = "";
-		if (args.length >= 1) 
+		return null;
+	}
+	
+	private final List<String> buildHelpMenu()
+	{
+		List<String> ret = new ArrayList<String>();
+		
+		for (UltimateArenaCommand cmd : plugin.getCommandHandler().getRegisteredCommands())
 		{
-			mmode = args[0];
-			if (!mmode.equalsIgnoreCase("admin") && !mmode.equalsIgnoreCase("build"))
+			if (plugin.getPermissionHandler().hasPermission(sender, cmd.permission))
 			{
-				err("&cInvalid mode! Try: " + getUsageTemplate(false));
-				return;
+				ret.add(cmd.getUsageTemplate(true));
 			}
 		}
-		sendMessage("&4==== &6{0} Help &4====", plugin.getName());
-		List<UltimateArenaCommand> commands = plugin.getCommandHandler().getRegisteredCommands();
-		for (int i=0; i<commands.size(); i++)
-		{
-			UltimateArenaCommand command;
-			command = commands.get(i);
-			
-			if (command.getMode().equalsIgnoreCase(mmode))
-			{
-				sendMessage(command.getUsageTemplate(true));
-			}
-		}
+		
+		return ret;
 	}
 }

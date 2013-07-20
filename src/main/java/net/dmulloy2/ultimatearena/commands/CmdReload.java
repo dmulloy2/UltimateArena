@@ -10,7 +10,6 @@ public class CmdReload extends UltimateArenaCommand
 		super(plugin);
 		this.name = "reload";
 		this.aliases.add("rl");
-		this.mode = "admin";
 		this.description = "reload UltimateArena";
 		this.permission = PermissionType.CMD_RELOAD.permission;
 		

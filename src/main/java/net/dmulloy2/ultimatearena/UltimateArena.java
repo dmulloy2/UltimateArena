@@ -81,33 +81,30 @@ public class UltimateArena extends JavaPlugin
 		
 		fileHelper = new FileHelper(this);
 
-		// Add Commands
+		// Register Commands
 		commandHandler.setCommandPrefix("ua");
-		commandHandler.registerCommand(new CmdHelp(this));
-		commandHandler.registerCommand(new CmdInfo(this));
-		commandHandler.registerCommand(new CmdList(this));
-		commandHandler.registerCommand(new CmdJoin(this));
-		commandHandler.registerCommand(new CmdLeave(this));
-		commandHandler.registerCommand(new CmdStats(this));
-		commandHandler.registerCommand(new CmdLike(this));
-		commandHandler.registerCommand(new CmdDislike(this));
-		
-		commandHandler.registerCommand(new CmdCreate(this));
-		commandHandler.registerCommand(new CmdSetPoint(this));
-		commandHandler.registerCommand(new CmdSetDone(this));
-		commandHandler.registerCommand(new CmdDelete(this));
-		commandHandler.registerCommand(new CmdStop(this));
-		
-		commandHandler.registerCommand(new CmdForceStop(this));
-		commandHandler.registerCommand(new CmdReload(this));
-		commandHandler.registerCommand(new CmdDisable(this));
-		commandHandler.registerCommand(new CmdEnable(this));
-		commandHandler.registerCommand(new CmdKick(this));
-		commandHandler.registerCommand(new CmdStart(this));
-		commandHandler.registerCommand(new CmdPause(this));
-		
-		commandHandler.registerCommand(new CmdClassList(this));
 		commandHandler.registerCommand(new CmdClass(this));
+		commandHandler.registerCommand(new CmdClassList(this));
+		commandHandler.registerCommand(new CmdCreate(this));
+		commandHandler.registerCommand(new CmdDelete(this));
+		commandHandler.registerCommand(new CmdDisable(this));
+		commandHandler.registerCommand(new CmdDislike(this));
+		commandHandler.registerCommand(new CmdEnable(this));
+		commandHandler.registerCommand(new CmdForceStop(this));
+		commandHandler.registerCommand(new CmdHelp(this));
+		commandHandler.registerCommand(new CmdInfo(this));		
+		commandHandler.registerCommand(new CmdJoin(this));
+		commandHandler.registerCommand(new CmdKick(this));
+		commandHandler.registerCommand(new CmdLeave(this));
+		commandHandler.registerCommand(new CmdLike(this));
+		commandHandler.registerCommand(new CmdList(this));
+		commandHandler.registerCommand(new CmdPause(this));
+		commandHandler.registerCommand(new CmdReload(this));
+		commandHandler.registerCommand(new CmdSetDone(this));
+		commandHandler.registerCommand(new CmdSetPoint(this));
+		commandHandler.registerCommand(new CmdStart(this));
+		commandHandler.registerCommand(new CmdStats(this));	
+		commandHandler.registerCommand(new CmdStop(this));
 		
 		// SwornGuns
 		PluginManager pm = getServer().getPluginManager();
@@ -132,7 +129,7 @@ public class UltimateArena extends JavaPlugin
 		loadFiles();
 		
 		// Arena Signs
-		arenaSigns = fileHelper.loadSigns();
+		fileHelper.loadSigns();
 		outConsole("Loaded {0} arena signs!", arenaSigns.size());
 		
 		new SignUpdateTask().runTaskTimer(this, 2L, 20L);
@@ -155,11 +152,7 @@ public class UltimateArena extends JavaPlugin
 		stopAll();
 		
 		// Save Signs
-		for (ArenaSign sign : arenaSigns)
-		{
-			sign.save();
-			debug("Saved sign {0} on shutdown!", sign.getId());
-		}
+		fileHelper.refreshSignSave();
 		
 		// Clear Memory
 		clearMemory();
@@ -172,8 +165,7 @@ public class UltimateArena extends JavaPlugin
 	// Console logging
 	public void outConsole(Level level, String string, Object...objects)
 	{
-		String out = FormatUtil.formatLog(string, objects);
-		getLogger().log(level, out);
+		getLogger().log(level, FormatUtil.format(string, objects));
 	}
 	
 	
@@ -186,7 +178,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (getConfig().getBoolean("debug", false))
 		{
-			outConsole(Level.INFO, "[Debug] " + string, objects);
+			outConsole("[Debug] " + string, objects);
 		}
 	}
 	
@@ -400,6 +392,7 @@ public class UltimateArena extends JavaPlugin
 				arena.stop();
 			}
 		}
+		
 		activeArena.clear();
 	}
 
@@ -525,29 +518,6 @@ public class UltimateArena extends JavaPlugin
 				if (ap != null) 
 				{
 					a.getArenaPlayers().remove(ap);
-				}
-			}
-		}
-	}
-	
-	public void removeFromArena(String str) 
-	{
-		for (int i = 0; i < activeArena.size(); i++)
-		{
-			Arena a = activeArena.get(i);
-			for (int ii = 0; ii < a.getArenaPlayers().size(); ii++)
-			{
-				ArenaPlayer ap = a.getArenaPlayers().get(ii);
-				if (ap != null)
-				{
-					Player player = Util.matchPlayer(ap.getPlayer().getName());
-					if (player != null)
-					{
-						if (player.getName().equals(str))
-						{
-							a.getArenaPlayers().remove(ap);
-						}
-					}
 				}
 			}
 		}
@@ -994,7 +964,7 @@ public class UltimateArena extends JavaPlugin
 		return economy != null;
 	}
     
-    /** Updaters **/
+    // TODO: Replace these with much more active updaters
     public class ArenaUpdateTask extends BukkitRunnable
 	{
 		@Override

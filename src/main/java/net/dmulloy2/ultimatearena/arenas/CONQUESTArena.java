@@ -80,9 +80,14 @@ public class CONQUESTArena extends Arena
 						}
 					}
 					
-					if (spawnto.size() > 0) 
+					if (! spawnto.isEmpty())
 					{
-						p.teleport((spawnto.get(Util.random(spawnto.size())).getLoc().clone()).add(0,2,0));
+						int rand = Util.random(spawnto.size());
+						ArenaFlag flag = spawnto.get(rand);
+						if (flag != null)
+						{
+							teleport(p, flag.getLoc());
+						}
 					}
 				}
 			}

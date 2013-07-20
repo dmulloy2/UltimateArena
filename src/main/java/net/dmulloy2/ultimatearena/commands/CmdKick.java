@@ -16,7 +16,6 @@ public class CmdKick extends UltimateArenaCommand
 		this.name = "kick";
 		this.aliases.add("k");
 		this.requiredArgs.add("player");
-		this.mode = "admin";
 		this.description = "kick a player from an arena";
 		this.permission = PermissionType.CMD_KICK.permission;
 		

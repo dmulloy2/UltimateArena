@@ -12,10 +12,12 @@ public class ArenaSpawn
 	
 	public ArenaSpawn(World world, int x, int y, int z) 
 	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.world = world;
+		setLocation(world, x, y, z);
+	}
+	
+	public ArenaSpawn(Location location)
+	{
+		setLocation(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
 
 	public Location getLocation() 
