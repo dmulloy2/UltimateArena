@@ -75,7 +75,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.6.1-R0.1-SNAPSHOT</version>
+      <version>1.6.2-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>net.dmulloy2</groupId>
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.26-SNAPSHOT</version>
+      <version>1.2.9-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
