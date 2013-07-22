@@ -809,7 +809,16 @@ public abstract class Arena
 		if (dead) 
 		{
 			ap.sendMessage("&9You have exceeded the death limit!");
-			tellPlayers("&b{0} has been eliminated! There are {1} players remaining!", ap.getUsername(), getActivePlayers());
+			tellPlayers("&b{0} has been eliminated!", ap.getUsername());
+			
+			if (getActivePlayers() > 1)
+			{
+				tellPlayers("&bThere are {1} players remaining!", getActivePlayers());
+			}
+			else
+			{
+				tellPlayers("&bThere is one player remaining!");
+			}
 		}
 	}
 

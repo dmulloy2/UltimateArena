@@ -69,8 +69,6 @@ public class KOTHArena extends Arena
 		}
 	}
 	
-	
-	
 	@Override
 	public void reward(ArenaPlayer p, Player pl, boolean half) 
 	{

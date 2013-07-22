@@ -65,6 +65,7 @@ public class KothFlag extends ArenaFlag
 	private void leadChange()
 	{
 		// Build kills map
+		// TODO: There's probably a better way to do this
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
 		for (int i = 0; i < marena.getArenaPlayers().size(); i++)
 		{
