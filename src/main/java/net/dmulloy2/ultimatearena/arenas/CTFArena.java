@@ -21,10 +21,9 @@ public class CTFArena extends Arena
 		super(az);
 		
 		this.type = FieldType.CTF;
-		setStarttimer(120);
-		setGametimer(0);
-		setMaxgametime(60 * 15);
-		setMaxDeaths(990);
+		this.startTimer = 120;
+		this.maxGameTime = 60 * 15;
+		this.maxDeaths = 990;
 
 		flagred = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
 		flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
@@ -38,7 +37,7 @@ public class CTFArena extends Arena
 	@Override
 	public void check()
 	{
-		if (getStarttimer() <= 0) 
+		if (startTimer <= 0) 
 		{
 			if (!simpleTeamCheck(false)) 
 			{
@@ -47,7 +46,7 @@ public class CTFArena extends Arena
 			}
 			else
 			{
-				if (this.getAmtPlayersStartingInArena() <= 1) 
+				if (getStartingAmount() <= 1) 
 				{
 					this.tellPlayers("&9Not enough people to play!");
 					this.stop();

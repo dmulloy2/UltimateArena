@@ -252,24 +252,15 @@ public class UltimateArena extends JavaPlugin
 		if (isInArena(player))
 		{
 			debug("Player {0} leaving arena from quit", player.getName());
-			leaveArena(player);
-		}
-	}
 
-	public void leaveArena(Player player)
-	{
-		if (isInArena(player))
-		{
 			Arena a = getArena(player);
 			a.endPlayer(getArenaPlayer(player), false);
 			a.tellPlayers("&b{0} has left the arena!", player.getName());
+			
 		}
-		else
-		{
-			player.sendMessage(prefix + ChatColor.RED + "Error, you are not in an arena");
-		}
-	}
+	} 
 	
+	// Load Stuff
 	public void loadArenas()
 	{
 		File folder = new File(getDataFolder(), "arenas");
@@ -408,15 +399,6 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 	
-	public void deleteSign(ArenaSign sign)
-	{
-		debug("Deleting sign {0}!", sign.getId());
-		
-		arenaSigns.remove(sign);
-
-		fileHelper.refreshSignSave();
-	}
-	
 	public ArenaClass getArenaClass(String line)
 	{
 		for (int i = 0; i < classes.size(); i++)
@@ -429,6 +411,7 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 	
+	// Delete Stuff!
 	public void deleteArena(Player player, String str) 
 	{
 		File folder = new File(getDataFolder(), "arenas");
@@ -467,28 +450,16 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 	
-	public boolean isInArena(Entity entity)
+	public void deleteSign(ArenaSign sign)
 	{
-		return isInArena(entity.getLocation());
-	}
-	
-	public boolean isInArena(Block block) 
-	{
-		return isInArena(block.getLocation());
-	}
-	
-	public Arena getArenaInside(Block block)
-	{
-		for (int i = 0; i < loadedArena.size(); i++)
-		{
-			ArenaZone az = loadedArena.get(i);
-			if (az.checkLocation(block.getLocation()))
-				return getArena(az.getArenaName());
-		}
+		debug("Deleting sign {0}!", sign.getId());
 		
-		return null;
+		arenaSigns.remove(sign);
+
+		fileHelper.refreshSignSave();
 	}
 	
+	// Checks for whether or not something is in an arena
 	public boolean isInArena(Location loc)
 	{
 		for (int i = 0; i < loadedArena.size(); i++)
@@ -501,26 +472,32 @@ public class UltimateArena extends JavaPlugin
 		return false;
 	}
 	
+	public boolean isInArena(Entity entity)
+	{
+		return isInArena(entity.getLocation());
+	}
+	
+	public boolean isInArena(Block block) 
+	{
+		return isInArena(block.getLocation());
+	}
+	
+	// Special case for player
 	public boolean isInArena(Player player) 
 	{
 		return (getArenaPlayer(player) != null);
 	}
 	
-	public void removeFromArena(Player player)
+	public Arena getArenaInside(Block block)
 	{
-		if (player != null) 
+		for (int i = 0; i < loadedArena.size(); i++)
 		{
-			for (int i = 0; i < activeArena.size(); i++)
-			{
-				Arena a = activeArena.get(i);
-				a.setStartingAmount(a.getStartingAmount() - 1);
-				ArenaPlayer ap = a.getArenaPlayer(player);
-				if (ap != null) 
-				{
-					a.getArenaPlayers().remove(ap);
-				}
-			}
+			ArenaZone az = loadedArena.get(i);
+			if (az.checkLocation(block.getLocation()))
+				return getArena(az.getArenaName());
 		}
+		
+		return null;
 	}
 
 	public ArenaPlayer getArenaPlayer(Player player) 
@@ -538,10 +515,24 @@ public class UltimateArena extends JavaPlugin
 		
 		return null;
 	}
+	
+	public void leaveArena(Player player)
+	{
+		if (isInArena(player))
+		{
+			Arena a = getArena(player);
+			a.endPlayer(getArenaPlayer(player), false);
+		}
+		else
+		{
+			player.sendMessage(prefix + ChatColor.RED + "Error, you are not in an arena");
+		}
+	}
 
+	// Pre-Join Stuff
 	public void fight(Player player, String name, boolean forced)
 	{
-		if (!permissionHandler.hasPermission(player, PermissionType.JOIN.permission))
+		if (!permissionHandler.hasPermission(player, Permission.JOIN))
 		{
 			player.sendMessage(prefix + ChatColor.RED + "You do not have permission to do this!");
 			return;
@@ -610,6 +601,7 @@ public class UltimateArena extends JavaPlugin
 		}			
 	}
 	
+	// Actually join battle
 	public void joinBattle(boolean forced, Player player, String name)
 	{
 		debug("Player {0} is attempting to join arena {1}. Forced: {2}", player.getName(), name, forced);
@@ -620,7 +612,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			if (a.isInLobby())
 			{
-				if (a.getAmtPlayersInArena() + 1 <= az.getMaxPlayers())
+				if (a.getActivePlayers() + 1 <= az.getMaxPlayers())
 				{
 					a.addPlayer(player);
 				}
@@ -670,7 +662,7 @@ public class UltimateArena extends JavaPlugin
 				}
 			}
 			
-			if (!disabled)
+			if (! disabled)
 			{
 				String arenaType = az.getType().getName().toLowerCase();
 				if (arenaType.equals("pvp"))
@@ -727,13 +719,15 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 	
+	// Kicks a random player if the arena is full
+	// This will only be called if someone with forcejoin joins
 	public boolean kickRandomPlayer(Arena arena)
 	{
 		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
 		List<ArenaPlayer> totalPlayers = arena.getArenaPlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
-			if (! permissionHandler.hasPermission(ap.getPlayer(), PermissionType.CMD_FORCE_JOIN.permission))
+			if (! permissionHandler.hasPermission(ap.getPlayer(), Permission.FORCE_JOIN))
 			{
 				validPlayers.add(ap);
 			}
@@ -751,6 +745,7 @@ public class UltimateArena extends JavaPlugin
 		return false;
 	}
 
+	// Gets the arena a player is in
 	public Arena getArena(Player player)
 	{
 		for (int i = 0; i < activeArena.size(); i++)
@@ -767,6 +762,7 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 	
+	// Gets an arena by its name
 	public Arena getArena(String name) 
 	{
 		for (int i = 0; i < activeArena.size(); i++)
@@ -779,6 +775,7 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 	
+	// Gets an arena zone by its name
 	public ArenaZone getArenaZone(String name)
 	{
 		for (int i = 0; i < loadedArena.size(); i++)
@@ -791,6 +788,7 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 	
+	// Arena Creator stuff
 	public void setPoint(Player player) 
 	{
 		ArenaCreator ac = getArenaCreator(player);
@@ -807,7 +805,7 @@ public class UltimateArena extends JavaPlugin
 			player.sendMessage(prefix + ChatColor.RED + "Error, you aren't editing a field!");
 		}
 	}
-	
+
 	public void setDone(Player player)
 	{
 		ArenaCreator ac = getArenaCreator(player);
@@ -882,6 +880,7 @@ public class UltimateArena extends JavaPlugin
 		makingArena.add(ac);
 	}
 	
+	// Normalization
 	public void normalizeAll()
 	{
 		for (Player player : getServer().getOnlinePlayers())
@@ -892,7 +891,7 @@ public class UltimateArena extends JavaPlugin
 				normalize(player);
 				if (isInArena(player))
 				{
-					removeFromArena(player);
+					leaveArena(player);
 				}
 			}
 		}
@@ -909,6 +908,7 @@ public class UltimateArena extends JavaPlugin
 		inv.clear();
 	}
 
+	// Load files
 	public void loadFiles() 
 	{
 		loadClasses();
@@ -916,6 +916,7 @@ public class UltimateArena extends JavaPlugin
 		loadArenas();
 	}
 	
+	// Clear memory
 	public void clearMemory()
 	{
 		loadedArena.clear();
@@ -928,6 +929,7 @@ public class UltimateArena extends JavaPlugin
 		wcmd.clear();
 	}
 	
+	// Removes potion effects
 	public void removePotions(Player pl) 
 	{
 		for (PotionEffect effect : pl.getActivePotionEffects())
@@ -936,7 +938,7 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 	
-    /**Vault Check**/
+    // Vault Stuff
 	private void checkVault(PluginManager pm) 
 	{
 		if (pm.isPluginEnabled("Vault"))
@@ -949,8 +951,7 @@ public class UltimateArena extends JavaPlugin
 			}
 		}
 	}
-	
-    /**Set up vault economy**/
+
     private boolean setupEconomy() 
 	{
     	debug("Setting up Vault economy");

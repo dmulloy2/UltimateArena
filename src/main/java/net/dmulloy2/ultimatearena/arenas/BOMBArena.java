@@ -16,11 +16,10 @@ public class BOMBArena extends Arena
 		super(az);
 		
 		this.type = FieldType.BOMB;
-		setStarttimer(120);
-		setGametimer(0);
-		setMaxgametime(60 * 15);
-		setMaxDeaths(990);
-		
+		this.startTimer = 120;
+		this.maxGameTime = 60 * 15;
+		this.maxDeaths = 990;
+
 		bomb1 = new BombFlag(this, az.getFlags().get(0), plugin);
 		bomb2 = new BombFlag(this, az.getFlags().get(1), plugin);
 		bomb1.setBnum(1);
@@ -31,7 +30,7 @@ public class BOMBArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.REDTEAMPOWER = getAmtPlayersInArena() * 3;
+		this.REDTEAMPOWER = getActivePlayers() * 3;
 		if (REDTEAMPOWER < 10)
 		{
 			REDTEAMPOWER = 10;
@@ -84,7 +83,7 @@ public class BOMBArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (getStarttimer() <= 0) 
+		if (getStartTimer() <= 0) 
 		{
 			simpleTeamCheck(true);
 		}

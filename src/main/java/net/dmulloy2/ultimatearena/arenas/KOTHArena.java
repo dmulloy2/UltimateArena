@@ -1,5 +1,14 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -9,6 +18,7 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.arenas.objects.KothFlag;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 public class KOTHArena extends Arena
@@ -20,20 +30,19 @@ public class KOTHArena extends Arena
 		super(az);
 		
 		this.type = FieldType.KOTH;
-		setAllowTeamKilling(true);
-		setStarttimer(180);
-		setGametimer(0);
-		setMaxgametime(60 * 20);
-		setMaxDeaths(900); //'dont think anyone will get 900 deaths :P
-		MAXPOWER = 60;
-		
-		for (int i = 0; i < this.getArenaZone().getFlags().size(); i++)
+		this.startTimer = 180;
+		this.maxGameTime = 60 * 20;
+		this.maxDeaths = 900;
+		this.allowTeamKilling = true;
+		this.MAXPOWER = 60;
+
+		for (int i = 0; i < az.getFlags().size(); i++)
 		{
-			this.getFlags().add( new KothFlag(this, this.getArenaZone().getFlags().get(i), plugin) );
+			flags.add( new KothFlag(this, az.getFlags().get(i), plugin) );
 		}
-		for (int i = 0; i < this.getArenaZone().getSpawns().size(); i++) 
+		for (int i = 0; i < az.getSpawns().size(); i++) 
 		{
-			this.getSpawns().add( new ArenaSpawn(this.getArenaZone().getSpawns().get(i).getWorld(), this.getArenaZone().getSpawns().get(i).getBlockX(), this.getArenaZone().getSpawns().get(i).getBlockY(), this.getArenaZone().getSpawns().get(i).getBlockZ()) );
+			spawns.add( new ArenaSpawn(az.getSpawns().get(i)) );
 		}
 	}
 	
@@ -60,32 +69,29 @@ public class KOTHArena extends Arena
 		}
 	}
 	
+	
+	
 	@Override
 	public void reward(ArenaPlayer p, Player pl, boolean half) 
 	{
 		if (p.getPoints() >= MAXPOWER) 
 		{ 
-			//if you scored at least 60 points
+			// If you scored at least 60 points
 			super.reward(p, pl, half);
 		}
 	}
 	
 	@Override
-	public void spawn(String name, boolean alreadySpawned) 
+	public Location getSpawn(ArenaPlayer ap)
 	{
-		super.spawn(name, false);
-		spawnRandom(name);
-	}
-	
-	@Override
-	public void onStart()
-	{
-		for (ArenaPlayer ap : arenaPlayers)
+		if (isInLobby())
 		{
-			spawn(ap.getUsername(), false);
+			return super.getSpawn(ap);
 		}
+		
+		return getRandomSpawn(ap);
 	}
-	
+
 	@Override
 	public void check()
 	{
@@ -97,5 +103,55 @@ public class KOTHArena extends Arena
 
 		checkPlayerPoints(MAXPOWER);
 		checkEmpty();
+	}
+	
+	@Override
+	public List<String> buildLeaderboard(Player player)
+	{
+		List<String> leaderboard = new ArrayList<String>();
+		
+		// Build kills map
+		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
+		for (int i = 0; i < arenaPlayers.size(); i++)
+		{
+			ArenaPlayer ap = arenaPlayers.get(i);
+			if (ap != null && ! ap.isOut())
+			{
+				pointsMap.put(ap.getUsername(), ap.getPoints());
+			}
+		}
+		
+		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(pointsMap.entrySet());
+		Collections.sort(
+		sortedEntries, new Comparator<Map.Entry<String, Integer>>()
+		{
+			@Override
+			public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
+			{
+				return -entry1.getValue().compareTo(entry2.getValue());
+			}
+		});
+		
+		int pos = 1;
+		for (Map.Entry<String, Integer> entry : sortedEntries)
+		{
+			String string = entry.getKey();
+			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
+			if (apl != null)
+			{
+				StringBuilder line = new StringBuilder();
+				line.append(FormatUtil.format("&6#{0}. ", pos));
+				line.append(FormatUtil.format(decideColor(apl)));
+				line.append(FormatUtil.format(apl.getUsername().equals(player.getName()) ? "&l" : ""));
+				line.append(FormatUtil.format(apl.getUsername() + "&r"));
+				line.append(FormatUtil.format("  &7Kills: &6{0}", apl.getKills()));
+				line.append(FormatUtil.format("  &7Deaths: &6{0}", apl.getDeaths()));
+				line.append(FormatUtil.format("  &7Points: &6{0}", entry.getValue()));
+				leaderboard.add(line.toString());
+				pos++;
+			}
+		}
+		
+		return leaderboard;
 	}
 }

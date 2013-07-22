@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdPause extends UltimateArenaCommand
 {
@@ -12,7 +12,7 @@ public class CmdPause extends UltimateArenaCommand
 		this.name = "pause";
 		this.requiredArgs.add("arena");
 		this.description = "pause the start timer on an arena";
-		this.permission = PermissionType.CMD_PAUSE.permission;
+		this.permission = Permission.CMD_PAUSE;
 		
 		this.mustBePlayer = false;
 	}

@@ -3,7 +3,7 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ public class CmdKick extends UltimateArenaCommand
 		this.aliases.add("k");
 		this.requiredArgs.add("player");
 		this.description = "kick a player from an arena";
-		this.permission = PermissionType.CMD_KICK.permission;
+		this.permission = Permission.CMD_KICK;
 		
 		this.mustBePlayer = false;
 	}
@@ -35,13 +35,10 @@ public class CmdKick extends UltimateArenaCommand
 				if (a != null)
 				{
 					a.endPlayer(ap, false);
-					ap.setOut(true);
-					ap.setDeaths(999999999);
-					ap.setPoints(0);
-					ap.setKills(0);
-					ap.setGameXP(0);
 					
 					sendpMessage("&7Kicked player &6{0} &7from arena &6{1}&7!", p.getName(), a.getName());
+					
+					ap.sendMessage("&cYou have been kicked from the arena!");
 				}
 			}
 			else

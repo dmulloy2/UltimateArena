@@ -1,7 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdStop extends UltimateArenaCommand
 {
@@ -11,7 +11,7 @@ public class CmdStop extends UltimateArenaCommand
 		this.name = "stop";
 		this.aliases.add("s");
 		this.description = "stop building an arena";
-		this.permission = PermissionType.CMD_STOP.permission;
+		this.permission = Permission.CMD_STOP;
 		
 		this.mustBePlayer = true;
 	}

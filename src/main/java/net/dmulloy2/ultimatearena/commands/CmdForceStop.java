@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdForceStop extends UltimateArenaCommand
 {
@@ -13,7 +13,7 @@ public class CmdForceStop extends UltimateArenaCommand
 		this.aliases.add("fs");
 		this.optionalArgs.add("arena");
 		this.description = "force stop an arena";
-		this.permission = PermissionType.CMD_FORCE_STOP.permission;
+		this.permission = Permission.CMD_FORCE_STOP;
 		
 		this.mustBePlayer = false;
 	}

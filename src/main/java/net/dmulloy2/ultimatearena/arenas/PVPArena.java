@@ -10,10 +10,9 @@ public class PVPArena extends Arena
 		super(az);
 		
 		this.type = FieldType.PVP;
-		setStarttimer(120);
-		setGametimer(0);
-		setMaxgametime(60 * 10);
-		setMaxDeaths(3);
+		this.startTimer = 120;
+		this.maxGameTime = 60 * 10;
+		this.maxDeaths = 3;
 	}
 	
 	@Override
@@ -25,7 +24,7 @@ public class PVPArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (getStarttimer() <= 0)
+		if (startTimer <= 0)
 		{
 			if (!simpleTeamCheck(false)) 
 			{
@@ -35,7 +34,7 @@ public class PVPArena extends Arena
 			}
 			else
 			{
-				if (this.getAmtPlayersStartingInArena() <= 1) 
+				if (getStartingAmount() <= 1) 
 				{
 					this.tellPlayers("&9Not enough people to play!");
 					this.stop();

@@ -69,7 +69,7 @@ public class ArenaSign
 		if (plugin.getArena(zone.getArenaName()) != null)
 		{
 			Arena a = plugin.getArena(zone.getArenaName());
-			if (a.getStarttimer() > 1)
+			if (a.isInLobby())
 			{
 				line.append("LOBBY (");
 			}
@@ -77,7 +77,7 @@ public class ArenaSign
 			{
 				line.append("INGAME (");
 			}
-			line.append(a.getAmtPlayersInArena() + "/" + zone.getMaxPlayers() + ")");
+			line.append(a.getActivePlayers() + "/" + zone.getMaxPlayers() + ")");
 		}
 		else
 		{

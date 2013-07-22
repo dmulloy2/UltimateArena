@@ -23,6 +23,7 @@ permissions:
       ultimatearena.kick: true
       ultimatearena.start: true
       ultimatearena.pause: true
+      ultimatearena.commandbypass: true
   ultimatearena.builder:
     description: Allows access to features meant for builders
     default: false
@@ -78,3 +79,6 @@ permissions:
   ultimatearena.join:
     description: Allows the player to join arenas
     default: true
+  ultimatearena.commandbypass:
+    description: Allows a player to bypass whitelisted commands
+    default: false

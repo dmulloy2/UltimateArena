@@ -16,10 +16,9 @@ public class INFECTArena extends PVPArena
 		super(az);
 		
 		this.type = FieldType.INFECT;
-		setStarttimer(80);
-		setGametimer(0);
-		setMaxgametime((60 * 2) + 10); //2 minutes and 10 seconds (by default)
-		setMaxDeaths(99);
+		this.startTimer = 80;
+		this.maxGameTime = (60 * 2) + 10;
+		this.maxDeaths = 99;
 	}
 	
 	@Override
@@ -80,7 +79,7 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void check() 
 	{
-		if (getStarttimer() <= 0)
+		if (startTimer <= 0)
 		{
 			if (!simpleTeamCheck(false)) 
 			{
@@ -99,7 +98,7 @@ public class INFECTArena extends PVPArena
 			}
 			else
 			{
-				if (this.getAmtPlayersStartingInArena() <= 1) 
+				if (getStartingAmount() <= 1) 
 				{
 					this.tellPlayers("&9Not enough people to play!");
 					this.stop();
@@ -123,10 +122,13 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
+		super.onPlayerDeath(pl);
+		
 		if (pl.getTeam() == 1)
 		{
 			pl.sendMessage("&bYou have joined the Infected!");
 		}
+		
 		pl.setTeam(2);
 	}
 }

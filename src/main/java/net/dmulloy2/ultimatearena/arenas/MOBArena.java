@@ -32,14 +32,14 @@ public class MOBArena extends Arena
 		super(az);
 		
 		this.type = FieldType.MOB;
-		setStarttimer(80);
-		setMaxgametime(60 * 10);
-		setMaxDeaths(0);
-		mobspawn = 0;
-		mobtimer = 0;
-		setWave(0);
-		setWinningTeam(-1);
-		
+		this.startTimer = 80;
+		this.maxGameTime = 60 * 10;
+		this.maxDeaths = 1;
+		this.mobspawn = 0;
+		this.mobtimer = 0;
+		this.wave = 0;
+		this.winningTeam = -1;
+
 		spawning.add("ZOMBIE");
 		spawning.add("ZOMBIE");
 		spawning.add("ZOMBIE");
@@ -55,8 +55,8 @@ public class MOBArena extends Arena
 			tellPlayers("&aNow going to wave &c{0}&a!", getWave());
 		}
 		
-		setWave(getWave() + 1);
-		this.mobPerWave = 4 + ((int)(getWave() * 1.5)) + (this.getAmtPlayersInArena() * 3);
+		wave++;
+		this.mobPerWave = 4 + ((int)(getWave() * 1.5)) + (getActivePlayers() * 3);
 		mobtimer = (getWave()*4) + 20;
 		if (getWave() <= 1) 
 		{
@@ -201,7 +201,7 @@ public class MOBArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (getStarttimer() <= 0) 
+		if (startTimer <= 0) 
 		{
 			mobtimer--;
 			mobspawn--;
@@ -233,13 +233,13 @@ public class MOBArena extends Arena
 				}
 			}
 				
-			if (getAmtPlayersInArena() == 0) 
+			if (getActivePlayers() == 0) 
 			{
 				plugin.outConsole("Stopping Mob arena");
 				stop();
 			}
 			
-			if (getWave() > getMaxwave()) 
+			if (wave > maxWave) 
 			{
 				setWinningTeam(-1);
 				tellPlayers("&aYou have beat the mob arena!");

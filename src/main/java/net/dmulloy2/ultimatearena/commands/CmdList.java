@@ -46,7 +46,7 @@ public class CmdList extends UltimateArenaCommand
 					{
 						if (a.isInLobby())
 						{
-							line.append(" &e[LOBBY | " + a.getStarttimer() + " seconds]");
+							line.append(" &e[LOBBY | " + a.getStartTimer() + " seconds]");
 						}
 						else
 						{

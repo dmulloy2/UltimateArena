@@ -1,7 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdCreate extends UltimateArenaCommand
 {
@@ -13,7 +13,7 @@ public class CmdCreate extends UltimateArenaCommand
 		this.requiredArgs.add("name");
 		this.requiredArgs.add("type");
 		this.description = "create an UltimateArena";
-		this.permission = PermissionType.CMD_CREATE.permission;
+		this.permission = Permission.CMD_CREATE;
 		
 		this.mustBePlayer = true;
 	}

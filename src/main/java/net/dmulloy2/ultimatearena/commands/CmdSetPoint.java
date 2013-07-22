@@ -1,7 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdSetPoint extends UltimateArenaCommand
 {	
@@ -11,7 +11,7 @@ public class CmdSetPoint extends UltimateArenaCommand
 		this.name = "setpoint";
 		this.aliases.add("sp");
 		this.description = "set a point of your field";
-		this.permission = PermissionType.CMD_SET_POINT.permission;
+		this.permission = Permission.CMD_SET_POINT;
 		
 		this.mustBePlayer = true;
 	}

@@ -8,7 +8,7 @@ import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.Material;
@@ -26,6 +26,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class PlayerListener implements Listener 
 {
@@ -159,7 +161,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		Action action = event.getAction();
-		if (action.equals(Action.RIGHT_CLICK_BLOCK))
+		if (action == Action.RIGHT_CLICK_BLOCK)
 		{
 			if (event.hasBlock()) 
 			{
@@ -171,8 +173,7 @@ public class PlayerListener implements Listener
 					{
 						if (s.getLine(1).equalsIgnoreCase("Click to join"))
 						{
-							boolean force = plugin.getPermissionHandler()
-									.hasPermission(player, PermissionType.CMD_FORCE_JOIN.permission);
+							boolean force = plugin.getPermissionHandler().hasPermission(player, Permission.FORCE_JOIN);
 							if (s.getLine(2).equalsIgnoreCase("Auto assign"))
 							{
 								boolean found = false;
@@ -180,7 +181,7 @@ public class PlayerListener implements Listener
 								{
 									for (Arena a : plugin.activeArena)
 									{
-										if (a.getStarttimer() > 1)
+										if (a.isInLobby())
 										{
 											plugin.fight(player, a.getName(), force);
 											found = true;
@@ -206,10 +207,13 @@ public class PlayerListener implements Listener
 								boolean found = false;
 								for (Arena a : plugin.activeArena)
 								{
-									if (a.getName().equalsIgnoreCase(name) && a.getStarttimer() > 1)
+									if (a.getName().equalsIgnoreCase(name))
 									{
-										plugin.fight(player, a.getName(), force);
-										found = true;
+										if (a.isInLobby())
+										{
+											plugin.fight(player, a.getName(), force);
+											found = true;
+										}
 									}
 								}
 								if (!found)
@@ -245,20 +249,18 @@ public class PlayerListener implements Listener
 			ArenaPlayer apl = plugin.getArenaPlayer(pl);
 			if (apl != null && !apl.isOut()) 
 			{
-				if (plugin.getArenaPlayer(pl).getDeaths() < plugin.getArena(pl).getMaxDeaths()) 
+				Arena are = plugin.getArena(pl);
+				if (are != null)
 				{
-					Arena are = plugin.getArena(pl);
-					if (are != null && !are.isStopped())
+					if (apl.getDeaths() < are.getMaxDeaths()) 
 					{
-						if (are.getGametimer() > 1) 
+						if (are.isInGame() && ! are.isStopped()) 
 						{
 							if (are.getSpawn(apl) != null)
 							{
-								// TODO: Make sure this actually works
 								event.setRespawnLocation(are.getSpawn(apl));
+								are.spawn(pl.getName(), false);
 							}
-								
-							are.spawn(pl.getName(), false);
 						}
 					}
 				}
@@ -284,8 +286,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	// TODO: Make this actually work
-	/*@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
 		if (! event.isCancelled())
@@ -293,7 +294,7 @@ public class PlayerListener implements Listener
 			Player player = event.getPlayer();
 			if (plugin.isInArena(player))
 			{
-				if (event.getCause() != PlayerTeleportEvent.TeleportCause.PLUGIN)
+				if (event.getCause() == TeleportCause.COMMAND)
 				{
 					ArenaPlayer ap = plugin.getArenaPlayer(player);
 					if (ap != null && !ap.isOut())
@@ -304,27 +305,28 @@ public class PlayerListener implements Listener
 				}
 			}
 		}
-	}*/
-	
-	// TODO: Add a bypass permission?
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
 		if (! event.isCancelled())
 		{
 			Player player = event.getPlayer();
-			String cmd = event.getMessage().toLowerCase();
-			
-			String[] check = cmd.split(" ");
-			if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
+			if (! plugin.getPermissionHandler().hasPermission(player, Permission.COMMAND_BYPASS))
 			{
-				player.sendMessage(plugin.getPrefix() + 
-						FormatUtil.format("&7You cannot use non-ua commands in an arena!"));
-				player.sendMessage(plugin.getPrefix() + 
-						FormatUtil.format("&7If you wish to use commands again, use &6/ua leave"));
-				event.setCancelled(true);
-				return;
+				String cmd = event.getMessage().toLowerCase();
+			
+				String[] check = cmd.split(" ");
+				if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
+				{
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format("&7You cannot use non-ua commands in an arena!"));
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format("&7If you wish to use commands again, use &6/ua leave"));
+					event.setCancelled(true);
+				}
 			}
-		}
-	}	
+		}	
+	}
 }

@@ -2,12 +2,14 @@ package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.Random;
 
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,22 +22,32 @@ public class FFAArena extends Arena
 		super(az);
 		
 		this.type = FieldType.FFA;
-		setStarttimer(120);
-		setMaxgametime(60 * 10);
-		setMaxDeaths(4);
-		setAllowTeamKilling(true);
-		
-		for (int i = 0; i < this.getArenaZone().getSpawns().size(); i++) 
+		this.startTimer = 120;
+		this.maxGameTime = 60 * 10;
+		this.maxDeaths = 4;
+		this.allowTeamKilling = true;
+
+		for (int i = 0; i < az.getSpawns().size(); i++) 
 		{
-			this.getSpawns().add( new ArenaSpawn(this.getArenaZone().getSpawns().get(i).getWorld(), this.getArenaZone().getSpawns().get(i).getBlockX(), this.getArenaZone().getSpawns().get(i).getBlockY(), this.getArenaZone().getSpawns().get(i).getBlockZ()) );
+			spawns.add( new ArenaSpawn(az.getSpawns().get(i)) );
 		}
+	}
+	
+	@Override
+	public Location getSpawn(ArenaPlayer ap)
+	{
+		if (isInLobby())
+		{
+			return super.getSpawn(ap);
+		}
+		
+		return getRandomSpawn(ap);
 	}
 	
 	@Override
 	public void spawn(String name, boolean alreadySpawned)
 	{
 		super.spawn(name, false);
-		spawnRandom(name);
 		Player p = Util.matchPlayer(name);
 		if (p != null)
 		{
@@ -72,11 +84,11 @@ public class FFAArena extends Arena
 	@Override
 	public void check()
 	{
-		if (getStarttimer() <= 0) 
+		if (startTimer <= 0) 
 		{
 			if (isEmpty())
 			{
-				if (getAmtPlayersInArena() == 1) 
+				if (getActivePlayers() == 1) 
 				{
 					this.setWinningTeam(-1);
 					stop();
@@ -86,7 +98,7 @@ public class FFAArena extends Arena
 						spawn(arenaPlayers.get(i).getUsername(), false);
 					}
 					
-					if (this.getAmtPlayersStartingInArena() > 1) 
+					if (getStartingAmount() > 1) 
 					{
 						this.rewardTeam(getWinningTeam(), "&9You won!", false);
 					}

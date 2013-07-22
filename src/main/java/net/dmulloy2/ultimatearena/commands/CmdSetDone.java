@@ -1,7 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdSetDone extends UltimateArenaCommand
 {
@@ -11,7 +11,7 @@ public class CmdSetDone extends UltimateArenaCommand
 		this.name = "done";
 		this.aliases.add("d");
 		this.description = "finalize a step in the UA creation process";
-		this.permission = PermissionType.CMD_SET_DONE.permission;
+		this.permission = Permission.CMD_SET_DONE;
 		
 		this.mustBePlayer = true;
 	}

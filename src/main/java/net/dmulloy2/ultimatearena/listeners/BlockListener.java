@@ -4,7 +4,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.ChatColor;
@@ -59,7 +59,7 @@ public class BlockListener implements Listener
 			else
 			{
 				/** The player is at the site of the arena, but not in it **/
-				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
+				if (!plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
 					player.sendMessage(ChatColor.RED + "You cannot break this!");
 					event.setCancelled(true);
@@ -97,7 +97,7 @@ public class BlockListener implements Listener
 			else
 			{
 				/** The player is at the site of the arena, but not in it **/
-				if (!plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
+				if (!plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
 					player.sendMessage(ChatColor.RED + "You cannot place this!");
 					event.setCancelled(true);
@@ -111,7 +111,7 @@ public class BlockListener implements Listener
 	{
 		if (event.getLine(0).equalsIgnoreCase("[UltimateArena]"))
 		{
-			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), PermissionType.BUILD.permission))
+			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
 			{
 				if (event.getLine(1).equalsIgnoreCase("Click to join"))
 				{
@@ -148,7 +148,7 @@ public class BlockListener implements Listener
 		}
 		else if (event.getLine(0).equalsIgnoreCase("[Arena Stats]"))
 		{
-			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), PermissionType.BUILD.permission))
+			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
 			{
 				ArenaZone az = plugin.getArenaZone(event.getLine(1));
 				if (az != null)
@@ -191,7 +191,7 @@ public class BlockListener implements Listener
 				ArenaSign sign = plugin.getArenaSign(block.getLocation());
 				if (sign != null)
 				{
-					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
+					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 					{
 						plugin.deleteSign(sign);
 						player.sendMessage(FormatUtil.format("&eDeleted Join sign!"));
@@ -209,7 +209,7 @@ public class BlockListener implements Listener
 				ArenaSign sign = plugin.getArenaSign(block.getLocation());
 				if (sign != null)
 				{
-					if (plugin.getPermissionHandler().hasPermission(player, PermissionType.BUILD.permission))
+					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 					{
 						plugin.deleteSign(sign);
 						player.sendMessage(FormatUtil.format("&eDeleted Stats sign!"));

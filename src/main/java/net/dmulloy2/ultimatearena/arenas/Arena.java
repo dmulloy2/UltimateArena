@@ -1,7 +1,12 @@
 package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.*;
@@ -26,42 +31,45 @@ import org.bukkit.potion.PotionEffect;
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
-/** Base Data Container for an Arena **/
+/**
+ * Base Data Container for an arena
+ * This can be extended for specific arenas
+ * @author dmulloy2
+ */
+
 public abstract class Arena 
 {
 	protected List<ArenaPlayer> arenaPlayers = new ArrayList<ArenaPlayer>();
 	protected List<ArenaSpawn> spawns = new ArrayList<ArenaSpawn>();
 	protected List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
 
-	private int startingAmount = 0;
-	private int broadcastTimer = 45;
-	private int winningTeam = 999;
-	private int announced = 0;
-	private int maxDeaths = 1;
-	private int maxwave = 15;
-	private int wave = 0;
+	protected int startingAmount = 0;
+	protected int broadcastTimer = 45;
+	protected int winningTeam = 999;
+	protected int announced = 0;
+	protected int maxDeaths = 1;
+	protected int maxWave = 15;
+	protected int wave = 0;
 
-	private int amtPlayersStartingInArena;
-	private int amtPlayersInArena;
-	private int maxgametime;
-	private int starttimer;
-	private int gametimer;
-	private int team1size;
-	private int team2size;
+	protected int maxGameTime;
+	protected int startTimer;
+	protected int gameTimer;
+	protected int team1size;
+	protected int team2size;
 	
-	private boolean allowTeamKilling = false;
-	private boolean pauseStartTimer = false;
-	private boolean forceStop = false;
-	private boolean stopped = false;
-	private boolean start = false;
+	protected boolean allowTeamKilling = false;
+	protected boolean pauseStartTimer = false;
+	protected boolean forceStop = false;
+	protected boolean stopped = false;
+	protected boolean start = false;
 
-	private boolean updatedTeams;
-	private boolean disabled;
+	protected boolean updatedTeams;
+	protected boolean disabled;
 
-	private World world;
+	protected World world;
 
 	protected FieldType type;
-	private String name;
+	protected String name;
 
 	protected final UltimateArena plugin;
 	protected ArenaConfig config;
@@ -73,45 +81,51 @@ public abstract class Arena
 		this.plugin = az.getPlugin();
 		this.name = az.getArenaName();
 		this.world = az.getWorld();
-		this.az.setTimesPlayed(this.az.getTimesPlayed() + 1);
+		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
 		this.plugin.arenasPlayed++;
 		
-		if (this.getMaxDeaths() < 1) 
+		if (maxDeaths < 1)
 		{
-			this.setMaxDeaths(1);
+			this.maxDeaths = 1;
 		}
 	}
 	
-	/** Reload the Config **/
+	/**
+	 * Reloads the arena's configuration
+	 */
 	public void reloadConfig() 
 	{
 		if (config != null) 
 		{
-			this.setMaxgametime(config.getGameTime());
-			this.setGametimer(config.getGameTime());
-			this.setStarttimer(config.getLobbyTime());
-			this.setMaxDeaths(config.getMaxDeaths());
-			this.setAllowTeamKilling(config.isAllowTeamKilling());
-			this.setMaxwave(config.getMaxWave());
+			this.maxGameTime = config.getGameTime();
+			this.gameTimer = config.getGameTime();
+			this.startTimer = config.getLobbyTime();
+			this.maxDeaths = config.getMaxDeaths();
+			this.allowTeamKilling = config.isAllowTeamKilling();
+			this.maxWave = config.getMaxWave();
 			
-			if (this.getMaxDeaths() < 1) 
+			if (maxDeaths < 1)
 			{
-				this.setMaxDeaths(1);
+				this.maxDeaths = 1;
 			}
 		}
 	}
 	
-	/** Add a Player to the Arena **/
+	/**
+	 * Adds a player to an {@link Arena}.
+	 * Should not be overriden.
+	 * @param player - {@link Player} to add to an arena
+	 */
 	public void addPlayer(Player player)
 	{
-		player.sendMessage(plugin.getPrefix() + "Joining the arena... Please wait.");
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Joining arena &b{0}&6... Please wait!", name));
 		
 		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
 		arenaPlayers.add(pl);
 		
 		// Update Teams
 		pl.setTeam(getTeam());
-		setUpdatedTeams(true);
+		this.updatedTeams = true;
 		
 		// Save and clear Inventory
 		if (plugin.getConfig().getBoolean("saveInventories", true))
@@ -159,22 +173,29 @@ public abstract class Arena
 		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
 		plugin.getServer().getPluginManager().callEvent(joinEvent);
 		
-		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getUsername(), arenaPlayers.size(), az.getMaxPlayers());
+		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getUsername(), getActivePlayers(), az.getMaxPlayers());
 	}
 	
+	/**
+	 * Gets the base team.
+	 * Can be overriden in certain cases.
+	 * @return Base team
+	 */
 	public int getTeam() 
 	{
 		return 1;
 	}
 	
-	/** Announce the Arena **/
+	/**
+	 * Announces the arena's existance and reminds players to join.
+	 */
 	public void announce() 
 	{
 		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
 			if (! plugin.isInArena(player))
 			{
-				if (plugin.getPermissionHandler().hasPermission(player, PermissionType.JOIN.permission))
+				if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
 				{
 					if (announced == 0) 
 					{
@@ -193,7 +214,10 @@ public abstract class Arena
 		announced++;
 	}
 	
-	/** Returns the team a new player should be on **/
+	/**
+	 * Returns the team a player should be on.
+	 * @return The team the player should be on
+	 */
 	public int getBalancedTeam()
 	{
 		int amt1 = 0;
@@ -223,7 +247,10 @@ public abstract class Arena
 		return 1;
 	}
 	
-	/** Check if a team is empty **/
+	/**
+	 * A simple team check.
+	 * @param stopifEmpty - Stops the arena if empty
+	 */
 	public boolean simpleTeamCheck(boolean stopifEmpty) 
 	{
 		if (getTeam1size() == 0 || team2size == 0) 
@@ -233,7 +260,7 @@ public abstract class Arena
 				stop();
 			}
 			
-			if (this.getStartingAmount() > 1)
+			if (startingAmount > 1)
 			{
 				return false;
 			}
@@ -245,6 +272,7 @@ public abstract class Arena
 	}
 	
 	/**
+	 * Gets the player's arena player instance.
 	 * @param p - Player instance
 	 * @return The player's ArenaPlayer instance
 	 */
@@ -269,7 +297,9 @@ public abstract class Arena
 		return null;
 	}
 	
-	/** Spawns all players in the Arena **/
+	/**
+	 * Spawns all players in an arena.
+	 */
 	public void spawnAll() 
 	{
 		plugin.outConsole("Spawning players for Arena: {0}", getArenaZone().getArenaName());
@@ -283,42 +313,41 @@ public abstract class Arena
 	}
 	
 	/**
-	 * @param ap - ArenaPlayer instance
-	 * @return the ArenaPlayer's spawn
+	 * Gets the spawn for an {@link ArenaPlayer}.
+	 * Will return null if used by another {@link Arena}.
+	 * @param ap - {@link ArenaPlayer} instance
+	 * @return the {@link ArenaPlayer}'s spawn
 	 */
 	public Location getSpawn(ArenaPlayer ap) 
 	{
 		Location loc = null;
-		try 
+		if (isInLobby())
 		{
-			if (getStarttimer() > 0)
-			{
-				loc = getArenaZone().getLobbyREDspawn().clone();
-				if (ap.getTeam() == 2)
-					loc = getArenaZone().getLobbyBLUspawn().clone();
-			}
-			else
-			{
-				loc = getArenaZone().getTeam1spawn().clone();
-				if (ap.getTeam() == 2) 
-					loc = getArenaZone().getTeam2spawn().clone();
-			}
+			loc = az.getLobbyREDspawn();
+			if (ap.getTeam() == 2)
+				loc = az.getLobbyBLUspawn();
 		}
-		catch (Exception e)
+		else
 		{
-//			This should be handled on a per-arena basis
-//			loc = getSpawns().get(Util.random(getSpawns().size())).getLocation().clone().add(0, 2, 0);
+			loc = getArenaZone().getTeam1spawn();
+			if (ap.getTeam() == 2) 
+				loc = az.getTeam2spawn();
 		}
 
 		return loc;
 	}
 	
-	/** Spawns a player and gives them their class items **/
+	/**
+	 * Spawns a player in an {@link Arena}.
+	 * This should not be overriden.
+	 * @param name - Player to spawn
+	 * @param alreadyspawned - Have they already been spawned?
+	 */
 	public void spawn(String name, boolean alreadyspawned)
 	{
 		plugin.debug("Attempting to spawn player: {0}. Already Spawned: {1}", name, alreadyspawned);
 		
-		if (!isStopped())
+		if (! isStopped())
 		{
 			Player p = Util.matchPlayer(name);
 			if (p != null) 
@@ -328,7 +357,7 @@ public abstract class Arena
 					ArenaPlayer ap = arenaPlayers.get(i);
 					if (ap.getUsername().equals(name))
 					{
-						if (ap != null && !ap.isOut())
+						if (ap != null && ! ap.isOut())
 						{
 							if (ap.getDeaths() < getMaxDeaths()) 
 							{
@@ -359,9 +388,16 @@ public abstract class Arena
 		}
 	}
 
+	/**
+	 * Called when a player is spawned.
+	 * @param apl {@link ArenaPlayer} who was spawned
+	 */
 	public void onSpawn(ArenaPlayer apl) {}
 	
-	/** Player Death **/
+	/**
+	 * Called when a player dies.
+	 * @param pl - {@link ArenaPlayer} who died
+	 */
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
 		pl.setAmtkicked(0);
@@ -371,7 +407,13 @@ public abstract class Arena
 		plugin.getServer().getPluginManager().callEvent(deathEvent);
 	}
 	
-	/** Default Rewarding System **/
+	/**
+	 * Default rewarding system.
+	 * May be overriden in some cases.
+	 * @param ap - {@link ArenaPlayer} to reward
+	 * @param player - {@link Player} to reward
+	 * @param half - Whether or not to reward half
+	 */
 	public void reward(ArenaPlayer ap, Player player, boolean half)
 	{
 		plugin.debug("Rewarding player: {0}. Half: {1}", player.getName(), half);
@@ -386,7 +428,12 @@ public abstract class Arena
 		}
 	}
 	
-	/** Rewards the Winning Team **/
+	/**
+	 * Rewards an entire team.
+	 * @param team - Team to reward
+	 * @param string - Reward message
+	 * @param half - Whether or not to reward half
+	 */
 	public void rewardTeam(int team, String string, boolean half)
 	{
 		plugin.debug("Rewarding team {0}. Half: {1}", team, half);
@@ -409,7 +456,10 @@ public abstract class Arena
 		}
 	}
 	
-	/** Sets the Winning Team **/
+	/**
+	 * Sets the winning team.
+	 * @param team - Winning team
+	 */
 	public void setWinningTeam(int team)
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
@@ -428,7 +478,10 @@ public abstract class Arena
 		this.winningTeam = team;
 	}
 	
-	/** Check if any player has enough points to win **/
+	/**
+	 * Checks if a player has enough points to win.
+	 * @param max - Max points for an arena
+	 */
 	public void checkPlayerPoints(int max)
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
@@ -438,15 +491,19 @@ public abstract class Arena
 			{
 				if (ap.getPoints() >= max)
 				{
+					stop();
+					
 					reward(ap, ap.getPlayer(), false);
 					tellPlayers("&7Player &6{0} &7has won!", ap.getUsername());
-					stop();
 				}
 			}
 		}
 	}
 	
-	/** Stops the Arena if empty **/
+	/**
+	 * Stops the arena if empty.
+	 * @return Arena is empty
+	 */
 	public boolean checkEmpty() 
 	{
 		boolean ret = isEmpty();
@@ -455,13 +512,20 @@ public abstract class Arena
 		return ret;
 	}
 	
-	/** Checks if the arena is empty **/
+	/**
+	 * Checks if the arena is empty.
+	 * @return Arena is empty
+	 */
 	public boolean isEmpty()
 	{
-		return (getStarttimer() <= 0 && getAmtPlayersInArena() <= 1);
+		return (isInGame() && getActivePlayers() <= 1);
 	}
 	
-	/** Tells all the players in the arena a message **/
+	/**
+	 * Tells all players in the arena a message.
+	 * @param string - Base message
+	 * @param objects - Objects to format in
+	 */
 	public void tellPlayers(String string, Object...objects) 
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
@@ -478,7 +542,11 @@ public abstract class Arena
 		}
 	}
 	
-	/** Kills all players in the arena near a point **/
+	/**
+	 * Kills all players within a certain radius of a {@link Location}
+	 * @param loc - Center {@link Location}
+	 * @param rad - Radius to kill within
+	 */
 	public void killAllNear(Location loc, int rad)
 	{
 		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
@@ -498,38 +566,44 @@ public abstract class Arena
 			}
 		}
 	}
-	
-	/** Spawns a player to a random spawnpoint **/
-	public void spawnRandom(String name)
+
+	/**
+	 * Gets a random spawn for an {@link ArenaPlayer}.
+	 * @param ap - {@link ArenaPlayer} to get spawn for
+	 * @return Spawn for the {@link ArenaPlayer}
+	 */
+	public Location getRandomSpawn(ArenaPlayer ap)
 	{
-		plugin.debug("Spawning {0} randomly", name);
+		plugin.debug("Getting a random spawn for {0}", ap.getUsername());
 		
-		if (getStarttimer() <= 0) 
+		if (ap != null && !ap.isOut())
 		{
-			Player p = Util.matchPlayer(name);
-			if (p != null) 
+			if (! spawns.isEmpty())
 			{
-				ArenaPlayer ap = plugin.getArenaPlayer(p);
-				if (ap != null && !ap.isOut())
+				int rand = Util.random(spawns.size());
+				ArenaSpawn spawn = spawns.get(rand);
+				if (spawn != null)
 				{
-					if (! spawns.isEmpty())
-					{
-						int rand = Util.random(spawns.size());
-						ArenaSpawn spawn = spawns.get(rand);
-						if (spawn != null)
-						{
-							teleport(p, spawn.getLocation());
-						}
-					}
+					return spawn.getLocation();
 				}
 			}
 		}
+		
+		return null;
 	}
 	
-	/** Gives the player an item **/
+	/**
+	 * Gives a {@link Player} an item
+	 * @param pl - {@link Player} to give items to
+	 * @param id - ItemId of the item to give
+	 * @param dat - Data value of the item
+	 * @param amt - Amount of the item to give
+	 * @param message - Message to send the {@link Player}
+	 */
 	public void giveItem(Player pl, int id, byte dat, int amt, String message)
 	{
-		pl.sendMessage(plugin.getPrefix() + message);
+		if (message != "")
+			pl.sendMessage(plugin.getPrefix() + message);
 		
 		ItemStack item = new ItemStack(id, amt);
 		if (dat != 0)
@@ -542,9 +616,19 @@ public abstract class Arena
 		InventoryHelper.addItem(pl, item);
 	}
 	
+	/**
+	 * Gives a player a {@link Potion}
+	 * @param pl - {@link Player} to give the {@link Potion}
+	 * @param s - Name of the {@link Potion} to give. Must be a valid {@link PotionType}
+	 * @param amt - Amount of the {@link Potion} to give
+	 * @param level - Level of the {@link Potion} to give
+	 * @param splash - Whether or not it is a splash {@link Potion}
+	 * @param message - Message to send to the {@link Player}
+	 */
 	public void givePotion(Player pl, String s, int amt, int level, boolean splash, String message)
 	{
-		pl.sendMessage(plugin.getPrefix() + message);
+		if (message != "")
+			pl.sendMessage(plugin.getPrefix() + message);
 		
 		org.bukkit.potion.PotionType type = PotionType.toType(s);
 		if (type != null)
@@ -558,7 +642,11 @@ public abstract class Arena
 		}
 	}
 	
-	/** Basic Killstreak System **/
+	/**
+	 * Basic killstreak system.
+	 * Can be overriden.
+	 * @param ap - {@link ArenaPlayer} to do killstreak for
+	 */
 	public void doKillStreak(ArenaPlayer ap) 
 	{
 		plugin.debug("Doing KillStreak for player: {0}", ap.getUsername());
@@ -604,24 +692,22 @@ public abstract class Arena
 		}
 	}
 	
-	/** Disables an Arena **/
+	/**
+	 * Disables this arena
+	 */
 	public void onDisable() 
 	{
 		tellPlayers("&cThis arena has been disabled!");
 		
-		setGametimer(-1);
-		setDisabled(true);
+		this.gameTimer = -1;
+		this.disabled = true;
+
 		stop();
 	}
-	
-	/** Removes a Player from the Arena **/
-	public void removePlayer(ArenaPlayer ap) 
-	{
-		ap.setOut(true);
-		setUpdatedTeams(true);
-	}
-	
-	/** Ends the Arena **/
+
+	/**
+	 * Ends the arena
+	 */
 	public void stop()
 	{
 		if (isStopped()) return; // No need to stop multiple times
@@ -641,7 +727,7 @@ public abstract class Arena
 				{
 					if (plugin.isInArena(player)) 
 					{
-						if (getGametimer() <= getMaxgametime())
+						if (gameTimer <= maxGameTime)
 						{
 							ap.sendMessage("&9Game inturrupted/ended!");
 						}
@@ -663,9 +749,15 @@ public abstract class Arena
 		plugin.broadcast("&6Arena &b{0} &6has concluded!", name);
 	}
 	
+	/**
+	 * Called when an arena is stopped
+	 */
 	public void onStop() {}
 
-	/** Removes all armour and inventory **/
+	/**
+	 * Removes all inventory items from a playr
+	 * @param p - {@link Player} to remove inventory items from
+	 */
 	public void normalize(Player p)
 	{
 		plugin.normalize(p);
@@ -681,9 +773,16 @@ public abstract class Arena
 		p.teleport(loc.clone().add(0.5D, 1.0D, 0.5D));
 	}
 	
+	/**
+	 * Called when an arena is updated
+	 */
 	public void check() {}
 
-	/** End an ArenaPlayer **/
+	/**
+	 * Ends an {@link ArenaPlayer}
+	 * @param ap - {@link ArenaPlayer} to end
+	 * @param dead - Whether or not a player died
+	 */
 	public void endPlayer(ArenaPlayer ap, boolean dead) 
 	{
 		plugin.debug("Ending Player: {0} Dead: {1}", ap.getUsername(), dead);
@@ -696,9 +795,7 @@ public abstract class Arena
 			normalize(player);
 			returnXP(ap);
 			ap.returnInventory();
-			
-			ap.sendMessage("&9Thanks for playing!");
-						
+
 			plugin.removePotions(player);
 		}
 		
@@ -712,20 +809,31 @@ public abstract class Arena
 		if (dead) 
 		{
 			ap.sendMessage("&9You have exceeded the death limit!");
-			tellPlayers("&b{0} has been eliminated!", ap.getUsername());
+			tellPlayers("&b{0} has been eliminated! There are {1} players remaining!", ap.getUsername(), getActivePlayers());
 		}
 	}
 
+	/** 
+	 * Called when an arena starts
+	 */
 	public void onStart()
 	{
-		setAmtPlayersStartingInArena(arenaPlayers.size());
+		this.startingAmount = getActivePlayers();
 	}
 	
+	/**
+	 * Called when an arena runs out of time
+	 */
 	public void onOutOfTime() {}
 	
+	/**
+	 * Called right before an arena runs out of time
+	 */
 	public void onPreOutOfTime() {}
 	
-	/** Check Timers **/
+	/**
+	 * Checks timers
+	 */
 	public void checkTimers() 
 	{
 		if (isStopped())
@@ -742,14 +850,14 @@ public abstract class Arena
 		
 		if (!isPauseStartTimer())
 		{
-			setStarttimer(getStarttimer() - 1);
+			startTimer--;
 			broadcastTimer--;
 		}
 		
-		if (getStarttimer() <= 0)
+		if (startTimer <= 0)
 		{
 			start();
-			setGametimer(getGametimer() - 1);
+			gameTimer--;
 		}
 		else
 		{
@@ -761,7 +869,7 @@ public abstract class Arena
 		}
 		
 		// End the game
-		if (getGametimer() <= 0) 
+		if (gameTimer <= 0) 
 		{
 			onPreOutOfTime();
 			stop();
@@ -769,29 +877,35 @@ public abstract class Arena
 		}
 	}
 	
-	/** Starts the Arena **/
+	/**
+	 * Starts the arena.
+	 * Should not be overriden.
+	 */
 	public void start()
 	{
-		if (start == false) 
+		if (! start) 
 		{
-			plugin.outConsole("Starting arena: {0} Players: {1}", getName(), getAmtPlayersInArena());
+			plugin.outConsole("Starting arena: {0} Players: {1}", getName(), getActivePlayers());
 			
 			this.start = true;
-			this.setStartingAmount(this.getAmtPlayersInArena());
-			this.setAmtPlayersStartingInArena(this.getStartingAmount());
-			this.onStart();
+			this.startingAmount = getActivePlayers();
 			
+			this.gameTimer = maxGameTime;
+			this.startTimer = -1;
+			
+			onStart();
 			spawnAll();
-			setGametimer(getMaxgametime());
-			setStarttimer(-1);
 		}
 	}
 	
-	/** Arena Updater **/
+	/**
+	 * Arena Updater
+	 */
 	public void update()
 	{
-		setTeam1size(0);
-		team2size = 0;
+		this.team1size = 0;
+		this.team2size = 0;
+		
 		checkTimers();
 		
 		// Get how many people are in the arena
@@ -813,8 +927,6 @@ public abstract class Arena
 		
 		check();
 
-		setAmtPlayersInArena(0);
-
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
@@ -823,10 +935,8 @@ public abstract class Arena
 				Player player = ap.getPlayer();
 				if (player != null)
 				{
-					setAmtPlayersInArena(getAmtPlayersInArena() + 1);
-							
 					// Check players in the Arena
-					if (getStarttimer() > 0) 
+					if (isInLobby()) 
 					{
 						player.setFireTicks(0);
 						player.setFoodLevel(20);
@@ -875,43 +985,43 @@ public abstract class Arena
 					// Timer Stuff
 					if (!isPauseStartTimer()) 
 					{
-						if (getStarttimer() == 120) 
+						if (startTimer == 120) 
 						{
 							ap.sendMessage("&6120 &7seconds until start!");
 						}
-						if (getStarttimer() == 60)
+						if (startTimer == 60)
 						{
 							ap.sendMessage("&660 &7seconds until start!");
 						}
-						if (getStarttimer() == 45)
+						if (startTimer == 45)
 						{
 							ap.sendMessage("&645 &7seconds until start!");
 						}
-						if (getStarttimer() == 30) 
+						if (startTimer == 30) 
 						{
 							ap.sendMessage("&630 &7seconds until start!");
 						}
-						if (getStarttimer() == 15)
+						if (startTimer == 15)
 						{
 							ap.sendMessage("&615 &7seconds until start!");
 						}
-						if (getStarttimer() > 0 && getStarttimer() < 11) 
+						if (startTimer > 0 && startTimer < 11) 
 						{
-							ap.sendMessage("&6{0} &7second(s) until start!", getStarttimer());
+							ap.sendMessage("&6{0} &7second(s) until start!", startTimer);
 						}
 					}
 							
-					if (getGametimer() > 0 && getGametimer() < 21)
+					if (gameTimer > 0 && gameTimer < 21)
 					{
-						ap.sendMessage("&6{0} &7second(s) until end!", getGametimer());
+						ap.sendMessage("&6{0} &7second(s) until end!", gameTimer);
 					}
-					if (getGametimer() == 60 && getMaxgametime() > 60)
+					if (gameTimer == 60 && maxGameTime > 60)
 					{
-						ap.sendMessage("&6{0} &7minute(s) until end!", (getGametimer() - 60) / 60);
+						ap.sendMessage("&6{0} &7minute(s) until end!", (gameTimer - 60) / 60);
 					}
-					if (getGametimer() == getMaxgametime()/2) 
+					if (gameTimer == maxGameTime/2) 
 					{
-						ap.sendMessage("&6{0} &7second(s) until end!", getMaxgametime() / 2);
+						ap.sendMessage("&6{0} &7second(s) until end!", maxGameTime / 2);
 					}
 					
 					// XP Bar
@@ -927,7 +1037,6 @@ public abstract class Arena
 								if (player.getHealth() > 0) 
 								{
 									endPlayer(ap, true);
-									removePlayer(ap);
 								}
 							}
 						}
@@ -937,11 +1046,14 @@ public abstract class Arena
 		}
 		
 		// Stop the arena if there are no players
-		if (this.getAmtPlayersInArena() == 0)
+		if (getActivePlayers() == 0)
 			stop();
 	}
 	
-	/** Timer XP bar **/
+	/**
+	 * Decides the timer xp bar for an {@link ArenaPlayer}
+	 * @param ap - {@link ArenaPlayer} to decide xp bar for
+	 */
 	public void decideXPBar(ArenaPlayer ap)
 	{
 		if (ap != null && ! ap.isOut())
@@ -950,18 +1062,21 @@ public abstract class Arena
 			{
 				if (isInGame())
 				{
-					ap.getPlayer().setLevel(getGametimer());
+					ap.getPlayer().setLevel(gameTimer);
 				}
 					
 				if (isInLobby())
 				{
-					ap.getPlayer().setLevel(getStarttimer());
+					ap.getPlayer().setLevel(startTimer);
 				}
 			}
 		}
 	}
 	
-	/** Return a player's xp after leaving an arena **/
+	/**
+	 * Returns a player's xp when they leave the game
+	 * @param ap - {@link ArenaPlayer} to return xp
+	 */
 	public void returnXP(ArenaPlayer ap)
 	{
 		if (ap != null)
@@ -979,6 +1094,10 @@ public abstract class Arena
 		}
 	}
 
+	/**
+	 * Forces the start of an arena
+	 * @param player - {@link Player} forcing the start of the arena
+	 */
 	public void forceStart(Player player)
 	{
 		if (isInGame())
@@ -988,15 +1107,15 @@ public abstract class Arena
 		}
 		
 		plugin.outConsole("Forcefully starting arena: {0}!", name);
-		
-		setStarttimer(0);
-		
+
 		start();
-		setGametimer(getGametimer() - 1);
+		
+		gameTimer--;
 		
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6You have forcefully started &b{0}&6!", name));
 	}
 
+	// TODO: Explanations for the rest of the methods
 	public String getName()
 	{
 		return name;
@@ -1027,14 +1146,9 @@ public abstract class Arena
 		return arenaPlayers;
 	}
 	
-	public int getStarttimer() 
+	public int getStartTimer()
 	{
-		return starttimer;
-	}
-
-	public void setStarttimer(int starttimer) 
-	{
-		this.starttimer = starttimer;
+		return startTimer;
 	}
 
 	public ArenaZone getArenaZone() 
@@ -1042,16 +1156,18 @@ public abstract class Arena
 		return az;
 	}
 
-	public int getAmtPlayersInArena()
+	public int getActivePlayers()
 	{
-		return amtPlayersInArena;
+		int amt = 0;
+		for (ArenaPlayer ap : arenaPlayers)
+		{
+			if (ap != null && ! ap.isOut())
+				amt++;
+		}
+		
+		return amt;
 	}
-
-	public void setAmtPlayersInArena(int amtPlayersInArena) 
-	{
-		this.amtPlayersInArena = amtPlayersInArena;
-	}
-
+	
 	public boolean isDisabled()
 	{
 		return disabled;
@@ -1067,24 +1183,14 @@ public abstract class Arena
 		return type;
 	}
 	
-	public int getGametimer()
+	public int getGameTimer()
 	{
-		return gametimer;
+		return gameTimer;
 	}
-
-	public void setGametimer(int gametimer) 
+	
+	public int getMaxGameTime()
 	{
-		this.gametimer = gametimer;
-	}
-
-	public int getMaxgametime() 
-	{
-		return maxgametime;
-	}
-
-	public void setMaxgametime(int maxgametime) 
-	{
-		this.maxgametime = maxgametime;
+		return maxGameTime;
 	}
 
 	public int getMaxDeaths()
@@ -1115,16 +1221,6 @@ public abstract class Arena
 	public void setFlags(List<ArenaFlag> flags)
 	{
 		this.flags = flags;
-	}
-
-	public int getAmtPlayersStartingInArena()
-	{
-		return amtPlayersStartingInArena;
-	}
-
-	public void setAmtPlayersStartingInArena(int amtPlayersStartingInArena) 
-	{
-		this.amtPlayersStartingInArena = amtPlayersStartingInArena;
 	}
 
 	public int getWinningTeam() 
@@ -1172,19 +1268,9 @@ public abstract class Arena
 		return wave;
 	}
 
-	public void setWave(int wave)
+	public int getMaxWave()
 	{
-		this.wave = wave;
-	}
-
-	public int getMaxwave() 
-	{
-		return maxwave;
-	}
-
-	public void setMaxwave(int maxwave)
-	{
-		this.maxwave = maxwave;
+		return maxWave;
 	}
 
 	public int getTeam1size() 
@@ -1214,11 +1300,76 @@ public abstract class Arena
 	
 	public boolean isInGame()
 	{
-		return (getStarttimer() < 1 && getGametimer() > 0);
+		return (startTimer < 1 && gameTimer > 0);
 	}
 	
 	public boolean isInLobby()
 	{
-		return (getStarttimer() > 1);
+		return (startTimer > 1);
+	}
+	
+	public List<String> buildLeaderboard(Player player)
+	{
+		List<String> leaderboard = new ArrayList<String>();
+		
+		// Build kills map
+		HashMap<String, Double> kdrMap = new HashMap<String, Double>();
+		for (int i = 0; i < arenaPlayers.size(); i++)
+		{
+			ArenaPlayer ap = arenaPlayers.get(i);
+			if (ap != null && ! ap.isOut())
+			{
+				kdrMap.put(ap.getUsername(), ap.getKDR());
+			}
+		}
+		
+		final List<Map.Entry<String, Double>> sortedEntries = new ArrayList<Map.Entry<String, Double>>(kdrMap.entrySet());
+		Collections.sort(
+		sortedEntries, new Comparator<Map.Entry<String, Double>>()
+		{
+			@Override
+			public int compare(final Entry<String, Double> entry1, final Entry<String, Double> entry2)
+			{
+				return -entry1.getValue().compareTo(entry2.getValue());
+			}
+		});
+		
+		int pos = 1;
+		for (Map.Entry<String, Double> entry : sortedEntries)
+		{
+			String string = entry.getKey();
+			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
+			if (apl != null)
+			{
+				StringBuilder line = new StringBuilder();
+				line.append(FormatUtil.format("&6#{0}. ", pos));
+				line.append(FormatUtil.format(decideColor(apl)));
+				line.append(FormatUtil.format(apl.getUsername().equals(player.getName()) ? "&l" : ""));
+				line.append(FormatUtil.format(apl.getUsername() + "&r"));
+				line.append(FormatUtil.format("  &7Kills: &6{0}", apl.getKills()));
+				line.append(FormatUtil.format("  &7Deaths: &6{0}", apl.getDeaths()));
+				line.append(FormatUtil.format("  &7KDR: &6{0}", entry.getValue()));
+				leaderboard.add(line.toString());
+				pos++;
+			}
+		}
+		
+		return leaderboard;
+	}
+	
+	protected String decideColor(ArenaPlayer pl)
+	{
+		if (pl.getTeam() == 1)
+		{
+			return "&c";
+		}
+		else if (pl.getTeam() == 2)
+		{
+			return "&9";
+		}
+		else
+		{
+			return "&d";
+		}
 	}
 }

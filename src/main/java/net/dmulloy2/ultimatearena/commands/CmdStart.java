@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdStart extends UltimateArenaCommand
 {
@@ -12,7 +12,7 @@ public class CmdStart extends UltimateArenaCommand
 		this.name = "start";
 		this.optionalArgs.add("arena");
 		this.description = "force start an arena";
-		this.permission = PermissionType.CMD_START.permission;
+		this.permission = Permission.CMD_STOP;
 		
 		this.mustBePlayer = false;
 	}

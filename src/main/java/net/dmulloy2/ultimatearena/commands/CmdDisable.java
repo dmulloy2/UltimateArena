@@ -3,7 +3,7 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdDisable extends UltimateArenaCommand
 {
@@ -14,7 +14,7 @@ public class CmdDisable extends UltimateArenaCommand
 		this.aliases.add("di");
 		this.requiredArgs.add("arena");
 		this.description = "disable an arena";
-		this.permission = PermissionType.CMD_DISABLE.permission;
+		this.permission = Permission.CMD_DISABLE;
 		
 		this.mustBePlayer = false;
 	}

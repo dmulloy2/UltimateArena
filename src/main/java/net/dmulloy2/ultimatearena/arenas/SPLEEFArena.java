@@ -6,7 +6,6 @@ import net.dmulloy2.ultimatearena.Field3D;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
-import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +22,7 @@ public class SPLEEFArena extends FFAArena
 		super(az);
 		
 		this.type = FieldType.SPLEEF;
-		setMaxDeaths(2);
+		this.maxDeaths = 2;
 
 		this.spleefGround = new Field3D();
 		Location pos1 = az.getFlags().get(0);
@@ -31,7 +30,7 @@ public class SPLEEFArena extends FFAArena
 		spleefGround.setParam(pos1.getWorld(), pos1.getBlockX(), pos1.getBlockY(), pos1.getBlockZ(), 
 				pos2.getBlockX(), pos2.getBlockY(), pos2.getBlockZ());
 		
-		spleefGround.setType(az.getSpecialType());
+		spleefGround.setType(az.getSpecialType()); // Refresh the ground
 			
 		this.outZone = new Field3D();
 		Location pos3 = az.getFlags().get(2);
@@ -39,23 +38,16 @@ public class SPLEEFArena extends FFAArena
 		outZone.setParam(pos3.getWorld(), pos3.getBlockX(), pos3.getBlockY(), pos3.getBlockZ(),
 				pos4.getBlockX(), pos3.getBlockY(), pos3.getBlockZ());
 	}
-	
+
 	@Override
-	public void spawn(String name, boolean alreadySpawned)
+	public Location getSpawn(ArenaPlayer ap) 
 	{
-		super.spawn(name, false);
 		if (isInLobby())
-			return;
-		
-		Player p = Util.matchPlayer(name);
-		if (p != null)
 		{
-			Location loc = getBlockInSpleefArena(0);
-			if (loc != null) 
-			{
-				teleport(p, loc);
-			}
+			return super.getSpawn(ap);
 		}
+		
+		return getBlockInSpleefArena(0);
 	}
 
 	public Location getBlockInSpleefArena(int repeat)
@@ -87,9 +79,9 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void check() 
 	{
-		if (this.getAmtPlayersInArena() == 1)
+		if (getActivePlayers() == 1)
 		{
-			if (this.getAmtPlayersStartingInArena() > 1)
+			if (getStartingAmount() > 1)
 			{
 				this.setWinningTeam(-1);
 			}

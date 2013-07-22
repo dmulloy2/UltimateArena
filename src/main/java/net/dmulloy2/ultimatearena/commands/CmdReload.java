@@ -1,7 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdReload extends UltimateArenaCommand
 {
@@ -11,7 +11,7 @@ public class CmdReload extends UltimateArenaCommand
 		this.name = "reload";
 		this.aliases.add("rl");
 		this.description = "reload UltimateArena";
-		this.permission = PermissionType.CMD_RELOAD.permission;
+		this.permission = Permission.CMD_RELOAD;
 		
 		this.mustBePlayer = false;
 	}

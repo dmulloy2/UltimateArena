@@ -9,7 +9,7 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
 
 public class CONQUESTArena extends Arena
 {
@@ -21,14 +21,13 @@ public class CONQUESTArena extends Arena
 		super(az);
 		
 		this.type = FieldType.CONQUEST;
-		setStarttimer(180);
-		setGametimer(0);
-		setMaxgametime(60 * 20);
-		setMaxDeaths(900);
+		this.startTimer = 180;
+		this.maxGameTime = 60 * 20;
+		this.maxDeaths = 900;
 		
-		for (int i = 0; i < this.getArenaZone().getFlags().size(); i++) 
+		for (int i = 0; i < az.getFlags().size(); i++) 
 		{
-			this.getFlags().add( new ArenaFlag(this, this.getArenaZone().getFlags().get(i), plugin) );
+			flags.add( new ArenaFlag(this, az.getFlags().get(i), plugin) );
 		}
 	}
 	
@@ -36,7 +35,7 @@ public class CONQUESTArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.REDTEAMPOWER = getAmtPlayersInArena() * 4;
+		this.REDTEAMPOWER = getActivePlayers() * 4;
 		this.BLUETEAMPOWER = REDTEAMPOWER;
 		if (REDTEAMPOWER < 4) 
 		{
@@ -57,41 +56,42 @@ public class CONQUESTArena extends Arena
 	}
 	
 	@Override
-	public void spawn(String name, boolean alreadySpawned) 
+	public Location getSpawn(ArenaPlayer ap)
 	{
-		super.spawn(name, false);
-		Player p = Util.matchPlayer(name);
-		if (p != null) 
+		if (isInLobby())
 		{
-			ArenaPlayer ap = this.getArenaZone().getPlugin().getArenaPlayer(p);
-			if (ap != null) 
+			return super.getSpawn(ap);
+		}
+		
+		if (ap != null) 
+		{
+			if (!ap.isOut())
 			{
-				if (!ap.isOut())
+				List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
+				for (int i = 0; i < getFlags().size(); i++)
 				{
-					List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
-					for (int i = 0; i < getFlags().size(); i++)
+					if (getFlags().get(i).team == ap.getTeam())
 					{
-						if (getFlags().get(i).team == ap.getTeam())
+						if (getFlags().get(i).capped)
 						{
-							if (getFlags().get(i).capped)
-							{
-								spawnto.add(getFlags().get(i));
-							}
+							spawnto.add(getFlags().get(i));
 						}
 					}
-					
-					if (! spawnto.isEmpty())
+				}
+				
+				if (! spawnto.isEmpty())
+				{
+					int rand = Util.random(spawnto.size());
+					ArenaFlag flag = spawnto.get(rand);
+					if (flag != null)
 					{
-						int rand = Util.random(spawnto.size());
-						ArenaFlag flag = spawnto.get(rand);
-						if (flag != null)
-						{
-							teleport(p, flag.getLoc());
-						}
+						return flag.getLoc();
 					}
 				}
 			}
 		}
+		
+		return null;
 	}
 	
 	@Override
@@ -231,7 +231,7 @@ public class CONQUESTArena extends Arena
 			flag.checkNear(arenaPlayers);
 		}
 		
-		if (getStarttimer() <= 0) 
+		if (startTimer <= 0) 
 		{
 			if (!simpleTeamCheck(false)) 
 			{

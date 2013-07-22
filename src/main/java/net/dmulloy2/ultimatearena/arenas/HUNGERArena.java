@@ -9,6 +9,7 @@ import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,22 +22,32 @@ public class HUNGERArena extends Arena
 		super(az);
 		
 		this.type = FieldType.HUNGER;
-		setStarttimer(120);
-		setMaxgametime(60 * 10 * 3);
-		setMaxDeaths(1);
-		setAllowTeamKilling(true);
-		
-		for (int i = 0; i < this.getArenaZone().getSpawns().size(); i++) 
+		this.startTimer = 120;
+		this.maxGameTime = 60 * 10 * 3;
+		this.maxDeaths = 1;
+		this.allowTeamKilling = true;
+
+		for (int i = 0; i < az.getSpawns().size(); i++) 
 		{
-			this.getSpawns().add( new ArenaSpawn(this.getArenaZone().getSpawns().get(i).getWorld(), this.getArenaZone().getSpawns().get(i).getBlockX(), this.getArenaZone().getSpawns().get(i).getBlockY(), this.getArenaZone().getSpawns().get(i).getBlockZ()) );
+			spawns.add( new ArenaSpawn(az.getSpawns().get(i)) );
 		}
 	}
 	
 	@Override
-	public void spawn(String name, boolean alreadySpawned) 
+	public Location getSpawn(ArenaPlayer ap)
+	{
+		if (isInLobby())
+		{
+			return super.getSpawn(ap);
+		}
+		
+		return getRandomSpawn(ap);
+	}
+	
+	@Override
+	public void spawn(String name, boolean alreadySpawned)
 	{
 		super.spawn(name, false);
-		spawnRandom(name);
 		Player p = Util.matchPlayer(name);
 		if (p != null)
 		{
@@ -73,11 +84,11 @@ public class HUNGERArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (getStarttimer() <= 0) 
+		if (startTimer <= 0) 
 		{
 			if (isEmpty()) 
 			{
-				if (getAmtPlayersInArena() == 1) 
+				if (getActivePlayers() == 1) 
 				{
 					this.setWinningTeam(-1);
 					stop();
@@ -85,7 +96,7 @@ public class HUNGERArena extends Arena
 					{
 						spawn(arenaPlayers.get(i).getUsername(), false);
 					}
-					if (this.getAmtPlayersStartingInArena() > 1)
+					if (getStartingAmount() > 1)
 					{
 						this.rewardTeam(getWinningTeam(), "&9You won!", false);
 					}

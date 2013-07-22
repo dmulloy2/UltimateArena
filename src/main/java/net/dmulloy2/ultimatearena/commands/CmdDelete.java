@@ -1,7 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.PermissionType;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdDelete extends UltimateArenaCommand
 {
@@ -12,7 +12,7 @@ public class CmdDelete extends UltimateArenaCommand
 		this.aliases.add("x");
 		this.requiredArgs.add("arena");
 		this.description = "delete an arena";
-		this.permission = PermissionType.CMD_DELETE.permission;
+		this.permission = Permission.CMD_DELETE;
 		
 		this.mustBePlayer = false;
 	}
