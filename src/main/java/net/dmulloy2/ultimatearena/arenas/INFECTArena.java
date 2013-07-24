@@ -52,7 +52,8 @@ public class INFECTArena extends PVPArena
 		}
 		else
 		{
-			this.tellPlayers("&cError starting!");
+			tellPlayers("&cError starting!");
+			
 			stop();
 		}
 	}
@@ -72,7 +73,7 @@ public class INFECTArena extends PVPArena
 			
 			spawn(apl.getPlayer().getName(), true);
 			normalize(apl.getPlayer());
-			apl.decideHat(apl.getPlayer());
+			apl.decideHat();
 		}
 	}
 
@@ -81,27 +82,30 @@ public class INFECTArena extends PVPArena
 	{
 		if (startTimer <= 0)
 		{
-			if (!simpleTeamCheck(false)) 
+			if (! simpleTeamCheck(false)) 
 			{
-				if (this.getTeam1size() == 0)
+				if (getTeam1size() == 0)
 				{
-					this.setWinningTeam(2);
-					this.tellPlayers("&9Infected Win!");
-					this.stop();
-					this.rewardTeam(2, "&9You win!", true);
+					setWinningTeam(2);
+
+					stop();
+					
+					rewardTeam(2, true);
 				}
 				else
 				{
-					this.tellPlayers("&9One team is empty! game ended!");
-					this.stop();
+					tellPlayers("&9One team is empty! game ended!");
+					
+					stop();
 				}
 			}
 			else
 			{
 				if (getStartingAmount() <= 1) 
 				{
-					this.tellPlayers("&9Not enough people to play!");
-					this.stop();
+					tellPlayers("&9Not enough people to play!");
+					
+					stop();
 				}
 			}
 		}
@@ -116,7 +120,7 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onOutOfTime() 
 	{
-		this.rewardTeam(1, "&9You survived!", false);
+		rewardTeam(1, false);
 	}
 	
 	@Override
@@ -130,5 +134,18 @@ public class INFECTArena extends PVPArena
 		}
 		
 		pl.setTeam(2);
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		if (winningTeam == 2)
+		{
+			tellPlayers("&9The infected win!");
+		}
+		else if (winningTeam == 1)
+		{
+			tellPlayers("&9You have survived!");
+		}
 	}
 }

@@ -24,7 +24,6 @@ import net.dmulloy2.ultimatearena.util.Util;
 public class KOTHArena extends Arena
 {
 	public int MAXPOWER;
-	
 	public KOTHArena(ArenaZone az) 
 	{
 		super(az);
@@ -151,5 +150,11 @@ public class KOTHArena extends Arena
 		}
 		
 		return leaderboard;
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		// Do nothing...
 	}
 }

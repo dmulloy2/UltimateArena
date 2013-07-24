@@ -45,7 +45,7 @@ public class BOMBArena extends Arena
 	public void onOutOfTime() 
 	{
 		setWinningTeam(2);
-		rewardTeam(2, "&9You won!", false);
+		rewardTeam(winningTeam, false);
 	}
 	
 	@Override
@@ -87,40 +87,28 @@ public class BOMBArena extends Arena
 		{
 			simpleTeamCheck(true);
 		}
+		
 		bomb1.checkNear(arenaPlayers);
 		bomb2.checkNear(arenaPlayers);
 		
 		if (bomb1.isExploded() && bomb2.isExploded())
 		{
 			setWinningTeam(1);
-			tellPlayers("&6Red team won!");
+
 			stop();
-			rewardTeam(1, "&9You won!", false);
+			
+			rewardTeam(1, false);
 			return;
 		}
 		
 		if (REDTEAMPOWER <= 0) 
 		{
 			setWinningTeam(2);
-			tellPlayers("&6Blue team won!");
-			for (int i = 0; i < arenaPlayers.size(); i++)
-			{
-				ArenaPlayer ap = arenaPlayers.get(i);
-				if (!ap.isOut()) 
-				{
-					if (ap.getTeam() == 1)
-					{
-						ap.setOut(true);
-						setUpdatedTeams(true);
 
-						ap.sendMessage("&cYour team lost!");
-						endPlayer(ap, false);
-					}
-				}
-			}
-			
 			stop();
-			rewardTeam(2, "&9You won!", false);
+
+			rewardTeam(2, false);
+			return;
 		}
 	}
 }

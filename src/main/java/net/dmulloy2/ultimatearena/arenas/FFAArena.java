@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class FFAArena extends Arena 
 {
+	private ArenaPlayer winner;
 	public FFAArena(ArenaZone az)
 	{
 		super(az);
@@ -84,30 +85,39 @@ public class FFAArena extends Arena
 	@Override
 	public void check()
 	{
-		if (startTimer <= 0) 
+		if (isInGame())
 		{
 			if (isEmpty())
 			{
-				if (getActivePlayers() == 1) 
+				setWinningTeam(-1);
+				
+				stop();
+				
+				if (getStartingAmount() > 1)
 				{
-					this.setWinningTeam(-1);
-					stop();
+					rewardTeam(winningTeam, false);
 					
-					for (int i = 0; i < arenaPlayers.size(); i++) 
+					for (int i = 0; i < arenaPlayers.size(); i++)
 					{
-						spawn(arenaPlayers.get(i).getUsername(), false);
+						ArenaPlayer ap = arenaPlayers.get(i);
+						if (ap != null && ! ap.isOut())
+						{
+							this.winner = ap;
+						}
 					}
-					
-					if (getStartingAmount() > 1) 
-					{
-						this.rewardTeam(getWinningTeam(), "&9You won!", false);
-					}
-					else
-					{
-						this.tellPlayers("&9Not enough people to play!");
-					}
+				}
+				else
+				{
+					tellPlayers("&9Not enough people to play!");
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		if (winner != null)
+			tellPlayers("&6{0} &7has won!", winner.getUsername());
 	}
 }

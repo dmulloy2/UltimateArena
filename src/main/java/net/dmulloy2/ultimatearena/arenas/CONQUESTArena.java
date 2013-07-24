@@ -184,16 +184,12 @@ public class CONQUESTArena extends Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (ap != null && ! ap.isOut())
 			{
 				if (BLUETEAMPOWER <= 0) 
 				{
 					if (ap.getTeam() == 2)
 					{
-						ap.setOut(true);
-						setUpdatedTeams(true);
-						
-						ap.sendMessage("&cYour team lost!");
 						endPlayer(ap, false);
 					}
 				}
@@ -201,10 +197,6 @@ public class CONQUESTArena extends Arena
 				{
 					if (ap.getTeam() == 1)
 					{
-						ap.setOut(true);
-						setUpdatedTeams(true);
-						
-						ap.sendMessage("&cYour team lost!");
 						endPlayer(ap, false);
 					}
 				}
@@ -213,14 +205,12 @@ public class CONQUESTArena extends Arena
 		
 		if (BLUETEAMPOWER <= 0)
 		{
-			this.tellPlayers("&9Red team won!");
-			this.setWinningTeam(1);
+			setWinningTeam(1);
 		}
 		
 		if (REDTEAMPOWER <= 0) 
 		{
-			this.tellPlayers("&9Blue team won!");
-			this.setWinningTeam(2);
+			setWinningTeam(2);
 		}
 			
 		for (int i = 0; i < getFlags().size(); i++)
@@ -233,10 +223,11 @@ public class CONQUESTArena extends Arena
 		
 		if (startTimer <= 0) 
 		{
-			if (!simpleTeamCheck(false)) 
+			if (! simpleTeamCheck(false)) 
 			{
 				stop();
-				this.rewardTeam(-1, "&9You won!", false);
+				
+				rewardTeam(-1, false);
 			}
 		}
 	}

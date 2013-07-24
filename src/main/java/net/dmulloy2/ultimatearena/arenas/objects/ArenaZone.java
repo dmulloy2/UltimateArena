@@ -53,7 +53,7 @@ public class ArenaZone
 	
 	public ArenaZone(final UltimateArena plugin, File file)
 	{
-		this.setArenaName(getName(file));
+		this.arenaName = getName(file);
 		this.plugin = plugin;
 		
 		initialize();
@@ -61,7 +61,7 @@ public class ArenaZone
 	
 	public ArenaZone(final UltimateArena plugin, String str) 
 	{
-		this.setArenaName(str);
+		this.arenaName = str;
 		this.plugin = plugin;
 	}
 	
@@ -71,14 +71,15 @@ public class ArenaZone
 		this.arena = new Field();
 		
 		ArenaClass ac = plugin.classes.get(0);
-		this.setDefaultClass(ac.getName());
+		if (ac != null)
+			this.defaultClass = ac.getName();
 		
 		load();
 		
 		if (isLoaded())
 		{
-			lobby.setParam(getLobby1().getWorld(), getLobby1().getBlockX(), getLobby1().getBlockZ(), getLobby2().getBlockX(), getLobby2().getBlockZ());
-			arena.setParam(getArena1().getWorld(), getArena1().getBlockX(), getArena1().getBlockZ(), getArena2().getBlockX(), getArena2().getBlockZ());
+			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
+			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
 		}
 		else
 		{
@@ -93,17 +94,17 @@ public class ArenaZone
 	
 	public void save()
 	{
-		getPlugin().getFileHelper().save(this);
+		plugin.getFileHelper().save(this);
 	}
 	
 	public void load()
 	{
-		getPlugin().getFileHelper().load(this);
+		plugin.getFileHelper().load(this);
 	}
 
 	public boolean canLike(Player player)
 	{
-		return !getVoted().contains(player.getName());
+		return ! voted.contains(player.getName());
 	}
 	
 	public String getName(File file)

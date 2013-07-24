@@ -57,7 +57,7 @@ public class MOBArena extends Arena
 		
 		wave++;
 		this.mobPerWave = 4 + ((int)(getWave() * 1.5)) + (getActivePlayers() * 3);
-		mobtimer = (getWave()*4) + 20;
+		mobtimer = (wave * 4) + 20;
 		if (getWave() <= 1) 
 		{
 			mobtimer = 1;
@@ -135,8 +135,8 @@ public class MOBArena extends Arena
 	@Override
 	public void onOutOfTime()
 	{
-		this.setWinningTeam(-1);
-		this.rewardTeam(getWinningTeam(), "&9You won!", false);
+		setWinningTeam(-1);
+		rewardTeam(winningTeam, false);
 	}
 	
 	@Override
@@ -214,11 +214,11 @@ public class MOBArena extends Arena
 					{
 						for (int i = 0; i < mobPerWave; i++) 
 						{
-							Location loc = this.getArenaZone().getSpawns().get(Util.random(this.getArenaZone().getSpawns().size()));
-							String mob = this.spawning.get(Util.random(spawning.size()));
+							Location loc = az.getSpawns().get(Util.random(az.getSpawns().size()));
+							String mob = spawning.get(Util.random(spawning.size()));
 							LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
 							
-							if (newMob.getType() == EntityType.SKELETON)
+							if (newMob instanceof Skeleton)
 							{
 								if (Util.random(2) == 0 && getWave() >= 12)
 								{
@@ -226,7 +226,7 @@ public class MOBArena extends Arena
 									((Skeleton)newMob).setSkeletonType(Skeleton.SkeletonType.WITHER);
 								}
 							}
-							
+
 							mobs.add(newMob);
 						}
 					}
@@ -239,12 +239,29 @@ public class MOBArena extends Arena
 				stop();
 			}
 			
-			if (wave > maxWave) 
+			if (wave > maxWave)
 			{
 				setWinningTeam(-1);
-				tellPlayers("&aYou have beat the mob arena!");
+				
 				stop();
-				rewardTeam(-1, "&0You won!", false);
+				
+				rewardTeam(-1, false);
+			}
+		}
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		if (winningTeam == -1)
+		{
+			if (wave > maxWave)
+			{
+				tellPlayers("&9You have beat the MobArena!");
+			}
+			else
+			{
+				tellPlayers("&9You survived the MobArena!");
 			}
 		}
 	}

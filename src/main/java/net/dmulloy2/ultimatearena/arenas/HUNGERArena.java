@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class HUNGERArena extends Arena 
 {
+	private ArenaPlayer winner;
 	public HUNGERArena(ArenaZone az) 
 	{
 		super(az);
@@ -82,31 +83,42 @@ public class HUNGERArena extends Arena
 	}
 
 	@Override
-	public void check() 
+	public void check()
 	{
-		if (startTimer <= 0) 
+		if (isInGame())
 		{
-			if (isEmpty()) 
+			if (isEmpty())
 			{
-				if (getActivePlayers() == 1) 
+				setWinningTeam(-1);
+				
+				stop();
+				
+				if (getStartingAmount() > 1)
 				{
-					this.setWinningTeam(-1);
-					stop();
-					for (int i = 0; i < arenaPlayers.size(); i++) 
+					rewardTeam(winningTeam, false);
+					
+					for (int i = 0; i < arenaPlayers.size(); i++)
 					{
-						spawn(arenaPlayers.get(i).getUsername(), false);
+						ArenaPlayer ap = arenaPlayers.get(i);
+						if (ap != null && ! ap.isOut())
+						{
+							this.winner = ap;
+						}
 					}
-					if (getStartingAmount() > 1)
-					{
-						this.rewardTeam(getWinningTeam(), "&9You won!", false);
-					}
-					else
-					{
-						this.tellPlayers("&9Not enough people to play!");
-					}
+				}
+				else
+				{
+					tellPlayers("&9Not enough people to play!");
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		if (winner != null)
+			tellPlayers("&6{0} &7has won the HungerGames!", winner.getUsername());
 	}
 	
 	@Override

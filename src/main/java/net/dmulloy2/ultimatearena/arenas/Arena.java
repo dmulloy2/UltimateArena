@@ -32,13 +32,18 @@ import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 /**
- * Base Data Container for an arena
- * This can be extended for specific arenas
+ * Base Data Container for an arena.
+ * This can be extended for specific arena types.
  * @author dmulloy2
  */
 
 public abstract class Arena 
 {
+	public static enum Mode
+	{
+		LOBBY, INGAME, STOPPING, IDLE, DISABLED;
+	}
+	
 	protected List<ArenaPlayer> arenaPlayers = new ArrayList<ArenaPlayer>();
 	protected List<ArenaSpawn> spawns = new ArrayList<ArenaSpawn>();
 	protected List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
@@ -65,6 +70,8 @@ public abstract class Arena
 
 	protected boolean updatedTeams;
 	protected boolean disabled;
+	
+	protected Mode gameMode = Mode.DISABLED;
 
 	protected World world;
 
@@ -75,6 +82,10 @@ public abstract class Arena
 	protected ArenaConfig config;
 	protected ArenaZone az;
 	
+	/**
+	 * Creates a new Arena based around an {@link ArenaZone}
+	 * @param az - {@link ArenaZone} to base the {@link Arena} around
+	 */
 	public Arena(ArenaZone az) 
 	{
 		this.az = az;
@@ -88,6 +99,10 @@ public abstract class Arena
 		{
 			this.maxDeaths = 1;
 		}
+		
+		this.gameMode = Mode.LOBBY;
+		
+		updateSigns();
 	}
 	
 	/**
@@ -168,6 +183,9 @@ public abstract class Arena
 		
 		// Clear potion effects
 		pl.clearPotionEffects();
+		
+		// Update Signs
+		updateSigns();
 		
 		// Call ArenaJoinEvent
 		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
@@ -361,11 +379,11 @@ public abstract class Arena
 						{
 							if (ap.getDeaths() < getMaxDeaths()) 
 							{
+								plugin.debug("Spawning player: {0}", name);
+								
 								Location loc = getSpawn(ap);
 								if (loc != null) 
 								{
-									plugin.debug("Spawning player: {0}", name);
-									
 									teleport(p, loc);
 									
 									// Call spawn event
@@ -434,7 +452,7 @@ public abstract class Arena
 	 * @param string - Reward message
 	 * @param half - Whether or not to reward half
 	 */
-	public void rewardTeam(int team, String string, boolean half)
+	public void rewardTeam(int team, boolean half)
 	{
 		plugin.debug("Rewarding team {0}. Half: {1}", team, half);
 		
@@ -449,7 +467,6 @@ public abstract class Arena
 					if (player != null)
 					{
 						reward(ap, ap.getPlayer(), half);
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format(string));
 					}
 				}
 			}
@@ -475,6 +492,7 @@ public abstract class Arena
 
 			}
 		}
+		
 		this.winningTeam = team;
 	}
 	
@@ -491,10 +509,11 @@ public abstract class Arena
 			{
 				if (ap.getPoints() >= max)
 				{
+					tellPlayers("&7Player &6{0} &7has won!", ap.getUsername());
+					
 					stop();
 					
 					reward(ap, ap.getPlayer(), false);
-					tellPlayers("&7Player &6{0} &7has won!", ap.getUsername());
 				}
 			}
 		}
@@ -700,9 +719,13 @@ public abstract class Arena
 		tellPlayers("&cThis arena has been disabled!");
 		
 		this.gameTimer = -1;
-		this.disabled = true;
-
+		
 		stop();
+		
+		this.disabled = true;
+		this.gameMode = Mode.DISABLED;
+		
+		updateSigns();
 	}
 
 	/**
@@ -712,17 +735,23 @@ public abstract class Arena
 	{
 		if (isStopped()) return; // No need to stop multiple times
 		
-		setStopped(true);
+		plugin.outConsole("Stopping arena: {0}!", name);
+		
+		this.gameMode = Mode.STOPPING;
+		this.stopped = true;
+		
+		updateSigns();
+		
 		onStop();
 		
-		plugin.outConsole("Stopping arena: {0}!", name);
+		announceWinner();
 
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null)
 			{
-				Player player = Util.matchPlayer(ap.getPlayer().getName());
+				Player player = ap.getPlayer();
 				if (player != null)
 				{
 					if (plugin.isInArena(player)) 
@@ -739,13 +768,15 @@ public abstract class Arena
 						endPlayer(ap, false);
 					}
 				}
-				
-				ap.setOut(true);
 			}
 		}
 		
-		plugin.activeArena.remove(this);
+		this.gameMode = Mode.IDLE;
 		
+		updateSigns();
+		
+		plugin.activeArena.remove(this);
+
 		plugin.broadcast("&6Arena &b{0} &6has concluded!", name);
 	}
 	
@@ -805,6 +836,8 @@ public abstract class Arena
 
 		ap.setOut(true);
 		setUpdatedTeams(true);
+		
+		updateSigns();
 		
 		if (dead) 
 		{
@@ -897,10 +930,14 @@ public abstract class Arena
 			plugin.outConsole("Starting arena: {0} Players: {1}", getName(), getActivePlayers());
 			
 			this.start = true;
+			this.gameMode = Mode.INGAME;
+			
 			this.startingAmount = getActivePlayers();
 			
 			this.gameTimer = maxGameTime;
 			this.startTimer = -1;
+			
+			updateSigns();
 			
 			onStart();
 			spawnAll();
@@ -949,7 +986,7 @@ public abstract class Arena
 					{
 						player.setFireTicks(0);
 						player.setFoodLevel(20);
-						ap.decideHat(player);
+						ap.decideHat();
 					}
 					
 					ap.setHealtimer(ap.getHealtimer() - 1);
@@ -1380,5 +1417,32 @@ public abstract class Arena
 		{
 			return "&d";
 		}
+	}
+	
+	public Mode getGameMode()
+	{
+		return gameMode;
+	}
+	
+	public void updateSigns()
+	{
+		plugin.updateSigns(name);
+	}
+	
+	public void announceWinner()
+	{
+		if (winningTeam == 2)
+		{
+			tellPlayers("&9Blue team won!");
+		}
+		else if (winningTeam == 1)
+		{
+			tellPlayers("&9Red team won!");
+		}
+		else if (winningTeam == -1)
+		{
+			tellPlayers("&9Game ended in a tie!");
+		}
+		// else nobody won
 	}
 }

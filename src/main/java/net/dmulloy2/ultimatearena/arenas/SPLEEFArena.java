@@ -106,7 +106,7 @@ public class SPLEEFArena extends FFAArena
 		{
 			spleefGround.setType(az.getSpecialType()); // Refresh the ground
 			
-			rewardTeam(-1, "&9You won!", false);
+			rewardTeam(-1, false);
 			stop();
 		}
 	}
@@ -114,5 +114,11 @@ public class SPLEEFArena extends FFAArena
 	public Field3D getSpleefGround()
 	{
 		return spleefGround;
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		tellPlayers("&9You won!");
 	}
 }

@@ -685,6 +685,9 @@ public class FileHelper
 				fc.set("team2.z", team2.getBlockZ());
 			}
 			
+			fc.set("liked", az.getLiked());
+			fc.set("played", az.getTimesPlayed());
+			
 			fc.set("maxPlayers", az.getMaxPlayers());
 			fc.set("defaultClass", az.getDefaultClass());
 			
@@ -846,6 +849,12 @@ public class FileHelper
 				az.setTeam1spawn(new Location(world, fc.getInt("team1.x"), fc.getInt("team1.y"), fc.getInt("team1.z")));
 				
 				az.setTeam2spawn(new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z")));
+			}
+			
+			if (fc.isSet("liked"))
+			{
+				az.setLiked(fc.getInt("liked"));
+				az.setTimesPlayed(fc.getInt("played"));
 			}
 			
 			az.setMaxPlayers(fc.getInt("maxPlayers"));

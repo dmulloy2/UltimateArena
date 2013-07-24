@@ -23,6 +23,11 @@ import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Kit;
 import com.earth2me.essentials.User;
 
+/**
+ * Represents a player in an arena
+ * @author dmulloy2
+ */
+
 public class ArenaPlayer 
 {
 	private int kills = 0;
@@ -50,6 +55,12 @@ public class ArenaPlayer
 	private List<ItemStack> savedInventory = new ArrayList<ItemStack>();
 	private List<ItemStack> savedArmor = new ArrayList<ItemStack>();
 	
+	/**
+	 * Creates a new ArenaPlayer instance
+	 * @param player - Base {@link Player} to create the arena player around
+	 * @param arena - {@link Arena} the player is in
+	 * @param plugin - {@link UltimateArena} plugin instance
+	 */
 	public ArenaPlayer(Player player, Arena arena, final UltimateArena plugin)
 	{
 		this.player = player;
@@ -62,15 +73,18 @@ public class ArenaPlayer
 		this.mclass = plugin.getArenaClass(arena.getArenaZone().getDefaultClass());
 	}
 	
-	public void decideHat(Player p)
+	/**
+	 * Decides the player's hat
+	 */
+	public void decideHat()
 	{
 		if (mclass != null && !mclass.usesHelmet())
 		{
-			p.getInventory().setHelmet(null);
+			player.getInventory().setHelmet(null);
 			return;
 		}
 		
-		if (p.getInventory().getHelmet() == null)
+		if (player.getInventory().getHelmet() == null)
 		{
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET, 1);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
@@ -79,15 +93,25 @@ public class ArenaPlayer
 				teamColor = Color.BLUE;
 			meta.setColor(teamColor);
 			itemStack.setItemMeta(meta);
-			p.getInventory().setHelmet(itemStack);
+			player.getInventory().setHelmet(itemStack);
 		}
 	}
 	
-	private void giveItem(int slot, ItemStack stack) 
+	/**
+	 * Gives the player an item
+	 * @param slot - Slot to put the item in
+	 * @param stack - {@link ItemStack} to give the player
+	 */
+	public void giveItem(int slot, ItemStack stack) 
 	{
 		player.getInventory().setItem(slot, stack);
 	}
 	
+	/**
+	 * Gives the player armor
+	 * @param slot - Armor slot to put. Must be between 0 and 3
+	 * @param stack - {@link ItemStack} to give as armor
+	 */
 	public void giveArmor(int slot, ItemStack stack)
 	{
 		if (stack != null)
@@ -107,6 +131,9 @@ public class ArenaPlayer
 		}
 	}
 	
+	/**
+	 * Saves the player's inventory
+	 */
 	public void saveInventory()
 	{
 		PlayerInventory inv = getPlayer().getInventory();
@@ -127,6 +154,9 @@ public class ArenaPlayer
 		}
 	}
 	
+	/**
+	 * Clears the player's inventory
+	 */
 	public void clearInventory()
 	{
 		PlayerInventory inv = getPlayer().getInventory();
@@ -137,6 +167,9 @@ public class ArenaPlayer
 		inv.clear();
 	}
 	
+	/**
+	 * Returns the player's inventory
+	 */
 	public void returnInventory()
 	{
 		PlayerInventory inv = getPlayer().getInventory();
@@ -170,6 +203,9 @@ public class ArenaPlayer
 		}
 	}
 	
+	/**
+	 * Readies the player for spawning
+	 */
 	public void spawn()
 	{
 		if (getAmtkicked() > 10)
@@ -180,9 +216,14 @@ public class ArenaPlayer
 		Player p = Util.matchPlayer(getPlayer().getName());
 		p.getInventory().clear();
 		
-		giveClassItems(p);
+		giveClassItems();
 	}
 	
+	/**
+	 * Sets a player's class
+	 * @param ac - {@link ArenaClass} to set the player's class to
+	 * @param command - Whether or not it was changed via command
+	 */
 	public void setClass(ArenaClass ac, boolean command)
 	{
 		this.mclass = ac;
@@ -190,12 +231,15 @@ public class ArenaPlayer
 		clearInventory();
 		clearPotionEffects();
 
-		giveClassItems(getPlayer());
+		giveClassItems();
 	}
 	
-	public void giveClassItems(Player p)
+	/**
+	 * Gives the player their class items
+	 */
+	public void giveClassItems()
 	{
-		decideHat(p);
+		decideHat();
 		
 		if (! arena.isInGame())
 			return;
@@ -216,7 +260,7 @@ public class ArenaPlayer
 				PluginManager pm = plugin.getServer().getPluginManager();
 				Plugin essPlugin = pm.getPlugin("Essentials");
 				IEssentials ess = (IEssentials) essPlugin;
-				User user = ess.getUser(p);
+				User user = ess.getUser(player);
 								
 				List<String> items = Kit.getItems(user, mclass.getEssentialsKit());
 					
@@ -248,6 +292,9 @@ public class ArenaPlayer
 		}
 	}
 
+	/**
+	 * Clears a player's potion effects
+	 */
 	public void clearPotionEffects()
 	{
 		for (PotionEffect effect : getPlayer().getActivePotionEffects())
@@ -256,6 +303,7 @@ public class ArenaPlayer
 		}
 	}
 
+	// TODO: Explanations for the rest of these
 	public int getKills()
 	{
 		return kills;
@@ -411,6 +459,10 @@ public class ArenaPlayer
 		setGameXP(getGameXP() - xp);
 	}
 	
+	/**
+	 * Gets a player's KDR (Kill-Death Ratio)
+	 * @return KDR
+	 */
 	public double getKDR()
 	{
 		double k = (double) kills;

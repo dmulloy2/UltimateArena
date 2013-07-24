@@ -41,15 +41,17 @@ public class CTFArena extends Arena
 		{
 			if (!simpleTeamCheck(false)) 
 			{
-				this.tellPlayers("&9One team is empty! game ended!");
-				this.stop();
+				tellPlayers("&9One team is empty! game ended!");
+				
+				stop();
 			}
 			else
 			{
 				if (getStartingAmount() <= 1) 
 				{
-					this.tellPlayers("&9Not enough people to play!");
-					this.stop();
+					tellPlayers("&9Not enough people to play!");
+					
+					stop();
 				}
 			}
 		}
@@ -84,15 +86,17 @@ public class CTFArena extends Arena
 	{
 		if (redcap >= 3 && bluecap >= 3)
 		{
-			this.setWinningTeam(-1);
-			this.stop();
-			this.rewardTeam(-1, "Tie! Half prize to everyone", true);
+			setWinningTeam(-1);
+			
+			stop();
+			
+			rewardTeam(-1, true);
 			return;
 		}
+
+		stop();
 		
-		this.tellPlayers(lastcap + "&7team won the game!");
-		this.stop();
-		this.rewardTeam(this.getWinningTeam(), "You win!", false);
+		rewardTeam(winningTeam, false);
 	}
 	
 	@Override
@@ -123,6 +127,20 @@ public class CTFArena extends Arena
 			{
 				onStop();
 			}
+		}
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		if (winningTeam == -1)
+		{
+			tellPlayers("&9Game ended in a tie! Half prize to everyone!");
+		}
+		else
+		{
+			if (lastcap != null)
+				tellPlayers("{0} &7team won the game!", lastcap);
 		}
 	}
 }

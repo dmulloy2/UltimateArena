@@ -47,7 +47,7 @@ public class ArenaConfig
 		try
 		{
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			if (arenaName.equals("mob"))
+			if (arenaName.equalsIgnoreCase("mob"))
 			{
 				this.maxWave = fc.getInt("maxWave");
 			}

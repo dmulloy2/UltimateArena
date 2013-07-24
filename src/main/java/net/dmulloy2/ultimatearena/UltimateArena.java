@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.arenas.*;
+import net.dmulloy2.ultimatearena.arenas.Arena.Mode;
 import net.dmulloy2.ultimatearena.arenas.objects.*;
 import net.dmulloy2.ultimatearena.commands.*;
 import net.dmulloy2.ultimatearena.listeners.*;
@@ -131,9 +132,7 @@ public class UltimateArena extends JavaPlugin
 		// Arena Signs
 		fileHelper.loadSigns();
 		outConsole("Loaded {0} arena signs!", arenaSigns.size());
-		
-		new SignUpdateTask().runTaskTimer(this, 2L, 20L);
-		
+
 		long finish = System.currentTimeMillis();
 		
 		outConsole("{0} has been enabled ({1}ms)", getDescription().getFullName(), finish - start);
@@ -153,6 +152,12 @@ public class UltimateArena extends JavaPlugin
 		
 		// Save Signs
 		fileHelper.refreshSignSave();
+		
+		// Refresh arena saves
+		for (ArenaZone az : loadedArena)
+		{
+			az.save();
+		}
 		
 		// Clear Memory
 		clearMemory();
@@ -521,7 +526,12 @@ public class UltimateArena extends JavaPlugin
 		if (isInArena(player))
 		{
 			Arena a = getArena(player);
-			a.endPlayer(getArenaPlayer(player), false);
+			ArenaPlayer ap = getArenaPlayer(player);
+			a.endPlayer(ap, false);
+			
+			ap.sendMessage("&bYou have left the arena!");
+			
+			a.tellPlayers("&b{0} has left the arena!", player.getName());
 		}
 		else
 		{
@@ -610,7 +620,7 @@ public class UltimateArena extends JavaPlugin
 		Arena a = getArena(name);
 		if (a != null)
 		{
-			if (a.isInLobby())
+			if (a.getGameMode() == Mode.LOBBY)
 			{
 				if (a.getActivePlayers() + 1 <= az.getMaxPlayers())
 				{
@@ -647,18 +657,18 @@ public class UltimateArena extends JavaPlugin
 			for (int i = 0; i < activeArena.size(); i++)
 			{
 				Arena aar = activeArena.get(i);
-				if (aar.isDisabled() && aar.getArenaZone().equals(a))
+				if (aar.getName().equalsIgnoreCase(name))
 				{
-					disabled = true;
+					disabled = aar.getGameMode() == Mode.DISABLED;
 				}
 			}
 			
 			for (int ii = 0; ii < loadedArena.size(); ii++)
 			{
 				ArenaZone aaz = loadedArena.get(ii);
-				if (aaz.isDisabled() && aaz.equals(a))
+				if (aaz.getArenaName().equalsIgnoreCase(name))
 				{
-					disabled = true;
+					disabled = aaz.isDisabled();
 				}
 			}
 			
@@ -965,6 +975,17 @@ public class UltimateArena extends JavaPlugin
 		return economy != null;
 	}
     
+    public void updateSigns(String name)
+    {
+    	for (ArenaSign sign : arenaSigns)
+    	{
+    		if (sign.getArena().equalsIgnoreCase(name))
+    		{
+    			sign.update();
+    		}
+    	}
+    }
+    
     // TODO: Replace these with much more active updaters
     public class ArenaUpdateTask extends BukkitRunnable
 	{
@@ -978,17 +999,4 @@ public class UltimateArena extends JavaPlugin
 			}
 		}
 	}
-    
-    public class SignUpdateTask extends BukkitRunnable
-    {
-    	@Override
-    	public void run()
-    	{
-    		for (int i = 0; i < arenaSigns.size(); i++)
-    		{
-    			ArenaSign sign = arenaSigns.get(i);
-    			sign.update();
-    		}
-    	}
-    }
 }

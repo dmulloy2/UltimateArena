@@ -24,22 +24,31 @@ public class PVPArena extends Arena
 	@Override
 	public void check() 
 	{
-		if (startTimer <= 0)
+		if (isInGame())
 		{
-			if (!simpleTeamCheck(false)) 
+			if (! simpleTeamCheck(false)) 
 			{
-				this.setWinningTeam(-1);
-				this.stop();
-				this.rewardTeam(-1, "&9You won!", false);
+				setWinningTeam(-1);
+				
+				stop();
+				
+				rewardTeam(-1, false);
 			}
 			else
 			{
 				if (getStartingAmount() <= 1) 
 				{
-					this.tellPlayers("&9Not enough people to play!");
-					this.stop();
+					tellPlayers("&9Not enough people to play!");
+					
+					stop();
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		tellPlayers("&9You won!");
 	}
 }
