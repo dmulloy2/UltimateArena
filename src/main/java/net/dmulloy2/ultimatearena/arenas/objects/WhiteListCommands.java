@@ -26,7 +26,7 @@ public class WhiteListCommands
 			}
 			
 			StringBuilder check1 = new StringBuilder();
-			for (int i=0; i<check.length; i++)
+			for (int i = 0; i < check.length; i++)
 			{
 				check1.append(check[i]);
 			}
@@ -36,6 +36,7 @@ public class WhiteListCommands
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	

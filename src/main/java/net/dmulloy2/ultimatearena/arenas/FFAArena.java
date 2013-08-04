@@ -118,6 +118,6 @@ public class FFAArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellPlayers("&6{0} &7has won!", winner.getUsername());
+			tellPlayers("&6{0} &7has won!", winner.getName());
 	}
 }

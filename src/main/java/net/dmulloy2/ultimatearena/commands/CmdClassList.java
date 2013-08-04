@@ -31,7 +31,7 @@ public class CmdClassList extends UltimateArenaCommand
 			for (ItemStack weapon : ac.getWeapons())
 			{
 				name = FormatUtil.getFriendlyName(weapon.getType());
-				sendMessage("&6- {0}", name);
+				sendMessage("&6- {0} x {1}", name, weapon.getAmount());
 			}
 		}
 	}

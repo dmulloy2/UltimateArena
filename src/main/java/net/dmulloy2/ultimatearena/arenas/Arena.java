@@ -167,7 +167,6 @@ public abstract class Arena
 		player.setFlySpeed(0.1F);
 		player.setFlying(false);
 		
-		
 		// If essentials is found, remove god mode.
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("Essentials"))
@@ -191,7 +190,7 @@ public abstract class Arena
 		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
 		plugin.getServer().getPluginManager().callEvent(joinEvent);
 		
-		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getUsername(), getActivePlayers(), az.getMaxPlayers());
+		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), getActivePlayers(), az.getMaxPlayers());
 	}
 	
 	/**
@@ -373,7 +372,7 @@ public abstract class Arena
 				for (int i = 0; i < arenaPlayers.size(); i++)
 				{
 					ArenaPlayer ap = arenaPlayers.get(i);
-					if (ap.getUsername().equals(name))
+					if (ap.getName().equals(name))
 					{
 						if (ap != null && ! ap.isOut())
 						{
@@ -509,7 +508,7 @@ public abstract class Arena
 			{
 				if (ap.getPoints() >= max)
 				{
-					tellPlayers("&7Player &6{0} &7has won!", ap.getUsername());
+					tellPlayers("&7Player &6{0} &7has won!", ap.getName());
 					
 					stop();
 					
@@ -593,7 +592,7 @@ public abstract class Arena
 	 */
 	public Location getRandomSpawn(ArenaPlayer ap)
 	{
-		plugin.debug("Getting a random spawn for {0}", ap.getUsername());
+		plugin.debug("Getting a random spawn for {0}", ap.getName());
 		
 		if (ap != null && !ap.isOut())
 		{
@@ -668,7 +667,7 @@ public abstract class Arena
 	 */
 	public void doKillStreak(ArenaPlayer ap) 
 	{
-		plugin.debug("Doing KillStreak for player: {0}", ap.getUsername());
+		plugin.debug("Doing KillStreak for player: {0}", ap.getName());
 		
 		Player pl = Util.matchPlayer(ap.getPlayer().getName());
 		if (pl != null)
@@ -816,7 +815,7 @@ public abstract class Arena
 	 */
 	public void endPlayer(ArenaPlayer ap, boolean dead) 
 	{
-		plugin.debug("Ending Player: {0} Dead: {1}", ap.getUsername(), dead);
+		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
 		
 		Player player = ap.getPlayer();
 		if (player != null) 
@@ -842,7 +841,7 @@ public abstract class Arena
 		if (dead) 
 		{
 			ap.sendMessage("&9You have exceeded the death limit!");
-			tellPlayers("&b{0} has been eliminated!", ap.getUsername());
+			tellPlayers("&b{0} has been eliminated!", ap.getName());
 			
 			if (getActivePlayers() > 1)
 			{
@@ -1022,7 +1021,7 @@ public abstract class Arena
 					// Make sure they are still in the Arena
 					if (!plugin.isInArena(player.getLocation()))
 					{
-						plugin.debug("Player {0} got out of the arena! Putting him back in!", ap.getUsername());
+						plugin.debug("Player {0} got out of the arena! Putting him back in!", ap.getName());
 
 						spawn(ap.getPlayer().getName(), false);
 						ap.setAmtkicked(ap.getAmtkicked() + 1);
@@ -1365,7 +1364,7 @@ public abstract class Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && ! ap.isOut())
 			{
-				kdrMap.put(ap.getUsername(), ap.getKDR());
+				kdrMap.put(ap.getName(), ap.getKDR());
 			}
 		}
 		
@@ -1390,8 +1389,8 @@ public abstract class Arena
 				StringBuilder line = new StringBuilder();
 				line.append(FormatUtil.format("&6#{0}. ", pos));
 				line.append(FormatUtil.format(decideColor(apl)));
-				line.append(FormatUtil.format(apl.getUsername().equals(player.getName()) ? "&l" : ""));
-				line.append(FormatUtil.format(apl.getUsername() + "&r"));
+				line.append(FormatUtil.format(apl.getName().equals(player.getName()) ? "&l" : ""));
+				line.append(FormatUtil.format(apl.getName() + "&r"));
 				line.append(FormatUtil.format("  &7Kills: &6{0}", apl.getKills()));
 				line.append(FormatUtil.format("  &7Deaths: &6{0}", apl.getDeaths()));
 				line.append(FormatUtil.format("  &7KDR: &6{0}", entry.getValue()));

@@ -87,7 +87,7 @@ public class CTFFlagBase extends FlagBase
 							}
 								
 							a.setGameXP(a.getGameXP() + 500);
-							arena.tellPlayers("&a{0} &7captured the {1} &7flag!", a.getUsername(), enemyflag.getFlagType());
+							arena.tellPlayers("&a{0} &7captured the {1} &7flag!", a.getName(), enemyflag.getFlagType());
 
 							if (team == 1)
 							{

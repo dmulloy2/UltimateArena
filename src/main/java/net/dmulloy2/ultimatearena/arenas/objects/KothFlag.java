@@ -72,7 +72,7 @@ public class KothFlag extends ArenaFlag
 			ArenaPlayer ap = marena.getArenaPlayers().get(i);
 			if (ap != null && ! ap.isOut())
 			{
-				pointsMap.put(ap.getUsername(), ap.getPoints());
+				pointsMap.put(ap.getName(), ap.getPoints());
 			}
 		}
 		
@@ -97,9 +97,9 @@ public class KothFlag extends ArenaFlag
 			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
 			if (apl != null)
 			{
-				if (leader == null || ! apl.getUsername().equals(leader.getUsername()))
+				if (leader == null || ! apl.getName().equals(leader.getName()))
 				{
-					marena.tellPlayers("&b{0} has taken the lead!", apl.getUsername());
+					marena.tellPlayers("&b{0} has taken the lead!", apl.getName());
 					this.leader = apl;
 				}
 				pos++;

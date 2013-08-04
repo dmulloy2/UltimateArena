@@ -28,6 +28,7 @@ public class CmdForceStop extends UltimateArenaCommand
 			{
 				Arena a = plugin.activeArena.get(i);
 				a.stop();
+				
 				found = true;
 			}
 			

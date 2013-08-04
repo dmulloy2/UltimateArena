@@ -6,6 +6,7 @@ import org.bukkit.block.Sign;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.util.Util;
 
 /**
  * Represents an ArenaSign, whether it be join or not
@@ -84,8 +85,8 @@ public class ArenaSign
 	}
 	
 	/**
-	 * Gets the status of the Arena
-	 * @return Status of the Arena
+	 * Gets the status of the {@link Arena}
+	 * @return Status of the {@link Arena}
 	 */
 	public String getStatus()
 	{
@@ -150,5 +151,27 @@ public class ArenaSign
 	public int getId()
 	{
 		return id;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder ret = new StringBuilder();
+		ret.append("ArenaSign{");
+		ret.append("id=" + id + ", ");
+		ret.append("loc=" + Util.locationToString(loc));
+		ret.append("}");
+		
+		return ret.toString();
+	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		if (!(object instanceof ArenaSign))
+			return false;
+
+		ArenaSign as = (ArenaSign)object;
+		return (as.id == id);
 	}
 }

@@ -114,7 +114,7 @@ public class KOTHArena extends Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && ! ap.isOut())
 			{
-				pointsMap.put(ap.getUsername(), ap.getPoints());
+				pointsMap.put(ap.getName(), ap.getPoints());
 			}
 		}
 		
@@ -139,8 +139,8 @@ public class KOTHArena extends Arena
 				StringBuilder line = new StringBuilder();
 				line.append(FormatUtil.format("&6#{0}. ", pos));
 				line.append(FormatUtil.format(decideColor(apl)));
-				line.append(FormatUtil.format(apl.getUsername().equals(player.getName()) ? "&l" : ""));
-				line.append(FormatUtil.format(apl.getUsername() + "&r"));
+				line.append(FormatUtil.format(apl.getName().equals(player.getName()) ? "&l" : ""));
+				line.append(FormatUtil.format(apl.getName() + "&r"));
 				line.append(FormatUtil.format("  &7Kills: &6{0}", apl.getKills()));
 				line.append(FormatUtil.format("  &7Deaths: &6{0}", apl.getDeaths()));
 				line.append(FormatUtil.format("  &7Points: &6{0}", entry.getValue()));

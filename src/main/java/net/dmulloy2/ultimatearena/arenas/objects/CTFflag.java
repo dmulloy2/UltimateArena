@@ -158,7 +158,7 @@ public class CTFflag
 								setRiding(pl);
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", apl.getUsername(), getFlagType());
+								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", apl.getName(), getFlagType());
 								return;
 							}
 							else

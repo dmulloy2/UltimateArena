@@ -44,7 +44,7 @@ public class ArenaPlayer
 	private boolean canReward = false;
 	
 	private Player player;
-	private String username;
+	private String name;
 	
 	private Arena arena;
 	private ArenaClass mclass;
@@ -64,7 +64,7 @@ public class ArenaPlayer
 	public ArenaPlayer(Player player, Arena arena, final UltimateArena plugin)
 	{
 		this.player = player;
-		this.username = player.getName();
+		this.name = player.getName();
 		this.spawnBack = player.getLocation();
 		this.baselevel = player.getLevel();
 		
@@ -389,9 +389,9 @@ public class ArenaPlayer
 		this.canReward = canReward;
 	}
 
-	public String getUsername() 
+	public String getName()
 	{
-		return username;
+		return name;
 	}
 	
 	public Location getSpawnBack() 

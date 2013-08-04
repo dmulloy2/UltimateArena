@@ -118,7 +118,7 @@ public class HUNGERArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellPlayers("&6{0} &7has won the HungerGames!", winner.getUsername());
+			tellPlayers("&6{0} &7has won the HungerGames!", winner.getName());
 	}
 	
 	@Override
@@ -127,6 +127,6 @@ public class HUNGERArena extends Arena
 		super.onPlayerDeath(pl);
 		
 		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
-		tellPlayers("&cTribute &6{0} &chas fallen!", pl.getUsername());
+		tellPlayers("&cTribute &6{0} &chas fallen!", pl.getName());
 	}
 }

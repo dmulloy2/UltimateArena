@@ -659,7 +659,7 @@ public class UltimateArena extends JavaPlugin
 				Arena aar = activeArena.get(i);
 				if (aar.getName().equalsIgnoreCase(name))
 				{
-					disabled = aar.getGameMode() == Mode.DISABLED;
+					disabled = aar.isDisabled();
 				}
 			}
 			
@@ -764,7 +764,7 @@ public class UltimateArena extends JavaPlugin
 			ArenaPlayer ap = a.getArenaPlayer(player);
 			if (ap != null)
 			{
-				if (ap.getUsername().equals(player.getName()))
+				if (ap.getName().equals(player.getName()))
 					return a;
 			}
 		}
