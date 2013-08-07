@@ -91,7 +91,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent event) 
 	{
 		Action action = event.getAction();
@@ -156,7 +156,7 @@ public class PlayerListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onSignInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
