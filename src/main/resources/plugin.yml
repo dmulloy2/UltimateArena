@@ -4,6 +4,7 @@ version: "${project.version}"
 author: dmulloy2
 softdepend: [SwornGuns, Vault, Essentials]
 description: The Ultimate in Minecraft death sports and spleef!
+load: postworld
 commands:
   ua:
     description: Ultimate Arena base command

@@ -713,6 +713,12 @@ public class FileHelper
 			az.setArenaType(FieldType.getByName(fc.getString("type")));
 			
 			World world = plugin.getServer().getWorld(fc.getString("world"));
+			if (world == null)
+			{
+				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
+				return;
+			}
+			
 			az.setWorld(world);
 			
 			az.setLobby1(new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z")));

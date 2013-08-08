@@ -112,6 +112,16 @@ public class ArenaCreator
 	
 	public void complete()
 	{
+		// World Check :)
+		if (lobby1.getWorld().getUID() != arena1.getWorld().getUID())
+		{
+			sendMessage("&cCould not create Arena: The lobby and arena must be in the same world!");
+			sendMessage("&cEach arena should have its own lobby, one central lobby is not supported!");
+			
+			plugin.makingArena.remove(this);
+			return;
+		}
+		
 		ArenaZone az = new ArenaZone(plugin, getArenaName());
 		az.setArenaType(arenaType);
 		az.setLobbyBLUspawn(lobbyBLUspawn);
