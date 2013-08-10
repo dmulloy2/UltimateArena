@@ -142,6 +142,9 @@ public abstract class Arena
 		pl.setTeam(getTeam());
 		this.updatedTeams = true;
 		
+		// Teleport the player to the lobby spawn
+		spawn(player.getName(), false);
+		
 		// Save and clear Inventory
 		if (plugin.getConfig().getBoolean("saveInventories", true))
 		{
@@ -150,10 +153,7 @@ public abstract class Arena
 			pl.saveInventory();
 			pl.clearInventory();
 		}
-		
-		// Teleport the player to the lobby spawn
-		spawn(player.getName(), false);
-		
+
 		// Make sure the player is in survival
 		player.setGameMode(GameMode.SURVIVAL);
 		
@@ -820,13 +820,13 @@ public abstract class Arena
 		Player player = ap.getPlayer();
 		if (player != null) 
 		{
-			teleport(player, ap.getSpawnBack());
-			
 			normalize(player);
 			returnXP(ap);
 			ap.returnInventory();
 
 			plugin.removePotions(player);
+			
+			teleport(player, ap.getSpawnBack());
 		}
 		
 		// Call Arena leave event
