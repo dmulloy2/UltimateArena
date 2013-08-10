@@ -364,7 +364,7 @@ public abstract class Arena
 	{
 		plugin.debug("Attempting to spawn player: {0}. Already Spawned: {1}", name, alreadyspawned);
 		
-		if (! isStopped())
+		if (! stopped)
 		{
 			Player p = Util.matchPlayer(name);
 			if (p != null) 
@@ -732,7 +732,7 @@ public abstract class Arena
 	 */
 	public void stop()
 	{
-		if (isStopped()) return; // No need to stop multiple times
+		if (stopped) return; // No need to stop multiple times
 		
 		plugin.outConsole("Stopping arena: {0}!", name);
 		
@@ -834,7 +834,8 @@ public abstract class Arena
 		plugin.getServer().getPluginManager().callEvent(leaveEvent);
 
 		ap.setOut(true);
-		setUpdatedTeams(true);
+		
+		this.updatedTeams = true;
 		
 		updateSigns();
 		
@@ -877,7 +878,7 @@ public abstract class Arena
 	 */
 	public void checkTimers() 
 	{
-		if (isStopped())
+		if (stopped)
 		{
 			arenaPlayers.clear();
 			return;
@@ -889,7 +890,7 @@ public abstract class Arena
 			reloadConfig();
 		}
 		
-		if (!isPauseStartTimer())
+		if (! pauseStartTimer)
 		{
 			startTimer--;
 			broadcastTimer--;
@@ -1062,7 +1063,7 @@ public abstract class Arena
 					}
 					if (gameTimer == 60 && maxGameTime > 60)
 					{
-						ap.sendMessage("&6{0} &7minute(s) until end!", (gameTimer - 60) / 60);
+						ap.sendMessage("&6{0} &7minute(s) until end!", gameTimer / 60);
 					}
 					if (gameTimer == maxGameTime/2) 
 					{
@@ -1073,7 +1074,7 @@ public abstract class Arena
 					decideXPBar(ap);
 							
 					// End dead players
-					if (!isStopped()) 
+					if (! stopped) 
 					{
 						if (ap.getDeaths() >= getMaxDeaths()) 
 						{

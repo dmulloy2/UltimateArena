@@ -23,16 +23,60 @@ import java.util.List;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import net.dmulloy2.ultimatearena.arenas.*;
+import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.Arena.Mode;
-import net.dmulloy2.ultimatearena.arenas.objects.*;
-import net.dmulloy2.ultimatearena.commands.*;
-import net.dmulloy2.ultimatearena.listeners.*;
-import net.dmulloy2.ultimatearena.permissions.*;
-import net.dmulloy2.ultimatearena.util.*;
+import net.dmulloy2.ultimatearena.arenas.BOMBArena;
+import net.dmulloy2.ultimatearena.arenas.CONQUESTArena;
+import net.dmulloy2.ultimatearena.arenas.CTFArena;
+import net.dmulloy2.ultimatearena.arenas.FFAArena;
+import net.dmulloy2.ultimatearena.arenas.HUNGERArena;
+import net.dmulloy2.ultimatearena.arenas.INFECTArena;
+import net.dmulloy2.ultimatearena.arenas.KOTHArena;
+import net.dmulloy2.ultimatearena.arenas.MOBArena;
+import net.dmulloy2.ultimatearena.arenas.PVPArena;
+import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaConfig;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaCreator;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.arenas.objects.WhiteListCommands;
+import net.dmulloy2.ultimatearena.commands.CmdClass;
+import net.dmulloy2.ultimatearena.commands.CmdClassList;
+import net.dmulloy2.ultimatearena.commands.CmdCreate;
+import net.dmulloy2.ultimatearena.commands.CmdDelete;
+import net.dmulloy2.ultimatearena.commands.CmdDisable;
+import net.dmulloy2.ultimatearena.commands.CmdDislike;
+import net.dmulloy2.ultimatearena.commands.CmdEnable;
+import net.dmulloy2.ultimatearena.commands.CmdForceStop;
+import net.dmulloy2.ultimatearena.commands.CmdHelp;
+import net.dmulloy2.ultimatearena.commands.CmdInfo;
+import net.dmulloy2.ultimatearena.commands.CmdJoin;
+import net.dmulloy2.ultimatearena.commands.CmdKick;
+import net.dmulloy2.ultimatearena.commands.CmdLeave;
+import net.dmulloy2.ultimatearena.commands.CmdLike;
+import net.dmulloy2.ultimatearena.commands.CmdList;
+import net.dmulloy2.ultimatearena.commands.CmdPause;
+import net.dmulloy2.ultimatearena.commands.CmdReload;
+import net.dmulloy2.ultimatearena.commands.CmdSetDone;
+import net.dmulloy2.ultimatearena.commands.CmdSetPoint;
+import net.dmulloy2.ultimatearena.commands.CmdStart;
+import net.dmulloy2.ultimatearena.commands.CmdStats;
+import net.dmulloy2.ultimatearena.commands.CmdStop;
+import net.dmulloy2.ultimatearena.commands.CommandHandler;
+import net.dmulloy2.ultimatearena.listeners.BlockListener;
+import net.dmulloy2.ultimatearena.listeners.EntityListener;
+import net.dmulloy2.ultimatearena.listeners.PlayerListener;
+import net.dmulloy2.ultimatearena.listeners.SwornGunsListener;
+import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.permissions.PermissionHandler;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -65,7 +109,7 @@ public class UltimateArena extends JavaPlugin
 	
 	public int arenasPlayed = 0;
 	
-	private @Getter String prefix = ChatColor.GOLD + "[" + ChatColor.DARK_RED + "" + ChatColor.BOLD + "UA" + ChatColor.GOLD + "] ";
+	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
 
 	@Override
 	public void onEnable()
@@ -451,7 +495,7 @@ public class UltimateArena extends JavaPlugin
 		}
 		else
 		{
-			player.sendMessage(prefix + ChatColor.RED + "Could not find an arena by the name of \"" + str + "\"!");
+			player.sendMessage(prefix + FormatUtil.format("&cCould not find an arena by the name of \"{0}\"!", str));
 		}
 	}
 	
@@ -535,30 +579,30 @@ public class UltimateArena extends JavaPlugin
 		}
 		else
 		{
-			player.sendMessage(prefix + ChatColor.RED + "Error, you are not in an arena");
+			player.sendMessage(prefix + FormatUtil.format("&cError, you are not in an arena"));
 		}
 	}
 
 	// Pre-Join Stuff
 	public void fight(Player player, String name, boolean forced)
 	{
-		if (!permissionHandler.hasPermission(player, Permission.JOIN))
+		if (! permissionHandler.hasPermission(player, Permission.JOIN))
 		{
-			player.sendMessage(prefix + ChatColor.RED + "You do not have permission to do this!");
+			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to do this!"));
 			return;
 		}
 		
 		if (isPlayerCreatingArena(player))
 		{
-			player.sendMessage(prefix + ChatColor.RED + "You are in the middle of making an arena!");
+			player.sendMessage(prefix + FormatUtil.format("&cYou are in the middle of making an arena!"));
 			return;
 		}
 		
-		if (!InventoryHelper.isEmpty(player.getInventory()))
+		if (! InventoryHelper.isEmpty(player.getInventory()))
 		{
-			if (!getConfig().getBoolean("saveInventories"))
+			if (! getConfig().getBoolean("saveInventories"))
 			{
-				player.sendMessage(prefix + ChatColor.RED + "Please clear your inventory!");
+				player.sendMessage(prefix + FormatUtil.format("&cPlease clear your inventory!"));
 				return;
 			}
 		}
@@ -566,20 +610,20 @@ public class UltimateArena extends JavaPlugin
 		ArenaZone a = getArenaZone(name);
 		if (a == null)
 		{
-			player.sendMessage(prefix + ChatColor.RED + "That arena doesn't exist!");
+			player.sendMessage(prefix + FormatUtil.format("&cThat arena doesn't exist!"));
 			return;
 		}
 		
 		if (isInArena(player))
 		{
-			player.sendMessage(prefix + ChatColor.RED + "You're already in an arena!");
+			player.sendMessage(prefix + FormatUtil.format("&cYou''re already in an arena!"));
 			return;
 		}
 		
 		ArenaPlayer ap = getArenaPlayer(player);
 		if (ap != null)
 		{
-			player.sendMessage(prefix + ChatColor.RED + "You cannot leave and rejoin an arena!");
+			player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin an arena!"));
 			return;
 		}
 		
@@ -588,7 +632,7 @@ public class UltimateArena extends JavaPlugin
 			ArenaJoinTask task = waiting.get(i);
 			if (task.getPlayer().getName().equals(player.getName()))
 			{
-				player.sendMessage(prefix + ChatColor.RED + "You are already waiting!");
+				player.sendMessage(prefix + FormatUtil.format("&cYou''re already waiting!"));
 				return;
 			}
 		}
@@ -602,8 +646,7 @@ public class UltimateArena extends JavaPlugin
 			join.runTaskLater(this, wait);
 			waiting.add(join);
 			
-			String message = FormatUtil.format(prefix + "&6Please stand still for {0} seconds!", seconds);
-			player.sendMessage(message);
+			player.sendMessage(prefix + FormatUtil.format("&6Please stand still for {0} seconds!", seconds));
 		}
 		else
 		{
@@ -630,7 +673,7 @@ public class UltimateArena extends JavaPlugin
 				{
 					if (! forced)
 					{
-						player.sendMessage(prefix + ChatColor.RED + "This arena is full!");
+						player.sendMessage(prefix + FormatUtil.format("&cThis arena is full!"));
 					}
 					else
 					{
@@ -640,14 +683,14 @@ public class UltimateArena extends JavaPlugin
 						}
 						else
 						{
-							player.sendMessage(prefix + ChatColor.RED + "Could not join the arena!");
+							player.sendMessage(prefix + FormatUtil.format("&cCould not join the arena!"));
 						}
 					}
 				}
 			}
 			else
 			{
-				player.sendMessage(prefix + ChatColor.RED + "This arena has already started!");
+				player.sendMessage(prefix + FormatUtil.format("&cThis arena has already started!"));
 			}
 		}
 		else
@@ -724,7 +767,7 @@ public class UltimateArena extends JavaPlugin
 			}
 			else
 			{
-				player.sendMessage(prefix + ChatColor.RED + "Error, This arena is disabled!");
+				player.sendMessage(prefix + FormatUtil.format("&cThis arena is disabled!"));
 			}
 		}
 	}
@@ -812,7 +855,7 @@ public class UltimateArena extends JavaPlugin
 		}
 		else
 		{
-			player.sendMessage(prefix + ChatColor.RED + "Error, you aren't editing a field!");
+			player.sendMessage(prefix + FormatUtil.format("&cYou aren''t editing a field!"));
 		}
 	}
 
@@ -825,7 +868,7 @@ public class UltimateArena extends JavaPlugin
 		}
 		else
 		{
-			player.sendMessage(prefix + ChatColor.RED + "Error, you aren't editing a field!");
+			player.sendMessage(prefix + FormatUtil.format("&cYou aren''t editing a field!"));
 		}
 	}
 	
@@ -863,13 +906,13 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (isPlayerCreatingArena(player))
 		{
-			player.sendMessage(prefix + ChatColor.RED + "You are already creating an arena!");
+			player.sendMessage(prefix + FormatUtil.format("&cYou are already creating an arena!"));
 			return;
 		}
 		
-		if (!FieldType.contains(type.toLowerCase()))
+		if (! FieldType.contains(type.toLowerCase()))
 		{
-			player.sendMessage(prefix + ChatColor.RED + "This is not a valid field type!");
+			player.sendMessage(prefix + FormatUtil.format("&cThis is not a valid field type!"));
 			return;
 		}
 		
@@ -878,7 +921,7 @@ public class UltimateArena extends JavaPlugin
 			ArenaZone az = loadedArena.get(i);
 			if (az.getArenaName().equalsIgnoreCase(name))
 			{
-				player.sendMessage(prefix + ChatColor.RED + "An arena by this name already exists!");
+				player.sendMessage(prefix + FormatUtil.format("&cAn arena by this name already exists!"));
 				return;
 			}
 		}

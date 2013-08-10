@@ -702,31 +702,55 @@ public class FileHelper
 	/**Load an ArenaZone**/
 	public void load(ArenaZone az)
 	{
+		File folder = new File(plugin.getDataFolder(), "arenas");
+		File file = new File(folder, az.getArenaName() + ".dat");
+	
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			
+		String arenaType = fc.getString("type");
+		if (! FieldType.contains(arenaType))
+		{
+			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: {1} is not a valid FieldType!", az.getArenaName(), arenaType);
+			az.setLoaded(false);
+			return;
+		}
+			
+		az.setArenaType(FieldType.getByName(fc.getString("type")));
+		
+		World world = plugin.getServer().getWorld(fc.getString("world"));
+		if (world == null)
+		{
+			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
+			az.setLoaded(false);
+			return;
+		}
+			
+		az.setWorld(world);
+		
+		Location lobby1 = new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z"));
+		Location lobby2 = new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z"));
+		if (lobby1 == null || lobby2 == null)
+		{
+			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Lobby locations cannot be null!", az.getArenaName());
+			az.setLoaded(false);
+			return;
+		}
+		
+		az.setLobby1(lobby1);
+		az.setLobby2(lobby2);
+		
+		Location arena1 = new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z"));
+		Location arena2 = new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z"));
+		if (arena1 == null || arena2 == null)
+		{
+			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Arena locations cannot be null!", az.getArenaName());
+			az.setLoaded(false);
+			return;
+		}
+		
+		// TODO: Finish this...
 		try
 		{
-			File folder = new File(plugin.getDataFolder(), "arenas");
-			File file = new File(folder, az.getArenaName() + ".dat");
-	
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			
-			String arenaType = fc.getString("type");
-			az.setArenaType(FieldType.getByName(fc.getString("type")));
-			
-			World world = plugin.getServer().getWorld(fc.getString("world"));
-			if (world == null)
-			{
-				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
-				return;
-			}
-			
-			az.setWorld(world);
-			
-			az.setLobby1(new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z")));
-			az.setLobby2(new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z")));
-			
-			az.setArena1(new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z")));
-			az.setArena2(new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z")));
-	
 			if (arenaType.equals("pvp"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
