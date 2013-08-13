@@ -1426,7 +1426,7 @@ public abstract class Arena
 	
 	public void updateSigns()
 	{
-		plugin.updateSigns(name);
+		plugin.getSignManager().updateSigns();
 	}
 	
 	public void announceWinner()

@@ -18,7 +18,6 @@ public class ArenaSign
 	private UltimateArena plugin;
 	private Location loc;
 	private ArenaZone zone;
-	private boolean join = false;
 	private int id;
 	private Sign sign;
 	
@@ -27,15 +26,13 @@ public class ArenaSign
 	 * @param plugin - {@link UltimateArena} plugin instance
 	 * @param loc - {@link Location} of the spawn
 	 * @param zone - {@link ArenaZone} that the sign is for
-	 * @param join - Whether or not it is a join sign
 	 * @param id - The sign's ID
 	 */
-	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone zone, boolean join, int id)
+	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone zone, int id)
 	{
 		this.plugin = plugin;
 		this.loc = loc;
 		this.zone = zone;
-		this.join = join;
 		this.id = id;
 		this.sign = getSign();
 	}
@@ -66,21 +63,11 @@ public class ArenaSign
 			return;
 		}
 		
-		if (join)
-		{
-			sign.setLine(0, "[UltimateArena]");
-			sign.setLine(1, "Click to join");
-			sign.setLine(2, zone.getArenaName());
-			sign.setLine(3, "");
-		}
-		else
-		{
-			sign.setLine(0, "[Arena Stats]");
-			sign.setLine(1, zone.getArenaName());
-			sign.setLine(2, "Type: " + zone.getType().getName());
-			sign.setLine(3, getStatus());
-		}
-		
+		sign.setLine(0, "[UltimateArena]");
+		sign.setLine(1, zone.getArenaName());
+		sign.setLine(2, "Click to Join");
+		sign.setLine(3, getStatus());
+
 		sign.update();
 	}
 	
@@ -113,15 +100,7 @@ public class ArenaSign
 		
 		return line.toString();
 	}
-	
-	/**
-	 * Saves the sign
-	 */
-	public void save()
-	{
-		plugin.getFileHelper().saveSign(this);
-	}
-	
+
 	// TODO: Explanations for these little methods
 	public Location getLocation()
 	{
@@ -137,17 +116,7 @@ public class ArenaSign
 	{
 		return zone.getType();
 	}
-	
-	public boolean isJoinSign()
-	{
-		return join;
-	}
-	
-	public boolean isStatusSign()
-	{
-		return ! join;
-	}
-	
+
 	public int getId()
 	{
 		return id;

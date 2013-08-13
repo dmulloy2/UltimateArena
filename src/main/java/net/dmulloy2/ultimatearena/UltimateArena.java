@@ -97,6 +97,8 @@ public class UltimateArena extends JavaPlugin
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	
+	private @Getter SignManager signManager;
+	
 	public List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
 	public List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
@@ -174,7 +176,7 @@ public class UltimateArena extends JavaPlugin
 		loadFiles();
 		
 		// Arena Signs
-		fileHelper.loadSigns();
+		signManager = new SignManager(this);
 		outConsole("Loaded {0} arena signs!", arenaSigns.size());
 
 		long finish = System.currentTimeMillis();
@@ -195,7 +197,7 @@ public class UltimateArena extends JavaPlugin
 		stopAll();
 		
 		// Save Signs
-		fileHelper.refreshSignSave();
+		signManager.refreshSave();
 		
 		// Refresh arena saves
 		for (ArenaZone az : loadedArena)
@@ -503,9 +505,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		debug("Deleting sign {0}!", sign.getId());
 		
-		arenaSigns.remove(sign);
-
-		fileHelper.refreshSignSave();
+		signManager.deleteSign(sign);
 	}
 	
 	// Checks for whether or not something is in an arena
@@ -1017,18 +1017,7 @@ public class UltimateArena extends JavaPlugin
  
 		return economy != null;
 	}
-    
-    public void updateSigns(String name)
-    {
-    	for (ArenaSign sign : arenaSigns)
-    	{
-    		if (sign.getArena().equalsIgnoreCase(name))
-    		{
-    			sign.update();
-    		}
-    	}
-    }
-    
+
     // TODO: Replace these with much more active updaters
     public class ArenaUpdateTask extends BukkitRunnable
 	{

@@ -7,7 +7,6 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -52,16 +51,16 @@ public class BlockListener implements Listener
 				Arena arena = plugin.getArena(player);
 				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
-					player.sendMessage(ChatColor.RED + "You cannot break this!");
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
 					event.setCancelled(true);
 				}
 			}
 			else
 			{
 				/** The player is at the site of the arena, but not in it **/
-				if (!plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
+				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
-					player.sendMessage(ChatColor.RED + "You cannot break this!");
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
 					event.setCancelled(true);
 				}
 			}
@@ -90,7 +89,7 @@ public class BlockListener implements Listener
 				Arena arena = plugin.getArena(player);
 				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
-					player.sendMessage(ChatColor.RED + "You cannot place this!");
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot place this!"));
 					event.setCancelled(true);
 				}
 			}
@@ -99,7 +98,7 @@ public class BlockListener implements Listener
 				/** The player is at the site of the arena, but not in it **/
 				if (!plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
-					player.sendMessage(ChatColor.RED + "You cannot place this!");
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot place this!"));
 					event.setCancelled(true);
 				}
 			}
@@ -113,51 +112,17 @@ public class BlockListener implements Listener
 		{
 			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
 			{
-				if (event.getLine(1).equalsIgnoreCase("Click to join"))
-				{
-					if (event.getLine(2).equalsIgnoreCase("Auto assign"))
-					{
-						return;
-					}
-					
-					ArenaZone az = plugin.getArenaZone(event.getLine(2));
-					if (az != null)
-					{
-						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, true, plugin.arenaSigns.size());
-						plugin.arenaSigns.add(sign);
-						sign.update();
-						
-						event.getPlayer().sendMessage(FormatUtil.format("&eCreated new Join Sign!"));
-					}
-					else
-					{
-						event.setLine(0, FormatUtil.format("[UltimateArena]"));
-						event.setLine(1, FormatUtil.format("&4Invalid Arena"));
-						event.setLine(2, "");
-						event.setLine(3, "");
-					}
-				}
-			}
-			else
-			{
-				event.setLine(0, FormatUtil.format("[UltimateArena]"));
-				event.setLine(1, FormatUtil.format("&4No permission"));
-				event.setLine(2, "");
-				event.setLine(3, "");
-			}
-		}
-		else if (event.getLine(0).equalsIgnoreCase("[Arena Stats]"))
-		{
-			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
-			{
+				if (event.getLine(1).equalsIgnoreCase("Auto Assign"))
+					return;
+				
 				ArenaZone az = plugin.getArenaZone(event.getLine(1));
 				if (az != null)
 				{
-					ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, false, plugin.arenaSigns.size());
+					ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, plugin.arenaSigns.size());
 					plugin.arenaSigns.add(sign);
 					sign.update();
-					
-					event.getPlayer().sendMessage(FormatUtil.format("&eCreated new Stats sign!"));
+						
+					event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
 				}
 				else
 				{
@@ -174,7 +139,6 @@ public class BlockListener implements Listener
 				event.setLine(2, "");
 				event.setLine(3, "");
 			}
-			
 		}
 	}
 	
@@ -194,30 +158,12 @@ public class BlockListener implements Listener
 					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 					{
 						plugin.deleteSign(sign);
-						player.sendMessage(FormatUtil.format("&eDeleted Join sign!"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&eDeleted Join sign!"));
 					}
 					else
 					{
 						event.setCancelled(true);
-						player.sendMessage(FormatUtil.format("&cPermission denied!"));
-					}
-				}
-			}
-			
-			if (s.getLine(0).equalsIgnoreCase("[Arena Stats]"))
-			{
-				ArenaSign sign = plugin.getArenaSign(block.getLocation());
-				if (sign != null)
-				{
-					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
-					{
-						plugin.deleteSign(sign);
-						player.sendMessage(FormatUtil.format("&eDeleted Stats sign!"));
-					}
-					else
-					{
-						event.setCancelled(true);
-						player.sendMessage(FormatUtil.format("&cPermission denied!"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cPermission denied!"));
 					}
 				}
 			}

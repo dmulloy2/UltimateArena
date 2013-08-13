@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.Field;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -51,6 +52,13 @@ public class ArenaZone
 	
 	private final UltimateArena plugin;
 	
+	/**
+	 * Represents an ArenaZone to be loaded from configuration
+	 * 
+	 * @param plugin - {@link UltimateArena} plugin instance
+	 * @param file - {@link File} to load
+	 * @return new {@link ArenaZone}
+	 */
 	public ArenaZone(final UltimateArena plugin, File file)
 	{
 		this.arenaName = getName(file);
@@ -59,12 +67,46 @@ public class ArenaZone
 		initialize();
 	}
 	
-	public ArenaZone(final UltimateArena plugin, String str) 
+	/**
+	 * Represents an ArenaZone to be created from an {@link ArenaCreator}
+	 * 
+	 * @param ac - {@link ArenaCreator} to create arena from
+	 * @return new {@link ArenaZone}
+	 */
+	public ArenaZone(final UltimateArena plugin, ArenaCreator ac)
 	{
-		this.arenaName = str;
 		this.plugin = plugin;
+		this.arenaName = ac.arenaName;
+		this.type = ac.arenaType;
+		this.lobbyBLUspawn = ac.lobbyBLUspawn;
+		this.lobbyREDspawn = ac.lobbyREDspawn;
+		this.team1spawn = ac.team1spawn;
+		this.team2spawn = ac.team2spawn;
+		this.lobby1 = ac.lobby1;
+		this.lobby2 = ac.lobby2;
+		this.arena1 = ac.arena1;
+		this.arena2 = ac.arena2;
+		this.spawns = ac.spawns;
+		this.flags = ac.flags;
+		this.maxPlayers = 24;
+		this.specialType = 80;
+		this.defaultClass = plugin.classes.get(0).getName();
+		this.world = lobby1.getWorld();
+
+		save();
+		
+		initialize();
+		
+		if (loaded)
+		{
+			plugin.outConsole("Creation of Arena {0} successful!", arenaName);
+		}
+		else
+		{
+			plugin.outConsole(Level.WARNING, "Creation of Arena {0} has failed!", arenaName);
+		}
 	}
-	
+
 	public void initialize()
 	{
 		this.lobby = new Field();
@@ -78,8 +120,13 @@ public class ArenaZone
 		
 		if (isLoaded())
 		{
+			plugin.debug(Util.locationToString(lobby1));
 			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
+			
+			plugin.debug(Util.locationToString(arena2));
 			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
+			
+			plugin.loadedArena.add(this);
 		}
 		else
 		{

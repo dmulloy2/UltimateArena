@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
 
@@ -439,8 +438,12 @@ public class FileHelper
 		{
 			File folder = new File(plugin.getDataFolder(), "arenas");
 			File file = new File(folder, az.getArenaName() + ".dat");
-			if (!file.exists())
-				file.createNewFile();
+			if (file.exists())
+			{
+				file.delete();
+			}
+
+			file.createNewFile();
 
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			
@@ -702,6 +705,8 @@ public class FileHelper
 	/**Load an ArenaZone**/
 	public void load(ArenaZone az)
 	{
+		plugin.debug("Loading Arena: {0}", az.getArenaName());
+		
 		File folder = new File(plugin.getDataFolder(), "arenas");
 		File file = new File(folder, az.getArenaName() + ".dat");
 	
@@ -747,6 +752,9 @@ public class FileHelper
 			az.setLoaded(false);
 			return;
 		}
+		
+		az.setArena1(arena1);
+		az.setArena2(arena2);
 		
 		// TODO: Finish this...
 		try
@@ -896,109 +904,6 @@ public class FileHelper
 		{
 			plugin.outConsole(Level.SEVERE, "Could not load arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
 			az.setLoaded(false);
-		}
-	}
-
-	public void saveSign(ArenaSign sign)
-	{
-		try
-		{
-			File signFile = new File(plugin.getDataFolder(), "signs.yml");
-			if (! signFile.exists())
-			{
-				plugin.debug("Creating a new sign save!");
-				signFile.createNewFile();
-			}
-			
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-			
-			String path = "signs." + sign.getId() + ".";
-			String locpath = path + "location.";
-			Location loc = sign.getLocation();
-			
-			fc.set(locpath + "world", loc.getWorld().getName());
-			fc.set(locpath + "x", loc.getBlockX());
-			fc.set(locpath + "y", loc.getBlockY());
-			fc.set(locpath + "z", loc.getBlockZ());
-			
-			if (fc.isSet(path + "autoAssign"))
-				fc.set(path + "autoAssign", null);
-			
-			fc.set(path + "isJoin", sign.isJoinSign());
-			fc.set(path + "isStatus", sign.isStatusSign());
-			fc.set(path + "name", sign.getArena());
-			
-			fc.set("total", plugin.arenaSigns.size());
-			
-			fc.save(signFile);
-		}
-		catch (Exception e)
-		{
-			plugin.outConsole(Level.SEVERE, "Could not save sign {0}: {1}", sign.getId(), e.getMessage());
-		}
-	}
-	
-	public void loadSigns()
-	{
-		plugin.debug("Loading join and status signs!");
-
-		File signFile = new File(plugin.getDataFolder(), "signs.yml");
-		if (! signFile.exists())
-		{
-			plugin.debug("Could not load signs save: No signs exist!");
-			return;
-		}
-		
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signFile);
-		for (int i = 0; i < fc.getInt("total"); i++)
-		{
-			String path = "signs." + i + ".";
-			String locpath = path + "location.";
-			
-			World world = plugin.getServer().getWorld(fc.getString(locpath + "world"));
-			if (world == null)
-			{
-				plugin.outConsole(Level.WARNING, "Could not load sign {0}: World cannot be null", i);
-				continue;
-			}
-			
-			Location loc = new Location(world, fc.getInt(locpath + "x"), fc.getInt(locpath + "y"), fc.getInt(locpath + "z"));
-			
-			ArenaZone az = plugin.getArenaZone(fc.getString(path + "name"));
-			if (az == null)
-			{
-				plugin.outConsole(Level.WARNING, "Could not load sign {0}: ArenaZone cannot be null", i);
-				continue;
-			}
-
-			boolean isJoin = fc.getBoolean(path + "isJoin");
-			ArenaSign sign = new ArenaSign(plugin, loc, az, isJoin, i);
-			plugin.arenaSigns.add(sign);
-		}
-	}
-	
-	public void refreshSignSave()
-	{
-		plugin.debug("Refreshing sign save!");
-		
-		File signFile = new File(plugin.getDataFolder(), "signs.yml");
-		if (signFile.exists())
-		{
-			signFile.delete();
-		}
-		
-		try
-		{
-			signFile.createNewFile(); 
-		}
-		catch (Exception e) 
-		{
-			plugin.outConsole(Level.SEVERE, "Could not refresh sign save: {0}", e.getMessage());
-		}
-		
-		for (ArenaSign sign : plugin.arenaSigns)
-		{
-			saveSign(sign);
 		}
 	}
 }

@@ -12,31 +12,31 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 public class ArenaCreator 
 {
-	private String step;
-	private String player;
-	private String msg = "";
-	private String arenaName = "";
-	private FieldType arenaType;
+	protected String step;
+	protected String player;
+	protected String msg = "";
+	protected String arenaName = "";
+	protected FieldType arenaType;
 	
-	private Location lobby1 = null;
-	private Location lobby2 = null;
-	private Location arena1 = null;
-	private Location arena2 = null;
-	private Location team1spawn = null;
-	private Location team2spawn = null;
-	private Location lobbyREDspawn = null;
-	private Location lobbyBLUspawn = null;
+	protected Location lobby1 = null;
+	protected Location lobby2 = null;
+	protected Location arena1 = null;
+	protected Location arena2 = null;
+	protected Location team1spawn = null;
+	protected Location team2spawn = null;
+	protected Location lobbyREDspawn = null;
+	protected Location lobbyBLUspawn = null;
 	
-	private int amtLobbys = 2;
-	private int amtSpawnpoints = 2;
+	protected int amtLobbys = 2;
+	protected int amtSpawnpoints = 2;
 
-	private List<String> steps = new ArrayList<String>();
-	private List<Location> spawns = new ArrayList<Location>();
-	private List<Location> flags = new ArrayList<Location>();
+	protected List<String> steps = new ArrayList<String>();
+	protected List<Location> spawns = new ArrayList<Location>();
+	protected List<Location> flags = new ArrayList<Location>();
 	
-	private int stepnum;
+	protected int stepnum;
 	
-	private final UltimateArena plugin;
+	protected final UltimateArena plugin;
 	
 	public ArenaCreator(UltimateArena plugin, Player player)
 	{
@@ -122,32 +122,16 @@ public class ArenaCreator
 			return;
 		}
 		
-		ArenaZone az = new ArenaZone(plugin, getArenaName());
-		az.setArenaType(arenaType);
-		az.setLobbyBLUspawn(lobbyBLUspawn);
-		az.setLobbyREDspawn(lobbyREDspawn);
-		az.setTeam1spawn(team1spawn);
-		az.setTeam2spawn(team2spawn);
-		az.setLobby1(lobby1);
-		az.setLobby2(lobby2);
-		az.setArena1(arena1);
-		az.setArena2(arena2);
-		az.setSpawns(spawns);
-		az.setFlags(flags);
-		az.setMaxPlayers(24);
-		az.setSpecialType(80);
-		az.setDefaultClass(plugin.classes.get(0).getName());
-		az.setWorld(lobby1.getWorld());
-		
-		az.save();
-		az.initialize();
-		
-		plugin.loadedArena.add(az);
-		
-		sendMessage("&7Finished arena!");
-		sendMessage("&7Use &6/ua join {0} &7to play!", arenaName);
-		
-		plugin.outConsole("Created and saved arena {0}. Type {1}.", arenaName, arenaType.getName());
+		ArenaZone az = new ArenaZone(plugin, this);
+		if (az.isLoaded())
+		{
+			sendMessage("&aSuccessfully created arena &e{0}&a!", az.getArenaName());
+			sendMessage("&aUse &e/ua join {0} &ato play!", az.getArenaName());
+		}
+		else
+		{
+			sendMessage("&cCould not create arena! Check Console for errors!");
+		}
 		
 		plugin.makingArena.remove(this);
 	}
