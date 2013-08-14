@@ -7,7 +7,6 @@ import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.Field;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -120,10 +119,7 @@ public class ArenaZone
 		
 		if (isLoaded())
 		{
-			plugin.debug(Util.locationToString(lobby1));
 			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
-			
-			plugin.debug(Util.locationToString(arena2));
 			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
 			
 			plugin.loadedArena.add(this);
