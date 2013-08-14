@@ -64,8 +64,7 @@ public class SignManager
 						{
 							ArenaSign as = new ArenaSign(plugin, loc, az, i);
 							plugin.arenaSigns.add(as);
-							as.update();
-							
+
 							plugin.debug("Successfully loaded sign: {0}", as);
 						}
 					}
@@ -76,16 +75,20 @@ public class SignManager
 
 	public void refreshSave()
 	{
+		plugin.debug("Refreshing signs save!");
+		
 		signsSave.delete();
 		
 		try { signsSave.createNewFile(); }
-		catch (Exception e) { return; }
+		catch (IOException e) { return; }
 		
 		int total = 0;
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
 		for (ArenaSign sign : plugin.arenaSigns)
 		{
+			plugin.debug("Attempting to save sign: {0}", sign);
+			
 			String path = "signs." + sign.getId() + ".";
 			
 			fc.set(path + "name", sign.getArena());
@@ -100,7 +103,7 @@ public class SignManager
 			total = sign.getId();
 		}
 		
-		fc.set("total", total);
+		fc.set("total", total + 1);
 		
 		try { fc.save(signsSave); } catch (IOException e) { }
 	}

@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -112,22 +113,35 @@ public class BlockListener implements Listener
 		{
 			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
 			{
-				if (event.getLine(1).equalsIgnoreCase("Auto Assign"))
-					return;
-				
-				ArenaZone az = plugin.getArenaZone(event.getLine(1));
-				if (az != null)
+				if (event.getLine(1).equalsIgnoreCase("Click to Join"))
 				{
-					ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, plugin.arenaSigns.size());
-					plugin.arenaSigns.add(sign);
-					sign.update();
+					if (event.getLine(2).equalsIgnoreCase("Auto Assign"))
+						return;
+					
+					ArenaZone az = plugin.getArenaZone(event.getLine(2));
+					if (az != null)
+					{
+						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, plugin.arenaSigns.size());
+						plugin.arenaSigns.add(sign);
 						
-					event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
+						plugin.debug("Added new sign: {0}", sign);
+						
+						new SignUpdateTask(sign).runTaskLater(plugin, 60L);
+							
+						event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
+					}
+					else
+					{
+						event.setLine(0, FormatUtil.format("[UltimateArena]"));
+						event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+						event.setLine(2, "");
+						event.setLine(3, "");
+					}
 				}
 				else
 				{
 					event.setLine(0, FormatUtil.format("[UltimateArena]"));
-					event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+					event.setLine(1, FormatUtil.format("&4Invalid Type"));
 					event.setLine(2, "");
 					event.setLine(3, "");
 				}
@@ -139,6 +153,21 @@ public class BlockListener implements Listener
 				event.setLine(2, "");
 				event.setLine(3, "");
 			}
+		}
+	}
+	
+	public class SignUpdateTask extends BukkitRunnable
+	{
+		private final ArenaSign sign;
+		public SignUpdateTask(final ArenaSign sign)
+		{
+			this.sign = sign;
+		}
+		
+		@Override
+		public void run()
+		{
+			sign.update();
 		}
 	}
 	
