@@ -86,10 +86,10 @@ public class MOBArena extends Arena
 	}
 	
 	@Override
-	public void endPlayer(ArenaPlayer p, boolean end)
+	public void endPlayer(ArenaPlayer ap, Player player, boolean end)
 	{
-		super.endPlayer(p, end);
-		this.reward(p, p.getPlayer(), false);
+		super.endPlayer(ap, player, end);
+		this.reward(ap, player, false);
 	}
 	
 	@Override

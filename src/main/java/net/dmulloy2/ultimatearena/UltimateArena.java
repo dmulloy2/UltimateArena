@@ -305,7 +305,7 @@ public class UltimateArena extends JavaPlugin
 			debug("Player {0} leaving arena from quit", player.getName());
 
 			Arena a = getArena(player);
-			a.endPlayer(getArenaPlayer(player), false);
+			a.endPlayer(getArenaPlayer(player), player, false);
 			a.tellPlayers("&b{0} has left the arena!", player.getName());
 			
 		}
@@ -573,7 +573,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			Arena a = getArena(player);
 			ArenaPlayer ap = getArenaPlayer(player);
-			a.endPlayer(ap, false);
+			a.endPlayer(ap, player, false);
 			
 			ap.sendMessage("&bYou have left the arena!");
 			
@@ -793,7 +793,7 @@ public class UltimateArena extends JavaPlugin
 		if (apl != null)
 		{
 			apl.sendMessage("&cYou have been kicked from the arena!");
-			apl.getArena().endPlayer(apl, false);
+			apl.getArena().endPlayer(apl, apl.getPlayer(), false);
 			return true;
 		}
 		

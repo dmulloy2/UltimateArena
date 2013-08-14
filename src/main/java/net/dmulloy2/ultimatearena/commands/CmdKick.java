@@ -34,7 +34,7 @@ public class CmdKick extends UltimateArenaCommand
 				Arena a = plugin.getArena(p);
 				if (a != null)
 				{
-					a.endPlayer(ap, false);
+					a.endPlayer(ap, p, false);
 					
 					sendpMessage("&7Kicked player &6{0} &7from arena &6{1}&7!", p.getName(), a.getName());
 					

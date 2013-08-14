@@ -764,7 +764,7 @@ public abstract class Arena
 							ap.sendMessage("&9Game Over!");
 						}
 						
-						endPlayer(ap, false);
+						endPlayer(ap, player, false);
 					}
 				}
 			}
@@ -813,22 +813,18 @@ public abstract class Arena
 	 * @param ap - {@link ArenaPlayer} to end
 	 * @param dead - Whether or not a player died
 	 */
-	public void endPlayer(ArenaPlayer ap, boolean dead) 
+	public void endPlayer(ArenaPlayer ap, Player player, boolean dead) 
 	{
 		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
 		
-		Player player = ap.getPlayer();
-		if (player != null) 
-		{
-			normalize(player);
-			returnXP(ap);
-			ap.returnInventory();
+		normalize(player);
+		returnXP(ap);
+		ap.returnInventory();
 
-			plugin.removePotions(player);
+		plugin.removePotions(player);
 			
-			teleport(player, ap.getSpawnBack());
-		}
-		
+		teleport(player, ap.getSpawnBack());
+
 		// Call Arena leave event
 		UltimateArenaLeaveEvent leaveEvent = new UltimateArenaLeaveEvent(ap, this);
 		plugin.getServer().getPluginManager().callEvent(leaveEvent);
@@ -841,16 +837,12 @@ public abstract class Arena
 		
 		if (dead) 
 		{
-			ap.sendMessage("&9You have exceeded the death limit!");
-			tellPlayers("&b{0} has been eliminated!", ap.getName());
+			ap.sendMessage("&3You have exceeded the death limit!");
+			tellPlayers("&e{0} &3has been eliminated!", ap.getName());
 			
 			if (getActivePlayers() > 1)
 			{
-				tellPlayers("&bThere are &e{0} &bplayers remaining!", getActivePlayers());
-			}
-			else
-			{
-				tellPlayers("&bThere is one player remaining!");
+				tellPlayers("&3There are &e{0} &3players remaining!", getActivePlayers());
 			}
 		}
 	}
@@ -1082,7 +1074,7 @@ public abstract class Arena
 							{
 								if (player.getHealth() > 0) 
 								{
-									endPlayer(ap, true);
+									endPlayer(ap, player, true);
 								}
 							}
 						}

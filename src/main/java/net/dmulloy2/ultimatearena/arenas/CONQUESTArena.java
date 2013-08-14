@@ -190,14 +190,14 @@ public class CONQUESTArena extends Arena
 				{
 					if (ap.getTeam() == 2)
 					{
-						endPlayer(ap, false);
+						endPlayer(ap, ap.getPlayer(), false);
 					}
 				}
 				else if (REDTEAMPOWER <= 0) 
 				{
 					if (ap.getTeam() == 1)
 					{
-						endPlayer(ap, false);
+						endPlayer(ap, ap.getPlayer(), false);
 					}
 				}
 			}
