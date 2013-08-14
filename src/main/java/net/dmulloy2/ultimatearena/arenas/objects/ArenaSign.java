@@ -63,6 +63,8 @@ public class ArenaSign
 			return;
 		}
 		
+		plugin.debug("Updating sign: {0}", id);
+		
 		sign.setLine(0, "[UltimateArena]");
 		sign.setLine(1, zone.getArenaName());
 		sign.setLine(2, "Click to Join");

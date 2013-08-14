@@ -29,6 +29,8 @@ public class SignManager
 	
 	public void load()
 	{
+		plugin.debug("Loading all signs!");
+		
 		this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
 		if (! signsSave.exists()) 
 		{
@@ -41,6 +43,8 @@ public class SignManager
 			int total = fc.getInt("total");
 			for (int i = 0; i < total; i++)
 			{
+				plugin.debug("Attempting to load sign: {0}", i);
+				
 				String path = "signs." + i + ".";
 				if (! fc.isSet(path))
 					continue;
@@ -61,6 +65,8 @@ public class SignManager
 							ArenaSign as = new ArenaSign(plugin, loc, az, i);
 							plugin.arenaSigns.add(as);
 							as.update();
+							
+							plugin.debug("Successfully loaded sign: {0}", as);
 						}
 					}
 				}
