@@ -846,7 +846,7 @@ public abstract class Arena
 			
 			if (getActivePlayers() > 1)
 			{
-				tellPlayers("&bThere are {1} players remaining!", getActivePlayers());
+				tellPlayers("&bThere are &e{0} &bplayers remaining!", getActivePlayers());
 			}
 			else
 			{
