@@ -70,7 +70,7 @@ public class ArenaSign
 		sign.setLine(2, "Click to Join");
 		sign.setLine(3, getStatus());
 
-		sign.update();
+		sign.update(true);
 	}
 	
 	/**
