@@ -505,7 +505,9 @@ public class UltimateArena extends JavaPlugin
 	{
 		debug("Deleting sign {0}!", sign.getId());
 		
-		signManager.deleteSign(sign);
+		arenaSigns.remove(sign);
+		
+		signManager.refreshSave();
 	}
 	
 	// Checks for whether or not something is in an arena

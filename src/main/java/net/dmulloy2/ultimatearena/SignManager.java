@@ -2,15 +2,13 @@ package net.dmulloy2.ultimatearena;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 
 /**
  * Manager for Signs
@@ -20,15 +18,12 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 public class SignManager 
 {
 	private File signsSave;
-	
-	private List<ArenaSign> signs;
-	
+
 	private final UltimateArena plugin;
 	public SignManager(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		this.signs = new ArrayList<ArenaSign>();
-		
+
 		load();
 	}
 	
@@ -37,7 +32,7 @@ public class SignManager
 		this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
 		if (! signsSave.exists()) 
 		{
-			try { signsSave.createNewFile(); } catch (Exception e) { return; }
+			try { signsSave.createNewFile(); } catch (IOException e) { return; }
 		}
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
@@ -72,14 +67,7 @@ public class SignManager
 			}
 		}
 	}
-	
-	public void deleteSign(ArenaSign sign)
-	{
-		signs.remove(sign);
-		
-		refreshSave();
-	}
-	
+
 	public void refreshSave()
 	{
 		signsSave.delete();
