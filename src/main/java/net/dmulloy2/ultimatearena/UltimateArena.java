@@ -323,7 +323,6 @@ public class UltimateArena extends JavaPlugin
 			ArenaZone az = new ArenaZone(this, file);
 			if (az.isLoaded())
 			{
-				loadedArena.add(az);
 				debug("Successfully loaded arena {0}!", az.getArenaName());
 				total++;
 			}
