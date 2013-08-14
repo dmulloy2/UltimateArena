@@ -28,6 +28,8 @@ public class SignManager
 	{
 		this.plugin = plugin;
 		this.signs = new ArrayList<ArenaSign>();
+		
+		load();
 	}
 	
 	public void load()
