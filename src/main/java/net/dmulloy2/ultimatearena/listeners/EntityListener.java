@@ -23,7 +23,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -31,12 +30,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class EntityListener implements Listener
 {
-	private List<String> deadPlayers;
 	private final UltimateArena plugin;
 	public EntityListener(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		this.deadPlayers = new ArrayList<String>();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -196,28 +193,23 @@ public class EntityListener implements Listener
 		
 		if (died instanceof Player)
 		{
-			// Stops multikilling
 			Player pdied = (Player)died;
-			if (deadPlayers.contains(pdied.getName()))
-				return;
-			
-			new DeadPlayerTask(pdied.getName()).runTaskLater(plugin, 60L);
-			
 			if (plugin.isInArena(pdied))
 			{
 				ArenaPlayer dp = plugin.getArenaPlayer(pdied);
 				if (dp != null && !dp.isOut())
 				{
-					dp.setKillstreak(0);
-					dp.setDeaths(dp.getDeaths() + 1);
+					if (dp.isDead()) return;
 					
+					dp.onDeath();
+
 					Arena ar = plugin.getArena(pdied);
 					ar.onPlayerDeath(dp);
 					
 					if (pdied.getKiller() instanceof Player) // This should cover all PVP scenarios (except Projectiles maybe)
 					{
 						Player killer = (Player)pdied.getKiller();
-						if (killer.getName() == pdied.getName()) // Suicide
+						if (killer.getName().equals(pdied.getName())) // Suicide
 						{
 							plugin.debug("Player {0} has committed suicide!", pdied.getName());
 							ar.tellPlayers("&c{0} &fcommited &csuicide!", pdied.getName());
@@ -460,21 +452,5 @@ public class EntityListener implements Listener
 		}
 		
 		return ret.toString();
-	}
-	
-	public class DeadPlayerTask extends BukkitRunnable
-	{
-		private final String player;
-		public DeadPlayerTask(final String player)
-		{
-			this.player = player;
-			deadPlayers.add(player);
-		}
-		
-		@Override
-		public void run()
-		{
-			deadPlayers.remove(player);
-		}
 	}
 }

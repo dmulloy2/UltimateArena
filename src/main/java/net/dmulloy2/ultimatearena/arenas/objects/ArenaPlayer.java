@@ -472,4 +472,18 @@ public class ArenaPlayer
 		double d = (double) deaths;
 		return (k / d);
 	}
+	
+	private long deathTime;
+	
+	public boolean isDead()
+	{
+		return (System.currentTimeMillis() - deathTime)  >= 60L;
+	}
+	
+	public void onDeath()
+	{
+		this.deathTime = System.currentTimeMillis();
+		this.killstreak = 0;
+		this.deaths++;
+	}
 }
