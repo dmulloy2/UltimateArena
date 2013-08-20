@@ -6,7 +6,6 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-//import org.apache.commons.lang.WordUtils;
 
 /**
  * Util used for general formatting
