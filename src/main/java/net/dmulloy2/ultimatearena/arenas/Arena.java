@@ -9,10 +9,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.objects.*;
-import net.dmulloy2.ultimatearena.events.*;
-import net.dmulloy2.ultimatearena.permissions.*;
-import net.dmulloy2.ultimatearena.util.*;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaConfig;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaFlag;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.arenas.objects.PotionType;
+import net.dmulloy2.ultimatearena.events.UltimateArenaDeathEvent;
+import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
+import net.dmulloy2.ultimatearena.events.UltimateArenaLeaveEvent;
+import net.dmulloy2.ultimatearena.events.UltimateArenaSpawnEvent;
+import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -1124,7 +1136,7 @@ public abstract class Arena
 			plugin.debug("Returning XP for player: {0}. Levels: {1}", player.getName(), ap.getBaselevel());
 
 			// Clear XP
-			player.setExp((float) 0);
+			player.setExp(0);
 			player.setLevel(0);
 		
 			// Give Base XP

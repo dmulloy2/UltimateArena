@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.Permission;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 public abstract class UltimateArenaCommand implements CommandExecutor
 {
@@ -40,6 +40,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		aliases = new ArrayList<String>(2);
 	}
 	
+	@Override
 	public final boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
 		execute(sender, args);

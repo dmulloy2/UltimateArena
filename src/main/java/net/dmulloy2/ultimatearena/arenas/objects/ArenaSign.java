@@ -1,12 +1,12 @@
 package net.dmulloy2.ultimatearena.arenas.objects;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.Util;
+
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 
 /**
  * Represents an ArenaSign, whether it be join or not

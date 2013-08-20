@@ -42,6 +42,7 @@ public class Field3D extends Field
 		return world.getBlockAt(minx + x, miny + y, minz + z);
 	}
 	
+	@Override
 	public boolean isInside(Location loc) 
 	{
 		if (super.isInside(loc)) 

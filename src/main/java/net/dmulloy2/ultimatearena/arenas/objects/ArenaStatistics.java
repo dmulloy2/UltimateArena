@@ -1,8 +1,8 @@
 package net.dmulloy2.ultimatearena.arenas.objects;
 
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.ultimatearena.util.FormatUtil;
+
+import org.bukkit.entity.Player;
 
 public class ArenaStatistics 
 {

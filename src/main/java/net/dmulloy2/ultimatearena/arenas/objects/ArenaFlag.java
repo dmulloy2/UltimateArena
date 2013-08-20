@@ -26,6 +26,7 @@ public class ArenaFlag extends FlagBase
 		super(arena, loc, plugin);
 	}
 	
+	@Override
 	public synchronized void setup() 
 	{
 		super.setup();

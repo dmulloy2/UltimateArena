@@ -1013,7 +1013,7 @@ public class UltimateArena extends JavaPlugin
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
 		if (economyProvider != null) 
 		{
-			economy = ((Economy)economyProvider.getProvider());
+			economy = (economyProvider.getProvider());
 		}
  
 		return economy != null;

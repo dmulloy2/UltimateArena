@@ -3,8 +3,11 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.ultimatearena.arenas.objects.*;
-import net.dmulloy2.ultimatearena.util.*;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Location;

@@ -465,11 +465,11 @@ public class ArenaPlayer
 	 */
 	public double getKDR()
 	{
-		double k = (double) kills;
+		double k = kills;
 		if (deaths == 0)
 			return k;
 		
-		double d = (double) deaths;
+		double d = deaths;
 		return (k / d);
 	}
 	

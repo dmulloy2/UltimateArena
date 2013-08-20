@@ -3,15 +3,15 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
+
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class BombFlag extends ArenaFlag
 {

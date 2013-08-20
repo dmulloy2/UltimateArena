@@ -20,6 +20,7 @@ public abstract class PaginatedCommand extends UltimateArenaCommand
 	
 	int pageArgIndex = 0;
 	
+	@Override
 	public void perform()
 	{
 		int index = 1;

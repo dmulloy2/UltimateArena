@@ -208,7 +208,7 @@ public class EntityListener implements Listener
 					
 					if (pdied.getKiller() instanceof Player) // This should cover all PVP scenarios (except Projectiles maybe)
 					{
-						Player killer = (Player)pdied.getKiller();
+						Player killer = pdied.getKiller();
 						if (killer.getName().equals(pdied.getName())) // Suicide
 						{
 							plugin.debug("Player {0} has committed suicide!", pdied.getName());
@@ -277,7 +277,7 @@ public class EntityListener implements Listener
 					{
 						if (pdied.getKiller() instanceof LivingEntity)
 						{
-							LivingEntity lentity = (LivingEntity)pdied.getKiller();
+							LivingEntity lentity = pdied.getKiller();
 							String name = FormatUtil.getFriendlyName(lentity.getType());
 							
 							plugin.debug("Player {0} was killed by {1}", pdied.getName(), FormatUtil.getFriendlyName(lentity.getType()));
@@ -349,7 +349,7 @@ public class EntityListener implements Listener
 							}
 							else if (proj.getShooter() instanceof LivingEntity)
 							{
-								LivingEntity lentity = (LivingEntity)pdied.getKiller();
+								LivingEntity lentity = pdied.getKiller();
 								String name = FormatUtil.getFriendlyName(lentity.getType());
 								
 								plugin.debug("Player {0} was killed by {1}", pdied.getName(), FormatUtil.getFriendlyName(lentity.getType()));
@@ -400,7 +400,7 @@ public class EntityListener implements Listener
 				LivingEntity lentity = (LivingEntity)died;
 				if (lentity.getKiller() instanceof Player)
 				{
-					Player killer = (Player)lentity.getKiller();
+					Player killer = lentity.getKiller();
 					if (plugin.isInArena(killer))
 					{
 						plugin.debug("{0} has been killed by {1}", FormatUtil.getFriendlyName(lentity.getType()), killer.getName());

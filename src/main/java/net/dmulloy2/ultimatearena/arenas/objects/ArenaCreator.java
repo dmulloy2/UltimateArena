@@ -3,12 +3,12 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class ArenaCreator 
 {
