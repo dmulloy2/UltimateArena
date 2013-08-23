@@ -14,7 +14,7 @@ public class CmdDisable extends UltimateArenaCommand
 		this.aliases.add("di");
 		this.requiredArgs.add("arena");
 		this.description = "disable an arena";
-		this.permission = Permission.CMD_DISABLE;
+		this.permission = Permission.DISABLE;
 		
 		this.mustBePlayer = false;
 	}

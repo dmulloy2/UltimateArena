@@ -269,7 +269,7 @@ public class ArenaPlayer
 			}
 			catch (Exception e)
 			{
-				plugin.getLogger().severe("Error giving class items: " + e.getMessage());
+				sendMessage("&cAn exception occured while attempting to give Essentials kit items: {0}", e.getMessage());
 			}
 		}
 		
@@ -297,9 +297,9 @@ public class ArenaPlayer
 	 */
 	public void clearPotionEffects()
 	{
-		for (PotionEffect effect : getPlayer().getActivePotionEffects())
+		for (PotionEffect effect : player.getActivePotionEffects())
 		{
-			getPlayer().removePotionEffect(effect.getType());
+			player.removePotionEffect(effect.getType());
 		}
 	}
 
@@ -477,7 +477,7 @@ public class ArenaPlayer
 	
 	public boolean isDead()
 	{
-		return (System.currentTimeMillis() - deathTime)  >= 60L;
+		return (System.currentTimeMillis() - deathTime)  <= 60L;
 	}
 	
 	public void onDeath()

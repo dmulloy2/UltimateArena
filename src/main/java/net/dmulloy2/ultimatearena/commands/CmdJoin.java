@@ -19,7 +19,7 @@ public class CmdJoin extends UltimateArenaCommand
 	@Override
 	public void perform() 
 	{
-		boolean force = plugin.getPermissionHandler().hasPermission(player, Permission.FORCE_JOIN);
+		boolean force = plugin.getPermissionHandler().hasPermission(player, Permission.JOIN_FORCE);
 		plugin.fight(player, args[0], force);
 	}
 }

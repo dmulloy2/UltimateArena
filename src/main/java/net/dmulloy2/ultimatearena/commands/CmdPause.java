@@ -12,7 +12,7 @@ public class CmdPause extends UltimateArenaCommand
 		this.name = "pause";
 		this.requiredArgs.add("arena");
 		this.description = "pause the start timer on an arena";
-		this.permission = Permission.CMD_PAUSE;
+		this.permission = Permission.PAUSE;
 		
 		this.mustBePlayer = false;
 	}

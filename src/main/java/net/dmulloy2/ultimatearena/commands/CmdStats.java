@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaStatistics;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdStats extends UltimateArenaCommand
 {	
@@ -13,6 +14,7 @@ public class CmdStats extends UltimateArenaCommand
 		this.aliases.add("stat");
 		this.requiredArgs.add("arena");
 		this.description = "view an arena''s stats";
+		this.permission = Permission.STATS;
 		
 		this.mustBePlayer = false;
 	}

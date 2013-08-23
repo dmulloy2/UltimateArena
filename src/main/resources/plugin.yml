@@ -35,6 +35,12 @@ permissions:
       ultimatearena.delete: true
       ultimatearena.stop: true
       ultimatearena.build: true
+  ultimatearena.class:
+    description: Allows the switching of classes ingame
+    default: true
+  ultimatearena.classlist:
+    description: Allows the listing of classes
+    default: true
   ultimatearena.create:
     description: Allows the creation of arenas
     default: false
@@ -44,18 +50,33 @@ permissions:
   ultimatearena.disable:
     description: Allows the disabling of arenas
     default: false
+  ultimatearena.dislike:
+    description: Allows the disliking of arenas
+    default: true
   ultimatearena.enable:
     description: Allows the enabling of arenas
-    default: false
-  ultimatearena.forcejoin:
-    description: Allows the force joining of arenas
     default: false
   ultimatearena.forcestop:
     description: Allows the force stopping of arenas
     default: false
+  ultimatearena.info:
+    description: Allows the viewing of arena info
+    default: true
+  ultimatearena.join:
+    description: Allows the joining of arenas
+    default: true
+  ultimatearena.join.force:
+    description: Allows the forceful joining of arenas
+    default: false
   ultimatearena.kick:
     description: Allows the kicking of players from arenas
     default: false
+  ultimatearena.like:
+    description: Allows the liking of arenas
+    default: true
+  ultimatearena.list:
+    description: Allows the listing of available arenas
+    default: true
   ultimatearena.pause:
     description: Allows the pausing of arena start timers
     default: false
@@ -71,15 +92,15 @@ permissions:
   ultimatearena.start:
     description: Allows the force starting of arenas
     default: false
+  ultimatearena.stats:
+    description: Allows the viewing of arena stats
+    default: true
   ultimatearena.stop:
     description: Allows the usage of /ua stop
     default: false
   ultimatearena.build:
     description: Allows the breaking and placing of blocks in arenas
     default: false
-  ultimatearena.join:
-    description: Allows the player to join arenas
-    default: true
-  ultimatearena.commandbypass:
+  ultimatearena.bypass:
     description: Allows a player to bypass whitelisted commands
     default: false

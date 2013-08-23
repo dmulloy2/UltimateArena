@@ -12,7 +12,7 @@ public class CmdDelete extends UltimateArenaCommand
 		this.aliases.add("x");
 		this.requiredArgs.add("arena");
 		this.description = "delete an arena";
-		this.permission = Permission.CMD_DELETE;
+		this.permission = Permission.DELETE;
 		
 		this.mustBePlayer = false;
 	}

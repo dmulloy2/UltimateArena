@@ -781,7 +781,7 @@ public class UltimateArena extends JavaPlugin
 		List<ArenaPlayer> totalPlayers = arena.getArenaPlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
-			if (! permissionHandler.hasPermission(ap.getPlayer(), Permission.FORCE_JOIN))
+			if (! permissionHandler.hasPermission(ap.getPlayer(), Permission.JOIN_FORCE))
 			{
 				validPlayers.add(ap);
 			}

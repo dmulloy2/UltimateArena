@@ -10,12 +10,13 @@ import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.events.UltimateArenaKillEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -39,6 +40,8 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityExplode(EntityExplodeEvent event) 
 	{
+		// This will disable block damage via explosions
+		// if it occurs in an arena
 		if (! event.isCancelled())
 		{
 			if (plugin.isInArena(event.getLocation()))
@@ -54,56 +57,102 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamageByEntityHighest(EntityDamageByEntityEvent event)
 	{
+		// This will disable PvP in certain circumstances, like lobby PvP,
+		// team killing, etc.
 		if (! event.isCancelled() && event.getDamage() > 0.0D)
 		{
 			Entity attacker = event.getDamager();
-			Entity damaged = event.getEntity();
-			if ((attacker instanceof Player) && (damaged instanceof Player))
+			Entity defender = event.getEntity();
+			
+			// Decide players
+			Player att = null;
+			Player def = null;
+			
+			// Attacker
+			if (attacker instanceof Player)
 			{
-				Player att = (Player)attacker;
-				Player dmgd = (Player)damaged;
-				if (plugin.isInArena(att))
+				att = (Player)attacker;
+			}
+			else if (attacker instanceof Arrow)
+			{
+				Entity shooter = ((Arrow)attacker).getShooter();
+				if (shooter instanceof Player)
+					att = (Player)shooter;
+			}
+			else if (attacker instanceof Snowball)
+			{
+				Entity shooter = ((Snowball)attacker).getShooter();
+				if (shooter instanceof Player)
+					att = (Player)shooter;
+			}
+			
+			// Defender
+			if (defender instanceof Player)
+			{
+				def = (Player)defender;
+			}
+			else if (defender instanceof Arrow)
+			{
+				Entity shooter = ((Arrow)defender).getShooter();
+				if (shooter instanceof Player)
+					def = (Player)shooter;
+			}
+			else if (defender instanceof Snowball)
+			{
+				Entity shooter = ((Snowball)defender).getShooter();
+				if (shooter instanceof Player)
+					def = (Player)shooter;
+			}
+			
+			if (att == null || def == null)
+				return;
+
+			if (plugin.isInArena(att))
+			{
+				ArenaPlayer ap = plugin.getArenaPlayer(att);
+				if (ap != null && !ap.isOut())
 				{
-					ArenaPlayer ap = plugin.getArenaPlayer(att);
-					if (ap != null && !ap.isOut())
+					if (plugin.isInArena(def))
 					{
-						if (plugin.isInArena(dmgd))
+						ArenaPlayer dp = plugin.getArenaPlayer(def);
+						if (dp != null && !dp.isOut())
 						{
-							ArenaPlayer dp = plugin.getArenaPlayer(dmgd);
-							if (dp != null && !dp.isOut())
+							Arena arena = ap.getArena();
+							if (arena.isInLobby())
 							{
-								Arena arena = ap.getArena();
-								if (arena.isInLobby())
+								ap.sendMessage("&cYou cannot PVP in the lobby!");
+								event.setCancelled(true);
+								return;
+							}
+								
+							if (! arena.isAllowTeamKilling())
+							{
+								if (dp.getTeam() == ap.getTeam())
 								{
-									ap.sendMessage("&cYou cannot PVP in the lobby!");
+									ap.sendMessage("&cYou cannot hurt your team mate!");
 									event.setCancelled(true);
 									return;
 								}
-								
-								if (! arena.isAllowTeamKilling())
-								{
-									if (dp.getTeam() == ap.getTeam())
-									{
-										ap.sendMessage("&cYou cannot hurt your team mate!");
-										event.setCancelled(true);
-										return;
-									}
-								}
 							}
 						}
-						else
-						{
-							ap.sendMessage("&cYou cannot hurt players not in the arena!");
-							event.setCancelled(true);
-							return;
-						}
+					}
+					else
+					{
+						ap.sendMessage("&cYou cannot hurt players not in the arena!");
+						event.setCancelled(true);
+						return;
 					}
 				}
-				else
+			}
+			else
+			{
+				if (plugin.isInArena(def))
 				{
-					if (plugin.isInArena(dmgd))
+					ArenaPlayer dp = plugin.getArenaPlayer(def);
+					if (dp != null && ! dp.isOut())
 					{
-						att.sendMessage(ChatColor.RED + "You cannot hurt players while they are in an arena!");
+						att.sendMessage(plugin.getPrefix() +
+								FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
 						event.setCancelled(true);
 						return;
 					}
@@ -115,6 +164,8 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageByEntityMonitor(EntityDamageByEntityEvent event)
 	{
+		// Repairs armor and items if in an arena
+		// Also handles healer class
 		if (event.getDamager() instanceof Player)
 		{
 			Player player = (Player)event.getDamager();
@@ -180,6 +231,7 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
+		// Handles deaths inside arenas
 		Entity died = event.getEntity();
 		if (died == null)
 			return;
@@ -435,6 +487,12 @@ public class EntityListener implements Listener
 		}
 	}
 	
+	/**
+	 * Gets the weapon that a player has
+	 * 
+	 * @param player - {@link Player} to get weapon for
+	 * @return The player's weapon
+	 */
 	private String getWeapon(Player player)
 	{
 		StringBuilder ret = new StringBuilder();

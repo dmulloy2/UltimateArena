@@ -11,7 +11,7 @@ public class CmdReload extends UltimateArenaCommand
 		this.name = "reload";
 		this.aliases.add("rl");
 		this.description = "reload UltimateArena";
-		this.permission = Permission.CMD_RELOAD;
+		this.permission = Permission.RELOAD;
 		
 		this.mustBePlayer = false;
 	}

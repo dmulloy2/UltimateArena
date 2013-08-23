@@ -14,7 +14,7 @@ public class CmdEnable extends UltimateArenaCommand
 		this.aliases.add("en");
 		this.requiredArgs.add("arena");
 		this.description = "enable an arena";
-		this.permission = Permission.CMD_ENABLE;
+		this.permission = Permission.ENABLE;
 		
 		this.mustBePlayer = false;
 	}

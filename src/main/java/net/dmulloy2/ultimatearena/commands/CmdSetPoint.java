@@ -11,7 +11,7 @@ public class CmdSetPoint extends UltimateArenaCommand
 		this.name = "setpoint";
 		this.aliases.add("sp");
 		this.description = "set a point of your field";
-		this.permission = Permission.CMD_SET_POINT;
+		this.permission = Permission.SETPOINT;
 		
 		this.mustBePlayer = true;
 	}

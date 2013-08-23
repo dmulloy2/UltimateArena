@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdClass extends UltimateArenaCommand
 {
@@ -13,6 +14,7 @@ public class CmdClass extends UltimateArenaCommand
 		this.aliases.add("cl");
 		this.optionalArgs.add("class");
 		this.description = "Switch UltimateArena classes";
+		this.permission = Permission.CLASS;
 		
 		this.mustBePlayer =  true;
 	}

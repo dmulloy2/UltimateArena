@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdLike extends UltimateArenaCommand
 {	
@@ -11,6 +12,7 @@ public class CmdLike extends UltimateArenaCommand
 		this.name = "like";
 		this.requiredArgs.add("arena");
 		this.description = "like an arena";
+		this.permission = Permission.LIKE;
 		
 		this.mustBePlayer = true;
 	}

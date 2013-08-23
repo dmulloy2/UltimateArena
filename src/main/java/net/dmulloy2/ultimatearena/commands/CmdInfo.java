@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 import org.apache.commons.lang.WordUtils;
 
@@ -14,6 +15,7 @@ public class CmdInfo extends UltimateArenaCommand
 		this.name = "info";
 		this.optionalArgs.add("arena");
 		this.description = "view info on the arena you are in";
+		this.permission = Permission.INFO;
 		
 		this.mustBePlayer = true;
 	}

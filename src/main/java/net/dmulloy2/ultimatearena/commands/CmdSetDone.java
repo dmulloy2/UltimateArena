@@ -11,7 +11,7 @@ public class CmdSetDone extends UltimateArenaCommand
 		this.name = "done";
 		this.aliases.add("d");
 		this.description = "finalize a step in the UA creation process";
-		this.permission = Permission.CMD_SET_DONE;
+		this.permission = Permission.SETDONE;
 		
 		this.mustBePlayer = true;
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdList extends UltimateArenaCommand
 {
@@ -15,6 +16,7 @@ public class CmdList extends UltimateArenaCommand
 		this.name = "list";
 		this.aliases.add("li");
 		this.description = "view all the UltimateArenas";
+		this.permission = Permission.LIST;
 		
 		this.mustBePlayer = false;
 	}

@@ -173,7 +173,7 @@ public class PlayerListener implements Listener
 					{
 						if (s.getLine(1).equalsIgnoreCase("Click to join"))
 						{
-							boolean force = plugin.getPermissionHandler().hasPermission(player, Permission.FORCE_JOIN);
+							boolean force = plugin.getPermissionHandler().hasPermission(player, Permission.JOIN_FORCE);
 							if (s.getLine(2).equalsIgnoreCase("Auto assign"))
 							{
 								boolean found = false;
@@ -313,7 +313,7 @@ public class PlayerListener implements Listener
 		if (! event.isCancelled())
 		{
 			Player player = event.getPlayer();
-			if (! plugin.getPermissionHandler().hasPermission(player, Permission.COMMAND_BYPASS))
+			if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 			{
 				String cmd = event.getMessage().toLowerCase();
 			

@@ -13,7 +13,7 @@ public class CmdForceStop extends UltimateArenaCommand
 		this.aliases.add("fs");
 		this.optionalArgs.add("arena");
 		this.description = "force stop an arena";
-		this.permission = Permission.CMD_FORCE_STOP;
+		this.permission = Permission.FORCESTOP;
 		
 		this.mustBePlayer = false;
 	}
