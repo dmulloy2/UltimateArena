@@ -110,8 +110,9 @@ public class SignManager
 	
 	public void updateSigns()
 	{
-		for (ArenaSign sign : plugin.arenaSigns)
+		for (int i = 0; i < plugin.arenaSigns.size(); i++)
 		{
+			ArenaSign sign = plugin.arenaSigns.get(i);
 			sign.update();
 		}
 	}

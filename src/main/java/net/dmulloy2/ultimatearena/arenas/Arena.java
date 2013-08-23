@@ -148,8 +148,7 @@ public abstract class Arena
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Joining arena &b{0}&6... Please wait!", name));
 		
 		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
-		arenaPlayers.add(pl);
-		
+
 		// Update Teams
 		pl.setTeam(getTeam());
 		this.updatedTeams = true;
@@ -165,6 +164,8 @@ public abstract class Arena
 			pl.saveInventory();
 			pl.clearInventory();
 		}
+		
+		pl.setBaseLevel(player.getLevel());
 
 		// Make sure the player is in survival
 		player.setGameMode(GameMode.SURVIVAL);
@@ -194,6 +195,9 @@ public abstract class Arena
 		
 		// Clear potion effects
 		pl.clearPotionEffects();
+		
+		// Finally add the player
+		arenaPlayers.add(pl);
 		
 		// Update Signs
 		updateSigns();
@@ -829,8 +833,9 @@ public abstract class Arena
 	{
 		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
 		
-		normalize(player);
 		returnXP(ap);
+		
+		ap.clearInventory();
 		ap.returnInventory();
 
 		plugin.removePotions(player);

@@ -66,7 +66,6 @@ public class ArenaPlayer
 		this.player = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
-		this.baselevel = player.getLevel();
 		
 		this.arena = arena;
 		this.plugin = plugin;
@@ -459,6 +458,11 @@ public class ArenaPlayer
 		setGameXP(getGameXP() - xp);
 	}
 	
+	public void setBaseLevel(int baseLevel)
+	{
+		this.baselevel = baseLevel;
+	}
+	
 	/**
 	 * Gets a player's KDR (Kill-Death Ratio)
 	 * @return KDR
@@ -477,7 +481,7 @@ public class ArenaPlayer
 	
 	public boolean isDead()
 	{
-		return (System.currentTimeMillis() - deathTime)  <= 60L;
+		return (System.currentTimeMillis() - deathTime)  < 60L;
 	}
 	
 	public void onDeath()
@@ -485,5 +489,28 @@ public class ArenaPlayer
 		this.deathTime = System.currentTimeMillis();
 		this.killstreak = 0;
 		this.deaths++;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder ret = new StringBuilder();
+		ret.append("ArenaPlayer {name=");
+		ret.append(name);
+		ret.append("}");
+		
+		return ret.toString();
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o instanceof ArenaPlayer)
+		{
+			ArenaPlayer op = (ArenaPlayer)o;
+			return op.getName() == name;
+		}
+
+		return false;
 	}
 }
