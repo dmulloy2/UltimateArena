@@ -1,6 +1,6 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import java.util.Random;
+import java.util.List;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
@@ -53,9 +53,8 @@ public class FFAArena extends Arena
 		if (p != null)
 		{
 			/**Determine Hat**/
-			Random rand = new Random();
-			int num = rand.nextInt(15);
-			
+			int num = Util.random(15);
+
 			Color color = null;
 			if (num == 0) color = Color.AQUA;
 			if (num == 1) color = Color.BLACK;
@@ -91,24 +90,24 @@ public class FFAArena extends Arena
 			{
 				setWinningTeam(-1);
 				
+				if (getStartingAmount() > 1)
+				{
+					List<ArenaPlayer> arenaPlayers = getValidPlayers();
+					for (int i = 0; i < arenaPlayers.size(); i++)
+					{
+						this.winner = arenaPlayers.get(i);
+					}
+				}
+				
 				stop();
 				
 				if (getStartingAmount() > 1)
 				{
-					rewardTeam(winningTeam, false);
-					
-					for (int i = 0; i < arenaPlayers.size(); i++)
-					{
-						ArenaPlayer ap = arenaPlayers.get(i);
-						if (ap != null && ! ap.isOut())
-						{
-							this.winner = ap;
-						}
-					}
+					rewardTeam(winningTeam, false);	
 				}
 				else
 				{
-					tellPlayers("&9Not enough people to play!");
+					tellPlayers("&3Not enough people to play!");
 				}
 			}
 		}
@@ -118,6 +117,12 @@ public class FFAArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellPlayers("&6{0} &7has won!", winner.getName());
+			tellPlayers("&e{0} &3has won!", winner.getName());
+	}
+	
+	@Override
+	protected String decideColor(ArenaPlayer ap)
+	{
+		return "&d";
 	}
 }

@@ -41,9 +41,9 @@ public class INFECTArena extends PVPArena
 			if (apl != null && apl.getPlayer().isOnline())
 			{
 				apl.setTeam(2);
-				apl.sendMessage("&9You have been chosen for the infected!");
+				apl.sendMessage("&3You have been chosen for the infected!");
 				onSpawn(apl);
-				tellPlayers("&c{0} &bis the zombie!", apl.getPlayer().getName());
+				tellPlayers("&e{0} &3is the zombie!", apl.getPlayer().getName());
 			}
 			else
 			{
@@ -94,7 +94,7 @@ public class INFECTArena extends PVPArena
 				}
 				else
 				{
-					tellPlayers("&9One team is empty! game ended!");
+					tellPlayers("&3One team is empty! game ended!");
 					
 					stop();
 				}
@@ -103,7 +103,7 @@ public class INFECTArena extends PVPArena
 			{
 				if (getStartingAmount() <= 1) 
 				{
-					tellPlayers("&9Not enough people to play!");
+					tellPlayers("&3Not enough people to play!");
 					
 					stop();
 				}
@@ -130,7 +130,7 @@ public class INFECTArena extends PVPArena
 		
 		if (pl.getTeam() == 1)
 		{
-			pl.sendMessage("&bYou have joined the Infected!");
+			pl.sendMessage("&3You have joined the Infected!");
 		}
 		
 		pl.setTeam(2);
@@ -141,11 +141,11 @@ public class INFECTArena extends PVPArena
 	{
 		if (winningTeam == 2)
 		{
-			tellPlayers("&9The infected win!");
+			tellPlayers("&3The infected win!");
 		}
 		else if (winningTeam == 1)
 		{
-			tellPlayers("&9You have survived!");
+			tellPlayers("&3You have survived!");
 		}
 	}
 }

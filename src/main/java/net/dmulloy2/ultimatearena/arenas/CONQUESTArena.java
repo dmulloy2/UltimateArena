@@ -68,13 +68,14 @@ public class CONQUESTArena extends Arena
 			if (!ap.isOut())
 			{
 				List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
-				for (int i = 0; i < getFlags().size(); i++)
+				for (int i = 0; i < flags.size(); i++)
 				{
-					if (getFlags().get(i).team == ap.getTeam())
+					ArenaFlag flag = flags.get(i);
+					if (flag.getTeam() == ap.getTeam())
 					{
-						if (getFlags().get(i).capped)
+						if (flag.isCapped())
 						{
-							spawnto.add(getFlags().get(i));
+							spawnto.add(flag);
 						}
 					}
 				}
@@ -102,18 +103,20 @@ public class CONQUESTArena extends Arena
 		int majority = 0;
 		int red = 0;
 		int blu = 0;
-		for (int i = 0; i < getFlags().size(); i++) 
+		
+		for (int i = 0; i < flags.size(); i++) 
 		{
-			if (getFlags().get(i).color == 14) 
+			ArenaFlag flag = flags.get(i);
+			if (flag.getColor() == 14) 
 			{
-				if (getFlags().get(i).capped == true) 
+				if (flag.isCapped()) 
 				{
 					red++;
 				}
 			}
-			else if (getFlags().get(i).color == 11) 
+			else if (flag.getColor() == 11) 
 			{
-				if (getFlags().get(i).capped == true) 
+				if (flag.isCapped()) 
 				{
 					blu++;
 				}
@@ -138,7 +141,7 @@ public class CONQUESTArena extends Arena
 			for (int i = 0; i < arenaPlayers.size(); i++) 
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
-				if (apl != null && ! apl.isOut())
+				if (checkValid(apl))
 				{ 
 					if (apl.getTeam() == 1)
 					{
@@ -157,7 +160,7 @@ public class CONQUESTArena extends Arena
 			for (int i = 0; i < arenaPlayers.size(); i++) 
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
-				if (apl != null && ! apl.isOut())
+				if (checkValid(apl))
 				{ 
 					if (apl.getTeam() == 2)
 					{
@@ -181,24 +184,23 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void check() 
 	{
+		List<ArenaPlayer> arenaPlayers = getValidPlayers();
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && ! ap.isOut())
+			
+			if (BLUETEAMPOWER <= 0) 
 			{
-				if (BLUETEAMPOWER <= 0) 
+				if (ap.getTeam() == 2)
 				{
-					if (ap.getTeam() == 2)
-					{
-						endPlayer(ap, ap.getPlayer(), false);
-					}
+					endPlayer(ap, ap.getPlayer(), false);
 				}
-				else if (REDTEAMPOWER <= 0) 
+			}
+			else if (REDTEAMPOWER <= 0) 
+			{
+				if (ap.getTeam() == 1)
 				{
-					if (ap.getTeam() == 1)
-					{
-						endPlayer(ap, ap.getPlayer(), false);
-					}
+					endPlayer(ap, ap.getPlayer(), false);
 				}
 			}
 		}
@@ -213,9 +215,9 @@ public class CONQUESTArena extends Arena
 			setWinningTeam(2);
 		}
 			
-		for (int i = 0; i < getFlags().size(); i++)
+		for (int i = 0; i < flags.size(); i++)
 		{
-			ArenaFlag flag = getFlags().get(i);
+			ArenaFlag flag = flags.get(i);
 			
 			flag.step();
 			flag.checkNear(arenaPlayers);

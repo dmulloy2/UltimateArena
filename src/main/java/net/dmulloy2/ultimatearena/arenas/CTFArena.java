@@ -13,7 +13,7 @@ public class CTFArena extends Arena
 	public CTFFlagBase flagblue;
 	public int redcap;
 	public int bluecap;
-	private BukkitTask ExecuteMove;
+	private BukkitTask moveTask;
 	private String lastcap;
 	
 	public CTFArena(ArenaZone az)
@@ -25,13 +25,13 @@ public class CTFArena extends Arena
 		this.maxGameTime = 60 * 15;
 		this.maxDeaths = 990;
 
-		flagred = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
-		flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
+		this.flagred = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
+		this.flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
 			
 		flagred.initialize();
 		flagblue.initialize();
 		
-		ExecuteMove = new ExecuteMove().runTaskTimer(plugin, 12, 1);
+		this.moveTask = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class CTFArena extends Arena
 		{
 			if (!simpleTeamCheck(false)) 
 			{
-				tellPlayers("&9One team is empty! game ended!");
+				tellPlayers("&3One team is empty! game ended!");
 				
 				stop();
 			}
@@ -49,7 +49,7 @@ public class CTFArena extends Arena
 			{
 				if (getStartingAmount() <= 1) 
 				{
-					tellPlayers("&9Not enough people to play!");
+					tellPlayers("&3Not enough people to play!");
 					
 					stop();
 				}
@@ -110,7 +110,7 @@ public class CTFArena extends Arena
 		flagred.getFlag().despawn();
 		flagblue.getFlag().despawn();
 
-		ExecuteMove.cancel();
+		moveTask.cancel();
 	}
 	
 	public class ExecuteMove extends BukkitRunnable 
@@ -118,7 +118,7 @@ public class CTFArena extends Arena
 		@Override
 		public void run()
 		{
-			if (!isStopped())
+			if (! isStopped())
 			{
 				flagred.checkNear(arenaPlayers);
 				flagblue.checkNear(arenaPlayers);
@@ -135,12 +135,12 @@ public class CTFArena extends Arena
 	{
 		if (winningTeam == -1)
 		{
-			tellPlayers("&9Game ended in a tie! Half prize to everyone!");
+			tellPlayers("&3Game ended in a tie! Half prize to everyone!");
 		}
 		else
 		{
 			if (lastcap != null)
-				tellPlayers("{0} &7team won the game!", lastcap);
+				tellPlayers("&e{0} &3team won the game!", lastcap);
 		}
 	}
 }

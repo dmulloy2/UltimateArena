@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import java.util.List;
 import java.util.Random;
 
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
@@ -91,24 +92,24 @@ public class HUNGERArena extends Arena
 			{
 				setWinningTeam(-1);
 				
+				if (getStartingAmount() > 1)
+				{
+					List<ArenaPlayer> arenaPlayers = getValidPlayers();
+					for (int i = 0; i < arenaPlayers.size(); i++)
+					{
+						this.winner = arenaPlayers.get(i);
+					}
+				}
+				
 				stop();
 				
 				if (getStartingAmount() > 1)
 				{
-					rewardTeam(winningTeam, false);
-					
-					for (int i = 0; i < arenaPlayers.size(); i++)
-					{
-						ArenaPlayer ap = arenaPlayers.get(i);
-						if (ap != null && ! ap.isOut())
-						{
-							this.winner = ap;
-						}
-					}
+					rewardTeam(winningTeam, false);	
 				}
 				else
 				{
-					tellPlayers("&9Not enough people to play!");
+					tellPlayers("&3Not enough people to play!");
 				}
 			}
 		}
@@ -118,7 +119,7 @@ public class HUNGERArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellPlayers("&6{0} &7has won the HungerGames!", winner.getName());
+			tellPlayers("&e{0} &3has won the HungerGames!", winner.getName());
 	}
 	
 	@Override
@@ -127,6 +128,6 @@ public class HUNGERArena extends Arena
 		super.onPlayerDeath(pl);
 		
 		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
-		tellPlayers("&cTribute &6{0} &chas fallen!", pl.getName());
+		tellPlayers("&3Tribute &e{0} &3has fallen!", pl.getName());
 	}
 }

@@ -27,6 +27,7 @@ import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.ess3.api.IEssentials;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -145,7 +146,7 @@ public abstract class Arena
 	 */
 	public void addPlayer(Player player)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Joining arena &b{0}&6... Please wait!", name));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Joining arena &e{0}&3... Please wait!", name));
 		
 		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
 
@@ -232,14 +233,17 @@ public abstract class Arena
 				{
 					if (announced == 0) 
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&b{0} &6arena has been created!", getType().getName()));
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&e{0} &3arena has been created!", WordUtils.capitalize(type.getName())));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Hurry up and join the &b{0} &6arena!", getType().getName()));
+						player.sendMessage(plugin.getPrefix() +
+								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getName()));
 					}
 					
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6Type &b/ua join {0} &6to join!", getArenaZone().getArenaName()));
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getArenaName()));
 				}
 			}
 		}
@@ -259,7 +263,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (checkValid(ap))
 			{
 				if (ap.getTeam() == 1)
 				{
@@ -340,7 +344,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (checkValid(ap))
 				spawn(ap.getPlayer().getName(), false);
 		}
 	}
@@ -390,7 +394,7 @@ public abstract class Arena
 					ArenaPlayer ap = arenaPlayers.get(i);
 					if (ap.getName().equals(name))
 					{
-						if (ap != null && ! ap.isOut())
+						if (checkValid(ap))
 						{
 							if (ap.getDeaths() < getMaxDeaths()) 
 							{
@@ -497,7 +501,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (checkValid(ap))
 			{
 				ap.setCanReward(false);
 				if (ap.getTeam() == team || team == -1)
@@ -520,11 +524,11 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (checkValid(ap))
 			{
 				if (ap.getPoints() >= max)
 				{
-					tellPlayers("&7Player &6{0} &7has won!", ap.getName());
+					tellPlayers("&3Player &e{0} &3has won!", ap.getName());
 					
 					stop();
 					
@@ -565,7 +569,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut()) 
+			if (checkValid(ap)) 
 			{
 				Player player = Util.matchPlayer(ap.getPlayer().getName());
 				if (player != null && player.isOnline())
@@ -588,7 +592,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut()) 
+			if (checkValid(ap)) 
 			{
 				Player player = Util.matchPlayer(ap.getPlayer().getName());
 				if (player != null && player.isOnline())
@@ -610,7 +614,7 @@ public abstract class Arena
 	{
 		plugin.debug("Getting a random spawn for {0}", ap.getName());
 		
-		if (ap != null && !ap.isOut())
+		if (checkValid(ap))
 		{
 			if (! spawns.isEmpty())
 			{
@@ -771,15 +775,6 @@ public abstract class Arena
 				{
 					if (plugin.isInArena(player)) 
 					{
-						if (gameTimer <= maxGameTime)
-						{
-							ap.sendMessage("&9Game inturrupted/ended!");
-						}
-						else
-						{
-							ap.sendMessage("&9Game Over!");
-						}
-						
 						endPlayer(ap, player, false);
 					}
 				}
@@ -792,7 +787,7 @@ public abstract class Arena
 		
 		plugin.activeArena.remove(this);
 
-		plugin.broadcast("&6Arena &b{0} &6has concluded!", name);
+		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
 	}
 	
 	/**
@@ -967,7 +962,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (checkValid(ap))
 			{
 				Player player = Util.matchPlayer(ap.getPlayer().getName());
 				if (player != null)
@@ -985,7 +980,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (checkValid(ap))
 			{
 				Player player = ap.getPlayer();
 				if (player != null)
@@ -1029,10 +1024,8 @@ public abstract class Arena
 					}
 							
 					// Make sure they are still in the Arena
-					if (!plugin.isInArena(player.getLocation()))
+					if (! plugin.isInArena(player.getLocation()))
 					{
-						plugin.debug("Player {0} got out of the arena! Putting him back in!", ap.getName());
-
 						spawn(ap.getPlayer().getName(), false);
 						ap.setAmtkicked(ap.getAmtkicked() + 1);
 					}
@@ -1042,41 +1035,41 @@ public abstract class Arena
 					{
 						if (startTimer == 120) 
 						{
-							ap.sendMessage("&6120 &7seconds until start!");
+							ap.sendMessage("&e120 &3seconds until start!");
 						}
 						if (startTimer == 60)
 						{
-							ap.sendMessage("&660 &7seconds until start!");
+							ap.sendMessage("&e60 &3seconds until start!");
 						}
 						if (startTimer == 45)
 						{
-							ap.sendMessage("&645 &7seconds until start!");
+							ap.sendMessage("&e45 &3seconds until start!");
 						}
 						if (startTimer == 30) 
 						{
-							ap.sendMessage("&630 &7seconds until start!");
+							ap.sendMessage("&e30 &3seconds until start!");
 						}
 						if (startTimer == 15)
 						{
-							ap.sendMessage("&615 &7seconds until start!");
+							ap.sendMessage("&e15 &3seconds until start!");
 						}
 						if (startTimer > 0 && startTimer < 11) 
 						{
-							ap.sendMessage("&6{0} &7second(s) until start!", startTimer);
+							ap.sendMessage("&e{0} &3second(s) until start!", startTimer);
 						}
 					}
 							
 					if (gameTimer > 0 && gameTimer < 21)
 					{
-						ap.sendMessage("&6{0} &7second(s) until end!", gameTimer);
+						ap.sendMessage("&e{0} &3second(s) until end!", gameTimer);
 					}
 					if (gameTimer == 60 && maxGameTime > 60)
 					{
-						ap.sendMessage("&6{0} &7minute(s) until end!", gameTimer / 60);
+						ap.sendMessage("&e{0} &3minute(s) until end!", gameTimer / 60);
 					}
 					if (gameTimer == maxGameTime/2) 
 					{
-						ap.sendMessage("&6{0} &7second(s) until end!", maxGameTime / 2);
+						ap.sendMessage("&e{0} &3second(s) until end!", maxGameTime / 2);
 					}
 					
 					// XP Bar
@@ -1111,7 +1104,7 @@ public abstract class Arena
 	 */
 	public void decideXPBar(ArenaPlayer ap)
 	{
-		if (ap != null && ! ap.isOut())
+		if (checkValid(ap))
 		{
 			if (plugin.getConfig().getBoolean("timerXPBar", false))
 			{
@@ -1167,7 +1160,7 @@ public abstract class Arena
 		
 		gameTimer--;
 		
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&6You have forcefully started &b{0}&6!", name));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
 	// TODO: Explanations for the rest of the methods
@@ -1216,7 +1209,7 @@ public abstract class Arena
 		int amt = 0;
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap != null && ! ap.isOut())
+			if (checkValid(ap))
 				amt++;
 		}
 		
@@ -1372,7 +1365,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && ! ap.isOut())
+			if (checkValid(ap))
 			{
 				kdrMap.put(ap.getName(), ap.getKDR());
 			}
@@ -1442,16 +1435,34 @@ public abstract class Arena
 	{
 		if (winningTeam == 2)
 		{
-			tellPlayers("&9Blue team won!");
+			tellPlayers("&eBlue &3team won!");
 		}
 		else if (winningTeam == 1)
 		{
-			tellPlayers("&9Red team won!");
+			tellPlayers("&eRed &3team won!");
 		}
 		else if (winningTeam == -1)
 		{
-			tellPlayers("&9Game ended in a tie!");
+			tellPlayers("&3Game ended in a tie!");
 		}
-		// else nobody won
+	}
+	
+	public boolean checkValid(ArenaPlayer ap)
+	{
+		return ap != null && ! ap.isOut();
+	}
+	
+	public List<ArenaPlayer> getValidPlayers()
+	{
+		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
+		
+		for (int i = 0; i < arenaPlayers.size(); i++)
+		{
+			ArenaPlayer ap = arenaPlayers.get(i);
+			if (checkValid(ap))
+				validPlayers.add(ap);
+		}
+		
+		return validPlayers;
 	}
 }

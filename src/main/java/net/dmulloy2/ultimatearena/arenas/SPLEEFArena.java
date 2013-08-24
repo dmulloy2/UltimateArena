@@ -119,6 +119,6 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void announceWinner()
 	{
-		tellPlayers("&9You won!");
+		tellPlayers("&3You won!");
 	}
 }

@@ -49,6 +49,6 @@ public class PVPArena extends Arena
 	@Override
 	public void announceWinner()
 	{
-		tellPlayers("&9You won!");
+		tellPlayers("&3You won!");
 	}
 }

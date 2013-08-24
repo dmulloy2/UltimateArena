@@ -14,12 +14,12 @@ import org.bukkit.entity.Player;
 
 public class ArenaFlag extends FlagBase
 {
-	public int power;
-	public int color = 14;
-	public int team = 0;
-	public int added = 0;
+	protected int power;
+	private int color = 14;
+	private int team = 0;
+	protected int added = 0;
 	
-	public boolean capped = false;
+	private boolean capped = false;
 	
 	public ArenaFlag(Arena arena, Location loc, final UltimateArena plugin) 
 	{
@@ -35,33 +35,33 @@ public class ArenaFlag extends FlagBase
 	
 	public void step() 
 	{
-		capped = false;
-		color = 8;
-		team = 0;
+		setCapped(false);
+		setColor(8);
+		setTeam(0);
 		if (added > 50) 
 		{
-			color = 14;
-			team = 1;
+			setColor(14);
+			setTeam(1);
 		}
 		if (added < -50)
 		{
-			color = 11;
-			team = 2;
+			setColor(11);
+			setTeam(2);
 		}
 		if (added >= 150)
 		{ 
 			added = 150; 
-			capped = true; 
+			setCapped(true); 
 		}
 		if (added <= -150)
 		{
 			added = -150;
-			capped = true;
+			setCapped(true);
 		}
 		
-		if (capped)
+		if (isCapped())
 		{
-			getNotify().setData((byte) color);
+			getNotify().setData((byte) getColor());
 		}
 		else
 		{
@@ -99,11 +99,11 @@ public class ArenaFlag extends FlagBase
 		}
 		
 		int percent = 0;
-		if (color == 14)
+		if (getColor() == 14)
 		{
 			percent = added-50;
 		}
-		else if (color == 11)
+		else if (getColor() == 11)
 		{
 			percent = Math.abs(added)-50;
 		}
@@ -136,5 +136,35 @@ public class ArenaFlag extends FlagBase
 				}
 			}
 		}
+	}
+
+	public int getTeam()
+	{
+		return team;
+	}
+
+	public void setTeam(int team)
+	{
+		this.team = team;
+	}
+
+	public boolean isCapped()
+	{
+		return capped;
+	}
+
+	public void setCapped(boolean capped)
+	{
+		this.capped = capped;
+	}
+
+	public int getColor()
+	{
+		return color;
+	}
+
+	public void setColor(int color)
+	{
+		this.color = color;
 	}
 }

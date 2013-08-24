@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
+import net.ess3.api.IEssentials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -20,8 +21,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.earth2me.essentials.IEssentials;
 
 public class ArenaClass 
 {
@@ -51,7 +50,7 @@ public class ArenaClass
 		this.name = getName(file);
 
 		this.loaded = load();
-		if (!loaded)
+		if (! loaded)
 		{
 			plugin.outConsole(Level.WARNING, "Failed to load class {0}!", name);
 		}

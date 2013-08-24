@@ -257,11 +257,11 @@ public class MOBArena extends Arena
 		{
 			if (wave > maxWave)
 			{
-				tellPlayers("&9You have beat the MobArena!");
+				tellPlayers("&3You have beat the MobArena!");
 			}
 			else
 			{
-				tellPlayers("&9You survived the MobArena!");
+				tellPlayers("&3You survived the MobArena!");
 			}
 		}
 	}
