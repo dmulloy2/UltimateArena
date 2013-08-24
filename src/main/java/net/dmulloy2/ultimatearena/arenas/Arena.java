@@ -25,6 +25,7 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
+import net.ess3.api.IEssentials;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -40,7 +41,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
-import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 /**
