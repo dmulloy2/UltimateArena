@@ -15,12 +15,8 @@
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
     <repository>
-      <id>vault-repo</id>
-	  <url>http://ci.drtshock.com/plugin/repository/everything/</url>
-    </repository>
-    <repository>
-      <id>essentials-repo</id>
-      <url>http://ci.ess3.net/nexus/content/groups/public/</url>
+      <id>drtshock-repo</id>
+      <url>http://ci.drtshock.com/plugin/repository/everything/</url>
     </repository>
     <repository>
       <id>shadowvolt-repo</id>
@@ -91,7 +87,9 @@
     <dependency>
       <groupId>com.earth2me</groupId>
       <artifactId>essentials</artifactId>
-      <version>2.9.1</version>
+      <version>2.12.93</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/Essentials.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
