@@ -833,6 +833,10 @@ public abstract class Arena
 	{
 		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
 		
+		ap.setOut(true);
+		
+		this.updatedTeams = true;
+		
 		returnXP(ap);
 		
 		ap.clearInventory();
@@ -846,10 +850,6 @@ public abstract class Arena
 		UltimateArenaLeaveEvent leaveEvent = new UltimateArenaLeaveEvent(ap, this);
 		plugin.getServer().getPluginManager().callEvent(leaveEvent);
 
-		ap.setOut(true);
-		
-		this.updatedTeams = true;
-		
 		updateSigns();
 		
 		if (dead) 

@@ -574,9 +574,9 @@ public class UltimateArena extends JavaPlugin
 			ArenaPlayer ap = getArenaPlayer(player);
 			a.endPlayer(ap, player, false);
 			
-			ap.sendMessage("&bYou have left the arena!");
+			ap.sendMessage("&3You have left the arena!");
 			
-			a.tellPlayers("&b{0} has left the arena!", player.getName());
+			a.tellPlayers("&e{0} &3has left the arena!", player.getName());
 		}
 		else
 		{

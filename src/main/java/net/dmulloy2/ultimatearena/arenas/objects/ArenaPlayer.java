@@ -1,12 +1,12 @@
 package net.dmulloy2.ultimatearena.arenas.objects;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
+import net.ess3.api.IEssentials;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -19,7 +19,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 
-import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.Kit;
 import com.earth2me.essentials.User;
 
@@ -52,8 +51,8 @@ public class ArenaPlayer
 	
 	private final UltimateArena plugin;
 	
-	private List<ItemStack> savedInventory = new ArrayList<ItemStack>();
-	private List<ItemStack> savedArmor = new ArrayList<ItemStack>();
+	private ItemStack[] inventoryContents;
+	private ItemStack[] armorContents;
 	
 	/**
 	 * Creates a new ArenaPlayer instance
@@ -135,22 +134,8 @@ public class ArenaPlayer
 	 */
 	public void saveInventory()
 	{
-		PlayerInventory inv = getPlayer().getInventory();
-		for (ItemStack itemStack : inv.getContents())
-		{
-			if (itemStack != null && itemStack.getType() != Material.AIR)
-			{
-				getSavedInventory().add(itemStack);
-			}
-		}
-		
-		for (ItemStack armor : inv.getArmorContents())
-		{
-			if (armor != null && armor.getType() != Material.AIR)
-			{
-				getSavedArmor().add(armor);
-			}
-		}
+		this.inventoryContents = player.getInventory().getContents();
+		this.armorContents = player.getInventory().getArmorContents();
 	}
 	
 	/**
@@ -171,35 +156,8 @@ public class ArenaPlayer
 	 */
 	public void returnInventory()
 	{
-		PlayerInventory inv = getPlayer().getInventory();
-		for (ItemStack itemStack : getSavedInventory())
-		{
-			inv.addItem(itemStack);
-		}
-		
-		for (ItemStack armor : getSavedArmor())
-		{
-			String type = armor.getType().toString().toLowerCase();
-			if (type.contains("helmet"))
-			{
-				inv.setHelmet(armor);
-			}
-				
-			if (type.contains("chestplate"))
-			{
-				inv.setChestplate(armor);
-			}
-				
-			if (type.contains("leggings"))
-			{
-				inv.setLeggings(armor);
-			}
-				
-			if (type.contains("boots"))
-			{
-				inv.setBoots(armor);
-			}
-		}
+		player.getInventory().setContents(inventoryContents);
+		player.getInventory().setArmorContents(armorContents);
 	}
 	
 	/**
@@ -261,7 +219,7 @@ public class ArenaPlayer
 				IEssentials ess = (IEssentials) essPlugin;
 				User user = ess.getUser(player);
 								
-				List<String> items = Kit.getItems(user, mclass.getEssentialsKit());
+				List<String> items = Kit.getItems(ess, user, mclass.getEssentialsKit());
 					
 				Kit.expandItems(ess, user, items);
 				return;
@@ -423,16 +381,6 @@ public class ArenaPlayer
 		this.amtkicked = amtkicked;
 	}
 
-	public List<ItemStack> getSavedInventory() 
-	{
-		return savedInventory;
-	}
-
-	public List<ItemStack> getSavedArmor() 
-	{
-		return savedArmor;
-	}
-	
 	public ArenaClass getArenaClass()
 	{
 		return mclass;
