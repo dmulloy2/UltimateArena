@@ -55,7 +55,7 @@ public class KothFlag extends ArenaFlag
 				capturer.setPoints(capturer.getPoints() + 1);
 				
 				pl.sendMessage(plugin.getPrefix() + 
-						FormatUtil.format("&7You have capped for &d1 &7point! (&d{0}&7/&d{1}&7)", capturer.getPoints(), marena.MAXPOWER));
+						FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(), marena.MAXPOWER));
 				
 				leadChange();
 			}
@@ -99,7 +99,7 @@ public class KothFlag extends ArenaFlag
 			{
 				if (leader == null || ! apl.getName().equals(leader.getName()))
 				{
-					marena.tellPlayers("&b{0} has taken the lead!", apl.getName());
+					marena.tellPlayers("&e{0} &3has taken the lead!", apl.getName());
 					this.leader = apl;
 				}
 				pos++;

@@ -55,7 +55,7 @@ public class CmdStart extends UltimateArenaCommand
 			return;
 		}
 			
-		sendpMessage("&6Starting Arena &b{0}&6...", arena.getName());
+		sendpMessage("&3Starting Arena &e{0}&3...", arena.getName());
 		
 		arena.forceStart(player);
 	}

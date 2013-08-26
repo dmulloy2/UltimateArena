@@ -592,13 +592,31 @@ public class UltimateArena extends JavaPlugin
 		ArenaZone a = getArenaZone(arena);
 		if (a == null)
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cThat arena doesn't exist!"));
+			List<ArenaZone> matches = matchArena(arena);
+			if (matches.size() == 0)
+			{
+				player.sendMessage(prefix + FormatUtil.format("&cThat arena does not exist!"));
+			}
+			else
+			{
+				StringBuilder matchString = new StringBuilder();
+				for (ArenaZone match : matches)
+				{
+					matchString.append("&e" + match.getArenaName() + "&3, ");
+				}
+				
+				matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(" "), "?");
+			
+				
+				player.sendMessage(prefix + FormatUtil.format("&3Did you mean: &e{0}", matchString.toString()));
+			}
+			
 			return;
 		}
 		
 		if (isInArena(player))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou''re already in an arena!"));
+			player.sendMessage(prefix + FormatUtil.format("&cYou are already in an arena!"));
 			return;
 		}
 		
@@ -614,7 +632,7 @@ public class UltimateArena extends JavaPlugin
 			ArenaJoinTask task = waiting.get(i);
 			if (task.getPlayer().getName().equals(player.getName()))
 			{
-				player.sendMessage(prefix + FormatUtil.format("&cYou''re already waiting!"));
+				player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));
 				return;
 			}
 		}
@@ -802,11 +820,25 @@ public class UltimateArena extends JavaPlugin
 		for (int i = 0; i < activeArena.size(); i++)
 		{
 			Arena ac = activeArena.get(i);
-			if (ac.getName().equals(name))
+			if (ac.getName().equalsIgnoreCase(name))
 				return ac;
 		}
 		
 		return null;
+	}
+	
+	public List<ArenaZone> matchArena(String partial)
+	{
+		List<ArenaZone> ret = new ArrayList<ArenaZone>();
+		
+		for (int i = 0; i < loadedArena.size(); i++)
+		{
+			ArenaZone az = loadedArena.get(i);
+			if (az.getArenaName().contains(partial))
+				ret.add(az);
+		}
+		
+		return ret;
 	}
 	
 	// Gets an arena zone by its name
@@ -815,7 +847,7 @@ public class UltimateArena extends JavaPlugin
 		for (int i = 0; i < loadedArena.size(); i++)
 		{
 			ArenaZone az = loadedArena.get(i);
-			if (az.getArenaName().equals(name)) 
+			if (az.getArenaName().equalsIgnoreCase(name)) 
 				return az;
 		}
 		
@@ -831,12 +863,12 @@ public class UltimateArena extends JavaPlugin
 			ac.setPoint(player);
 			if (! ac.getMsg().isEmpty())
 			{
-				player.sendMessage(prefix + FormatUtil.format("&7" + ac.getMsg()));
+				player.sendMessage(prefix + FormatUtil.format("&3" + ac.getMsg()));
 			}
 		}
 		else
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou aren''t editing a field!"));
+			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
 		}
 	}
 
@@ -849,7 +881,7 @@ public class UltimateArena extends JavaPlugin
 		}
 		else
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou aren''t editing a field!"));
+			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
 		}
 	}
 	
@@ -866,7 +898,7 @@ public class UltimateArena extends JavaPlugin
 			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
 			{
 				makingArena.remove(ac);
-				player.sendMessage(prefix + FormatUtil.format("&7Stopped the creation of arena: &6{0}&7!", ac.getArenaName()));
+				player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
 			}
 		}
 	}

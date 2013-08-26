@@ -106,8 +106,8 @@ public class ArenaCreator
 		
 		this.step = steps.get(stepnum);
 		
-		sendMessage("&7Arena: &6{0} &7has been initialized. Type: &6{1}", arenaName, arenaType);
-		sendMessage("&7Please set two points for a lobby! &6/ua setpoint");
+		sendMessage("&3Arena: &e{0} &3has been initialized. Type: &e{1}", arenaName, arenaType);
+		sendMessage("&3Please set two points for a lobby! &e/ua setpoint");
 	}
 	
 	public void complete()
@@ -142,24 +142,24 @@ public class ArenaCreator
 		{
 			if (lobby1 != null && lobby2 != null)
 			{
-				sendMessage("&7Done setting up Lobby! please set 2 points for the arena");
+				sendMessage("&3Done setting up Lobby! Please set &e2 &3points for the arena");
 				stepUp();
 			}
 			else
 			{
-				sendMessage("&7You are not done creating the lobby!");
+				sendMessage("&3You are not done creating the lobby!");
 			}
 		}
 		else if (step.equalsIgnoreCase("arena")) 
 		{
 			if (arena1 != null && arena2 != null)
 			{
-				sendMessage("&7Done setting up Arena! please set a lobby spawn for RED team");
+				sendMessage("&3Done setting up Arena! please set a lobby spawn for RED team");
 				stepUp();
 			}
 			else
 			{
-				sendMessage("&7You are not done creating the arena!");
+				sendMessage("&3You are not done creating the arena!");
 			}
 		}
 		else if (step.equalsIgnoreCase("lobbyspawn1")) 
@@ -168,27 +168,27 @@ public class ArenaCreator
 			{
 				if (amtLobbys > 1) 
 				{
-					sendMessage("&7Done setting up lobby spawns!");
-					sendMessage("&7Please create the RED team arena spawnpoint");
+					sendMessage("&3Done setting up lobby spawns!");
+					sendMessage("&3Please create the RED team arena spawnpoint");
 					stepUp();
 				}
 				else
 				{
 					if (arenaType.getName().equalsIgnoreCase("koth") || arenaType.getName().equalsIgnoreCase("ffa") || arenaType.getName().equalsIgnoreCase("hunger"))
 					{
-						sendMessage("&7Please add some player spawnpoints with &6/ua setpoint");
-						sendMessage("&7use &6/ua done&7 when done");
+						sendMessage("&3Please add some player spawnpoints with &e/ua setpoint");
+						sendMessage("&3use &e/ua done &3when done");
 					}
 					else
 					{
 						if (arenaType.getName().equalsIgnoreCase("spleef"))
 						{
-							sendMessage("&7Done with lobby spawns");
-							sendMessage("&7Please create 2 spleefzone points");
+							sendMessage("&3Done with lobby spawns");
+							sendMessage("&3Please create &e2 &3spleefzone points");
 						}
 						else
 						{
-							sendMessage("&7Done with lobby spawns, please create an arena spawnpoint(s)");
+							sendMessage("&3Done with lobby spawns, please create an arena spawnpoint(s)");
 						}
 					}
 				}
@@ -196,7 +196,7 @@ public class ArenaCreator
 			}
 			else
 			{
-				sendMessage("&7You are not done creating the lobby 1 spawn!");
+				sendMessage("&3You are not done creating the lobby 1 spawn!");
 			}
 		}
 		else if (step.equalsIgnoreCase("arenaspawn1")) 
@@ -208,38 +208,38 @@ public class ArenaCreator
 				{
 					if (team2spawn != null) 
 					{
-						sendMessage("&7Done with player spawns");
+						sendMessage("&3Done with player spawns");
 						stepUp();//get passed arenaspawn2 step, since it's created already :3 (fail coding, I know)
 						if (arenaType.getName().equalsIgnoreCase("cq"))
 						{
-							sendMessage("&7Please add some flag points");
-							sendMessage("&7use &6/ua done&7 when done");
+							sendMessage("&3Please add some flag points");
+							sendMessage("&3Use &e/ua done&3 when done");
 						}
 						if (arenaType.getName().equalsIgnoreCase("bomb") || arenaType.getName().equalsIgnoreCase("ctf"))
 						{
-							sendMessage("&7Please add 2 flag points");
-							sendMessage("&7use &6/ua done&7 when done");
+							sendMessage("&3Please add &e2 &3flag points");
+							sendMessage("&3Use &e/ua done&3 when done");
 						}
 					}
 					else
 					{
-						sendMessage("&7You are not done creating the BLUE team arena spawn point!");
+						sendMessage("&3You are not done creating the BLUE team arena spawn point!");
 						stepDown();
 					}
 				}
 				else
 				{
-					sendMessage("&7Done with player spawns");
+					sendMessage("&3Done with player spawns");
 					if (arenaType.getName().equalsIgnoreCase("mob"))
 					{
-						sendMessage("&7Please set some mob spawnpoints");
-						sendMessage("&7use &6/ua done&7 when done");
+						sendMessage("&3Please set some mob spawnpoints");
+						sendMessage("&3use &e/ua done &3when done");
 					}
 				}
 			}
 			else
 			{
-				sendMessage("&7You are not done creating the RED team arena spawn point!");
+				sendMessage("&3You are not done creating the RED team arena spawn point!");
 			}
 		}
 		else
@@ -249,15 +249,15 @@ public class ArenaCreator
 				if (spawns.size() > 0) 
 				{
 					stepUp();
-					sendMessage("&7Done with player spawns");
+					sendMessage("&3Done with player spawns");
 					if (arenaType.getName().equalsIgnoreCase("koth"))
 					{
-						sendMessage("&7please add a flag spawn");	
+						sendMessage("&3Please add a flag spawn");	
 					}
 				}
 				else
 				{
-					sendMessage("&7You need more than 0 player spawns");
+					sendMessage("&3You need more than &e0 &3player spawns");
 				}
 			}
 			if (step.equalsIgnoreCase("spleefzone"))
@@ -265,11 +265,11 @@ public class ArenaCreator
 				if (flags.size() == 2)
 				{
 					stepUp();
-					sendMessage("&7Done with spleef zone!");
+					sendMessage("&3Done with spleef zone!");
 				}
 				else
 				{
-					sendMessage("&7You need 2 points set for the spleef zone!");
+					sendMessage("&3You need &e2 &3points set for the spleef zone!");
 				}
 			}
 			if (step.equalsIgnoreCase("outzone")) 
@@ -277,11 +277,11 @@ public class ArenaCreator
 				if (flags.size() == 4) 
 				{
 					stepUp();
-					sendMessage("&7Done with out-zone!");
+					sendMessage("&3Done with out-zone!");
 				}
 				else
 				{
-					sendMessage("&7You need 2 points set for the out-zone!");
+					sendMessage("&3You need &e2 &3points set for the out-zone!");
 				}
 			}
 			if (step.equalsIgnoreCase("kothflag")) 
@@ -289,11 +289,11 @@ public class ArenaCreator
 				if (flags.size() > 0) 
 				{
 					stepUp();
-					sendMessage("&7Done with flag point");
+					sendMessage("&3Done with flag point");
 				}
 				else
 				{
-					sendMessage("&7You need to add a flag point");
+					sendMessage("&3You need to add a flag point");
 				}
 			}
 			if (step.equalsIgnoreCase("mobspawn"))
@@ -301,11 +301,11 @@ public class ArenaCreator
 				if (spawns.size() > 0) 
 				{
 					stepUp();
-					sendMessage("&7Done with mob spawnpoints!");
+					sendMessage("&3Done with mob spawnpoints!");
 				}
 				else
 				{
-					sendMessage("&7Please set some mob spawnpoints");
+					sendMessage("&3Please set some mob spawnpoints");
 				}
 			}
 			if (step.equalsIgnoreCase("flagspawn"))
@@ -316,30 +316,30 @@ public class ArenaCreator
 					{
 						if (flags.size() % 2 == 0) 
 						{
-							sendMessage("&7You need an odd number of flag spawns!");
+							sendMessage("&3You need an odd number of flag spawns!");
 						}
 						else
 						{
 							stepUp();
-							sendMessage("&7Done with flag spawnpoints!");
+							sendMessage("&3Done with flag spawnpoints!");
 						}
 					}
 					if (arenaType.getName().equalsIgnoreCase("bomb") || arenaType.getName().equalsIgnoreCase("ctf"))
 					{
 						if (flags.size() != 2) 
 						{
-							sendMessage("&cYou need at least 2 flags");
+							sendMessage("&cYou need at least &e2 &3flags");
 						}
 						else
 						{
 							stepUp();
-							sendMessage("&7Done with flag spawnpoints!");
+							sendMessage("&3Done with flag spawnpoints!");
 						}
 					}
 				}
 				else
 				{
-					sendMessage("&7Please set some flag spawnpoints");
+					sendMessage("&3Please set some flag spawnpoints");
 				}
 			}
 		}
@@ -371,19 +371,19 @@ public class ArenaCreator
 		setMsg("");
 		if (lobby1 == null)
 		{
-			lobby1 = loc; setMsg("Lobby 1 point set, please set one more!");
+			lobby1 = loc; setMsg("Lobby &e1 &3point set, please set one more!");
 		}
 		else if (lobby2 == null)
 		{
-			lobby2 = loc; setMsg("Lobby 2 point set, if two points are set, use &6/ua done");
+			lobby2 = loc; setMsg("Lobby &e2 &3point set, if two points are set, use &e/ua done");
 		}
 		else if (arena1 == null) 
 		{
-			arena1 = loc; setMsg("Arena 1 point set, please set a second one!");
+			arena1 = loc; setMsg("Arena &e1 &3point set, please set a second one!");
 		}
 		else if (arena2 == null)
 		{
-			arena2 = loc; setMsg("Arena 2 point set, if two points are set, use &6/ua done");
+			arena2 = loc; setMsg("Arena &e2 &3point set, if two points are set, use &e/ua done");
 		}
 		else
 		{
@@ -396,7 +396,7 @@ public class ArenaCreator
 				}
 				else
 				{
-					setMsg(getMsg() + (", if the lobby points are done, use &6/ua done"));
+					setMsg(getMsg() + (", if the lobby points are done, use &e/ua done"));
 				}
 				
 				return;
@@ -405,7 +405,7 @@ public class ArenaCreator
 			{
 				if (amtLobbys > 1)
 				{
-					setMsg("Blu team lobby point set!, if the lobby points are done, use &6/ua done");
+					setMsg("BLUE team lobby point set!, if the lobby points are done, use &e/ua done");
 					lobbyBLUspawn = loc;
 					
 					return;
@@ -418,11 +418,11 @@ public class ArenaCreator
 					team1spawn = loc; setMsg("RED spawn point set");
 					if (amtSpawnpoints > 1)
 					{
-						setMsg(getMsg() + ", please set a second one for the BLU team");
+						setMsg(getMsg() + ", please set a second one for the BLUE team");
 					}
 					else
 					{
-						setMsg(getMsg() + (", if the spawn points are done, use &6/ua done"));
+						setMsg(getMsg() + (", if the spawn points are done, use &e/ua done"));
 					}
 					
 					return;
@@ -432,7 +432,7 @@ public class ArenaCreator
 					if (amtSpawnpoints > 1) 
 					{
 						team2spawn = loc;
-						setMsg("BLUE spawn point set!, if the spawn points are done, use &6/ua done");
+						setMsg("BLUE spawn point set!, if the spawn points are done, use &e/ua done");
 						return;
 					}
 				}
@@ -440,19 +440,19 @@ public class ArenaCreator
 			if (step.equalsIgnoreCase("playerspawn"))
 			{
 				this.spawns.add(player.getLocation());
-				sendMessage("&7Added a player spawn!");
+				sendMessage("&3Added a player spawn!");
 				return;
 			}
 			if (step.equalsIgnoreCase("spleefzone")) 
 			{
 				this.flags.add(player.getLocation());
-				sendMessage("&7Added a spleefzone!");
+				sendMessage("&3Added a spleefzone!");
 				return;
 			}
 			if (step.equalsIgnoreCase("outzone"))
 			{
 				this.flags.add(player.getLocation());
-				sendMessage("&7Added an outzone location!");
+				sendMessage("&3Added an outzone location!");
 				return;
 			}
 			if (step.equalsIgnoreCase("kothflag"))
@@ -460,15 +460,15 @@ public class ArenaCreator
 				if (flags.size() == 0) 
 				{
 					this.flags.add(player.getLocation());
-					sendMessage("&7Added the flag point!");
-					setMsg("please type &6/ua done");
+					sendMessage("&3Added the flag point!");
+					setMsg("please type &e/ua done");
 					return;
 				}
 			}
 			if (step.equalsIgnoreCase("MobSpawn"))
 			{
 				this.spawns.add(player.getLocation());
-				sendMessage("&7Added mob spawn!");
+				sendMessage("&3Added mob spawn!");
 				return;
 			}
 			if (step.equalsIgnoreCase("flagspawn"))
@@ -478,17 +478,17 @@ public class ArenaCreator
 					if (flags.size() < 2) 
 					{
 						this.flags.add(player.getLocation());
-						sendMessage("&7Added a flag spawn!");
+						sendMessage("&3Added a flag spawn!");
 					}
 					else
 					{
-						sendMessage("&7Already have 2 flags!");
+						sendMessage("&3Already have &e2 &3flags!");
 					}
 				}
 				else
 				{
 					this.flags.add(player.getLocation());
-					sendMessage("&7Added a flag spawn!");
+					sendMessage("&3Added a flag spawn!");
 				}
 				return;
 			}

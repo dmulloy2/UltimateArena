@@ -26,14 +26,14 @@ public class CmdList extends UltimateArenaCommand
 	{
 		List<String> lines = new ArrayList<String>();
 		StringBuilder line = new StringBuilder();
-		line.append("&4====[ &6UltimateArenas &4]====");
+		line.append("&3====[ &eUltimateArenas &3]====");
 		lines.add(line.toString());
 		
 		for (ArenaZone az : plugin.loadedArena)
 		{
 			line = new StringBuilder();
-			line.append("&6[&c" + az.getType().getName() + " Arena&6]");
-			line.append(" &c" + az.getArenaName());
+			line.append("&3[&b" + az.getType().getName() + " &eArena&3]");
+			line.append(" &b" + az.getArenaName()+ "  ");
 			
 			if (az.isDisabled())
 			{
@@ -65,7 +65,7 @@ public class CmdList extends UltimateArenaCommand
 				}
 			}
 			
-			line.append("        &e[" + az.getTimesPlayed() + "]");
+			line.append("        &e[&b" + az.getTimesPlayed() + "&e]");
 			lines.add(line.toString());
 		}
 		

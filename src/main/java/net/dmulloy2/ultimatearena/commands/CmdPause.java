@@ -29,6 +29,7 @@ public class CmdPause extends UltimateArenaCommand
 		}		
 		
 		arena.setPauseStartTimer(!arena.isPauseStartTimer());
-		sendpMessage("Start timer for arena &b{0} &6is now &b{1}&6!", arena.getName(), (arena.isPauseStartTimer() ? "paused" : "unpaused"));
+		sendpMessage("&3Start timer for arena &e{0} &3is now &e{1}&3!",
+				arena.getName(), (arena.isPauseStartTimer() ? "paused" : "unpaused"));
 	}	
 }

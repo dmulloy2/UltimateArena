@@ -324,9 +324,9 @@ public class PlayerListener implements Listener
 				if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
 				{
 					player.sendMessage(plugin.getPrefix() + 
-							FormatUtil.format("&7You cannot use non-ua commands in an arena!"));
+							FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
 					player.sendMessage(plugin.getPrefix() + 
-							FormatUtil.format("&7If you wish to use commands again, use &6/ua leave"));
+							FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
 					event.setCancelled(true);
 				}
 			}

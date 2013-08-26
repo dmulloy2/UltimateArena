@@ -68,7 +68,7 @@ public class CTFFlagBase extends FlagBase
 						{ 
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
-							a.sendMessage("&3Flag Captured! &c+ 500 XP");
+							a.sendMessage("&aFlag Captured! &c+ 500 XP");
 							
 							p.removePotionEffect(PotionEffectType.SLOW);
 							p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);

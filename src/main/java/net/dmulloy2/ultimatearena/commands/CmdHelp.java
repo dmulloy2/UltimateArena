@@ -30,7 +30,7 @@ public class CmdHelp extends PaginatedCommand
 	@Override
 	public String getHeader(int index) 
 	{
-		return FormatUtil.format("&4====[ &6UltimateArena Help &4(&6{0}&4/&6{1}&4) ]====", index, getPageCount());
+		return FormatUtil.format("&3====[ &eUltimateArena Help &3(&e{0}&3/&e{1}&3) ]====", index, getPageCount());
 	}
 
 	@Override

@@ -36,14 +36,14 @@ public class CmdKick extends UltimateArenaCommand
 				{
 					a.endPlayer(ap, p, false);
 					
-					sendpMessage("&7Kicked player &6{0} &7from arena &6{1}&7!", p.getName(), a.getName());
+					sendpMessage("&3You have kicked &e{0} &3from arena &e{1}", p.getName(), a.getName());
 					
 					ap.sendMessage("&cYou have been kicked from the arena!");
 				}
 			}
 			else
 			{
-				err("Player: {0} is not in an Arena!", p.getName());
+				err("{0} is not in an Arena!", p.getName());
 			}
 		}
 		else

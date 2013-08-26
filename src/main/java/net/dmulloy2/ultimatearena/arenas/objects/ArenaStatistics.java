@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.arenas.objects;
 
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
 
 public class ArenaStatistics 
@@ -34,9 +35,9 @@ public class ArenaStatistics
 	public void dumpStats(Player p) 
 	{
 		// Dumps the arenas stats to the player
-		p.sendMessage(FormatUtil.format("&8Stats on arena: &6{0}", arena.getArenaName()));
-		p.sendMessage(FormatUtil.format("&7Plays: {0}/{1} (&c{2}%&7)", plays, totalPlays, percentagePlayed));
-		p.sendMessage(FormatUtil.format("&7Likes: &a{0}", likes));
-		p.sendMessage(FormatUtil.format("&7Disikes: &c{0}", dislikes));
+		p.sendMessage(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(arena.getArenaName())));
+		p.sendMessage(FormatUtil.format("&bPlays: &e{0}&b/&e{1} &b(&e{2}%&b)", plays, totalPlays, percentagePlayed));
+		p.sendMessage(FormatUtil.format("&bLikes: &e{0}", likes));
+		p.sendMessage(FormatUtil.format("&bDisikes: &e{0}", dislikes));
 	}
 }

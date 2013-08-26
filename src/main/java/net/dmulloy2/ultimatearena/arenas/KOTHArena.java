@@ -137,13 +137,13 @@ public class KOTHArena extends Arena
 			if (apl != null)
 			{
 				StringBuilder line = new StringBuilder();
-				line.append(FormatUtil.format("&6#{0}. ", pos));
+				line.append(FormatUtil.format("&3#{0}. ", pos));
 				line.append(FormatUtil.format(decideColor(apl)));
 				line.append(FormatUtil.format(apl.getName().equals(player.getName()) ? "&l" : ""));
 				line.append(FormatUtil.format(apl.getName() + "&r"));
-				line.append(FormatUtil.format("  &7Kills: &6{0}", apl.getKills()));
-				line.append(FormatUtil.format("  &7Deaths: &6{0}", apl.getDeaths()));
-				line.append(FormatUtil.format("  &7Points: &6{0}", entry.getValue()));
+				line.append(FormatUtil.format("  &3Kills: &e{0}", apl.getKills()));
+				line.append(FormatUtil.format("  &3Deaths: &e{0}", apl.getDeaths()));
+				line.append(FormatUtil.format("  &3Points: &e{0}", entry.getValue()));
 				leaderboard.add(line.toString());
 				pos++;
 			}

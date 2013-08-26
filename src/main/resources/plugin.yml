@@ -2,7 +2,7 @@ name: UltimateArena
 main: net.dmulloy2.ultimatearena.UltimateArena
 version: "${project.version}"
 author: dmulloy2
-softdepend: [SwornGuns, Vault, Essentials]
+softdepend: [SwornGuns, Vault, Essentials, Multiverse]
 description: The Ultimate in Minecraft death sports and spleef!
 load: postworld
 commands:
@@ -24,7 +24,7 @@ permissions:
       ultimatearena.kick: true
       ultimatearena.start: true
       ultimatearena.pause: true
-      ultimatearena.commandbypass: true
+      ultimatearena.bypass: true
   ultimatearena.builder:
     description: Allows access to features meant for builders
     default: false

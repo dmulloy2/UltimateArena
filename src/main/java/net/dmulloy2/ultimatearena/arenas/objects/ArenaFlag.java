@@ -120,7 +120,7 @@ public class ArenaFlag extends FlagBase
 				Player player = players.get(i);
 				if (percent < 100) 
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Capping! &6{0}%", percent));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Capping! &e{0}&3%", percent));
 				}
 			}
 		}
@@ -132,7 +132,7 @@ public class ArenaFlag extends FlagBase
 				Player player = players.get(i);
 				if (percent < 100) 
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Capping! &6{0}%", percent));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Capping! &e{0}&3%", percent));
 				}
 			}
 		}

@@ -128,7 +128,7 @@ public class ArenaSign
 	public String toString()
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("ArenaSign{");
+		ret.append("ArenaSign {");
 		ret.append("id=" + id + ", ");
 		ret.append("loc=" + Util.locationToString(loc));
 		ret.append("}");

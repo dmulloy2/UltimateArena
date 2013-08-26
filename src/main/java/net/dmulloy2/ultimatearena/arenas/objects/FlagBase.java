@@ -30,21 +30,21 @@ public class FlagBase
 	
 	public void setup() 
 	{
-		Location flag = getLoc().clone().add(0, 5, 0);
+		Location flag = loc.clone().add(0, 5, 0);
 		setNotify(flag.getBlock());
 		getNotify().setType(Material.WOOL);
-		((getLoc().clone()).add(1, 0, 0)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(1, 0, 1)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(-1, 0, -1)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(1, 0, -1)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(-1, 0, 1)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(2, 0, 0)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(-1, 0, 0)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(-2, 0, 0)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(0, 0, 1)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(0, 0, 2)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(0, 0, -1)).getBlock().setType(Material.STONE);
-		((getLoc().clone()).add(0, 0, -2)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(1, 0, 0)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(1, 0, 1)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(-1, 0, -1)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(1, 0, -1)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(-1, 0, 1)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(2, 0, 0)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(-1, 0, 0)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(-2, 0, 0)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(0, 0, 1)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(0, 0, 2)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(0, 0, -1)).getBlock().setType(Material.STONE);
+		((loc.clone()).add(0, 0, -2)).getBlock().setType(Material.STONE);
 	}
 	
 	public synchronized void checkNear(List<ArenaPlayer> arenaplayers) {}

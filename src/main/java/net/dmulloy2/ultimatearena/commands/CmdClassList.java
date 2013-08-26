@@ -24,16 +24,16 @@ public class CmdClassList extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		sendMessage("&4====[ &6UltimateArena Classes &4]====");
+		sendMessage("&3====[ &eUltimateArena Classes &3]====");
 
 		for (ArenaClass ac : plugin.classes)
 		{
 			String name = WordUtils.capitalize(ac.getName());
-			sendMessage("&4===[ &6{0} &4]===", name);
+			sendMessage("&3===[ &e{0} &3]===", name);
 			for (ItemStack weapon : ac.getWeapons())
 			{
 				name = FormatUtil.getFriendlyName(weapon.getType());
-				sendMessage("&6- {0} x {1}", name, weapon.getAmount());
+				sendMessage("&b- &e{0} &bx &e{1}", name, weapon.getAmount());
 			}
 		}
 	}

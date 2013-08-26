@@ -30,24 +30,24 @@ public class CmdInfo extends UltimateArenaCommand
 				Arena ar = plugin.getArena(player);
 				if (ar != null) 
 				{
-					sendMessage("&4====[ &6{0} &4]====", WordUtils.capitalize(ar.getName()));
+					sendMessage("&3====[ &e{0} &3]====", WordUtils.capitalize(ar.getName()));
 
 					ArenaPlayer ap = plugin.getArenaPlayer(player);
 					if (ap != null)
 					{
 						if (ap.isOut())
 						{
-							sendMessage("&7You are &cOUT&7!");
+							sendMessage("&3You are &cOUT&7!");
 						}
 						else
 						{
-							sendMessage("&7You are &aNOT OUT&7!");
+							sendMessage("&3You are &aNOT OUT&7!");
 						}
 					}
 
 					sendMessage(""); // Empty line
 					
-					sendMessage("&6Active Players:");
+					sendMessage("&3&lActive Players:");
 					for (String s : ar.buildLeaderboard(player))
 					{
 						sendMessage(s);
@@ -65,13 +65,13 @@ public class CmdInfo extends UltimateArenaCommand
 			Arena ar = plugin.getArena(arenaname);
 			if (ar != null)
 			{
-				sendMessage("&4====[ &6{0} &4]====", ar.getName());
+				sendMessage("&3====[ &e{0} &3]====", ar.getName());
 				
-				sendMessage("&7Type: &6{0}", ar.getType());
+				sendMessage("&3Type: &e{0}", ar.getType());
 				
 				sendMessage(""); // Empty line
 				
-				sendMessage("&6Active Players:");
+				sendMessage("&3&lActive Players:");
 				
 				for (String s : ar.buildLeaderboard(player))
 				{
@@ -80,12 +80,12 @@ public class CmdInfo extends UltimateArenaCommand
 			}
 			else
 			{
-				sendMessage("&7This arena isn't running!");
+				err("This arena isn't running!");
 			}
 		}
 		else
 		{
-			sendMessage("&7Please supply an arena name");
+			err("Please supply an arena name");
 		}
 	}
 }

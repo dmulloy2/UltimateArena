@@ -443,12 +443,7 @@ public class ArenaPlayer
 	@Override
 	public String toString()
 	{
-		StringBuilder ret = new StringBuilder();
-		ret.append("ArenaPlayer {name=");
-		ret.append(name);
-		ret.append("}");
-		
-		return ret.toString();
+		return name;
 	}
 	
 	@Override

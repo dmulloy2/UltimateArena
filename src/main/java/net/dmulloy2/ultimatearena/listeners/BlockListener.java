@@ -187,7 +187,7 @@ public class BlockListener implements Listener
 					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 					{
 						plugin.deleteSign(sign);
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&eDeleted Join sign!"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cDeleted Join sign!"));
 					}
 					else
 					{
