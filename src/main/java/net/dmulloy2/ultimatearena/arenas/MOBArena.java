@@ -160,23 +160,23 @@ public class MOBArena extends Arena
 		if (pl != null) 
 		{
 			if (ap.getKillstreak() == 8)
-				givePotion(pl, "strength", 1, 1, false, "8 kills! Unlocked strength potion!");
+				givePotion(pl, "strength", 1, 1, false, "&e8 &3kills! Unlocked strength potion!");
 			
 			if (ap.getKillstreak() == 12)
-				givePotion(pl, "speed", 1, 1, false, "12 kills! Unlocked swiftness potion!");
+				givePotion(pl, "speed", 1, 1, false, "&e12 &3kills! Unlocked swiftness potion!");
 				
 			if (ap.getKillstreak() == 16)
-				givePotion(pl, "fireres", 1, 1, false, "16 kills! Unlocked antifire!");
+				givePotion(pl, "fireres", 1, 1, false, "&e16 &3kills! Unlocked antifire!");
 			
 			if (ap.getKillstreak() == 24) 
 			{
-				givePotion(pl, "heal", 1, 1, false, "24 kills! Unlocked health potion!");
+				givePotion(pl, "heal", 1, 1, false, "&e24 &3kills! Unlocked health potion!");
 				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "24 kills! Unlocked food!");
 			}
 				
 			if (ap.getKillstreak() == 32) 
 			{
-				ap.sendMessage("32 kills! Unlocked attackdogs!");
+				ap.sendMessage("&e32 &3kills! Unlocked attackdogs!");
 				for (int i = 0; i < 3; i++)
 				{
 					Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
@@ -186,15 +186,15 @@ public class MOBArena extends Arena
 				
 			if (ap.getKillstreak() == 40) 
 			{
-				givePotion(pl, "regen", 1, 1, false, "40 kills! Unlocked regen potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "40 kills! Unlocked food!");
+				givePotion(pl, "regen", 1, 1, false, "&e40 &3kills! Unlocked regen potion!");
+				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e40 kills! Unlocked food!");
 			}
 				
 			if (ap.getKillstreak() == 72)
-				giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte)0, 2, "72 kills! Unlocked Golden Apples!");
+				giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte)0, 2, "&e72 &3kills! Unlocked Golden Apples!");
 
 			if (ap.getKillstreak() == 112)
-				giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte)0, 2, "112 kills! Unlocked Golden Apples!");
+				giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte)0, 2, "&e112 &3kills! Unlocked Golden Apples!");
 		}
 	}
 	
@@ -235,7 +235,6 @@ public class MOBArena extends Arena
 				
 			if (getActivePlayers() == 0) 
 			{
-				plugin.outConsole("Stopping Mob arena");
 				stop();
 			}
 			

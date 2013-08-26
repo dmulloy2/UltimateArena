@@ -38,7 +38,7 @@ public class PVPArena extends Arena
 			{
 				if (getStartingAmount() <= 1) 
 				{
-					tellPlayers("&9Not enough people to play!");
+					tellPlayers("&3Not enough people to play!");
 					
 					stop();
 				}

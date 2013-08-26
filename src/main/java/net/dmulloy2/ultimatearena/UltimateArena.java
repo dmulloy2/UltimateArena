@@ -628,7 +628,7 @@ public class UltimateArena extends JavaPlugin
 			join.runTaskLater(this, wait);
 			waiting.add(join);
 			
-			player.sendMessage(prefix + FormatUtil.format("&6Please stand still for {0} seconds!", seconds));
+			player.sendMessage(prefix + FormatUtil.format("&3Please stand still for &e{0} &3seconds!", seconds));
 		}
 		else
 		{

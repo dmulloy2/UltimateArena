@@ -637,9 +637,11 @@ public abstract class Arena
 	 */
 	public void giveItem(Player pl, int id, byte dat, int amt, String message)
 	{
-		if (message != "")
-			pl.sendMessage(plugin.getPrefix() + message);
-		
+		if (! message.isEmpty())
+		{
+			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
+		}
+
 		ItemStack item = new ItemStack(id, amt);
 		if (dat != 0)
 		{
@@ -662,8 +664,10 @@ public abstract class Arena
 	 */
 	public void givePotion(Player pl, String s, int amt, int level, boolean splash, String message)
 	{
-		if (message != "")
-			pl.sendMessage(plugin.getPrefix() + message);
+		if (! message.isEmpty())
+		{
+			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
+		}
 		
 		org.bukkit.potion.PotionType type = PotionType.toType(s);
 		if (type != null)
@@ -694,25 +698,25 @@ public abstract class Arena
 				return;
 				
 			if (ap.getKillstreak() == 2)
-				givePotion(pl, "strength", 1, 1, false, "2 kills! Unlocked strength potion!");
+				givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
 				
 			if (ap.getKillstreak() == 4)
 			{
-				givePotion(pl, "heal", 1, 1, false, "4 kills! Unlocked health potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 kills! Unlocked Food!");
+				givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
+				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 &3kills! Unlocked Food!");
 			}
 			if (ap.getKillstreak() == 5) 
 			{
 				if (!(getType().getName().equalsIgnoreCase("cq"))) 
 				{
-					pl.sendMessage(plugin.getPrefix() + "5 kills! Unlocked Zombies!");
+					pl.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
 					for (int i = 0; i < 4; i++)
 						pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.ZOMBIE);
 				}
 			}
 			if (ap.getKillstreak() == 8) 
 			{
-				pl.sendMessage(plugin.getPrefix() + "8 kills! Unlocked attackdogs!");
+				pl.sendMessage(plugin.getPrefix() + "&e8 &3kills! Unlocked attackdogs!");
 				for (int i = 0; i < 2; i++)
 				{
 					Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
@@ -721,8 +725,8 @@ public abstract class Arena
 			}
 			if (ap.getKillstreak() == 12)
 			{
-				givePotion(pl, "regen", 1, 1, false, "12 kills! Unlocked regen potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "12 kills! Unlocked Food!");
+				givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
+				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e12 &3kills! Unlocked Food!");
 			}
 		}
 	}
