@@ -1,5 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
+import org.bukkit.plugin.PluginManager;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.Permission;
 
@@ -23,8 +25,9 @@ public class CmdReload extends UltimateArenaCommand
 		
 		long start = System.currentTimeMillis();
 			
-		plugin.onDisable();
-		plugin.onEnable();
+		PluginManager pm = plugin.getServer().getPluginManager();
+		pm.disablePlugin(plugin);
+		pm.enablePlugin(plugin);
 		
 		long finish = System.currentTimeMillis();
 			

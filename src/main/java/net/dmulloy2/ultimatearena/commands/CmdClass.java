@@ -4,6 +4,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 public class CmdClass extends UltimateArenaCommand
 {
@@ -38,7 +39,7 @@ public class CmdClass extends UltimateArenaCommand
 				return;
 			}
 			
-			sendpMessage("&7Your current class is: &6{0}", ap.getArenaClass().getName());
+			sendpMessage("&3Your current class is: &e{0}", ap.getArenaClass().getName());
 			return;
 		}
 		else if (args.length == 1)
@@ -47,15 +48,20 @@ public class CmdClass extends UltimateArenaCommand
 			{
 				if (cl.getName().equalsIgnoreCase(args[0]))
 				{
-					ap.setClass(cl, true);
+					ap.setClass(cl);
+					
+					String name = cl.getName();
+					String article = FormatUtil.getArticle(name);
+					
 					if (ap.getArena().isInLobby())
 					{
-						sendpMessage("&7You will spawn as a(n): &6{0}", cl.getName());
+						sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
 					}
 					else
 					{
-						sendpMessage("&7You have set your class to: &6{0}", cl.getName());
+						sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
 					}
+					
 					return;
 				}
 			}

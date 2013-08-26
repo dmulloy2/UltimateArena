@@ -1,7 +1,6 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdJoin extends UltimateArenaCommand
 {
@@ -19,7 +18,6 @@ public class CmdJoin extends UltimateArenaCommand
 	@Override
 	public void perform() 
 	{
-		boolean force = plugin.getPermissionHandler().hasPermission(player, Permission.JOIN_FORCE);
-		plugin.fight(player, args[0], force);
+		plugin.join(player, args[0]);
 	}
 }

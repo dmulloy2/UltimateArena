@@ -58,37 +58,38 @@ public class CONQUESTArena extends Arena
 	@Override
 	public Location getSpawn(ArenaPlayer ap)
 	{
-		if (isInLobby())
+		if (checkValid(ap))
 		{
-			return super.getSpawn(ap);
-		}
-		
-		if (ap != null) 
-		{
-			if (!ap.isOut())
+			if (isInLobby())
 			{
-				List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
-				for (int i = 0; i < flags.size(); i++)
+				return super.getSpawn(ap);
+			}
+
+			List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
+			for (int i = 0; i < flags.size(); i++)
+			{
+				ArenaFlag flag = flags.get(i);
+				if (flag.getTeam() == ap.getTeam())
 				{
-					ArenaFlag flag = flags.get(i);
-					if (flag.getTeam() == ap.getTeam())
+					if (flag.isCapped())
 					{
-						if (flag.isCapped())
-						{
-							spawnto.add(flag);
-						}
+						spawnto.add(flag);
 					}
 				}
+			}
 				
-				if (! spawnto.isEmpty())
+			if (! spawnto.isEmpty())
+			{
+				int rand = Util.random(spawnto.size());
+				ArenaFlag flag = spawnto.get(rand);
+				if (flag != null)
 				{
-					int rand = Util.random(spawnto.size());
-					ArenaFlag flag = spawnto.get(rand);
-					if (flag != null)
-					{
-						return flag.getLoc();
-					}
+					return flag.getLoc();
 				}
+			}
+			else
+			{
+				return super.getSpawn(ap);
 			}
 		}
 		

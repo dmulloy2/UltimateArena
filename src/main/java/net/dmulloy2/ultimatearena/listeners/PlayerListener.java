@@ -109,20 +109,24 @@ public class PlayerListener implements Listener
 						{
 							Sign s = (Sign)block.getState();
 							String line1 = s.getLine(0);
-							ArenaPlayer ac = plugin.getArenaPlayer(player);
-							if (ac != null) 
+							ArenaPlayer ap = plugin.getArenaPlayer(player);
+							if (ap != null) 
 							{
-								ArenaClass arc = plugin.getArenaClass(line1);
-								if (arc != null)
+								ArenaClass ac = plugin.getArenaClass(line1);
+								if (ac != null)
 								{
-									if (arc.checkPermission(player))
+									if (ac.checkPermission(player))
 									{
-										ac.setClass(arc, false);
-										ac.sendMessage("&7You will spawn as a(n): &6{0}", arc.getName());
+										ap.setClass(ac);
+										
+										String name = ac.getName();
+										String article = FormatUtil.getArticle(name);
+										
+										ap.sendMessage("&3You will spawn as {0}: &e{1}", article, name);
 									}
 									else 
 									{
-										ac.sendMessage("&cYou do not have the necessary perms for this class");
+										ap.sendMessage("&cYou do not have the necessary perms for this class");
 									}
 								} 
 							}
@@ -173,7 +177,6 @@ public class PlayerListener implements Listener
 					{
 						if (s.getLine(1).equalsIgnoreCase("Click to join"))
 						{
-							boolean force = plugin.getPermissionHandler().hasPermission(player, Permission.JOIN_FORCE);
 							if (s.getLine(2).equalsIgnoreCase("Auto assign"))
 							{
 								boolean found = false;
@@ -183,19 +186,19 @@ public class PlayerListener implements Listener
 									{
 										if (a.isInLobby())
 										{
-											plugin.fight(player, a.getName(), force);
+											plugin.join(player, a.getName());
 											found = true;
 										}
 									}
 								}
-								if (!found)
+								if (! found)
 								{
 									if (plugin.loadedArena.size() > 0)
 									{
 										ArenaZone az = plugin.loadedArena.get(0);
 										if (az != null)
 										{
-											plugin.fight(player, az.getArenaName(), force);
+											plugin.join(player, az.getArenaName());
 											found = true;
 										}
 									}
@@ -211,22 +214,22 @@ public class PlayerListener implements Listener
 									{
 										if (a.isInLobby())
 										{
-											plugin.fight(player, a.getName(), force);
+											plugin.join(player, a.getName());
 											found = true;
 										}
 									}
 								}
-								if (!found)
+								if (! found)
 								{
 									for (ArenaZone az : plugin.loadedArena)
 									{
 										if (az != null && az.getArenaName().equalsIgnoreCase(name))
 										{
-											plugin.fight(player, az.getArenaName(), force);
+											plugin.join(player, az.getArenaName());
 											found = true;
 										}
 									}
-									if (!found)
+									if (! found)
 									{
 										player.sendMessage(plugin.getPrefix() + 
 												FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));

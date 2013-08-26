@@ -41,6 +41,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.earth2me.essentials.User;
 
@@ -157,15 +158,11 @@ public abstract class Arena
 		// Teleport the player to the lobby spawn
 		spawn(player.getName(), false);
 		
-		// Save and clear Inventory
-		if (plugin.getConfig().getBoolean("saveInventories", true))
-		{
-			plugin.debug("Saving Inventory for Player: {0}", player.getName());
-			
-			pl.saveInventory();
-			pl.clearInventory();
-		}
-		
+		// Inventory
+		pl.saveInventory();
+		pl.clearInventory();
+
+		// XP
 		pl.setBaseLevel(player.getLevel());
 
 		// Make sure the player is in survival
@@ -768,7 +765,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null)
+			if (checkValid(ap))
 			{
 				Player player = ap.getPlayer();
 				if (player != null)
@@ -785,9 +782,7 @@ public abstract class Arena
 		
 		updateSigns();
 		
-		plugin.activeArena.remove(this);
-
-		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
+		new FinalizeTask(this).runTaskLater(plugin, 120L);
 	}
 	
 	/**
@@ -795,15 +790,6 @@ public abstract class Arena
 	 */
 	public void onStop() {}
 
-	/**
-	 * Removes all inventory items from a playr
-	 * @param p - {@link Player} to remove inventory items from
-	 */
-	public void normalize(Player p)
-	{
-		plugin.normalize(p);
-	}
-	
 	/**
 	 * Teleports a player to the most ideal location
 	 * @param p - Player to teleport
@@ -1464,5 +1450,25 @@ public abstract class Arena
 		}
 		
 		return validPlayers;
+	}
+	
+	public class FinalizeTask extends BukkitRunnable
+	{
+		private Arena arena;
+		public FinalizeTask(Arena arena)
+		{
+			this.arena = arena;
+		}
+		
+		@Override
+		public void run()
+		{
+			plugin.activeArena.remove(arena);
+
+			plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
+			
+			try { arena.finalize(); }
+			catch (Throwable e) { }
+		}
 	}
 }

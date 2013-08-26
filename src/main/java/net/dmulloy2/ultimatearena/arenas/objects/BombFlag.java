@@ -37,7 +37,7 @@ public class BombFlag extends ArenaFlag
 
 			if (timer == 30 || timer == 20 || timer == 10 || timer <= 5) 
 			{
-				getArena().tellPlayers("&7Bomb &6{0} &7will expode in &d{1} &7seconds!", getBnum(), timer);
+				arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{0} &3seconds!", bnum, timer);
 			}
 			
 			if (timer < 1) 
@@ -60,12 +60,12 @@ public class BombFlag extends ArenaFlag
 							amte++;
 						
 						if (amte == 0)
-							getArena().killAllNear(this.getLoc(), 12);
+							arena.killAllNear(this.getLoc(), 12);
 					}
 					
 					setExploded(true);
 					fused = false;
-					getArena().tellPlayers("&cRED &7team blew up bomb &6{0}&7!", getBnum());
+					arena.tellPlayers("&cRED &3team blew up bomb &e{0}&3!", getBnum());
 				}
 			}
 		}
@@ -107,12 +107,12 @@ public class BombFlag extends ArenaFlag
 					{ 
 						//team 1 is fusing
 						fuser++;
-						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Fusing Bomb &6{0}! &7(&d{1}&7/&d10)", getBnum(), fuser));
+						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", getBnum(), fuser));
 						if (fuser > 10)
 						{
 							fuser = 0;
 							fused = true;
-							getArena().tellPlayers("&7Bomb &6{0} &7is now &dfused&7!", getBnum());
+							arena.tellPlayers("&3Bomb &e{0} &3is now &efused&3!", getBnum());
 						}
 					}
 				}
@@ -122,13 +122,13 @@ public class BombFlag extends ArenaFlag
 					if (fused) 
 					{
 						fuser++;
-						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&7Defusing Bomb &6{0}! &7(&d{1}&7/&d10)", getBnum(), fuser));
+						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", getBnum(), fuser));
 						if (fuser > 10)
 						{
 							fuser = 0;
 							fused = false;
 							timer = 45;
-							getArena().tellPlayers("&7Bomb &6{0} &7is now &ddefused&7!", getBnum());
+							arena.tellPlayers("&3Bomb &e{0} &3is now &edefused&3!", getBnum());
 						}
 					}
 				}

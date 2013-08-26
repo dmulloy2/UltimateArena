@@ -16,8 +16,8 @@ import org.bukkit.potion.PotionEffectType;
 public class CTFFlagBase extends FlagBase 
 {
 	private CTFArena ctf;
-	private CTFflag flag;
-	private CTFflag enemyflag;
+	private CTFFlag flag;
+	private CTFFlag enemyflag;
 	
 	private int team;
 	
@@ -27,15 +27,16 @@ public class CTFFlagBase extends FlagBase
 		this.arena = arena;
 		this.team = team;
 		this.ctf = (CTFArena)arena;
-		this.getFlag().setTeam(team);
-		this.getFlag().colorize();
+		
+		flag.setTeam(team);
+		flag.colorize();
 	}
 	
 	@Override
 	public void setup() 
 	{
 		super.setup();
-		this.setFlag(new CTFflag(getArena(), getLoc().clone().add(0,1,0), team));
+		this.setFlag(new CTFFlag(getArena(), getLoc().clone().add(0,1,0), team));
 
 		Location flag = getLoc().clone().add(0, 5, 0);
 		setNotify(flag.getBlock());
@@ -67,7 +68,7 @@ public class CTFFlagBase extends FlagBase
 						{ 
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
-							a.sendMessage("&7Flag Captured! &c+ 500 XP");
+							a.sendMessage("&3Flag Captured! &c+ 500 XP");
 							
 							p.removePotionEffect(PotionEffectType.SLOW);
 							p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
@@ -87,17 +88,17 @@ public class CTFFlagBase extends FlagBase
 							}
 								
 							a.setGameXP(a.getGameXP() + 500);
-							arena.tellPlayers("&a{0} &7captured the {1} &7flag!", a.getName(), enemyflag.getFlagType());
+							arena.tellPlayers("&e{0} &3captured the &e{1} &3flag!", a.getName(), enemyflag.getFlagType());
 
 							if (team == 1)
 							{
 								ctf.redcap++;
-								getArena().tellPlayers("&c{0} &7team has &a{1}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.redcap);
+								getArena().tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.redcap);
 							}
 							if (team == 2) 
 							{
 								ctf.bluecap++;
-								getArena().tellPlayers("&c{0} &7team has &a{1}&7/&a3 &7captures!", TeamHelper.getTeam(team), ctf.bluecap);
+								getArena().tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.bluecap);
 							}
 							return;
 						}
@@ -115,12 +116,12 @@ public class CTFFlagBase extends FlagBase
 			this.enemyflag = ctf.flagred.getFlag();
 	}
 
-	public CTFflag getFlag() 
+	public CTFFlag getFlag() 
 	{
 		return flag;
 	}
 
-	public void setFlag(CTFflag flag)
+	public void setFlag(CTFFlag flag)
 	{
 		this.flag = flag;
 	}

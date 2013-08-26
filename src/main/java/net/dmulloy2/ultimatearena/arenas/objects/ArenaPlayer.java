@@ -5,7 +5,6 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.Util;
 import net.ess3.api.IEssentials;
 
 import org.bukkit.Color;
@@ -134,8 +133,11 @@ public class ArenaPlayer
 	 */
 	public void saveInventory()
 	{
-		this.inventoryContents = player.getInventory().getContents();
-		this.armorContents = player.getInventory().getArmorContents();
+		if (plugin.getConfig().getBoolean("saveInventories", true))
+		{
+			this.inventoryContents = player.getInventory().getContents();
+			this.armorContents = player.getInventory().getArmorContents();
+		}
 	}
 	
 	/**
@@ -156,8 +158,11 @@ public class ArenaPlayer
 	 */
 	public void returnInventory()
 	{
-		player.getInventory().setContents(inventoryContents);
-		player.getInventory().setArmorContents(armorContents);
+		if (plugin.getConfig().getBoolean("saveInventories", true))
+		{
+			player.getInventory().setContents(inventoryContents);
+			player.getInventory().setArmorContents(armorContents);
+		}
 	}
 	
 	/**
@@ -167,11 +172,11 @@ public class ArenaPlayer
 	{
 		if (getAmtkicked() > 10)
 		{
-			plugin.leaveArena(getPlayer());
+			plugin.leaveArena(player);
 		}
 			
-		Player p = Util.matchPlayer(getPlayer().getName());
-		p.getInventory().clear();
+		clearInventory();
+		clearPotionEffects();
 		
 		giveClassItems();
 	}
@@ -181,14 +186,9 @@ public class ArenaPlayer
 	 * @param ac - {@link ArenaClass} to set the player's class to
 	 * @param command - Whether or not it was changed via command
 	 */
-	public void setClass(ArenaClass ac, boolean command)
+	public void setClass(ArenaClass ac)
 	{
 		this.mclass = ac;
-		
-		clearInventory();
-		clearPotionEffects();
-
-		giveClassItems();
 	}
 	
 	/**
@@ -222,12 +222,13 @@ public class ArenaPlayer
 				List<String> items = Kit.getItems(ess, user, mclass.getEssentialsKit());
 					
 				Kit.expandItems(ess, user, items);
-				return;
 			}
 			catch (Exception e)
 			{
 				sendMessage("&cAn exception occured while attempting to give Essentials kit items: {0}", e.getMessage());
 			}
+			
+			return;
 		}
 		
 		for (int i = 0; i < mclass.getArmor().size(); i++)

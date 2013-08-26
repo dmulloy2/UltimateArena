@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class CTFflag
+public class CTFFlag
 {
 	private Player riding;
 	
@@ -36,7 +36,7 @@ public class CTFflag
 	private byte color;
 	private byte lastBlockDat;
 
-	public CTFflag(Arena a, Location loc, int team)
+	public CTFFlag(Arena a, Location loc, int team)
 	{
 		this.setTeam(team);
 		this.arena = a;
@@ -71,7 +71,7 @@ public class CTFflag
 	
 	public void sayTimeLeft() 
 	{
-		arena.tellPlayers("&d{0} &7seconds left until &6{1} &7flag returns!", timer, getFlagType());
+		arena.tellPlayers("&e{0} &3seconds left until &e{1} &3flag returns!", timer, getFlagType());
 	}
 	
 	public void setup()
@@ -101,7 +101,7 @@ public class CTFflag
 	
 	public void fall() 
 	{
-		arena.tellPlayers("&b{0} &7has dropped the &6{1} &7flag!", getRiding().getName(), getFlagType());
+		arena.tellPlayers("&e{0} &3has dropped the &e{1} &3flag!", getRiding().getName(), getFlagType());
 		timer = 15;
 		toloc = getRiding().getLocation();
 		setPickedUp(false);
@@ -158,7 +158,7 @@ public class CTFflag
 								setRiding(pl);
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
 								pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-								arena.tellPlayers("&b{0} &7picked up the &6{1} &7flag!", apl.getName(), getFlagType());
+								arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", apl.getName(), getFlagType());
 								return;
 							}
 							else
@@ -168,7 +168,7 @@ public class CTFflag
 									// If the flag is not at its flagstand
 									apl.sendMessage("&aFlag Returned! &c+50 XP");
 									arenaplayers.get(i).setGameXP(arenaplayers.get(i).getGameXP() + 50);
-									arena.tellPlayers("&b{0} &7returned the &6{1} &7flag!", pl.getName(), getFlagType());
+									arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), getFlagType());
 									respawn();
 									return;
 								}
@@ -218,7 +218,7 @@ public class CTFflag
 				{
 					respawn();
 					
-					arena.tellPlayers("&7The {0} &7flag has respawned!", getFlagType());
+					arena.tellPlayers("&3The &e{0} &3flag has respawned!", getFlagType());
 				}
 				else
 				{

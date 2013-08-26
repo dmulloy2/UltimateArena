@@ -64,7 +64,7 @@ public class INFECTArena extends PVPArena
 		if (apl.getTeam() == 2)
 		{
 			Player pl = apl.getPlayer();
-			normalize(apl.getPlayer());
+			apl.clearInventory();
 
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 2));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2400, 1));
@@ -72,7 +72,7 @@ public class INFECTArena extends PVPArena
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 1));
 			
 			spawn(apl.getPlayer().getName(), true);
-			normalize(apl.getPlayer());
+			apl.clearInventory();
 			apl.decideHat();
 		}
 	}

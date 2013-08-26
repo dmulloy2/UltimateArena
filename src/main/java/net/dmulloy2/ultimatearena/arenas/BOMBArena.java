@@ -59,7 +59,7 @@ public class BOMBArena extends Arena
 			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
-				if (apl != null && ! apl.isOut())
+				if (checkValid(apl))
 				{
 					if (apl.getTeam() == 1)
 					{

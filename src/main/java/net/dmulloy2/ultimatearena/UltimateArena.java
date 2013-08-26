@@ -24,7 +24,6 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.Arena.Mode;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.arenas.CONQUESTArena;
 import net.dmulloy2.ultimatearena.arenas.CTFArena;
@@ -82,7 +81,6 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -259,23 +257,7 @@ public class UltimateArena extends JavaPlugin
 			arenaFile.mkdir();
 			debug("Created arenas directory!");
 		}
-		
-		File playersFile = new File(getDataFolder(), "players");
-		if (playersFile.exists())
-		{
-			File[] children = playersFile.listFiles();
-			if (children != null && children.length > 0)
-			{
-				for (File file : children)
-				{
-					file.delete();
-				}
-			}
-			
-			playersFile.delete();
-			debug("Deleted players directory!");
-		}
-		
+
 		File classFile = new File(getDataFolder(), "classes");
 		if (! classFile.exists())
 		{
@@ -306,7 +288,7 @@ public class UltimateArena extends JavaPlugin
 
 			Arena a = getArena(player);
 			a.endPlayer(getArenaPlayer(player), player, false);
-			a.tellPlayers("&b{0} has left the arena!", player.getName());
+			a.tellPlayers("&e{0} &3has left the arena!", player.getName());
 			
 		}
 	} 
@@ -490,7 +472,7 @@ public class UltimateArena extends JavaPlugin
 				}
 			}
 			
-			player.sendMessage(prefix + FormatUtil.format("&7Successfully deleted arena: &6{0}&7!", str));
+			player.sendMessage(prefix + FormatUtil.format("&3Successfully deleted arena: &e{0}", str));
 			
 			outConsole("Successfully deleted arena: {0}!", str);
 		}
@@ -584,8 +566,7 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 
-	// Pre-Join Stuff
-	public void fight(Player player, String name, boolean forced)
+	public void join(Player player, String arena)
 	{
 		if (! permissionHandler.hasPermission(player, Permission.JOIN))
 		{
@@ -608,7 +589,7 @@ public class UltimateArena extends JavaPlugin
 			}
 		}
 		
-		ArenaZone a = getArenaZone(name);
+		ArenaZone a = getArenaZone(arena);
 		if (a == null)
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cThat arena doesn't exist!"));
@@ -638,7 +619,7 @@ public class UltimateArena extends JavaPlugin
 			}
 		}
 		
-		ArenaJoinTask join = new ArenaJoinTask(this, player, name, forced);
+		ArenaJoinTask join = new ArenaJoinTask(this, player, arena);
 		if (getConfig().getBoolean("joinTimer.enabled"))
 		{
 			int seconds = getConfig().getInt("joinTimer.wait");
@@ -652,19 +633,18 @@ public class UltimateArena extends JavaPlugin
 		else
 		{
 			join.run();
-		}			
+		}
 	}
 	
-	// Actually join battle
-	public void joinBattle(boolean forced, Player player, String name)
+	public void fight(Player player, String name)
 	{
-		debug("Player {0} is attempting to join arena {1}. Forced: {2}", player.getName(), name, forced);
+		boolean forced = permissionHandler.hasPermission(player, Permission.JOIN_FORCE);
 		
 		ArenaZone az = getArenaZone(name);
 		Arena a = getArena(name);
 		if (a != null)
 		{
-			if (a.getGameMode() == Mode.LOBBY)
+			if (a.isInLobby())
 			{
 				if (a.getActivePlayers() + 1 <= az.getMaxPlayers())
 				{
@@ -772,7 +752,7 @@ public class UltimateArena extends JavaPlugin
 			}
 		}
 	}
-	
+
 	// Kicks a random player if the arena is full
 	// This will only be called if someone with forcejoin joins
 	public boolean kickRandomPlayer(Arena arena)
@@ -849,7 +829,7 @@ public class UltimateArena extends JavaPlugin
 		if (ac != null)
 		{
 			ac.setPoint(player);
-			if (!ac.getMsg().equals(""))
+			if (! ac.getMsg().isEmpty())
 			{
 				player.sendMessage(prefix + FormatUtil.format("&7" + ac.getMsg()));
 			}
@@ -933,34 +913,6 @@ public class UltimateArena extends JavaPlugin
 		ac.setArena(name, type);
 		makingArena.add(ac);
 	}
-	
-	// Normalization
-	public void normalizeAll()
-	{
-		for (Player player : getServer().getOnlinePlayers())
-		{
-			Location loc = player.getLocation();
-			if (isInArena(loc))
-			{
-				normalize(player);
-				if (isInArena(player))
-				{
-					leaveArena(player);
-				}
-			}
-		}
-	}
-	
-	public void normalize(Player player)
-	{
-		PlayerInventory inv = player.getInventory();
-		
-		inv.setHelmet(null);
-		inv.setChestplate(null);
-		inv.setLeggings(null);
-		inv.setBoots(null);
-		inv.clear();
-	}
 
 	// Load files
 	public void loadFiles() 
@@ -997,11 +949,13 @@ public class UltimateArena extends JavaPlugin
 	{
 		if (pm.isPluginEnabled("Vault"))
 		{
-			setupEconomy();
-			
-			if (economy != null)
+			if (setupEconomy())
 			{
 				outConsole("Enabled economy through {0}!", economy.getName());
+			}
+			else
+			{
+				outConsole("Failed to hook into Vault economy.");
 			}
 		}
 	}
@@ -1013,7 +967,7 @@ public class UltimateArena extends JavaPlugin
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
 		if (economyProvider != null) 
 		{
-			economy = (economyProvider.getProvider());
+			this.economy = economyProvider.getProvider();
 		}
  
 		return economy != null;
