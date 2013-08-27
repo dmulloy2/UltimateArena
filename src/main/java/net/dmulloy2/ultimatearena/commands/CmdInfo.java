@@ -37,17 +37,17 @@ public class CmdInfo extends UltimateArenaCommand
 					{
 						if (ap.isOut())
 						{
-							sendMessage("&3You are &cOUT&7!");
+							sendMessage("&3You are &cOUT&3!");
 						}
 						else
 						{
-							sendMessage("&3You are &aNOT OUT&7!");
+							sendMessage("&3You are &aNOT OUT&3!");
 						}
 					}
 
 					sendMessage(""); // Empty line
 					
-					sendMessage("&3&lActive Players:");
+					sendMessage("&3Active Players:");
 					for (String s : ar.buildLeaderboard(player))
 					{
 						sendMessage(s);

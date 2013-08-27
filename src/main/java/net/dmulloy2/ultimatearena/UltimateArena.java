@@ -592,12 +592,10 @@ public class UltimateArena extends JavaPlugin
 		ArenaZone a = getArenaZone(arena);
 		if (a == null)
 		{
+			player.sendMessage(prefix + FormatUtil.format("&3Unknown arena: &e{0}", arena));
+			
 			List<ArenaZone> matches = matchArena(arena);
-			if (matches.size() == 0)
-			{
-				player.sendMessage(prefix + FormatUtil.format("&cThat arena does not exist!"));
-			}
-			else
+			if (matches.size() > 0)
 			{
 				StringBuilder matchString = new StringBuilder();
 				for (ArenaZone match : matches)
@@ -606,8 +604,7 @@ public class UltimateArena extends JavaPlugin
 				}
 				
 				matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(" "), "?");
-			
-				
+
 				player.sendMessage(prefix + FormatUtil.format("&3Did you mean: &e{0}", matchString.toString()));
 			}
 			
