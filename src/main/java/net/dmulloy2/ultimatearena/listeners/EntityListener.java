@@ -283,7 +283,7 @@ public class EntityListener implements Listener
 						{
 							plugin.debug("PVP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
 							
-							ar.tellPlayers("&a{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(), getWeapon(killer));
+							ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(), getWeapon(killer));
 							
 							List<String> deadlines = new ArrayList<String>();
 							deadlines.add(FormatUtil.format("&3----------------------------"));

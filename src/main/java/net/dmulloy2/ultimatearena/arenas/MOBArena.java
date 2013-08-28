@@ -171,7 +171,7 @@ public class MOBArena extends Arena
 			if (ap.getKillstreak() == 24) 
 			{
 				givePotion(pl, "heal", 1, 1, false, "&e24 &3kills! Unlocked health potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "24 kills! Unlocked food!");
+				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e24 &3kills! Unlocked food!");
 			}
 				
 			if (ap.getKillstreak() == 32) 

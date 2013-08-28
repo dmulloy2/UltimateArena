@@ -102,21 +102,25 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		return name;
 	}
 
-	public final String getUsageTemplate(final boolean displayHelp)
+	public final String getUsageTemplate(final boolean displayHelp) 
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("&c/ua ");
+		ret.append("&b/ua ");
 
 		ret.append(name);
-
-		for (String s : optionalArgs)
-			ret.append(" &6[" + s + "]");
 		
+		for (String s : aliases)
+			ret.append("," + s);
+		
+		ret.append("&3 ");
 		for (String s : requiredArgs)
-			ret.append(" &4<" + s + ">");
+			ret.append(String.format("<%s> ", s));
+		
+		for (String s : optionalArgs)
+			ret.append(String.format("[%s] ", s));
 		
 		if (displayHelp)
-			ret.append(" &e" + description);
+			ret.append("&e" + description);
 		
 		return FormatUtil.format(ret.toString());
 	}
