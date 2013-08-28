@@ -115,6 +115,9 @@ public class UltimateArena extends JavaPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
+		
+		// Version check
+		checkBukkitVersion();
 
 		// IO Stuff
 		checkDirectories();
@@ -170,12 +173,8 @@ public class UltimateArena extends JavaPlugin
 		// Arena Updater
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
 
-		// Load Arenas
+		// Load Files
 		loadFiles();
-		
-		// Arena Signs
-		signManager = new SignManager(this);
-		outConsole("Loaded {0} arena signs!", arenaSigns.size());
 
 		long finish = System.currentTimeMillis();
 		
@@ -237,6 +236,44 @@ public class UltimateArena extends JavaPlugin
 		getServer().broadcastMessage(prefix + broadcast);
 		
 		debug("Broadcasted message: {0}", broadcast);
+	}
+	
+	public void loadFiles()
+	{
+		if (getServer().getWorlds().isEmpty())
+		{
+			outConsole("Delaying the loading of files until all worlds have loaded.");
+			
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					loadFiles();
+				}
+			}.runTaskLater(this, 10L);
+		}
+		else
+		{
+			loadClasses();
+			loadConfigs();
+			loadArenas();
+			loadSigns();
+		}
+	}
+	
+	public boolean checkBukkitVersion()
+	{
+		String bukkitVersion = getServer().getBukkitVersion();
+		if (bukkitVersion.contains("1.5"))
+		{
+			outConsole(Level.WARNING, "UltimateArena has detected that you are using an outdated Bukkit build!");
+			outConsole(Level.WARNING, "Using 1.5.x builds has been known to cause game-ending errors!");
+			outConsole(Level.WARNING, "Consider updating to the latest Bukkit build here: dl.bukkit.org");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	// Create Directories
@@ -391,6 +428,12 @@ public class UltimateArena extends JavaPlugin
 		}
 		
 		outConsole("Loaded {0} Arena Classes!", total);
+	}
+
+	public void loadSigns()
+	{
+		signManager = new SignManager(this);
+		outConsole("Loaded {0} arena signs!", arenaSigns.size());
 	}
 	
 	public ArenaConfig getConfig(String type) 
@@ -943,14 +986,6 @@ public class UltimateArena extends JavaPlugin
 		makingArena.add(ac);
 	}
 
-	// Load files
-	public void loadFiles() 
-	{
-		loadClasses();
-		loadConfigs();
-		loadArenas();
-	}
-	
 	// Clear memory
 	public void clearMemory()
 	{
