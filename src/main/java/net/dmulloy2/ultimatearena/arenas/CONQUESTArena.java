@@ -3,10 +3,10 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaFlag;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.flags.ArenaFlag;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
@@ -194,14 +194,14 @@ public class CONQUESTArena extends Arena
 			{
 				if (ap.getTeam() == 2)
 				{
-					endPlayer(ap, ap.getPlayer(), false);
+					endPlayer(ap,  false);
 				}
 			}
 			else if (REDTEAMPOWER <= 0) 
 			{
 				if (ap.getTeam() == 1)
 				{
-					endPlayer(ap, ap.getPlayer(), false);
+					endPlayer(ap, false);
 				}
 			}
 		}

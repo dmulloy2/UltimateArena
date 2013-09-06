@@ -2,9 +2,9 @@ package net.dmulloy2.ultimatearena.listeners;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.types.ArenaSign;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.block.Block;
@@ -121,8 +121,8 @@ public class BlockListener implements Listener
 					ArenaZone az = plugin.getArenaZone(event.getLine(2));
 					if (az != null)
 					{
-						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, plugin.arenaSigns.size());
-						plugin.arenaSigns.add(sign);
+						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, plugin.getArenaSigns().size());
+						plugin.getArenaSigns().add(sign);
 						
 						plugin.debug("Added new sign: {0}", sign);
 						

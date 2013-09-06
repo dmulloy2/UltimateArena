@@ -3,8 +3,8 @@ package net.dmulloy2.ultimatearena;
 import java.io.File;
 import java.io.IOException;
 
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
+import net.dmulloy2.ultimatearena.types.ArenaSign;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -63,7 +63,7 @@ public class SignManager
 						if (az != null)
 						{
 							ArenaSign as = new ArenaSign(plugin, loc, az, i);
-							plugin.arenaSigns.add(as);
+							plugin.getArenaSigns().add(as);
 
 							plugin.debug("Successfully loaded sign: {0}", as);
 						}
@@ -85,7 +85,7 @@ public class SignManager
 		int total = 0;
 		
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
-		for (ArenaSign sign : plugin.arenaSigns)
+		for (ArenaSign sign : plugin.getArenaSigns())
 		{
 			plugin.debug("Attempting to save sign: {0}", sign);
 			
@@ -110,9 +110,9 @@ public class SignManager
 	
 	public void updateSigns()
 	{
-		for (int i = 0; i < plugin.arenaSigns.size(); i++)
+		for (int i = 0; i < plugin.getArenaSigns().size(); i++)
 		{
-			ArenaSign sign = plugin.arenaSigns.get(i);
+			ArenaSign sign = plugin.getArenaSigns().get(i);
 			sign.update();
 		}
 	}

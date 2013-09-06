@@ -1,8 +1,8 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.apache.commons.lang.WordUtils;
@@ -26,7 +26,7 @@ public class CmdClassList extends UltimateArenaCommand
 	{
 		sendMessage("&3====[ &eUltimateArena Classes &3]====");
 
-		for (ArenaClass ac : plugin.classes)
+		for (ArenaClass ac : plugin.getClasses())
 		{
 			String name = WordUtils.capitalize(ac.getName());
 			sendMessage("&3===[ &e{0} &3]===", name);

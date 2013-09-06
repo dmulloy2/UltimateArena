@@ -11,6 +11,10 @@
   
   <repositories>
     <repository>
+      <id>vault-repo</id>
+	  <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+    </repository>
+    <repository>
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
@@ -81,7 +85,7 @@
     <dependency>
  	  <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>0.11.6</version>
+      <version>0.12.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -94,7 +98,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.26-SNAPSHOT</version>
+      <version>1.2.27-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

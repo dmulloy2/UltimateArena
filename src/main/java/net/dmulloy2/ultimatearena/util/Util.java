@@ -8,6 +8,9 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+
+import com.earth2me.essentials.IEssentials;
 
 /**
  * Base Util class
@@ -150,5 +153,16 @@ public class Util
 		ret.append(" Y: " + loc.getBlockY());
 		ret.append(" Z: " + loc.getBlockZ());
 		return ret.toString();
+	}
+	
+	public static IEssentials getEssentials()
+	{
+		PluginManager pm = Bukkit.getPluginManager();
+		if (pm.isPluginEnabled("Essentials"))
+		{
+			return (IEssentials) pm.getPlugin("Essentials");
+		}
+		
+		return null;
 	}
 }

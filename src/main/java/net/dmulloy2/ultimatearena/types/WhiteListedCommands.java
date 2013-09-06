@@ -1,12 +1,12 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.types;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WhiteListCommands
+public class WhiteListedCommands
 {
 	private List<String> allowedCommand;
-	public WhiteListCommands() 
+	public WhiteListedCommands() 
 	{
 		this.allowedCommand = new ArrayList<String>();
 	}

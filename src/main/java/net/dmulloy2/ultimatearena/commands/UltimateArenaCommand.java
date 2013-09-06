@@ -108,10 +108,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		ret.append("&b/ua ");
 
 		ret.append(name);
-		
-		for (String s : aliases)
-			ret.append("," + s);
-		
+
 		ret.append("&3 ");
 		for (String s : requiredArgs)
 			ret.append(String.format("<%s> ", s));

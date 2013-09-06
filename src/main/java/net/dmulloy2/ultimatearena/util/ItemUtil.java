@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.dmulloy2.ultimatearena.arenas.objects.EnchantmentType;
+import net.dmulloy2.ultimatearena.types.EnchantmentType;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -127,7 +127,7 @@ public class ItemUtil
 		if (split.length == 3)
 		{
 			// Get the type
-			PotionType type = net.dmulloy2.ultimatearena.arenas.objects.PotionType.toType(split[0]);
+			PotionType type = net.dmulloy2.ultimatearena.types.PotionType.toType(split[0]);
 			if (type != null)
 			{
 				// Get the amount
@@ -152,7 +152,7 @@ public class ItemUtil
 		else if (split.length == 4)
 		{
 			// Get the type
-			PotionType type = net.dmulloy2.ultimatearena.arenas.objects.PotionType.toType(split[0]);
+			PotionType type = net.dmulloy2.ultimatearena.types.PotionType.toType(split[0]);
 			if (type != null)
 			{
 				// Get the amount

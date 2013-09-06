@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Basic API for hooking into {@link UltimateArena}
+ * TODO: Implement this like a true API
+ * 
  * @author dmulloy2
  */
 public class UltimateArenaAPI 
@@ -113,7 +115,7 @@ public class UltimateArenaAPI
 	 */
 	public final int getKillStreak(ArenaPlayer a)
 	{
-		return a.getKillstreak();
+		return a.getKillStreak();
 	}
 	
 	/**
@@ -145,7 +147,7 @@ public class UltimateArenaAPI
 	 */
 	public final List<Arena> getActiveArenas()
 	{
-		return Collections.unmodifiableList(plugin.activeArena);
+		return Collections.unmodifiableList(plugin.getActiveArenas());
 	}
 	
 	/**
@@ -155,7 +157,7 @@ public class UltimateArenaAPI
 	 */
 	public final List<ArenaZone> getLoadedArenas()
 	{
-		return Collections.unmodifiableList(plugin.loadedArena);
+		return Collections.unmodifiableList(plugin.getLoadedArenas());
 	}
 	
 	/**
@@ -165,7 +167,7 @@ public class UltimateArenaAPI
 	 */
 	public final List<ArenaClass> getClasses()
 	{
-		return Collections.unmodifiableList(plugin.classes);
+		return Collections.unmodifiableList(plugin.getClasses());
 	}
 	
 	/**

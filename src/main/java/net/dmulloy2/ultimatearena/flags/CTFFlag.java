@@ -1,8 +1,9 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.flags;
 
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.ChatColor;
@@ -41,7 +42,7 @@ public class CTFFlag
 		this.setTeam(team);
 		this.arena = a;
 		
-		this.setReturnto(loc.clone());
+		this.returnto = loc.clone();
 		this.myloc = loc.clone();
 		this.lastloc = loc.clone();
 		this.toloc = loc.clone();
@@ -133,54 +134,52 @@ public class CTFFlag
 		toloc = myloc.clone().subtract(0, count, 0);
 		setFlag();
 	}
-	
+
 	public void checkNear(List<ArenaPlayer> arenaplayers)
 	{
 		if (isStopped())
 			return;
 		
-		if (!isPickedUp()) 
+		if (! isPickedUp()) 
 		{
 			for (int i = 0; i < arenaplayers.size(); i++)
 			{
-				ArenaPlayer apl = arenaplayers.get(i);
-				Player pl = apl.getPlayer();
-				if (pl != null)
-				{
-					if (Util.pointDistance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0)
+				ArenaPlayer pl = arenaplayers.get(i);
+				if (pl != null && ! pl.isOut())
+				{	
+					if (Util.pointDistance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0.0D)
 					{
-						if (! apl.isOut())
+						if (pl.getTeam() != getTeam()) 
 						{
-							if (apl.getTeam() != getTeam()) 
-							{
-								// If the guy is on the other team
-								setPickedUp(true);
-								setRiding(pl);
-								pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
-								pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-								arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", apl.getName(), getFlagType());
+							// If the guy is on the other team
+							this.pickedUp = true;
+							this.riding = pl.getPlayer();
+
+							pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
+							pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
+							arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", pl.getName(), getFlagType());
+							return;
+						}
+						else
+						{
+							if (! myloc.equals(getReturnto())) 
+							{ 
+								// If the flag is not at its flagstand
+								pl.sendMessage("&aFlag Returned! &c+50 XP");
+								arenaplayers.get(i).setGameXP(arenaplayers.get(i).getGameXP() + 50);
+								arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), getFlagType());
+								respawn();
 								return;
-							}
-							else
-							{
-								if (!myloc.equals(getReturnto())) 
-								{ 
-									// If the flag is not at its flagstand
-									apl.sendMessage("&aFlag Returned! &c+50 XP");
-									arenaplayers.get(i).setGameXP(arenaplayers.get(i).getGameXP() + 50);
-									arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), getFlagType());
-									respawn();
-									return;
-								}
 							}
 						}
 					}
 				}
 			}
 		}
+		
 		if (isPickedUp())
 		{
-			if (getRiding().isOnline() && !getRiding().isDead()) 
+			if (riding.isOnline() && ! riding.isDead())
 			{
 				//if player is alive
 				toloc = getRiding().getLocation().clone().add(0, 3, 0);
@@ -208,9 +207,9 @@ public class CTFFlag
 		if (isStopped())
 			return;
 		
-		if (!isPickedUp()) 
+		if (! pickedUp) 
 		{
-			if (!myloc.equals(getReturnto())) 
+			if (! myloc.equals(getReturnto())) 
 			{
 				//if the flag is not at its flagstand
 				timer--;
@@ -242,7 +241,6 @@ public class CTFFlag
 	    	lastBlockDat = current.getData();
 			lastBlockType = current.getTypeId();
 			lastloc = myloc.clone();
-	    	//last.setTypeIdAndData(0, (byte) 0, true);
 			setFlagBlock(current);
     	}
 	}

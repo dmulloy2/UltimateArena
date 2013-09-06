@@ -1,9 +1,9 @@
 package net.dmulloy2.ultimatearena.events;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.FieldType;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

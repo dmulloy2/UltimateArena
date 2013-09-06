@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.arenas.CONQUESTArena;
@@ -34,14 +35,6 @@ import net.dmulloy2.ultimatearena.arenas.KOTHArena;
 import net.dmulloy2.ultimatearena.arenas.MOBArena;
 import net.dmulloy2.ultimatearena.arenas.PVPArena;
 import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaConfig;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaCreator;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSign;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
-import net.dmulloy2.ultimatearena.arenas.objects.WhiteListCommands;
 import net.dmulloy2.ultimatearena.commands.CmdClass;
 import net.dmulloy2.ultimatearena.commands.CmdClassList;
 import net.dmulloy2.ultimatearena.commands.CmdCreate;
@@ -71,6 +64,15 @@ import net.dmulloy2.ultimatearena.listeners.PlayerListener;
 import net.dmulloy2.ultimatearena.listeners.SwornGunsListener;
 import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.permissions.PermissionHandler;
+import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaConfig;
+import net.dmulloy2.ultimatearena.types.ArenaCreator;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaSign;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.ultimatearena.types.LeaveReason;
+import net.dmulloy2.ultimatearena.types.WhiteListedCommands;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -97,17 +99,17 @@ public class UltimateArena extends JavaPlugin
 	
 	private @Getter SignManager signManager;
 	
-	public List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
-	public List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
-	public List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
-	public List<ArenaClass> classes = new ArrayList<ArenaClass>();
-	public List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
-	public List<ArenaZone> loadedArena = new ArrayList<ArenaZone>();
-	public List<Arena> activeArena = new ArrayList<Arena>();
+	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
+	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
+	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
+	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
+	private @Getter List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
+	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
+	private @Getter List<Arena> activeArenas = new ArrayList<Arena>();
 	
-	public WhiteListCommands wcmd = new WhiteListCommands();
-	
-	public int arenasPlayed = 0;
+	private @Getter WhiteListedCommands whiteListedCommands = new WhiteListedCommands();
+
+	private @Getter @Setter int arenasPlayed = 0;
 	
 	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
 
@@ -116,8 +118,8 @@ public class UltimateArena extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 		
-		// Version check
-		checkBukkitVersion();
+		// Dependencies
+		checkDependencyVersions();
 
 		// IO Stuff
 		checkDirectories();
@@ -197,7 +199,7 @@ public class UltimateArena extends JavaPlugin
 		signManager.refreshSave();
 		
 		// Refresh arena saves
-		for (ArenaZone az : loadedArena)
+		for (ArenaZone az : loadedArenas)
 		{
 			az.save();
 		}
@@ -262,18 +264,20 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 	
-	public boolean checkBukkitVersion()
+	public void checkDependencyVersions()
 	{
-		String bukkitVersion = getServer().getBukkitVersion();
-		if (bukkitVersion.contains("1.5"))
+		try
 		{
-			outConsole(Level.WARNING, "UltimateArena has detected that you are using an outdated Bukkit build!");
-			outConsole(Level.WARNING, "Using 1.5.x builds has been known to cause game-ending errors!");
-			outConsole(Level.WARNING, "Consider updating to the latest Bukkit build here: dl.bukkit.org");
-			return false;
+			Class.forName("org.bukkit.entity.Horse");
 		}
-		
-		return true;
+		catch (ClassNotFoundException e)
+		{
+			outConsole(Level.WARNING, "UltimateArena has detected that you are using an outdated {0} build!", getServer().getName());
+			outConsole(Level.WARNING, "Using older builds has been known to cause game-ending errors!");
+			outConsole(Level.WARNING, "Consider updating to the latest build!");
+			
+			getServer().getPluginManager().disablePlugin(this);
+		}
 	}
 	
 	// Create Directories
@@ -310,26 +314,6 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 
-	// Normalize player if in arena
-	public void onQuit(Player player)
-	{
-		if (isPlayerCreatingArena(player)) 
-		{
-			debug("Player {0} left the game, stopping the creation of an arena", player.getName());
-			makingArena.remove(getArenaCreator(player));
-		}
-		
-		if (isInArena(player))
-		{
-			debug("Player {0} leaving arena from quit", player.getName());
-
-			Arena a = getArena(player);
-			a.endPlayer(getArenaPlayer(player), player, false);
-			a.tellPlayers("&e{0} &3has left the arena!", player.getName());
-			
-		}
-	} 
-	
 	// Load Stuff
 	public void loadArenas()
 	{
@@ -377,11 +361,12 @@ public class UltimateArena extends JavaPlugin
 		List<String> whiteListedCommands = fc.getStringList("whiteListedCmds");
 		for (String whiteListed : whiteListedCommands)
 		{
-			wcmd.addCommand(whiteListed);
+			this.whiteListedCommands.addCommand(whiteListed);
+			
 			debug("Added whitelisted command: \"{0}\"!", whiteListed);
 		}
 		
-		outConsole("Loaded {0} whitelisted commands!", wcmd.size());
+		outConsole("Loaded {0} whitelisted commands!", whiteListedCommands.size());
 	}
 	
 	public boolean loadConfig(String str)
@@ -450,16 +435,16 @@ public class UltimateArena extends JavaPlugin
 
 	public void stopAll()
 	{
-		for (int i = 0; i < activeArena.size(); i++)
+		for (int i = 0; i < activeArenas.size(); i++)
 		{
-			Arena arena = activeArena.get(i);
+			Arena arena = activeArenas.get(i);
 			if (arena != null)
 			{
 				arena.stop();
 			}
 		}
 		
-		activeArena.clear();
+		activeArenas.clear();
 	}
 
 	public ArenaSign getArenaSign(Location loc)
@@ -493,16 +478,16 @@ public class UltimateArena extends JavaPlugin
 		File file = new File(folder, str + ".dat");
 		if (file.exists())
 		{
-			for (int i = 0; i < activeArena.size(); i++)
+			for (int i = 0; i < activeArenas.size(); i++)
 			{
-				Arena a = activeArena.get(i);
+				Arena a = activeArenas.get(i);
 				if (a.getName().equalsIgnoreCase(str))
 				{
 					a.stop();
 				}
 			}
 				
-			loadedArena.remove(getArenaZone(str));
+			loadedArenas.remove(getArenaZone(str));
 				
 			file.delete();
 			
@@ -537,9 +522,9 @@ public class UltimateArena extends JavaPlugin
 	// Checks for whether or not something is in an arena
 	public boolean isInArena(Location loc)
 	{
-		for (int i = 0; i < loadedArena.size(); i++)
+		for (int i = 0; i < loadedArenas.size(); i++)
 		{
-			ArenaZone az = loadedArena.get(i);
+			ArenaZone az = loadedArenas.get(i);
 			if (az.checkLocation(loc))
 				return true;
 		}
@@ -565,9 +550,9 @@ public class UltimateArena extends JavaPlugin
 	
 	public Arena getArenaInside(Block block)
 	{
-		for (int i = 0; i < loadedArena.size(); i++)
+		for (int i = 0; i < loadedArenas.size(); i++)
 		{
-			ArenaZone az = loadedArena.get(i);
+			ArenaZone az = loadedArenas.get(i);
 			if (az.checkLocation(block.getLocation()))
 				return getArena(az.getArenaName());
 		}
@@ -577,36 +562,16 @@ public class UltimateArena extends JavaPlugin
 
 	public ArenaPlayer getArenaPlayer(Player player) 
 	{
-		for (int i = 0; i < activeArena.size(); i++)
+		for (int i = 0; i < activeArenas.size(); i++)
 		{
-			Arena a = activeArena.get(i);
+			Arena a = activeArenas.get(i);
+			
 			ArenaPlayer ap = a.getArenaPlayer(player);
-			if (ap != null && !ap.isOut())
-			{
-				if (ap.getPlayer().getName().equals(player.getName())) 
-					return ap;
-			}
+			if (ap != null)
+				return ap;
 		}
 		
 		return null;
-	}
-	
-	public void leaveArena(Player player)
-	{
-		if (isInArena(player))
-		{
-			Arena a = getArena(player);
-			ArenaPlayer ap = getArenaPlayer(player);
-			a.endPlayer(ap, player, false);
-			
-			ap.sendMessage("&3You have left the arena!");
-			
-			a.tellPlayers("&e{0} &3has left the arena!", player.getName());
-		}
-		else
-		{
-			player.sendMessage(prefix + FormatUtil.format("&cError, you are not in an arena"));
-		}
 	}
 
 	public void join(Player player, String arena)
@@ -736,18 +701,18 @@ public class UltimateArena extends JavaPlugin
 		{
 			Arena ar = null;
 			boolean disabled = false;
-			for (int i = 0; i < activeArena.size(); i++)
+			for (int i = 0; i < activeArenas.size(); i++)
 			{
-				Arena aar = activeArena.get(i);
+				Arena aar = activeArenas.get(i);
 				if (aar.getName().equalsIgnoreCase(name))
 				{
 					disabled = aar.isDisabled();
 				}
 			}
 			
-			for (int ii = 0; ii < loadedArena.size(); ii++)
+			for (int ii = 0; ii < loadedArenas.size(); ii++)
 			{
-				ArenaZone aaz = loadedArena.get(ii);
+				ArenaZone aaz = loadedArenas.get(ii);
 				if (aaz.getArenaName().equalsIgnoreCase(name))
 				{
 					disabled = aaz.isDisabled();
@@ -799,7 +764,7 @@ public class UltimateArena extends JavaPlugin
 				}
 				if (ar != null) 
 				{
-					activeArena.add(ar);
+					activeArenas.add(ar);
 					ar.addPlayer(player);
 					ar.announce();
 				}
@@ -829,8 +794,7 @@ public class UltimateArena extends JavaPlugin
 		ArenaPlayer apl = validPlayers.get(rand);
 		if (apl != null)
 		{
-			apl.sendMessage("&cYou have been kicked from the arena!");
-			apl.getArena().endPlayer(apl, apl.getPlayer(), false);
+			apl.leaveArena(LeaveReason.KICK);
 			return true;
 		}
 		
@@ -840,9 +804,9 @@ public class UltimateArena extends JavaPlugin
 	// Gets the arena a player is in
 	public Arena getArena(Player player)
 	{
-		for (int i = 0; i < activeArena.size(); i++)
+		for (int i = 0; i < activeArenas.size(); i++)
 		{
-			Arena a = activeArena.get(i);
+			Arena a = activeArenas.get(i);
 			ArenaPlayer ap = a.getArenaPlayer(player);
 			if (ap != null)
 			{
@@ -857,9 +821,9 @@ public class UltimateArena extends JavaPlugin
 	// Gets an arena by its name
 	public Arena getArena(String name) 
 	{
-		for (int i = 0; i < activeArena.size(); i++)
+		for (int i = 0; i < activeArenas.size(); i++)
 		{
-			Arena ac = activeArena.get(i);
+			Arena ac = activeArenas.get(i);
 			if (ac.getName().equalsIgnoreCase(name))
 				return ac;
 		}
@@ -871,9 +835,9 @@ public class UltimateArena extends JavaPlugin
 	{
 		List<ArenaZone> ret = new ArrayList<ArenaZone>();
 		
-		for (int i = 0; i < loadedArena.size(); i++)
+		for (int i = 0; i < loadedArenas.size(); i++)
 		{
-			ArenaZone az = loadedArena.get(i);
+			ArenaZone az = loadedArenas.get(i);
 			if (az.getArenaName().contains(partial))
 				ret.add(az);
 		}
@@ -884,9 +848,9 @@ public class UltimateArena extends JavaPlugin
 	// Gets an arena zone by its name
 	public ArenaZone getArenaZone(String name)
 	{
-		for (int i = 0; i < loadedArena.size(); i++)
+		for (int i = 0; i < loadedArenas.size(); i++)
 		{
-			ArenaZone az = loadedArena.get(i);
+			ArenaZone az = loadedArenas.get(i);
 			if (az.getArenaName().equalsIgnoreCase(name)) 
 				return az;
 		}
@@ -969,9 +933,9 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 		
-		for (int i = 0; i < loadedArena.size(); i++)
+		for (int i = 0; i < loadedArenas.size(); i++)
 		{
-			ArenaZone az = loadedArena.get(i);
+			ArenaZone az = loadedArenas.get(i);
 			if (az.getArenaName().equalsIgnoreCase(name))
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cAn arena by this name already exists!"));
@@ -989,14 +953,15 @@ public class UltimateArena extends JavaPlugin
 	// Clear memory
 	public void clearMemory()
 	{
-		loadedArena.clear();
-		activeArena.clear();
+		whiteListedCommands.clear();
+		
+		loadedArenas.clear();
+		activeArenas.clear();
 		makingArena.clear();
 		arenaSigns.clear();
 		waiting.clear();
 		classes.clear();
 		configs.clear();
-		wcmd.clear();
 	}
 	
 	// Removes potion effects
@@ -1037,15 +1002,15 @@ public class UltimateArena extends JavaPlugin
 		return economy != null;
 	}
 
-    // TODO: Replace these with much more active updaters
+    @Deprecated
     public class ArenaUpdateTask extends BukkitRunnable
 	{
 		@Override
 		public void run()
 		{
-			for (int i = 0; i < activeArena.size(); i++) 
+			for (int i = 0; i < activeArenas.size(); i++) 
 			{
-				Arena arena = activeArena.get(i);
+				Arena arena = activeArenas.get(i);
 				arena.update();
 			}
 		}

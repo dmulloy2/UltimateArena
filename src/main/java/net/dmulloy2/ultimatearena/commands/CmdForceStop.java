@@ -23,19 +23,14 @@ public class CmdForceStop extends UltimateArenaCommand
 	{
 		if (args.length > 0)
 		{
-			boolean found = false;
-			for (int i = 0; i < plugin.activeArena.size(); i++)
+			Arena a = plugin.getArena(args[0]);
+			if (a == null)
 			{
-				Arena a = plugin.activeArena.get(i);
-				a.stop();
-				
-				found = true;
+				err("This arena is not currently active!");
+				return;
 			}
 			
-			if (! found)
-			{
-				err("No arena by that name exists!");
-			}
+			a.stop();
 		}
 		else
 		{

@@ -2,8 +2,8 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class CmdDisable extends UltimateArenaCommand
 {
@@ -22,7 +22,7 @@ public class CmdDisable extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		for (Arena a : plugin.activeArena)
+		for (Arena a : plugin.getActiveArenas())
 		{
 			if (a.getName().equalsIgnoreCase(args[0]))
 			{
@@ -32,7 +32,7 @@ public class CmdDisable extends UltimateArenaCommand
 			}
 		}
 			
-		for (ArenaZone az : plugin.loadedArena)
+		for (ArenaZone az : plugin.getLoadedArenas())
 		{
 			if (az.getArenaName().equalsIgnoreCase(args[0]))
 			{

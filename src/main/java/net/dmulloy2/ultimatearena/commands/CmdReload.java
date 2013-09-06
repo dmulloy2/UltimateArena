@@ -1,9 +1,9 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import org.bukkit.plugin.PluginManager;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+
+import org.bukkit.plugin.PluginManager;
 
 public class CmdReload extends UltimateArenaCommand
 {

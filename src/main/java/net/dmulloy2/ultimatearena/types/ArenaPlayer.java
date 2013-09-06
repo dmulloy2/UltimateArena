@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.types;
 
 import java.util.List;
 
@@ -22,26 +22,28 @@ import com.earth2me.essentials.Kit;
 import com.earth2me.essentials.User;
 
 /**
- * Represents a player in an arena
+ * Represents a player inside an {@link Arena}
+ * 
  * @author dmulloy2
  */
 
-public class ArenaPlayer 
+public class ArenaPlayer extends PlayerExtension
 {
 	private int kills = 0;
 	private int deaths = 0;
-	private int killstreak = 0;
+	private int killStreak = 0;
 	private int gameXP = 0;
 	private int team = 1;
 	private int points = 0;
-	private int baselevel = 0;
-	private int amtkicked = 0;
-	private int healtimer = 0;
+	private int baseLevel = 0;
+	private int amtKicked = 0;
+	private int healTimer = 0;
 	
 	private boolean out = false;
 	private boolean canReward = false;
-	
+
 	private Player player;
+	
 	private String name;
 	
 	private Arena arena;
@@ -55,12 +57,15 @@ public class ArenaPlayer
 	
 	/**
 	 * Creates a new ArenaPlayer instance
+	 * 
 	 * @param player - Base {@link Player} to create the arena player around
 	 * @param arena - {@link Arena} the player is in
 	 * @param plugin - {@link UltimateArena} plugin instance
 	 */
 	public ArenaPlayer(Player player, Arena arena, final UltimateArena plugin)
 	{
+		super(player);
+		
 		this.player = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
@@ -75,7 +80,7 @@ public class ArenaPlayer
 	 */
 	public void decideHat()
 	{
-		if (mclass != null && !mclass.usesHelmet())
+		if (mclass != null && ! mclass.usesHelmet())
 		{
 			player.getInventory().setHelmet(null);
 			return;
@@ -96,6 +101,7 @@ public class ArenaPlayer
 	
 	/**
 	 * Gives the player an item
+	 * 
 	 * @param slot - Slot to put the item in
 	 * @param stack - {@link ItemStack} to give the player
 	 */
@@ -106,6 +112,7 @@ public class ArenaPlayer
 	
 	/**
 	 * Gives the player armor
+	 * 
 	 * @param slot - Armor slot to put. Must be between 0 and 3
 	 * @param stack - {@link ItemStack} to give as armor
 	 */
@@ -170,9 +177,10 @@ public class ArenaPlayer
 	 */
 	public void spawn()
 	{
-		if (getAmtkicked() > 10)
+		if (amtKicked > 10)
 		{
-			plugin.leaveArena(player);
+			leaveArena(LeaveReason.KICK);
+			return;
 		}
 			
 		clearInventory();
@@ -183,6 +191,7 @@ public class ArenaPlayer
 	
 	/**
 	 * Sets a player's class
+	 * 
 	 * @param ac - {@link ArenaClass} to set the player's class to
 	 * @param command - Whether or not it was changed via command
 	 */
@@ -225,10 +234,9 @@ public class ArenaPlayer
 			}
 			catch (Exception e)
 			{
-				sendMessage("&cAn exception occured while attempting to give Essentials kit items: {0}", e.getMessage());
+				sendMessage("&cCould not give Essentials kit: {0}", 
+						e instanceof ClassNotFoundException ? "outdated Essentials!" : e);
 			}
-			
-			return;
 		}
 		
 		for (int i = 0; i < mclass.getArmor().size(); i++)
@@ -261,7 +269,6 @@ public class ArenaPlayer
 		}
 	}
 
-	// TODO: Explanations for the rest of these
 	public int getKills()
 	{
 		return kills;
@@ -282,14 +289,14 @@ public class ArenaPlayer
 		this.deaths = deaths;
 	}
 
-	public int getKillstreak()
+	public int getKillStreak()
 	{
-		return killstreak;
+		return killStreak;
 	}
 
-	public void setKillstreak(int killstreak)
+	public void setKillStreak(int killStreak)
 	{
-		this.killstreak = killstreak;
+		this.killStreak = killStreak;
 	}
 
 	public int getGameXP()
@@ -312,19 +319,19 @@ public class ArenaPlayer
 		this.points = points;
 	}
 
-	public int getBaselevel()
+	public int getBaseLevel()
 	{
-		return baselevel;
+		return baseLevel;
 	}
 
-	public int getHealtimer()
+	public int getHealTimer()
 	{
-		return healtimer;
+		return healTimer;
 	}
 
-	public void setHealtimer(int healtimer)
+	public void setHealTimer(int healTimer)
 	{
-		this.healtimer = healtimer;
+		this.healTimer = healTimer;
 	}
 
 	public boolean isOut()
@@ -347,21 +354,11 @@ public class ArenaPlayer
 		this.canReward = canReward;
 	}
 
-	public String getName()
-	{
-		return name;
-	}
-	
 	public Location getSpawnBack() 
 	{
 		return spawnBack;
 	}
-	
-	public Player getPlayer()
-	{
-		return player;
-	}
-	
+
 	public int getTeam() 
 	{
 		return team;
@@ -372,14 +369,14 @@ public class ArenaPlayer
 		this.team = team;
 	}
 
-	public int getAmtkicked() 
+	public int getAmtKicked() 
 	{
-		return amtkicked;
+		return amtKicked;
 	}
 
-	public void setAmtkicked(int amtkicked) 
+	public void setAmtKicked(int amtKicked) 
 	{
-		this.amtkicked = amtkicked;
+		this.amtKicked = amtKicked;
 	}
 
 	public ArenaClass getArenaClass()
@@ -396,6 +393,12 @@ public class ArenaPlayer
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
+
+	@Override
+	public void sendMessage(String string)
+	{
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string));
+	}
 	
 	public void addXP(int xp)
 	{
@@ -409,7 +412,7 @@ public class ArenaPlayer
 	
 	public void setBaseLevel(int baseLevel)
 	{
-		this.baselevel = baseLevel;
+		this.baseLevel = baseLevel;
 	}
 	
 	/**
@@ -418,16 +421,17 @@ public class ArenaPlayer
 	 */
 	public double getKDR()
 	{
-		double k = (double) kills;
+		double k = kills;
 		if (deaths == 0)
 			return k;
 		
-		double d = (double) deaths;
+		double d = deaths;
 		return (k / d);
 	}
 	
 	private long deathTime;
 	
+	@Override
 	public boolean isDead()
 	{
 		return (System.currentTimeMillis() - deathTime)  < 60L;
@@ -436,7 +440,7 @@ public class ArenaPlayer
 	public void onDeath()
 	{
 		this.deathTime = System.currentTimeMillis();
-		this.killstreak = 0;
+		this.killStreak = 0;
 		this.deaths++;
 	}
 	
@@ -452,9 +456,47 @@ public class ArenaPlayer
 		if (o instanceof ArenaPlayer)
 		{
 			ArenaPlayer op = (ArenaPlayer)o;
-			return op.getName() == name;
+			return op.getName().equals(name);
 		}
 
 		return false;
+	}
+	
+	public void leaveArena(LeaveReason reason)
+	{
+		if (reason == LeaveReason.COMMAND)
+		{
+			arena.endPlayer(this, false);
+
+			sendMessage("&3You have left the arena!");
+			
+			arena.tellPlayers("&e{0} &3has left the arena!", getName());
+		}
+		
+		if (reason == LeaveReason.KICK)
+		{
+			arena.endPlayer(this, false);
+
+			sendMessage("&cYou have been kicked from the arena!");
+			
+			arena.tellPlayers("&e{0} &3has been kicked from the arena!", getName());
+		}
+		
+		if (reason == LeaveReason.QUIT)
+		{
+			arena.endPlayer(this, false);
+
+			arena.tellPlayers("&e{0} &3has left the arena!", getName());
+		}
+		
+		if (reason == LeaveReason.DEATHS)
+		{
+			arena.endPlayer(this, false);
+
+			sendMessage("&3You have been eliminated!");
+			
+			arena.tellPlayers("&e{0} &3has been eliminated!", getName());
+		}
+		
 	}
 }

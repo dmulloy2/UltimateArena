@@ -5,8 +5,8 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class CmdList extends UltimateArenaCommand
 {
@@ -29,7 +29,7 @@ public class CmdList extends UltimateArenaCommand
 		line.append("&3====[ &eUltimateArenas &3]====");
 		lines.add(line.toString());
 		
-		for (ArenaZone az : plugin.loadedArena)
+		for (ArenaZone az : plugin.getLoadedArenas())
 		{
 			line = new StringBuilder();
 			line.append("&3[&b" + az.getType().getName() + " &eArena&3]");
@@ -42,7 +42,7 @@ public class CmdList extends UltimateArenaCommand
 			else
 			{
 				boolean active = false;
-				for (Arena a : plugin.activeArena)
+				for (Arena a : plugin.getActiveArenas())
 				{
 					if (a.getName().equals(az.getArenaName()))
 					{

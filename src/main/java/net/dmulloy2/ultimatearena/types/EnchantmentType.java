@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.types;
 
 import java.util.Map;
 import java.util.Map.Entry;

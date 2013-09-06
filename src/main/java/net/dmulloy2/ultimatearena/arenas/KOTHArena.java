@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaFlag;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
-import net.dmulloy2.ultimatearena.arenas.objects.KothFlag;
+import net.dmulloy2.ultimatearena.flags.ArenaFlag;
+import net.dmulloy2.ultimatearena.flags.KothFlag;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaSpawn;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
@@ -48,33 +48,31 @@ public class KOTHArena extends Arena
 	@Override
 	public void doKillStreak(ArenaPlayer ap) 
 	{
-		Player pl = Util.matchPlayer(ap.getPlayer().getName());
-		if (pl != null) 
+		Player pl = ap.getPlayer();
+		
+		if (ap.getKillStreak() == 2) 
 		{
-			if (ap.getKillstreak() == 2) 
-			{
-				givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
-			}
-			if (ap.getKillstreak() == 4) 
-			{
-				givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e4 &3kills! Unlocked food!");
-			}
-			if (ap.getKillstreak() == 12) 
-			{
-				givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e12 &3kills! Unlocked food!");
-			}
+			givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
+		}
+		if (ap.getKillStreak() == 4) 
+		{
+			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e4 &3kills! Unlocked food!");
+		}
+		if (ap.getKillStreak() == 12) 
+		{
+			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e12 &3kills! Unlocked food!");
 		}
 	}
 	
 	@Override
-	public void reward(ArenaPlayer p, Player pl, boolean half) 
+	public void reward(ArenaPlayer ap, boolean half) 
 	{
-		if (p.getPoints() >= MAXPOWER) 
+		if (ap.getPoints() >= MAXPOWER) 
 		{ 
 			// If you scored at least 60 points
-			super.reward(p, pl, half);
+			super.reward(ap, half);
 		}
 	}
 	

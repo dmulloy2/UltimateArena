@@ -9,23 +9,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaConfig;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaFlag;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaSpawn;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
-import net.dmulloy2.ultimatearena.arenas.objects.PotionType;
 import net.dmulloy2.ultimatearena.events.UltimateArenaDeathEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaLeaveEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaSpawnEvent;
+import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaConfig;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaSpawn;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.ultimatearena.types.PotionType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
-import net.ess3.api.IEssentials;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameMode;
@@ -37,17 +36,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 /**
  * Base Data Container for an arena.
  * This can be extended for specific arena types.
+ * 
  * @author dmulloy2
  */
 
@@ -107,7 +107,7 @@ public abstract class Arena
 		this.name = az.getArenaName();
 		this.world = az.getWorld();
 		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
-		this.plugin.arenasPlayed++;
+		this.plugin.setArenasPlayed(plugin.getArenasPlayed() + 1);
 		
 		if (maxDeaths < 1)
 		{
@@ -122,7 +122,7 @@ public abstract class Arena
 	/**
 	 * Reloads the arena's configuration
 	 */
-	public void reloadConfig() 
+	public final void reloadConfig() 
 	{
 		if (config != null) 
 		{
@@ -145,7 +145,7 @@ public abstract class Arena
 	 * Should not be overriden.
 	 * @param player - {@link Player} to add to an arena
 	 */
-	public void addPlayer(Player player)
+	public final void addPlayer(Player player)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Joining arena &e{0}&3... Please wait!", name));
 		
@@ -156,7 +156,7 @@ public abstract class Arena
 		this.updatedTeams = true;
 		
 		// Teleport the player to the lobby spawn
-		spawn(player.getName(), false);
+		spawn(player, false);
 		
 		// Inventory
 		pl.saveInventory();
@@ -182,13 +182,11 @@ public abstract class Arena
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("Essentials"))
 		{
-			Plugin essPlugin = pm.getPlugin("Essentials");
-			IEssentials ess = (IEssentials) essPlugin;
+			IEssentials ess = Util.getEssentials();
 			User user = ess.getUser(player);
 			
 			// Disable GodMode in the arena
-			if (user.isGodModeEnabled())
-				user.setGodModeEnabled(false);
+			user.setGodModeEnabled(false);
 		}
 		
 		// Clear potion effects
@@ -220,7 +218,7 @@ public abstract class Arena
 	/**
 	 * Announces the arena's existance and reminds players to join.
 	 */
-	public void announce() 
+	public final void announce() 
 	{
 		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
@@ -310,21 +308,15 @@ public abstract class Arena
 	 * @param p - Player instance
 	 * @return The player's ArenaPlayer instance
 	 */
-	public ArenaPlayer getArenaPlayer(Player p) 
+	public final ArenaPlayer getArenaPlayer(Player p) 
 	{
-		if (p != null) 
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
-			for (ArenaPlayer ap : arenaPlayers)
+			ArenaPlayer ap = arenaPlayers.get(i);
+			if (checkValid(ap))
 			{
-				if (!ap.isOut())
-				{
-					Player player = Util.matchPlayer(ap.getPlayer().getName());
-					if (player != null && player.isOnline())
-					{
-						if (player.getName().equals(p.getName()))
-							return ap;
-					}
-				}
+				if (ap.getName().equals(p.getName()))
+					return ap;
 			}
 		}
 		
@@ -336,13 +328,13 @@ public abstract class Arena
 	 */
 	public void spawnAll() 
 	{
-		plugin.outConsole("Spawning players for Arena: {0}", getArenaZone().getArenaName());
+		plugin.debug("Spawning players for Arena: {0}", getArenaZone().getArenaName());
 		
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
-				spawn(ap.getPlayer().getName(), false);
+				spawn(ap.getPlayer(), false);
 		}
 	}
 	
@@ -374,48 +366,43 @@ public abstract class Arena
 	/**
 	 * Spawns a player in an {@link Arena}.
 	 * This should not be overriden.
+	 * 
 	 * @param name - Player to spawn
 	 * @param alreadyspawned - Have they already been spawned?
 	 */
-	public void spawn(String name, boolean alreadyspawned)
+	public final void spawn(Player player, boolean alreadySpawned)
 	{
-		plugin.debug("Attempting to spawn player: {0}. Already Spawned: {1}", name, alreadyspawned);
+		plugin.debug("Attempting to spawn player: {0}", player.getName());
 		
 		if (! stopped)
 		{
-			Player p = Util.matchPlayer(name);
-			if (p != null) 
+			plugin.debug("Arena is not stopped");
+
+			ArenaPlayer ap = getArenaPlayer(player);
+			if (checkValid(ap))
 			{
-				for (int i = 0; i < arenaPlayers.size(); i++)
+				plugin.debug("ArenaPlayer is valid");
+				
+				if (ap.getDeaths() < getMaxDeaths()) 
 				{
-					ArenaPlayer ap = arenaPlayers.get(i);
-					if (ap.getName().equals(name))
+					plugin.debug("Spawning player: {0}", name);
+						
+					Location loc = getSpawn(ap);
+					if (loc != null) 
 					{
-						if (checkValid(ap))
-						{
-							if (ap.getDeaths() < getMaxDeaths()) 
-							{
-								plugin.debug("Spawning player: {0}", name);
-								
-								Location loc = getSpawn(ap);
-								if (loc != null) 
-								{
-									teleport(p, loc);
-									
-									// Call spawn event
-									ArenaSpawn spawn = new ArenaSpawn(loc);
-									UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
-									plugin.getServer().getPluginManager().callEvent(spawnEvent);
-								}
-								
-								ap.spawn();
-								
-								if (! alreadyspawned)
-								{
-									onSpawn(ap);
-								}
-							}
-						}
+						teleport(player, loc);
+							
+						// Call spawn event
+						ArenaSpawn spawn = new ArenaSpawn(loc);
+						UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
+						plugin.getServer().getPluginManager().callEvent(spawnEvent);
+					}
+						
+					ap.spawn();
+						
+					if (! alreadySpawned)
+					{
+						onSpawn(ap);
 					}
 				}
 			}
@@ -424,17 +411,19 @@ public abstract class Arena
 
 	/**
 	 * Called when a player is spawned.
+	 * 
 	 * @param apl {@link ArenaPlayer} who was spawned
 	 */
 	public void onSpawn(ArenaPlayer apl) {}
 	
 	/**
 	 * Called when a player dies.
+	 * 
 	 * @param pl - {@link ArenaPlayer} who died
 	 */
 	public void onPlayerDeath(ArenaPlayer pl) 
 	{
-		pl.setAmtkicked(0);
+		pl.setAmtKicked(0);
 		
 		// Call ArenaDeathEvent
 		UltimateArenaDeathEvent deathEvent = new UltimateArenaDeathEvent(pl, this);
@@ -444,26 +433,27 @@ public abstract class Arena
 	/**
 	 * Default rewarding system.
 	 * May be overriden in some cases.
+	 * 
 	 * @param ap - {@link ArenaPlayer} to reward
-	 * @param player - {@link Player} to reward
 	 * @param half - Whether or not to reward half
 	 */
-	public void reward(ArenaPlayer ap, Player player, boolean half)
+	public void reward(ArenaPlayer ap, boolean half)
 	{
-		plugin.debug("Rewarding player: {0}. Half: {1}", player.getName(), half);
+		plugin.debug("Rewarding player: {0}. Half: {1}", ap.getName(), half);
 		
 		if (config != null) 
 		{
-			config.giveRewards(player, half);
+			config.giveRewards(ap.getPlayer(), half);
 		}
 		else
 		{
-			InventoryHelper.addItem(player, new ItemStack(Material.GOLD_INGOT));
+			InventoryHelper.addItem(ap.getPlayer(), new ItemStack(Material.GOLD_INGOT));
 		}
 	}
 	
 	/**
 	 * Rewards an entire team.
+	 * 
 	 * @param team - Team to reward
 	 * @param string - Reward message
 	 * @param half - Whether or not to reward half
@@ -479,11 +469,7 @@ public abstract class Arena
 			{
 				if (ap.getTeam() == team || team == -1)
 				{
-					Player player = ap.getPlayer();
-					if (player != null)
-					{
-						reward(ap, ap.getPlayer(), half);
-					}
+					reward(ap, half);
 				}
 			}
 		}
@@ -491,6 +477,7 @@ public abstract class Arena
 	
 	/**
 	 * Sets the winning team.
+	 * 
 	 * @param team - Winning team
 	 */
 	public void setWinningTeam(int team)
@@ -514,6 +501,7 @@ public abstract class Arena
 	
 	/**
 	 * Checks if a player has enough points to win.
+	 * 
 	 * @param max - Max points for an arena
 	 */
 	public void checkPlayerPoints(int max)
@@ -529,7 +517,7 @@ public abstract class Arena
 					
 					stop();
 					
-					reward(ap, ap.getPlayer(), false);
+					reward(ap, false);
 				}
 			}
 		}
@@ -537,9 +525,10 @@ public abstract class Arena
 	
 	/**
 	 * Stops the arena if empty.
+	 * 
 	 * @return Arena is empty
 	 */
-	public boolean checkEmpty() 
+	public final boolean checkEmpty() 
 	{
 		boolean ret = isEmpty();
 		if (ret) stop();
@@ -549,40 +538,39 @@ public abstract class Arena
 	
 	/**
 	 * Checks if the arena is empty.
+	 * 
 	 * @return Arena is empty
 	 */
-	public boolean isEmpty()
+	public final boolean isEmpty()
 	{
 		return (isInGame() && getActivePlayers() <= 1);
 	}
 	
 	/**
 	 * Tells all players in the arena a message.
+	 * 
 	 * @param string - Base message
 	 * @param objects - Objects to format in
 	 */
-	public void tellPlayers(String string, Object...objects) 
+	public final void tellPlayers(String string, Object...objects) 
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap)) 
 			{
-				Player player = Util.matchPlayer(ap.getPlayer().getName());
-				if (player != null && player.isOnline())
-				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
-				}
+				ap.sendMessage(string, objects);
 			}
 		}
 	}
 	
 	/**
 	 * Kills all players within a certain radius of a {@link Location}
+	 * 
 	 * @param loc - Center {@link Location}
 	 * @param rad - Radius to kill within
 	 */
-	public void killAllNear(Location loc, int rad)
+	public final void killAllNear(Location loc, int rad)
 	{
 		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
 		
@@ -591,19 +579,16 @@ public abstract class Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap)) 
 			{
-				Player player = Util.matchPlayer(ap.getPlayer().getName());
-				if (player != null && player.isOnline())
-				{
-					Location ploc = player.getLocation();
-					if (Util.pointDistance(loc, ploc) < rad)
-						player.setHealth(0.0D);
-				}
+				Location ploc = ap.getLocation();
+				if (Util.pointDistance(loc, ploc) < rad)
+					ap.setHealth(0.0D);
 			}
 		}
 	}
 
 	/**
 	 * Gets a random spawn for an {@link ArenaPlayer}.
+	 * 
 	 * @param ap - {@link ArenaPlayer} to get spawn for
 	 * @return Spawn for the {@link ArenaPlayer}
 	 */
@@ -629,13 +614,14 @@ public abstract class Arena
 	
 	/**
 	 * Gives a {@link Player} an item
+	 * 
 	 * @param pl - {@link Player} to give items to
 	 * @param id - ItemId of the item to give
 	 * @param dat - Data value of the item
 	 * @param amt - Amount of the item to give
 	 * @param message - Message to send the {@link Player}
 	 */
-	public void giveItem(Player pl, int id, byte dat, int amt, String message)
+	public final void giveItem(Player pl, int id, byte dat, int amt, String message)
 	{
 		if (! message.isEmpty())
 		{
@@ -655,6 +641,7 @@ public abstract class Arena
 	
 	/**
 	 * Gives a player a {@link Potion}
+	 * 
 	 * @param pl - {@link Player} to give the {@link Potion}
 	 * @param s - Name of the {@link Potion} to give. Must be a valid {@link PotionType}
 	 * @param amt - Amount of the {@link Potion} to give
@@ -684,57 +671,57 @@ public abstract class Arena
 	/**
 	 * Basic killstreak system.
 	 * Can be overriden.
+	 * 
 	 * @param ap - {@link ArenaPlayer} to do killstreak for
 	 */
 	public void doKillStreak(ArenaPlayer ap) 
 	{
-		plugin.debug("Doing KillStreak for player: {0}", ap.getName());
+		/** Hunger Arena check **/
+		if (ap.getArena().getType().equals("Hunger"))
+			return;
 		
-		Player pl = Util.matchPlayer(ap.getPlayer().getName());
-		if (pl != null)
+		Player pl = ap.getPlayer();
+				
+		if (ap.getKillStreak() == 2)
+			givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
+				
+		if (ap.getKillStreak() == 4)
 		{
-			/**Hunger Arena check**/
-			if (plugin.getArena(pl).getType().equals("Hunger"))
-				return;
-				
-			if (ap.getKillstreak() == 2)
-				givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
-				
-			if (ap.getKillstreak() == 4)
+			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e4 &3kills! Unlocked Food!");
+		}
+		
+		if (ap.getKillStreak() == 5) 
+		{
+			if (! type.getName().equalsIgnoreCase("cq"))
 			{
-				givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "4 &3kills! Unlocked Food!");
+				ap.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
+				for (int i = 0; i < 4; i++)
+					ap.getLocation().getWorld().spawnEntity(ap.getLocation(), EntityType.ZOMBIE);
 			}
-			if (ap.getKillstreak() == 5) 
+		}
+		
+		if (ap.getKillStreak() == 8) 
+		{
+			ap.sendMessage(plugin.getPrefix() + "&e8 &3kills! Unlocked attackdogs!");
+			for (int i = 0; i < 2; i++)
 			{
-				if (!(getType().getName().equalsIgnoreCase("cq"))) 
-				{
-					pl.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
-					for (int i = 0; i < 4; i++)
-						pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.ZOMBIE);
-				}
+				Wolf wolf = (Wolf) ap.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
+				wolf.setOwner(ap.getPlayer());
 			}
-			if (ap.getKillstreak() == 8) 
-			{
-				pl.sendMessage(plugin.getPrefix() + "&e8 &3kills! Unlocked attackdogs!");
-				for (int i = 0; i < 2; i++)
-				{
-					Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
-					wolf.setOwner(pl);
-				}
-			}
-			if (ap.getKillstreak() == 12)
-			{
-				givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-				giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e12 &3kills! Unlocked Food!");
-			}
+		}
+			
+		if (ap.getKillStreak() == 12)
+		{
+			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e12 &3kills! Unlocked Food!");
 		}
 	}
 	
 	/**
 	 * Disables this arena
 	 */
-	public void onDisable() 
+	public final void onDisable() 
 	{
 		tellPlayers("&cThis arena has been disabled!");
 		
@@ -751,7 +738,7 @@ public abstract class Arena
 	/**
 	 * Ends the arena
 	 */
-	public void stop()
+	public final void stop()
 	{
 		if (stopped) return; // No need to stop multiple times
 		
@@ -771,13 +758,9 @@ public abstract class Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
 			{
-				Player player = ap.getPlayer();
-				if (player != null)
+				if (plugin.isInArena(ap.getPlayer())) 
 				{
-					if (plugin.isInArena(player)) 
-					{
-						endPlayer(ap, player, false);
-					}
+					endPlayer(ap, false);
 				}
 			}
 		}
@@ -799,7 +782,7 @@ public abstract class Arena
 	 * @param p - Player to teleport
 	 * @param loc - Raw location
 	 */
-	public void teleport(Player p, Location loc) 
+	public final void teleport(Player p, Location loc) 
 	{
 		p.teleport(loc.clone().add(0.5D, 1.0D, 0.5D));
 	}
@@ -814,7 +797,7 @@ public abstract class Arena
 	 * @param ap - {@link ArenaPlayer} to end
 	 * @param dead - Whether or not a player died
 	 */
-	public void endPlayer(ArenaPlayer ap, Player player, boolean dead) 
+	public void endPlayer(ArenaPlayer ap, boolean dead) 
 	{
 		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
 		
@@ -827,9 +810,9 @@ public abstract class Arena
 		ap.clearInventory();
 		ap.returnInventory();
 
-		plugin.removePotions(player);
+		plugin.removePotions(ap.getPlayer());
 			
-		teleport(player, ap.getSpawnBack());
+		teleport(ap.getPlayer(), ap.getSpawnBack());
 
 		// Call Arena leave event
 		UltimateArenaLeaveEvent leaveEvent = new UltimateArenaLeaveEvent(ap, this);
@@ -870,7 +853,7 @@ public abstract class Arena
 	/**
 	 * Checks timers
 	 */
-	public void checkTimers() 
+	public final void checkTimers() 
 	{
 		if (stopped)
 		{
@@ -917,7 +900,7 @@ public abstract class Arena
 	 * Starts the arena.
 	 * Should not be overriden.
 	 */
-	public void start()
+	public final void start()
 	{
 		if (! start) 
 		{
@@ -940,8 +923,12 @@ public abstract class Arena
 	
 	/**
 	 * Arena Updater
+	 * 
+	 * @Deprecated - Should be replaced with more active updaters
 	 */
-	public void update()
+	
+	@Deprecated
+	public final void update()
 	{
 		this.team1size = 0;
 		this.team2size = 0;
@@ -954,7 +941,7 @@ public abstract class Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
 			{
-				Player player = Util.matchPlayer(ap.getPlayer().getName());
+				Player player = Util.matchPlayer(ap.getName());
 				if (player != null)
 				{
 					if (ap.getTeam() == 1)
@@ -972,111 +959,104 @@ public abstract class Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
 			{
-				Player player = ap.getPlayer();
-				if (player != null)
+				// Check players in the Arena
+				if (isInLobby()) 
 				{
-					// Check players in the Arena
-					if (isInLobby()) 
-					{
-						player.setFireTicks(0);
-						player.setFoodLevel(20);
-						ap.decideHat();
-					}
-					
-					ap.setHealtimer(ap.getHealtimer() - 1);
+					ap.setFireTicks(0);
+					ap.setFoodLevel(20);
+					ap.decideHat();
+				}
+				
+				ap.setHealTimer(ap.getHealTimer() - 1);
 						
-					ArenaClass ac = ap.getArenaClass();
-					if (ac != null)
+				ArenaClass ac = ap.getArenaClass();
+				if (ac != null)
+				{
+					if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0) 
 					{
-						if (ac.getName().equalsIgnoreCase("healer") && ap.getHealtimer() <= 0) 
+						if (ap.getHealth() + 1 <= 20)
 						{
-							if (ap.getPlayer().getHealth() + 1 <= 20)
-							{
-								if (ap.getPlayer().getHealth() < 0) 
-									ap.getPlayer().setHealth(1);
-								ap.getPlayer().setHealth(ap.getPlayer().getHealth()+1);
-								ap.setHealtimer(2);
-							}
+							if (ap.getHealth() < 0) 
+								ap.setHealth(1);
+							ap.setHealth(ap.getHealth()+1);
+							ap.setHealTimer(2);
 						}
+					}
 								
-						// Class based potion effects
-						if (ac.hasPotionEffects())
+					// Class based potion effects
+					if (ac.hasPotionEffects())
+					{
+						if (ac.getPotionEffects().size() > 0)
 						{
-							if (ac.getPotionEffects().size() > 0)
+							for (PotionEffect effect : ac.getPotionEffects())
 							{
-								for (PotionEffect effect : ac.getPotionEffects())
-								{
-									if (!ap.getPlayer().hasPotionEffect(effect.getType()))
-										player.addPotionEffect(effect);
-								}
+								if (! ap.hasPotionEffect(effect.getType()))
+									ap.addPotionEffect(effect);
 							}
 						}
 					}
+				}
 							
-					// Make sure they are still in the Arena
-					if (! plugin.isInArena(player.getLocation()))
-					{
-						spawn(ap.getPlayer().getName(), false);
-						ap.setAmtkicked(ap.getAmtkicked() + 1);
-					}
+				// Make sure they are still in the Arena
+				if (! plugin.isInArena(ap.getLocation()))
+				{
+					spawn(ap.getPlayer(), false);
+					ap.setAmtKicked(ap.getAmtKicked() + 1);
+				}
 					
-					// Timer Stuff
-					if (!isPauseStartTimer()) 
+				// Timer Stuff
+				if (! isPauseStartTimer()) 
+				{
+					if (startTimer == 120) 
 					{
-						if (startTimer == 120) 
-						{
-							ap.sendMessage("&e120 &3seconds until start!");
-						}
-						if (startTimer == 60)
-						{
-							ap.sendMessage("&e60 &3seconds until start!");
-						}
-						if (startTimer == 45)
-						{
-							ap.sendMessage("&e45 &3seconds until start!");
-						}
-						if (startTimer == 30) 
-						{
-							ap.sendMessage("&e30 &3seconds until start!");
-						}
-						if (startTimer == 15)
-						{
-							ap.sendMessage("&e15 &3seconds until start!");
-						}
-						if (startTimer > 0 && startTimer < 11) 
-						{
-							ap.sendMessage("&e{0} &3second(s) until start!", startTimer);
-						}
+						ap.sendMessage("&e120 &3seconds until start!");
 					}
+					if (startTimer == 60)
+					{
+						ap.sendMessage("&e60 &3seconds until start!");
+					}
+					if (startTimer == 45)
+					{
+						ap.sendMessage("&e45 &3seconds until start!");
+					}
+					if (startTimer == 30) 
+					{
+						ap.sendMessage("&e30 &3seconds until start!");
+					}
+					if (startTimer == 15)
+					{
+						ap.sendMessage("&e15 &3seconds until start!");
+					}
+					if (startTimer > 0 && startTimer < 11) 
+					{
+						ap.sendMessage("&e{0} &3second(s) until start!", startTimer);
+					}
+				}
 							
-					if (gameTimer > 0 && gameTimer < 21)
-					{
-						ap.sendMessage("&e{0} &3second(s) until end!", gameTimer);
-					}
-					if (gameTimer == 60 && maxGameTime > 60)
-					{
-						ap.sendMessage("&e{0} &3minute(s) until end!", gameTimer / 60);
-					}
-					if (gameTimer == maxGameTime/2) 
-					{
-						ap.sendMessage("&e{0} &3second(s) until end!", maxGameTime / 2);
-					}
+				if (gameTimer > 0 && gameTimer < 21)
+				{
+					ap.sendMessage("&e{0} &3second(s) until end!", gameTimer);
+				}
+				if (gameTimer == 60 && maxGameTime > 60)
+				{
+					ap.sendMessage("&e{0} &3minute(s) until end!", gameTimer / 60);
+				}
+				if (gameTimer == maxGameTime/2) 
+				{
+					ap.sendMessage("&e{0} &3second(s) until end!", maxGameTime / 2);
+				}
 					
-					// XP Bar
-					decideXPBar(ap);
-							
-					// End dead players
-					if (! stopped) 
+				// XP Bar
+				decideXPBar(ap);
+				
+				// End dead players
+				if (! stopped) 
+				{
+					if (ap.getDeaths() >= getMaxDeaths()) 
 					{
-						if (ap.getDeaths() >= getMaxDeaths()) 
+						if (ap.getHealth() > 0) 
 						{
-							if (player != null) 
-							{
-								if (player.getHealth() > 0) 
-								{
-									endPlayer(ap, player, true);
-								}
-							}
+							endPlayer(ap, true);
 						}
 					}
 				}
@@ -1090,9 +1070,10 @@ public abstract class Arena
 	
 	/**
 	 * Decides the timer xp bar for an {@link ArenaPlayer}
+	 * 
 	 * @param ap - {@link ArenaPlayer} to decide xp bar for
 	 */
-	public void decideXPBar(ArenaPlayer ap)
+	public final void decideXPBar(ArenaPlayer ap)
 	{
 		if (checkValid(ap))
 		{
@@ -1100,12 +1081,12 @@ public abstract class Arena
 			{
 				if (isInGame())
 				{
-					ap.getPlayer().setLevel(gameTimer);
+					ap.setLevel(gameTimer);
 				}
 					
 				if (isInLobby())
 				{
-					ap.getPlayer().setLevel(startTimer);
+					ap.setLevel(startTimer);
 				}
 			}
 		}
@@ -1113,30 +1094,30 @@ public abstract class Arena
 	
 	/**
 	 * Returns a player's xp when they leave the game
+	 * 
 	 * @param ap - {@link ArenaPlayer} to return xp
 	 */
-	public void returnXP(ArenaPlayer ap)
+	public final void returnXP(ArenaPlayer ap)
 	{
 		if (ap != null)
 		{
-			Player player = ap.getPlayer();
-			
-			plugin.debug("Returning XP for player: {0}. Levels: {1}", player.getName(), ap.getBaselevel());
+			plugin.debug("Returning XP for player: {0}. Levels: {1}", ap.getName(), ap.getBaseLevel());
 
 			// Clear XP
-			player.setExp(0);
-			player.setLevel(0);
+			ap.setExp(0);
+			ap.setLevel(0);
 		
 			// Give Base XP
-			player.setLevel(ap.getBaselevel());
+			ap.setLevel(ap.getBaseLevel());
 		}
 	}
 
 	/**
 	 * Forces the start of an arena
+	 * 
 	 * @param player - {@link Player} forcing the start of the arena
 	 */
-	public void forceStart(Player player)
+	public final void forceStart(Player player)
 	{
 		if (isInGame())
 		{
@@ -1153,7 +1134,6 @@ public abstract class Arena
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
-	// TODO: Explanations for the rest of the methods
 	public String getName()
 	{
 		return name;
@@ -1437,12 +1417,12 @@ public abstract class Arena
 		}
 	}
 	
-	public boolean checkValid(ArenaPlayer ap)
+	public final boolean checkValid(ArenaPlayer ap)
 	{
 		return ap != null && ! ap.isOut();
 	}
 	
-	public List<ArenaPlayer> getValidPlayers()
+	public final List<ArenaPlayer> getValidPlayers()
 	{
 		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
 		
@@ -1456,9 +1436,9 @@ public abstract class Arena
 		return validPlayers;
 	}
 	
-	public class FinalizeTask extends BukkitRunnable
+	public final class FinalizeTask extends BukkitRunnable
 	{
-		private Arena arena;
+		private final Arena arena;
 		public FinalizeTask(Arena arena)
 		{
 			this.arena = arena;
@@ -1467,7 +1447,7 @@ public abstract class Arena
 		@Override
 		public void run()
 		{
-			plugin.activeArena.remove(arena);
+			plugin.getActiveArenas().remove(arena);
 
 			plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
 			

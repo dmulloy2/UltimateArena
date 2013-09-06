@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.types.LeaveReason;
 
 public class CmdLeave extends UltimateArenaCommand
 {	
@@ -17,6 +18,12 @@ public class CmdLeave extends UltimateArenaCommand
 	@Override
 	public void perform() 
 	{
-		plugin.leaveArena(player);
+		if (! plugin.isInArena(player))
+		{
+			err("You are not in an arena!");
+			return;
+		}
+		
+		plugin.getArenaPlayer(player).leaveArena(LeaveReason.COMMAND);
 	}
 }

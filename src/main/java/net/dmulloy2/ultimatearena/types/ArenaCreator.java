@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.types;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +118,7 @@ public class ArenaCreator
 			sendMessage("&cCould not create Arena: The lobby and arena must be in the same world!");
 			sendMessage("&cEach arena should have its own lobby, one central lobby is not supported!");
 			
-			plugin.makingArena.remove(this);
+			plugin.getMakingArena().remove(this);
 			return;
 		}
 		
@@ -133,7 +133,7 @@ public class ArenaCreator
 			sendMessage("&cCould not create arena! Check Console for errors!");
 		}
 		
-		plugin.makingArena.remove(this);
+		plugin.getMakingArena().remove(this);
 	}
 
 	public void setDone(Player player)

@@ -1,8 +1,8 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.entity.Player;
@@ -71,7 +71,7 @@ public class INFECTArena extends PVPArena
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 1));
 			
-			spawn(apl.getPlayer().getName(), true);
+			spawn(apl.getPlayer(), true);
 			apl.clearInventory();
 			apl.decideHat();
 		}

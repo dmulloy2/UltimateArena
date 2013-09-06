@@ -5,10 +5,11 @@ import net.dmulloy2.ultimatearena.Field3D;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
 import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -32,7 +34,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 public class PlayerListener implements Listener 
 {
 	private final UltimateArena plugin;
-	public PlayerListener(final UltimateArena plugin)
+	public PlayerListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -40,19 +42,40 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		Player pl = event.getPlayer();
-		if (pl != null)
+		onPlayerDisconnect(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerKick(PlayerKickEvent event)
+	{
+		if (! event.isCancelled())
 		{
-			plugin.onQuit(pl);
+			onPlayerDisconnect(event.getPlayer());
+		}
+	}
+	
+	public void onPlayerDisconnect(Player player)
+	{
+		if (plugin.isPlayerCreatingArena(player)) 
+		{
+			plugin.debug("Player {0} left the game, stopping the creation of an arena", player.getName());
+			plugin.getMakingArena().remove(plugin.getArenaCreator(player));
+		}
+		
+		if (plugin.isInArena(player))
+		{
+			plugin.debug("Player {0} leaving arena from quit", player.getName());
 			
-			for (int i = 0; i < plugin.waiting.size(); i++)
+			plugin.getArenaPlayer(player).leaveArena(LeaveReason.QUIT);			
+		}
+		
+		for (int i = 0; i < plugin.getWaiting().size(); i++)
+		{
+			ArenaJoinTask task = plugin.getWaiting().get(i);
+			if (task.getPlayer().getName().equals(player.getName()))
 			{
-				ArenaJoinTask task = plugin.waiting.get(i);
-				if (task.getPlayer().getName().equals(pl.getName()))
-				{
-					task.cancel();
-					plugin.waiting.remove(task);
-				}
+				task.cancel();
+				plugin.getWaiting().remove(task);
 			}
 		}
 	}
@@ -180,9 +203,9 @@ public class PlayerListener implements Listener
 							if (s.getLine(2).equalsIgnoreCase("Auto assign"))
 							{
 								boolean found = false;
-								if (plugin.activeArena.size() > 0)
+								if (plugin.getActiveArenas().size() > 0)
 								{
-									for (Arena a : plugin.activeArena)
+									for (Arena a : plugin.getActiveArenas())
 									{
 										if (a.isInLobby())
 										{
@@ -193,9 +216,9 @@ public class PlayerListener implements Listener
 								}
 								if (! found)
 								{
-									if (plugin.loadedArena.size() > 0)
+									if (plugin.getLoadedArenas().size() > 0)
 									{
-										ArenaZone az = plugin.loadedArena.get(0);
+										ArenaZone az = plugin.getLoadedArenas().get(0);
 										if (az != null)
 										{
 											plugin.join(player, az.getArenaName());
@@ -208,7 +231,7 @@ public class PlayerListener implements Listener
 							{
 								String name = s.getLine(2);
 								boolean found = false;
-								for (Arena a : plugin.activeArena)
+								for (Arena a : plugin.getActiveArenas())
 								{
 									if (a.getName().equalsIgnoreCase(name))
 									{
@@ -221,7 +244,7 @@ public class PlayerListener implements Listener
 								}
 								if (! found)
 								{
-									for (ArenaZone az : plugin.loadedArena)
+									for (ArenaZone az : plugin.getLoadedArenas())
 									{
 										if (az != null && az.getArenaName().equalsIgnoreCase(name))
 										{
@@ -249,21 +272,18 @@ public class PlayerListener implements Listener
 		Player pl = event.getPlayer();
 		if (plugin.isInArena(pl)) 
 		{
+			Arena a = plugin.getArena(pl);
 			ArenaPlayer apl = plugin.getArenaPlayer(pl);
-			if (apl != null && !apl.isOut()) 
+			if (a.checkValid(apl)) 
 			{
-				Arena are = plugin.getArena(pl);
-				if (are != null)
+				if (apl.getDeaths() < a.getMaxDeaths()) 
 				{
-					if (apl.getDeaths() < are.getMaxDeaths()) 
+					if (a.isInGame() && ! a.isStopped()) 
 					{
-						if (are.isInGame() && ! are.isStopped()) 
+						if (a.getSpawn(apl) != null)
 						{
-							if (are.getSpawn(apl) != null)
-							{
-								event.setRespawnLocation(are.getSpawn(apl));
-								are.spawn(pl.getName(), false);
-							}
+							event.setRespawnLocation(a.getSpawn(apl));
+							a.spawn(pl, false);
 						}
 					}
 				}
@@ -275,13 +295,13 @@ public class PlayerListener implements Listener
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player p = event.getPlayer();
-		for (int i = 0; i < plugin.waiting.size(); i++)
+		for (int i = 0; i < plugin.getWaiting().size(); i++)
 		{
-			ArenaJoinTask task = plugin.waiting.get(i);
+			ArenaJoinTask task = plugin.getWaiting().get(i);
 			if (task.getPlayer().getName().equals(p.getName()))
 			{
 				task.cancel();
-				plugin.waiting.remove(task);
+				plugin.getWaiting().remove(task);
 				
 				p.sendMessage(plugin.getPrefix() + 
 						FormatUtil.format("&cCancelled!"));
@@ -321,7 +341,9 @@ public class PlayerListener implements Listener
 				String cmd = event.getMessage().toLowerCase();
 			
 				String[] check = cmd.split(" ");
-				if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.wcmd.isAllowed(check))
+				if (! cmd.contains("/ua") 
+						&& plugin.isInArena(player) 
+						&& ! plugin.getWhiteListedCommands().isAllowed(check))
 				{
 					player.sendMessage(plugin.getPrefix() + 
 							FormatUtil.format("&3You cannot use non-ua commands in an arena!"));

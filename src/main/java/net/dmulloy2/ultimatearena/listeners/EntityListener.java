@@ -5,9 +5,9 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaClass;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
 import net.dmulloy2.ultimatearena.events.UltimateArenaKillEvent;
+import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.Material;
@@ -270,7 +270,7 @@ public class EntityListener implements Listener
 							lines.add(FormatUtil.format("&3----------------------------"));
 							lines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
 							lines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
-							lines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillstreak()));
+							lines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
 							lines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
 							lines.add(FormatUtil.format("&3----------------------------"));
 							
@@ -289,7 +289,7 @@ public class EntityListener implements Listener
 							deadlines.add(FormatUtil.format("&3----------------------------"));
 							deadlines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
-							deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillstreak()));
+							deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
 							deadlines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
 							deadlines.add(FormatUtil.format("&3----------------------------"));
 							
@@ -303,7 +303,7 @@ public class EntityListener implements Listener
 							if (kp != null && !kp.isOut())
 							{
 								kp.setKills(kp.getKills() + 1);
-								kp.setKillstreak(kp.getKillstreak() + 1);
+								kp.setKillStreak(kp.getKillStreak() + 1);
 								kp.getArena().doKillStreak(kp);
 								kp.addXP(100);
 								
@@ -311,7 +311,7 @@ public class EntityListener implements Listener
 								killerlines.add(FormatUtil.format("&3----------------------------"));
 								killerlines.add(FormatUtil.format("&3Kills: &e{0}", kp.getKills()));
 								killerlines.add(FormatUtil.format("&3Deaths: &e{0}", kp.getDeaths()));
-								killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillstreak()));
+								killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillStreak()));
 								killerlines.add(FormatUtil.format("&3GameXP: &e{0}", kp.getGameXP()));
 								killerlines.add(FormatUtil.format("&3----------------------------"));
 								
@@ -339,7 +339,7 @@ public class EntityListener implements Listener
 							deadlines.add(FormatUtil.format("&3----------------------------"));
 							deadlines.add(FormatUtil.format("&cKills: &e{0}", dp.getKills()));
 							deadlines.add(FormatUtil.format("&cDeaths: &e{0}", dp.getDeaths()));
-							deadlines.add(FormatUtil.format("&cStreak: &e{0}", dp.getKillstreak()));
+							deadlines.add(FormatUtil.format("&cStreak: &e{0}", dp.getKillStreak()));
 							deadlines.add(FormatUtil.format("&cGameXP: &e{0}", dp.getGameXP()));
 							deadlines.add(FormatUtil.format("&3----------------------------"));
 							
@@ -362,7 +362,7 @@ public class EntityListener implements Listener
 								deadlines.add(FormatUtil.format("&3----------------------------"));
 								deadlines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
 								deadlines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
-								deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillstreak()));
+								deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
 								deadlines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
 								deadlines.add(FormatUtil.format("&3----------------------------"));
 								
@@ -376,7 +376,7 @@ public class EntityListener implements Listener
 								if (kp != null && !kp.isOut())
 								{
 									kp.setKills(kp.getKills() + 1);
-									kp.setKillstreak(kp.getKillstreak() + 1);
+									kp.setKillStreak(kp.getKillStreak() + 1);
 									kp.getArena().doKillStreak(kp);
 									kp.addXP(100);
 									
@@ -384,7 +384,7 @@ public class EntityListener implements Listener
 									killerlines.add(FormatUtil.format("&3----------------------------"));
 									killerlines.add(FormatUtil.format("&3Kills: &e{0}", kp.getKills()));
 									killerlines.add(FormatUtil.format("&3Deaths: &e{0}", kp.getDeaths()));
-									killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillstreak()));
+									killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillStreak()));
 									killerlines.add(FormatUtil.format("&3GameXP: &e{0}", kp.getGameXP()));
 									killerlines.add(FormatUtil.format("&3----------------------------"));
 									
@@ -411,7 +411,7 @@ public class EntityListener implements Listener
 								deadlines.add(FormatUtil.format("&3----------------------------"));
 								deadlines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
 								deadlines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
-								deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillstreak()));
+								deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
 								deadlines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
 								deadlines.add(FormatUtil.format("&3----------------------------"));
 								
@@ -433,7 +433,7 @@ public class EntityListener implements Listener
 						deadlines.add(FormatUtil.format("&3----------------------------"));
 						deadlines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
 						deadlines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
-						deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillstreak()));
+						deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
 						deadlines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
 						deadlines.add(FormatUtil.format("&3----------------------------"));
 							
@@ -462,7 +462,7 @@ public class EntityListener implements Listener
 						{
 							ak.addXP(25);
 							ak.setKills(ak.getKills() + 1);
-							ak.setKillstreak(ak.getKillstreak() + 1);
+							ak.setKillStreak(ak.getKillStreak() + 1);
 							ak.getArena().doKillStreak(ak);
 							
 							List<String> lines = new ArrayList<String>();
@@ -473,7 +473,7 @@ public class EntityListener implements Listener
 							lines.add(FormatUtil.format("&3----------------------------"));
 							lines.add(FormatUtil.format("&3Kills: &e{0}", ak.getKills()));
 							lines.add(FormatUtil.format("&3Deaths: &e{0}", ak.getDeaths()));
-							lines.add(FormatUtil.format("&3Streak: &e{0}", ak.getKillstreak()));
+							lines.add(FormatUtil.format("&3Streak: &e{0}", ak.getKillStreak()));
 							lines.add(FormatUtil.format("&3GameXP: &e{0}", ak.getGameXP()));
 							lines.add(FormatUtil.format("&3----------------------------"));
 							

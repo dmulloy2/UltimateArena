@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.types;
 
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
@@ -25,7 +25,7 @@ public class ArenaStatistics
 	public void stats() 
 	{
 		// Calculates all the arenas stats
-		this.totalPlays = arena.getPlugin().arenasPlayed;
+		this.totalPlays = arena.getPlugin().getArenasPlayed();
 		this.plays = arena.getTimesPlayed();
 		this.percentagePlayed = (int) (((double)plays/(double)totalPlays) * 100);
 		this.likes = arena.getLiked();

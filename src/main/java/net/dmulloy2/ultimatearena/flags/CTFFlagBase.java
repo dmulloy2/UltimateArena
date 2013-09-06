@@ -1,10 +1,12 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.flags;
 
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.CTFArena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.util.TeamHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
@@ -46,16 +48,18 @@ public class CTFFlagBase extends FlagBase
 	@Override
 	public void checkNear(List<ArenaPlayer> arenaplayers) 
 	{
-		getFlag().checkNear(arenaplayers);
-		if (!enemyflag.isPickedUp()) 
+		flag.checkNear(arenaplayers);
+		
+		if (! enemyflag.isPickedUp()) 
 			return;
+		
 		if (enemyflag.getRiding() == null)
 			return;
 		
 		for (int i = 0; i < arenaplayers.size(); i++)
 		{
 			ArenaPlayer a = arenaplayers.get(i);
-			if (!a.isOut() && a.getPlayer().isOnline() && !a.getPlayer().isDead()) 
+			if (! a.isOut() && a.getPlayer().isOnline() && ! a.getPlayer().isDead()) 
 			{
 				if (a.getTeam() == team)
 				{ 

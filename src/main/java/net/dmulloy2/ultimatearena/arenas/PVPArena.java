@@ -1,7 +1,7 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
 
 public class PVPArena extends Arena 
 {

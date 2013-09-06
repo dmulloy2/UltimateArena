@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.arenas.objects;
+package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class ArenaZone
 		this.flags = ac.flags;
 		this.maxPlayers = 24;
 		this.specialType = 80;
-		this.defaultClass = plugin.classes.get(0).getName();
+		this.defaultClass = plugin.getClasses().get(0).getName();
 		this.world = lobby1.getWorld();
 
 		save();
@@ -111,7 +111,7 @@ public class ArenaZone
 		this.lobby = new Field();
 		this.arena = new Field();
 		
-		ArenaClass ac = plugin.classes.get(0);
+		ArenaClass ac = plugin.getClasses().get(0);
 		if (ac != null)
 			this.defaultClass = ac.getName();
 		
@@ -122,7 +122,7 @@ public class ArenaZone
 			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
 			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
 			
-			plugin.loadedArena.add(this);
+			plugin.getLoadedArenas().add(this);
 		}
 		else
 		{

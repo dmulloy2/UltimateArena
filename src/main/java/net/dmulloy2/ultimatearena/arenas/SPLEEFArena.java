@@ -3,9 +3,9 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.Random;
 
 import net.dmulloy2.ultimatearena.Field3D;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaPlayer;
-import net.dmulloy2.ultimatearena.arenas.objects.ArenaZone;
-import net.dmulloy2.ultimatearena.arenas.objects.FieldType;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.FieldType;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
