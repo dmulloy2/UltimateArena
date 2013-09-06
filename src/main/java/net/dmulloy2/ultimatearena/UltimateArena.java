@@ -91,43 +91,27 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class UltimateArena extends JavaPlugin
 {
-	private @Getter
-	FileHelper fileHelper;
-	private @Getter
-	Economy economy;
+	private @Getter FileHelper fileHelper;
+	private @Getter Economy economy;
 
-	private @Getter
-	PermissionHandler permissionHandler;
-	private @Getter
-	CommandHandler commandHandler;
+	private @Getter PermissionHandler permissionHandler;
+	private @Getter CommandHandler commandHandler;
 
-	private @Getter
-	SignManager signManager;
+	private @Getter SignManager signManager;
 
-	private @Getter
-	List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
-	private @Getter
-	List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
-	private @Getter
-	List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
-	private @Getter
-	List<ArenaClass> classes = new ArrayList<ArenaClass>();
-	private @Getter
-	List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
-	private @Getter
-	List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
-	private @Getter
-	List<Arena> activeArenas = new ArrayList<Arena>();
+	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
+	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
+	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
+	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
+	private @Getter List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
+	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
+	private @Getter List<Arena> activeArenas = new ArrayList<Arena>();
 
-	private @Getter
-	WhiteListedCommands whiteListedCommands = new WhiteListedCommands();
+	private @Getter WhiteListedCommands whiteListedCommands = new WhiteListedCommands();
 
-	private @Getter
-	@Setter
-	int arenasPlayed = 0;
+	private @Getter @Setter int arenasPlayed = 0;
 
-	private @Getter
-	String prefix = FormatUtil.format("&6[&4&lUA&6] ");
+	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
 
 	@Override
 	public void onEnable()
@@ -301,28 +285,28 @@ public class UltimateArena extends JavaPlugin
 		debug("Checking directories!");
 
 		File dataFile = getDataFolder();
-		if (!dataFile.exists())
+		if (! dataFile.exists())
 		{
 			dataFile.mkdir();
 			debug("Created data file!");
 		}
 
 		File arenaFile = new File(getDataFolder(), "arenas");
-		if (!arenaFile.exists())
+		if (! arenaFile.exists())
 		{
 			arenaFile.mkdir();
 			debug("Created arenas directory!");
 		}
 
 		File classFile = new File(getDataFolder(), "classes");
-		if (!classFile.exists())
+		if (! classFile.exists())
 		{
 			classFile.mkdir();
 			debug("Created classes directory!");
 		}
 
 		File configsFile = new File(getDataFolder(), "configs");
-		if (!configsFile.exists())
+		if (! configsFile.exists())
 		{
 			configsFile.mkdir();
 			debug("Created configs directory!");
@@ -388,7 +372,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		File folder = new File(getDataFolder(), "configs");
 		File file = new File(folder, str + "Config.yml");
-		if (!file.exists())
+		if (! file.exists())
 		{
 			outConsole("Generating config for: {0}", str);
 			fileHelper.generateArenaConfig(str);
@@ -591,7 +575,7 @@ public class UltimateArena extends JavaPlugin
 
 	public void join(Player player, String arena)
 	{
-		if (!permissionHandler.hasPermission(player, Permission.JOIN))
+		if (! permissionHandler.hasPermission(player, Permission.JOIN))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to do this!"));
 			return;
@@ -603,7 +587,7 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 
-		if (!InventoryHelper.isEmpty(player.getInventory()))
+		if (! InventoryHelper.isEmpty(player.getInventory()))
 		{
 			if (!getConfig().getBoolean("saveInventories"))
 			{
@@ -690,7 +674,7 @@ public class UltimateArena extends JavaPlugin
 				}
 				else
 				{
-					if (!forced)
+					if (! forced)
 					{
 						player.sendMessage(prefix + FormatUtil.format("&cThis arena is full!"));
 					}
@@ -734,7 +718,7 @@ public class UltimateArena extends JavaPlugin
 				}
 			}
 
-			if (!disabled)
+			if (! disabled)
 			{
 				String arenaType = az.getType().getName().toLowerCase();
 				if (arenaType.equals("pvp"))
@@ -777,6 +761,7 @@ public class UltimateArena extends JavaPlugin
 				{
 					ar = new CTFArena(az);
 				}
+				
 				if (ar != null)
 				{
 					activeArenas.add(ar);
@@ -799,7 +784,7 @@ public class UltimateArena extends JavaPlugin
 		List<ArenaPlayer> totalPlayers = arena.getArenaPlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
-			if (!permissionHandler.hasPermission(ap.getPlayer(), Permission.JOIN_FORCE))
+			if (! permissionHandler.hasPermission(ap.getPlayer(), Permission.JOIN_FORCE))
 			{
 				validPlayers.add(ap);
 			}
@@ -880,7 +865,7 @@ public class UltimateArena extends JavaPlugin
 		if (ac != null)
 		{
 			ac.setPoint(player);
-			if (!ac.getMsg().isEmpty())
+			if (! ac.getMsg().isEmpty())
 			{
 				player.sendMessage(prefix + FormatUtil.format("&3" + ac.getMsg()));
 			}
@@ -942,7 +927,7 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 
-		if (!FieldType.contains(type.toLowerCase()))
+		if (! FieldType.contains(type.toLowerCase()))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cThis is not a valid field type!"));
 			return;

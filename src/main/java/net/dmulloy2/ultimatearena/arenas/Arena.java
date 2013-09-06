@@ -383,15 +383,11 @@ public abstract class Arena
 	{
 		plugin.debug("Attempting to spawn player: {0}", player.getName());
 
-		if (!stopped)
+		if (! stopped)
 		{
-			plugin.debug("Arena is not stopped");
-
 			ArenaPlayer ap = getArenaPlayer(player);
 			if (checkValid(ap))
 			{
-				plugin.debug("ArenaPlayer is valid");
-
 				if (ap.getDeaths() < getMaxDeaths())
 				{
 					plugin.debug("Spawning player: {0}", name);
@@ -653,7 +649,7 @@ public abstract class Arena
 	 */
 	public final void giveItem(Player pl, int id, byte dat, int amt, String message)
 	{
-		if (!message.isEmpty())
+		if (! message.isEmpty())
 		{
 			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
 		}
@@ -688,7 +684,7 @@ public abstract class Arena
 	 */
 	public void givePotion(Player pl, String s, int amt, int level, boolean splash, String message)
 	{
-		if (!message.isEmpty())
+		if (! message.isEmpty())
 		{
 			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
 		}
@@ -730,7 +726,7 @@ public abstract class Arena
 
 		if (ap.getKillStreak() == 5)
 		{
-			if (!type.getName().equalsIgnoreCase("cq"))
+			if (! type.getName().equalsIgnoreCase("cq"))
 			{
 				ap.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
 				for (int i = 0; i < 4; i++)
@@ -919,7 +915,7 @@ public abstract class Arena
 			reloadConfig();
 		}
 
-		if (!pauseStartTimer)
+		if (! pauseStartTimer)
 		{
 			startTimer--;
 			broadcastTimer--;
@@ -953,7 +949,7 @@ public abstract class Arena
 	 */
 	public final void start()
 	{
-		if (!start)
+		if (! start)
 		{
 			plugin.outConsole("Starting arena: {0} Players: {1}", getName(), getActivePlayers());
 
@@ -1101,7 +1097,7 @@ public abstract class Arena
 				decideXPBar(ap);
 
 				// End dead players
-				if (!stopped)
+				if (! stopped)
 				{
 					if (ap.getDeaths() >= getMaxDeaths())
 					{
@@ -1472,7 +1468,7 @@ public abstract class Arena
 
 	public final boolean checkValid(ArenaPlayer ap)
 	{
-		return ap != null && !ap.isOut();
+		return ap != null && ! ap.isOut();
 	}
 
 	public final List<ArenaPlayer> getValidPlayers()
