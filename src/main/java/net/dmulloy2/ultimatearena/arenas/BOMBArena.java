@@ -5,16 +5,16 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
-public class BOMBArena extends Arena 
+public class BOMBArena extends Arena
 {
 	public int REDTEAMPOWER = 100;
 	public BombFlag bomb1;
 	public BombFlag bomb2;
-	
-	public BOMBArena(ArenaZone az) 
+
+	public BOMBArena(ArenaZone az)
 	{
 		super(az);
-		
+
 		this.type = FieldType.BOMB;
 		this.startTimer = 120;
 		this.maxGameTime = 60 * 15;
@@ -25,7 +25,7 @@ public class BOMBArena extends Arena
 		bomb1.setBnum(1);
 		bomb2.setBnum(2);
 	}
-	
+
 	@Override
 	public void onStart()
 	{
@@ -35,25 +35,25 @@ public class BOMBArena extends Arena
 		{
 			REDTEAMPOWER = 10;
 		}
-		if (REDTEAMPOWER > 150) 
+		if (REDTEAMPOWER > 150)
 		{
 			REDTEAMPOWER = 150;
 		}
 	}
-	
+
 	@Override
-	public void onOutOfTime() 
+	public void onOutOfTime()
 	{
 		setWinningTeam(2);
 		rewardTeam(winningTeam, false);
 	}
-	
+
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		super.onPlayerDeath(pl);
-		
-		if (pl.getTeam() == 1) 
+
+		if (pl.getTeam() == 1)
 		{
 			REDTEAMPOWER--;
 			for (int i = 0; i < arenaPlayers.size(); i++)
@@ -73,35 +73,35 @@ public class BOMBArena extends Arena
 			}
 		}
 	}
-	
+
 	@Override
-	public int getTeam() 
+	public int getTeam()
 	{
 		return getBalancedTeam();
 	}
 
 	@Override
-	public void check() 
+	public void check()
 	{
-		if (getStartTimer() <= 0) 
+		if (getStartTimer() <= 0)
 		{
 			simpleTeamCheck(true);
 		}
-		
+
 		bomb1.checkNear(arenaPlayers);
 		bomb2.checkNear(arenaPlayers);
-		
+
 		if (bomb1.isExploded() && bomb2.isExploded())
 		{
 			setWinningTeam(1);
 
 			stop();
-			
+
 			rewardTeam(1, false);
 			return;
 		}
-		
-		if (REDTEAMPOWER <= 0) 
+
+		if (REDTEAMPOWER <= 0)
 		{
 			setWinningTeam(2);
 

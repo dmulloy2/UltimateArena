@@ -16,21 +16,21 @@ public class CmdClass extends UltimateArenaCommand
 		this.optionalArgs.add("class");
 		this.description = "Switch UltimateArena classes";
 		this.permission = Permission.CLASS;
-		
-		this.mustBePlayer =  true;
+
+		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
-		if (! plugin.isInArena(player))
+		if (!plugin.isInArena(player))
 		{
 			err("You are not in an arena!");
 			return;
 		}
-		
+
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
-		
+
 		if (args.length == 0)
 		{
 			if (ap.getArenaClass() == null)
@@ -38,7 +38,7 @@ public class CmdClass extends UltimateArenaCommand
 				err("You do not have a class!");
 				return;
 			}
-			
+
 			sendpMessage("&3Your current class is: &e{0}", ap.getArenaClass().getName());
 			return;
 		}
@@ -48,10 +48,10 @@ public class CmdClass extends UltimateArenaCommand
 			if (cl != null)
 			{
 				ap.setClass(cl);
-					
+
 				String name = cl.getName();
 				String article = FormatUtil.getArticle(name);
-				
+
 				if (ap.getArena().isInLobby())
 				{
 					sendpMessage("&3You will spawn as {0}: &e{1}", article, name);

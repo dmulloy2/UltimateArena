@@ -17,10 +17,10 @@ public class CmdList extends UltimateArenaCommand
 		this.aliases.add("li");
 		this.description = "view all the UltimateArenas";
 		this.permission = Permission.LIST;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -28,13 +28,13 @@ public class CmdList extends UltimateArenaCommand
 		StringBuilder line = new StringBuilder();
 		line.append("&3====[ &eUltimateArenas &3]====");
 		lines.add(line.toString());
-		
+
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
 			line = new StringBuilder();
 			line.append("&3[&b" + az.getType().getName() + " &eArena&3]");
-			line.append(" &b" + az.getArenaName()+ "  ");
-			
+			line.append(" &b" + az.getArenaName() + "  ");
+
 			if (az.isDisabled())
 			{
 				line.append(" &4[DISABLED]");
@@ -54,21 +54,21 @@ public class CmdList extends UltimateArenaCommand
 						{
 							line.append(" &e[INGAME]");
 						}
-						
+
 						active = true;
 					}
 				}
-				
-				if (! active)
+
+				if (!active)
 				{
 					line.append(" &a[FREE]");
 				}
 			}
-			
+
 			line.append("        &e[&b" + az.getTimesPlayed() + "&e]");
 			lines.add(line.toString());
 		}
-		
+
 		for (String s : lines)
 		{
 			sendMessage(s);

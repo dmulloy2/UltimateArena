@@ -24,10 +24,11 @@ import org.bukkit.entity.Player;
 public class KOTHArena extends Arena
 {
 	public int MAXPOWER;
-	public KOTHArena(ArenaZone az) 
+
+	public KOTHArena(ArenaZone az)
 	{
 		super(az);
-		
+
 		this.type = FieldType.KOTH;
 		this.startTimer = 180;
 		this.maxGameTime = 60 * 20;
@@ -37,45 +38,45 @@ public class KOTHArena extends Arena
 
 		for (int i = 0; i < az.getFlags().size(); i++)
 		{
-			flags.add( new KothFlag(this, az.getFlags().get(i), plugin) );
+			flags.add(new KothFlag(this, az.getFlags().get(i), plugin));
 		}
-		for (int i = 0; i < az.getSpawns().size(); i++) 
+		for (int i = 0; i < az.getSpawns().size(); i++)
 		{
-			spawns.add( new ArenaSpawn(az.getSpawns().get(i)) );
+			spawns.add(new ArenaSpawn(az.getSpawns().get(i)));
 		}
 	}
-	
+
 	@Override
-	public void doKillStreak(ArenaPlayer ap) 
+	public void doKillStreak(ArenaPlayer ap)
 	{
 		Player pl = ap.getPlayer();
-		
-		if (ap.getKillStreak() == 2) 
+
+		if (ap.getKillStreak() == 2)
 		{
 			givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
 		}
-		if (ap.getKillStreak() == 4) 
+		if (ap.getKillStreak() == 4)
 		{
 			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e4 &3kills! Unlocked food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e4 &3kills! Unlocked food!");
 		}
-		if (ap.getKillStreak() == 12) 
+		if (ap.getKillStreak() == 12)
 		{
 			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e12 &3kills! Unlocked food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e12 &3kills! Unlocked food!");
 		}
 	}
-	
+
 	@Override
-	public void reward(ArenaPlayer ap, boolean half) 
+	public void reward(ArenaPlayer ap, boolean half)
 	{
-		if (ap.getPoints() >= MAXPOWER) 
-		{ 
+		if (ap.getPoints() >= MAXPOWER)
+		{
 			// If you scored at least 60 points
 			super.reward(ap, half);
 		}
 	}
-	
+
 	@Override
 	public Location getSpawn(ArenaPlayer ap)
 	{
@@ -83,7 +84,7 @@ public class KOTHArena extends Arena
 		{
 			return super.getSpawn(ap);
 		}
-		
+
 		return getRandomSpawn(ap);
 	}
 
@@ -99,26 +100,25 @@ public class KOTHArena extends Arena
 		checkPlayerPoints(MAXPOWER);
 		checkEmpty();
 	}
-	
+
 	@Override
 	public List<String> buildLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
-		
+
 		// Build kills map
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && ! ap.isOut())
+			if (ap != null && !ap.isOut())
 			{
 				pointsMap.put(ap.getName(), ap.getPoints());
 			}
 		}
-		
+
 		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(pointsMap.entrySet());
-		Collections.sort(
-		sortedEntries, new Comparator<Map.Entry<String, Integer>>()
+		Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Integer>>()
 		{
 			@Override
 			public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
@@ -126,7 +126,7 @@ public class KOTHArena extends Arena
 				return -entry1.getValue().compareTo(entry2.getValue());
 			}
 		});
-		
+
 		int pos = 1;
 		for (Map.Entry<String, Integer> entry : sortedEntries)
 		{
@@ -146,10 +146,10 @@ public class KOTHArena extends Arena
 				pos++;
 			}
 		}
-		
+
 		return leaderboard;
 	}
-	
+
 	@Override
 	public void announceWinner()
 	{

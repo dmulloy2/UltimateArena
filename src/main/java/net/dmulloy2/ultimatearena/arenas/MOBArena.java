@@ -137,7 +137,7 @@ public class MOBArena extends Arena
 		setWinningTeam(-1);
 		rewardTeam(winningTeam, false);
 	}
-	
+
 	@Override
 	public void onStop()
 	{

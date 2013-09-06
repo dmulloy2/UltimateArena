@@ -12,31 +12,40 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * Manager for Signs
+ * 
  * @author dmulloy2
  */
 
-public class SignManager 
+public class SignManager
 {
 	private File signsSave;
 
 	private final UltimateArena plugin;
+
 	public SignManager(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
 
 		load();
 	}
-	
+
 	public void load()
 	{
 		plugin.debug("Loading all signs!");
-		
+
 		this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
-		if (! signsSave.exists()) 
+		if (!signsSave.exists())
 		{
-			try { signsSave.createNewFile(); } catch (IOException e) { return; }
+			try
+			{
+				signsSave.createNewFile();
+			}
+			catch (IOException e)
+			{
+				return;
+			}
 		}
-		
+
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
 		if (fc.isSet("total"))
 		{
@@ -44,13 +53,13 @@ public class SignManager
 			for (int i = 0; i < total; i++)
 			{
 				plugin.debug("Attempting to load sign: {0}", i);
-				
+
 				String path = "signs." + i + ".";
-				if (! fc.isSet(path))
+				if (!fc.isSet(path))
 					continue;
-				
+
 				String arenaName = fc.getString(path + "name");
-				
+
 				String locPath = path + "location.";
 				String worldName = fc.getString(locPath + "world");
 				World world = plugin.getServer().getWorld(worldName);
@@ -76,38 +85,50 @@ public class SignManager
 	public void refreshSave()
 	{
 		plugin.debug("Refreshing signs save!");
-		
+
 		signsSave.delete();
-		
-		try { signsSave.createNewFile(); }
-		catch (IOException e) { return; }
-		
+
+		try
+		{
+			signsSave.createNewFile();
+		}
+		catch (IOException e)
+		{
+			return;
+		}
+
 		int total = 0;
-		
+
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
 		for (ArenaSign sign : plugin.getArenaSigns())
 		{
 			plugin.debug("Attempting to save sign: {0}", sign);
-			
+
 			String path = "signs." + sign.getId() + ".";
-			
+
 			fc.set(path + "name", sign.getArena());
-			
+
 			Location location = sign.getLocation();
 			String locPath = path + "location.";
 			fc.set(locPath + "world", location.getWorld().getName());
 			fc.set(locPath + "x", location.getBlockX());
 			fc.set(locPath + "y", location.getBlockX());
 			fc.set(locPath + "z", location.getBlockX());
-			
+
 			total = sign.getId();
 		}
-		
+
 		fc.set("total", total + 1);
-		
-		try { fc.save(signsSave); } catch (IOException e) { }
+
+		try
+		{
+			fc.save(signsSave);
+		}
+		catch (IOException e)
+		{
+		}
 	}
-	
+
 	public void updateSigns()
 	{
 		for (int i = 0; i < plugin.getArenaSigns().size(); i++)

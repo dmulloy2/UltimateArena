@@ -45,19 +45,19 @@ import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 /**
- * Base Data Container for an arena.
- * This can be extended for specific arena types.
+ * Base Data Container for an arena. This can be extended for specific arena
+ * types.
  * 
  * @author dmulloy2
  */
 
-public abstract class Arena 
+public abstract class Arena
 {
 	public static enum Mode
 	{
 		LOBBY, INGAME, STOPPING, IDLE, DISABLED;
 	}
-	
+
 	protected List<ArenaPlayer> arenaPlayers = new ArrayList<ArenaPlayer>();
 	protected List<ArenaSpawn> spawns = new ArrayList<ArenaSpawn>();
 	protected List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
@@ -75,7 +75,7 @@ public abstract class Arena
 	protected int gameTimer;
 	protected int team1size;
 	protected int team2size;
-	
+
 	protected boolean allowTeamKilling = false;
 	protected boolean pauseStartTimer = false;
 	protected boolean forceStop = false;
@@ -84,7 +84,7 @@ public abstract class Arena
 
 	protected boolean updatedTeams;
 	protected boolean disabled;
-	
+
 	protected Mode gameMode = Mode.DISABLED;
 
 	protected World world;
@@ -95,12 +95,14 @@ public abstract class Arena
 	protected final UltimateArena plugin;
 	protected ArenaConfig config;
 	protected ArenaZone az;
-	
+
 	/**
 	 * Creates a new Arena based around an {@link ArenaZone}
-	 * @param az - {@link ArenaZone} to base the {@link Arena} around
+	 * 
+	 * @param az
+	 *            - {@link ArenaZone} to base the {@link Arena} around
 	 */
-	public Arena(ArenaZone az) 
+	public Arena(ArenaZone az)
 	{
 		this.az = az;
 		this.plugin = az.getPlugin();
@@ -108,23 +110,23 @@ public abstract class Arena
 		this.world = az.getWorld();
 		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
 		this.plugin.setArenasPlayed(plugin.getArenasPlayed() + 1);
-		
+
 		if (maxDeaths < 1)
 		{
 			this.maxDeaths = 1;
 		}
-		
+
 		this.gameMode = Mode.LOBBY;
-		
+
 		updateSigns();
 	}
-	
+
 	/**
 	 * Reloads the arena's configuration
 	 */
-	public final void reloadConfig() 
+	public final void reloadConfig()
 	{
-		if (config != null) 
+		if (config != null)
 		{
 			this.maxGameTime = config.getGameTime();
 			this.gameTimer = config.getGameTime();
@@ -132,32 +134,33 @@ public abstract class Arena
 			this.maxDeaths = config.getMaxDeaths();
 			this.allowTeamKilling = config.isAllowTeamKilling();
 			this.maxWave = config.getMaxWave();
-			
+
 			if (maxDeaths < 1)
 			{
 				this.maxDeaths = 1;
 			}
 		}
 	}
-	
+
 	/**
-	 * Adds a player to an {@link Arena}.
-	 * Should not be overriden.
-	 * @param player - {@link Player} to add to an arena
+	 * Adds a player to an {@link Arena}. Should not be overriden.
+	 * 
+	 * @param player
+	 *            - {@link Player} to add to an arena
 	 */
 	public final void addPlayer(Player player)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Joining arena &e{0}&3... Please wait!", name));
-		
+
 		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
 
 		// Update Teams
 		pl.setTeam(getTeam());
 		this.updatedTeams = true;
-		
+
 		// Teleport the player to the lobby spawn
 		spawn(player, false);
-		
+
 		// Inventory
 		pl.saveInventory();
 		pl.clearInventory();
@@ -167,94 +170,93 @@ public abstract class Arena
 
 		// Make sure the player is in survival
 		player.setGameMode(GameMode.SURVIVAL);
-		
+
 		// Heal up the Player
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		player.setHealth(20);
-		
+
 		// Don't allow flight
 		player.setAllowFlight(false);
 		player.setFlySpeed(0.1F);
 		player.setFlying(false);
-		
+
 		// If essentials is found, remove god mode.
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("Essentials"))
 		{
 			IEssentials ess = Util.getEssentials();
 			User user = ess.getUser(player);
-			
+
 			// Disable GodMode in the arena
 			user.setGodModeEnabled(false);
 		}
-		
+
 		// Clear potion effects
 		pl.clearPotionEffects();
-		
+
 		// Finally add the player
 		arenaPlayers.add(pl);
-		
+
 		// Update Signs
 		updateSigns();
-		
+
 		// Call ArenaJoinEvent
 		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
 		plugin.getServer().getPluginManager().callEvent(joinEvent);
-		
+
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), getActivePlayers(), az.getMaxPlayers());
 	}
-	
+
 	/**
-	 * Gets the base team.
-	 * Can be overriden in certain cases.
+	 * Gets the base team. Can be overriden in certain cases.
+	 * 
 	 * @return Base team
 	 */
-	public int getTeam() 
+	public int getTeam()
 	{
 		return 1;
 	}
-	
+
 	/**
 	 * Announces the arena's existance and reminds players to join.
 	 */
-	public final void announce() 
+	public final void announce()
 	{
 		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
-			if (! plugin.isInArena(player))
+			if (!plugin.isInArena(player))
 			{
 				if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
 				{
-					if (announced == 0) 
+					if (announced == 0)
 					{
-						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&e{0} &3arena has been created!", WordUtils.capitalize(type.getName())));
+						player.sendMessage(plugin.getPrefix()
+								+ FormatUtil.format("&e{0} &3arena has been created!", WordUtils.capitalize(type.getName())));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getName()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getName()));
 					}
-					
-					player.sendMessage(plugin.getPrefix() + 
-							FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getArenaName()));
+
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getArenaName()));
 				}
 			}
 		}
 
 		announced++;
 	}
-	
+
 	/**
 	 * Returns the team a player should be on.
+	 * 
 	 * @return The team the player should be on
 	 */
 	public int getBalancedTeam()
 	{
 		int amt1 = 0;
 		int amt2 = 0;
-		
+
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
@@ -271,44 +273,48 @@ public abstract class Arena
 			}
 		}
 
-		if (amt1 > amt2) 
+		if (amt1 > amt2)
 		{
 			return 2;
 		}
-		
+
 		return 1;
 	}
-	
+
 	/**
 	 * A simple team check.
-	 * @param stopifEmpty - Stops the arena if empty
+	 * 
+	 * @param stopifEmpty
+	 *            - Stops the arena if empty
 	 */
-	public boolean simpleTeamCheck(boolean stopifEmpty) 
+	public boolean simpleTeamCheck(boolean stopifEmpty)
 	{
-		if (getTeam1size() == 0 || team2size == 0) 
+		if (getTeam1size() == 0 || team2size == 0)
 		{
 			if (stopifEmpty)
 			{
 				stop();
 			}
-			
+
 			if (startingAmount > 1)
 			{
 				return false;
 			}
-			
+
 			return true;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Gets the player's arena player instance.
-	 * @param p - Player instance
+	 * 
+	 * @param p
+	 *            - Player instance
 	 * @return The player's ArenaPlayer instance
 	 */
-	public final ArenaPlayer getArenaPlayer(Player p) 
+	public final ArenaPlayer getArenaPlayer(Player p)
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
@@ -319,17 +325,17 @@ public abstract class Arena
 					return ap;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Spawns all players in an arena.
 	 */
-	public void spawnAll() 
+	public void spawnAll()
 	{
 		plugin.debug("Spawning players for Arena: {0}", getArenaZone().getArenaName());
-		
+
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
@@ -337,14 +343,16 @@ public abstract class Arena
 				spawn(ap.getPlayer(), false);
 		}
 	}
-	
+
 	/**
-	 * Gets the spawn for an {@link ArenaPlayer}.
-	 * Will return null if used by another {@link Arena}.
-	 * @param ap - {@link ArenaPlayer} instance
+	 * Gets the spawn for an {@link ArenaPlayer}. Will return null if used by
+	 * another {@link Arena}.
+	 * 
+	 * @param ap
+	 *            - {@link ArenaPlayer} instance
 	 * @return the {@link ArenaPlayer}'s spawn
 	 */
-	public Location getSpawn(ArenaPlayer ap) 
+	public Location getSpawn(ArenaPlayer ap)
 	{
 		Location loc = null;
 		if (isInLobby())
@@ -356,25 +364,26 @@ public abstract class Arena
 		else
 		{
 			loc = getArenaZone().getTeam1spawn();
-			if (ap.getTeam() == 2) 
+			if (ap.getTeam() == 2)
 				loc = az.getTeam2spawn();
 		}
 
 		return loc;
 	}
-	
+
 	/**
-	 * Spawns a player in an {@link Arena}.
-	 * This should not be overriden.
+	 * Spawns a player in an {@link Arena}. This should not be overriden.
 	 * 
-	 * @param name - Player to spawn
-	 * @param alreadyspawned - Have they already been spawned?
+	 * @param name
+	 *            - Player to spawn
+	 * @param alreadyspawned
+	 *            - Have they already been spawned?
 	 */
 	public final void spawn(Player player, boolean alreadySpawned)
 	{
 		plugin.debug("Attempting to spawn player: {0}", player.getName());
-		
-		if (! stopped)
+
+		if (!stopped)
 		{
 			plugin.debug("Arena is not stopped");
 
@@ -382,25 +391,25 @@ public abstract class Arena
 			if (checkValid(ap))
 			{
 				plugin.debug("ArenaPlayer is valid");
-				
-				if (ap.getDeaths() < getMaxDeaths()) 
+
+				if (ap.getDeaths() < getMaxDeaths())
 				{
 					plugin.debug("Spawning player: {0}", name);
-						
+
 					Location loc = getSpawn(ap);
-					if (loc != null) 
+					if (loc != null)
 					{
 						teleport(player, loc);
-							
+
 						// Call spawn event
 						ArenaSpawn spawn = new ArenaSpawn(loc);
 						UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
 						plugin.getServer().getPluginManager().callEvent(spawnEvent);
 					}
-						
+
 					ap.spawn();
-						
-					if (! alreadySpawned)
+
+					if (!alreadySpawned)
 					{
 						onSpawn(ap);
 					}
@@ -412,36 +421,41 @@ public abstract class Arena
 	/**
 	 * Called when a player is spawned.
 	 * 
-	 * @param apl {@link ArenaPlayer} who was spawned
+	 * @param apl
+	 *            {@link ArenaPlayer} who was spawned
 	 */
-	public void onSpawn(ArenaPlayer apl) {}
-	
+	public void onSpawn(ArenaPlayer apl)
+	{
+	}
+
 	/**
 	 * Called when a player dies.
 	 * 
-	 * @param pl - {@link ArenaPlayer} who died
+	 * @param pl
+	 *            - {@link ArenaPlayer} who died
 	 */
-	public void onPlayerDeath(ArenaPlayer pl) 
+	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		pl.setAmtKicked(0);
-		
+
 		// Call ArenaDeathEvent
 		UltimateArenaDeathEvent deathEvent = new UltimateArenaDeathEvent(pl, this);
 		plugin.getServer().getPluginManager().callEvent(deathEvent);
 	}
-	
+
 	/**
-	 * Default rewarding system.
-	 * May be overriden in some cases.
+	 * Default rewarding system. May be overriden in some cases.
 	 * 
-	 * @param ap - {@link ArenaPlayer} to reward
-	 * @param half - Whether or not to reward half
+	 * @param ap
+	 *            - {@link ArenaPlayer} to reward
+	 * @param half
+	 *            - Whether or not to reward half
 	 */
 	public void reward(ArenaPlayer ap, boolean half)
 	{
 		plugin.debug("Rewarding player: {0}. Half: {1}", ap.getName(), half);
-		
-		if (config != null) 
+
+		if (config != null)
 		{
 			config.giveRewards(ap.getPlayer(), half);
 		}
@@ -450,18 +464,21 @@ public abstract class Arena
 			InventoryHelper.addItem(ap.getPlayer(), new ItemStack(Material.GOLD_INGOT));
 		}
 	}
-	
+
 	/**
 	 * Rewards an entire team.
 	 * 
-	 * @param team - Team to reward
-	 * @param string - Reward message
-	 * @param half - Whether or not to reward half
+	 * @param team
+	 *            - Team to reward
+	 * @param string
+	 *            - Reward message
+	 * @param half
+	 *            - Whether or not to reward half
 	 */
 	public void rewardTeam(int team, boolean half)
 	{
 		plugin.debug("Rewarding team {0}. Half: {1}", team, half);
-		
+
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
@@ -474,11 +491,12 @@ public abstract class Arena
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets the winning team.
 	 * 
-	 * @param team - Winning team
+	 * @param team
+	 *            - Winning team
 	 */
 	public void setWinningTeam(int team)
 	{
@@ -495,14 +513,15 @@ public abstract class Arena
 
 			}
 		}
-		
+
 		this.winningTeam = team;
 	}
-	
+
 	/**
 	 * Checks if a player has enough points to win.
 	 * 
-	 * @param max - Max points for an arena
+	 * @param max
+	 *            - Max points for an arena
 	 */
 	public void checkPlayerPoints(int max)
 	{
@@ -514,28 +533,29 @@ public abstract class Arena
 				if (ap.getPoints() >= max)
 				{
 					tellPlayers("&3Player &e{0} &3has won!", ap.getName());
-					
+
 					stop();
-					
+
 					reward(ap, false);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Stops the arena if empty.
 	 * 
 	 * @return Arena is empty
 	 */
-	public final boolean checkEmpty() 
+	public final boolean checkEmpty()
 	{
 		boolean ret = isEmpty();
-		if (ret) stop();
-		
+		if (ret)
+			stop();
+
 		return ret;
 	}
-	
+
 	/**
 	 * Checks if the arena is empty.
 	 * 
@@ -545,39 +565,43 @@ public abstract class Arena
 	{
 		return (isInGame() && getActivePlayers() <= 1);
 	}
-	
+
 	/**
 	 * Tells all players in the arena a message.
 	 * 
-	 * @param string - Base message
-	 * @param objects - Objects to format in
+	 * @param string
+	 *            - Base message
+	 * @param objects
+	 *            - Objects to format in
 	 */
-	public final void tellPlayers(String string, Object...objects) 
+	public final void tellPlayers(String string, Object... objects)
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (checkValid(ap)) 
+			if (checkValid(ap))
 			{
 				ap.sendMessage(string, objects);
 			}
 		}
 	}
-	
+
 	/**
 	 * Kills all players within a certain radius of a {@link Location}
 	 * 
-	 * @param loc - Center {@link Location}
-	 * @param rad - Radius to kill within
+	 * @param loc
+	 *            - Center {@link Location}
+	 * @param rad
+	 *            - Radius to kill within
 	 */
 	public final void killAllNear(Location loc, int rad)
 	{
 		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
-		
+
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (checkValid(ap)) 
+			if (checkValid(ap))
 			{
 				Location ploc = ap.getLocation();
 				if (Util.pointDistance(loc, ploc) < rad)
@@ -589,16 +613,17 @@ public abstract class Arena
 	/**
 	 * Gets a random spawn for an {@link ArenaPlayer}.
 	 * 
-	 * @param ap - {@link ArenaPlayer} to get spawn for
+	 * @param ap
+	 *            - {@link ArenaPlayer} to get spawn for
 	 * @return Spawn for the {@link ArenaPlayer}
 	 */
 	public Location getRandomSpawn(ArenaPlayer ap)
 	{
 		plugin.debug("Getting a random spawn for {0}", ap.getName());
-		
+
 		if (checkValid(ap))
 		{
-			if (! spawns.isEmpty())
+			if (!spawns.isEmpty())
 			{
 				int rand = Util.random(spawns.size());
 				ArenaSpawn spawn = spawns.get(rand);
@@ -608,22 +633,27 @@ public abstract class Arena
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Gives a {@link Player} an item
 	 * 
-	 * @param pl - {@link Player} to give items to
-	 * @param id - ItemId of the item to give
-	 * @param dat - Data value of the item
-	 * @param amt - Amount of the item to give
-	 * @param message - Message to send the {@link Player}
+	 * @param pl
+	 *            - {@link Player} to give items to
+	 * @param id
+	 *            - ItemId of the item to give
+	 * @param dat
+	 *            - Data value of the item
+	 * @param amt
+	 *            - Amount of the item to give
+	 * @param message
+	 *            - Message to send the {@link Player}
 	 */
 	public final void giveItem(Player pl, int id, byte dat, int amt, String message)
 	{
-		if (! message.isEmpty())
+		if (!message.isEmpty())
 		{
 			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
 		}
@@ -638,24 +668,31 @@ public abstract class Arena
 
 		InventoryHelper.addItem(pl, item);
 	}
-	
+
 	/**
 	 * Gives a player a {@link Potion}
 	 * 
-	 * @param pl - {@link Player} to give the {@link Potion}
-	 * @param s - Name of the {@link Potion} to give. Must be a valid {@link PotionType}
-	 * @param amt - Amount of the {@link Potion} to give
-	 * @param level - Level of the {@link Potion} to give
-	 * @param splash - Whether or not it is a splash {@link Potion}
-	 * @param message - Message to send to the {@link Player}
+	 * @param pl
+	 *            - {@link Player} to give the {@link Potion}
+	 * @param s
+	 *            - Name of the {@link Potion} to give. Must be a valid
+	 *            {@link PotionType}
+	 * @param amt
+	 *            - Amount of the {@link Potion} to give
+	 * @param level
+	 *            - Level of the {@link Potion} to give
+	 * @param splash
+	 *            - Whether or not it is a splash {@link Potion}
+	 * @param message
+	 *            - Message to send to the {@link Player}
 	 */
 	public void givePotion(Player pl, String s, int amt, int level, boolean splash, String message)
 	{
-		if (! message.isEmpty())
+		if (!message.isEmpty())
 		{
 			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
 		}
-		
+
 		org.bukkit.potion.PotionType type = PotionType.toType(s);
 		if (type != null)
 		{
@@ -663,45 +700,45 @@ public abstract class Arena
 			potion.setType(type);
 			potion.setLevel(level);
 			potion.setSplash(splash);
-			
+
 			InventoryHelper.addItem(pl, potion.toItemStack(amt));
 		}
 	}
-	
+
 	/**
-	 * Basic killstreak system.
-	 * Can be overriden.
+	 * Basic killstreak system. Can be overriden.
 	 * 
-	 * @param ap - {@link ArenaPlayer} to do killstreak for
+	 * @param ap
+	 *            - {@link ArenaPlayer} to do killstreak for
 	 */
-	public void doKillStreak(ArenaPlayer ap) 
+	public void doKillStreak(ArenaPlayer ap)
 	{
 		/** Hunger Arena check **/
 		if (ap.getArena().getType().equals("Hunger"))
 			return;
-		
+
 		Player pl = ap.getPlayer();
-				
+
 		if (ap.getKillStreak() == 2)
 			givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
-				
+
 		if (ap.getKillStreak() == 4)
 		{
 			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e4 &3kills! Unlocked Food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e4 &3kills! Unlocked Food!");
 		}
-		
-		if (ap.getKillStreak() == 5) 
+
+		if (ap.getKillStreak() == 5)
 		{
-			if (! type.getName().equalsIgnoreCase("cq"))
+			if (!type.getName().equalsIgnoreCase("cq"))
 			{
 				ap.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
 				for (int i = 0; i < 4; i++)
 					ap.getLocation().getWorld().spawnEntity(ap.getLocation(), EntityType.ZOMBIE);
 			}
 		}
-		
-		if (ap.getKillStreak() == 8) 
+
+		if (ap.getKillStreak() == 8)
 		{
 			ap.sendMessage(plugin.getPrefix() + "&e8 &3kills! Unlocked attackdogs!");
 			for (int i = 0; i < 2; i++)
@@ -710,28 +747,28 @@ public abstract class Arena
 				wolf.setOwner(ap.getPlayer());
 			}
 		}
-			
+
 		if (ap.getKillStreak() == 12)
 		{
 			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte)0, 2, "&e12 &3kills! Unlocked Food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e12 &3kills! Unlocked Food!");
 		}
 	}
-	
+
 	/**
 	 * Disables this arena
 	 */
-	public final void onDisable() 
+	public final void onDisable()
 	{
 		tellPlayers("&cThis arena has been disabled!");
-		
+
 		this.gameTimer = -1;
-		
+
 		stop();
-		
+
 		this.disabled = true;
 		this.gameMode = Mode.DISABLED;
-		
+
 		updateSigns();
 	}
 
@@ -740,17 +777,18 @@ public abstract class Arena
 	 */
 	public final void stop()
 	{
-		if (stopped) return; // No need to stop multiple times
-		
+		if (stopped)
+			return; // No need to stop multiple times
+
 		plugin.outConsole("Stopping arena: {0}!", name);
-		
+
 		this.gameMode = Mode.STOPPING;
 		this.stopped = true;
-		
+
 		updateSigns();
-		
+
 		onStop();
-		
+
 		announceWinner();
 
 		for (int i = 0; i < arenaPlayers.size(); i++)
@@ -758,60 +796,70 @@ public abstract class Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
 			{
-				if (plugin.isInArena(ap.getPlayer())) 
+				if (plugin.isInArena(ap.getPlayer()))
 				{
 					endPlayer(ap, false);
 				}
 			}
 		}
-		
+
 		this.gameMode = Mode.IDLE;
-		
+
 		updateSigns();
-		
+
 		new FinalizeTask(this).runTaskLater(plugin, 120L);
 	}
-	
+
 	/**
 	 * Called when an arena is stopped
 	 */
-	public void onStop() {}
+	public void onStop()
+	{
+	}
 
 	/**
 	 * Teleports a player to the most ideal location
-	 * @param p - Player to teleport
-	 * @param loc - Raw location
+	 * 
+	 * @param p
+	 *            - Player to teleport
+	 * @param loc
+	 *            - Raw location
 	 */
-	public final void teleport(Player p, Location loc) 
+	public final void teleport(Player p, Location loc)
 	{
 		p.teleport(loc.clone().add(0.5D, 1.0D, 0.5D));
 	}
-	
+
 	/**
 	 * Called when an arena is updated
 	 */
-	public void check() {}
+	public void check()
+	{
+	}
 
 	/**
 	 * Ends an {@link ArenaPlayer}
-	 * @param ap - {@link ArenaPlayer} to end
-	 * @param dead - Whether or not a player died
+	 * 
+	 * @param ap
+	 *            - {@link ArenaPlayer} to end
+	 * @param dead
+	 *            - Whether or not a player died
 	 */
-	public void endPlayer(ArenaPlayer ap, boolean dead) 
+	public void endPlayer(ArenaPlayer ap, boolean dead)
 	{
 		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
-		
+
 		ap.setOut(true);
-		
+
 		this.updatedTeams = true;
-		
+
 		returnXP(ap);
-		
+
 		ap.clearInventory();
 		ap.returnInventory();
 
 		plugin.removePotions(ap.getPlayer());
-			
+
 		teleport(ap.getPlayer(), ap.getSpawnBack());
 
 		// Call Arena leave event
@@ -819,12 +867,12 @@ public abstract class Arena
 		plugin.getServer().getPluginManager().callEvent(leaveEvent);
 
 		updateSigns();
-		
-		if (dead) 
+
+		if (dead)
 		{
 			ap.sendMessage("&3You have exceeded the death limit!");
 			tellPlayers("&e{0} &3has been eliminated!", ap.getName());
-			
+
 			if (getActivePlayers() > 1)
 			{
 				tellPlayers("&3There are &e{0} &3players remaining!", getActivePlayers());
@@ -832,47 +880,51 @@ public abstract class Arena
 		}
 	}
 
-	/** 
+	/**
 	 * Called when an arena starts
 	 */
 	public void onStart()
 	{
 		this.startingAmount = getActivePlayers();
 	}
-	
+
 	/**
 	 * Called when an arena runs out of time
 	 */
-	public void onOutOfTime() {}
-	
+	public void onOutOfTime()
+	{
+	}
+
 	/**
 	 * Called right before an arena runs out of time
 	 */
-	public void onPreOutOfTime() {}
-	
+	public void onPreOutOfTime()
+	{
+	}
+
 	/**
 	 * Checks timers
 	 */
-	public final void checkTimers() 
+	public final void checkTimers()
 	{
 		if (stopped)
 		{
 			arenaPlayers.clear();
 			return;
 		}
-		
+
 		if (config == null)
 		{
 			config = plugin.getConfig(type.getName());
 			reloadConfig();
 		}
-		
-		if (! pauseStartTimer)
+
+		if (!pauseStartTimer)
 		{
 			startTimer--;
 			broadcastTimer--;
 		}
-		
+
 		if (startTimer <= 0)
 		{
 			start();
@@ -886,55 +938,54 @@ public abstract class Arena
 				announce();
 			}
 		}
-		
+
 		// End the game
-		if (gameTimer <= 0) 
+		if (gameTimer <= 0)
 		{
 			onPreOutOfTime();
 			stop();
 			onOutOfTime();
 		}
 	}
-	
+
 	/**
-	 * Starts the arena.
-	 * Should not be overriden.
+	 * Starts the arena. Should not be overriden.
 	 */
 	public final void start()
 	{
-		if (! start) 
+		if (!start)
 		{
 			plugin.outConsole("Starting arena: {0} Players: {1}", getName(), getActivePlayers());
-			
+
 			this.start = true;
 			this.gameMode = Mode.INGAME;
-			
+
 			this.startingAmount = getActivePlayers();
-			
+
 			this.gameTimer = maxGameTime;
 			this.startTimer = -1;
-			
+
 			updateSigns();
-			
+
 			onStart();
 			spawnAll();
 		}
 	}
-	
+
 	/**
 	 * Arena Updater
 	 * 
 	 * @Deprecated - Should be replaced with more active updaters
 	 */
-	
+
 	@Deprecated
 	public final void update()
 	{
 		this.team1size = 0;
 		this.team2size = 0;
-		
+
 		checkTimers();
-		
+
 		// Get how many people are in the arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
@@ -951,7 +1002,7 @@ public abstract class Arena
 				}
 			}
 		}
-		
+
 		check();
 
 		for (int i = 0; i < arenaPlayers.size(); i++)
@@ -960,29 +1011,29 @@ public abstract class Arena
 			if (checkValid(ap))
 			{
 				// Check players in the Arena
-				if (isInLobby()) 
+				if (isInLobby())
 				{
 					ap.setFireTicks(0);
 					ap.setFoodLevel(20);
 					ap.decideHat();
 				}
-				
+
 				ap.setHealTimer(ap.getHealTimer() - 1);
-						
+
 				ArenaClass ac = ap.getArenaClass();
 				if (ac != null)
 				{
-					if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0) 
+					if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 					{
 						if (ap.getHealth() + 1 <= 20)
 						{
-							if (ap.getHealth() < 0) 
+							if (ap.getHealth() < 0)
 								ap.setHealth(1);
-							ap.setHealth(ap.getHealth()+1);
+							ap.setHealth(ap.getHealth() + 1);
 							ap.setHealTimer(2);
 						}
 					}
-								
+
 					// Class based potion effects
 					if (ac.hasPotionEffects())
 					{
@@ -990,24 +1041,24 @@ public abstract class Arena
 						{
 							for (PotionEffect effect : ac.getPotionEffects())
 							{
-								if (! ap.hasPotionEffect(effect.getType()))
+								if (!ap.hasPotionEffect(effect.getType()))
 									ap.addPotionEffect(effect);
 							}
 						}
 					}
 				}
-							
+
 				// Make sure they are still in the Arena
-				if (! plugin.isInArena(ap.getLocation()))
+				if (!plugin.isInArena(ap.getLocation()))
 				{
 					spawn(ap.getPlayer(), false);
 					ap.setAmtKicked(ap.getAmtKicked() + 1);
 				}
-					
+
 				// Timer Stuff
-				if (! isPauseStartTimer()) 
+				if (!isPauseStartTimer())
 				{
-					if (startTimer == 120) 
+					if (startTimer == 120)
 					{
 						ap.sendMessage("&e120 &3seconds until start!");
 					}
@@ -1019,7 +1070,7 @@ public abstract class Arena
 					{
 						ap.sendMessage("&e45 &3seconds until start!");
 					}
-					if (startTimer == 30) 
+					if (startTimer == 30)
 					{
 						ap.sendMessage("&e30 &3seconds until start!");
 					}
@@ -1027,12 +1078,12 @@ public abstract class Arena
 					{
 						ap.sendMessage("&e15 &3seconds until start!");
 					}
-					if (startTimer > 0 && startTimer < 11) 
+					if (startTimer > 0 && startTimer < 11)
 					{
 						ap.sendMessage("&e{0} &3second(s) until start!", startTimer);
 					}
 				}
-							
+
 				if (gameTimer > 0 && gameTimer < 21)
 				{
 					ap.sendMessage("&e{0} &3second(s) until end!", gameTimer);
@@ -1041,20 +1092,20 @@ public abstract class Arena
 				{
 					ap.sendMessage("&e{0} &3minute(s) until end!", gameTimer / 60);
 				}
-				if (gameTimer == maxGameTime/2) 
+				if (gameTimer == maxGameTime / 2)
 				{
 					ap.sendMessage("&e{0} &3second(s) until end!", maxGameTime / 2);
 				}
-					
+
 				// XP Bar
 				decideXPBar(ap);
-				
+
 				// End dead players
-				if (! stopped) 
+				if (!stopped)
 				{
-					if (ap.getDeaths() >= getMaxDeaths()) 
+					if (ap.getDeaths() >= getMaxDeaths())
 					{
-						if (ap.getHealth() > 0) 
+						if (ap.getHealth() > 0)
 						{
 							endPlayer(ap, true);
 						}
@@ -1062,16 +1113,17 @@ public abstract class Arena
 				}
 			}
 		}
-		
+
 		// Stop the arena if there are no players
 		if (getActivePlayers() == 0)
 			stop();
 	}
-	
+
 	/**
 	 * Decides the timer xp bar for an {@link ArenaPlayer}
 	 * 
-	 * @param ap - {@link ArenaPlayer} to decide xp bar for
+	 * @param ap
+	 *            - {@link ArenaPlayer} to decide xp bar for
 	 */
 	public final void decideXPBar(ArenaPlayer ap)
 	{
@@ -1083,7 +1135,7 @@ public abstract class Arena
 				{
 					ap.setLevel(gameTimer);
 				}
-					
+
 				if (isInLobby())
 				{
 					ap.setLevel(startTimer);
@@ -1091,11 +1143,12 @@ public abstract class Arena
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns a player's xp when they leave the game
 	 * 
-	 * @param ap - {@link ArenaPlayer} to return xp
+	 * @param ap
+	 *            - {@link ArenaPlayer} to return xp
 	 */
 	public final void returnXP(ArenaPlayer ap)
 	{
@@ -1106,7 +1159,7 @@ public abstract class Arena
 			// Clear XP
 			ap.setExp(0);
 			ap.setLevel(0);
-		
+
 			// Give Base XP
 			ap.setLevel(ap.getBaseLevel());
 		}
@@ -1115,7 +1168,8 @@ public abstract class Arena
 	/**
 	 * Forces the start of an arena
 	 * 
-	 * @param player - {@link Player} forcing the start of the arena
+	 * @param player
+	 *            - {@link Player} forcing the start of the arena
 	 */
 	public final void forceStart(Player player)
 	{
@@ -1124,13 +1178,13 @@ public abstract class Arena
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cThis arena is already in progress!"));
 			return;
 		}
-		
+
 		plugin.outConsole("Forcefully starting arena: {0}!", name);
 
 		start();
-		
+
 		gameTimer--;
-		
+
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
@@ -1139,12 +1193,12 @@ public abstract class Arena
 		return name;
 	}
 
-	public int getStartingAmount() 
+	public int getStartingAmount()
 	{
 		return startingAmount;
 	}
 
-	public void setStartingAmount(int startingAmount) 
+	public void setStartingAmount(int startingAmount)
 	{
 		this.startingAmount = startingAmount;
 	}
@@ -1154,22 +1208,22 @@ public abstract class Arena
 		return forceStop;
 	}
 
-	public void setForceStop(boolean forceStop) 
+	public void setForceStop(boolean forceStop)
 	{
 		this.forceStop = forceStop;
 	}
 
-	public List<ArenaPlayer> getArenaPlayers() 
+	public List<ArenaPlayer> getArenaPlayers()
 	{
 		return arenaPlayers;
 	}
-	
+
 	public int getStartTimer()
 	{
 		return startTimer;
 	}
 
-	public ArenaZone getArenaZone() 
+	public ArenaZone getArenaZone()
 	{
 		return az;
 	}
@@ -1182,10 +1236,10 @@ public abstract class Arena
 			if (checkValid(ap))
 				amt++;
 		}
-		
+
 		return amt;
 	}
-	
+
 	public boolean isDisabled()
 	{
 		return disabled;
@@ -1196,16 +1250,16 @@ public abstract class Arena
 		this.disabled = disabled;
 	}
 
-	public FieldType getType() 
+	public FieldType getType()
 	{
 		return type;
 	}
-	
+
 	public int getGameTimer()
 	{
 		return gameTimer;
 	}
-	
+
 	public int getMaxGameTime()
 	{
 		return maxGameTime;
@@ -1216,12 +1270,12 @@ public abstract class Arena
 		return maxDeaths;
 	}
 
-	public void setMaxDeaths(int maxDeaths) 
+	public void setMaxDeaths(int maxDeaths)
 	{
 		this.maxDeaths = maxDeaths;
 	}
-	
-	public boolean isUpdatedTeams() 
+
+	public boolean isUpdatedTeams()
 	{
 		return updatedTeams;
 	}
@@ -1231,7 +1285,7 @@ public abstract class Arena
 		this.updatedTeams = updatedTeams;
 	}
 
-	public List<ArenaFlag> getFlags() 
+	public List<ArenaFlag> getFlags()
 	{
 		return flags;
 	}
@@ -1241,7 +1295,7 @@ public abstract class Arena
 		this.flags = flags;
 	}
 
-	public int getWinningTeam() 
+	public int getWinningTeam()
 	{
 		return winningTeam;
 	}
@@ -1261,12 +1315,12 @@ public abstract class Arena
 		return allowTeamKilling;
 	}
 
-	public void setAllowTeamKilling(boolean allowTeamKilling) 
+	public void setAllowTeamKilling(boolean allowTeamKilling)
 	{
 		this.allowTeamKilling = allowTeamKilling;
 	}
 
-	public List<ArenaSpawn> getSpawns() 
+	public List<ArenaSpawn> getSpawns()
 	{
 		return spawns;
 	}
@@ -1276,12 +1330,12 @@ public abstract class Arena
 		this.spawns = spawns;
 	}
 
-	public World getWorld() 
+	public World getWorld()
 	{
 		return world;
 	}
-	
-	public int getWave() 
+
+	public int getWave()
 	{
 		return wave;
 	}
@@ -1291,12 +1345,12 @@ public abstract class Arena
 		return maxWave;
 	}
 
-	public int getTeam1size() 
+	public int getTeam1size()
 	{
 		return team1size;
 	}
 
-	public void setTeam1size(int team1size) 
+	public void setTeam1size(int team1size)
 	{
 		this.team1size = team1size;
 	}
@@ -1306,30 +1360,30 @@ public abstract class Arena
 		return pauseStartTimer;
 	}
 
-	public void setPauseStartTimer(boolean pauseStartTimer) 
+	public void setPauseStartTimer(boolean pauseStartTimer)
 	{
 		this.pauseStartTimer = pauseStartTimer;
 	}
-	
+
 	public void setType(FieldType type)
 	{
 		this.type = type;
 	}
-	
+
 	public boolean isInGame()
 	{
 		return (startTimer < 1 && gameTimer > 0);
 	}
-	
+
 	public boolean isInLobby()
 	{
 		return (startTimer > 1);
 	}
-	
+
 	public List<String> buildLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
-		
+
 		// Build kills map
 		HashMap<String, Double> kdrMap = new HashMap<String, Double>();
 		for (int i = 0; i < arenaPlayers.size(); i++)
@@ -1340,10 +1394,9 @@ public abstract class Arena
 				kdrMap.put(ap.getName(), ap.getKDR());
 			}
 		}
-		
+
 		final List<Map.Entry<String, Double>> sortedEntries = new ArrayList<Map.Entry<String, Double>>(kdrMap.entrySet());
-		Collections.sort(
-		sortedEntries, new Comparator<Map.Entry<String, Double>>()
+		Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Double>>()
 		{
 			@Override
 			public int compare(final Entry<String, Double> entry1, final Entry<String, Double> entry2)
@@ -1351,7 +1404,7 @@ public abstract class Arena
 				return -entry1.getValue().compareTo(entry2.getValue());
 			}
 		});
-		
+
 		int pos = 1;
 		for (Map.Entry<String, Double> entry : sortedEntries)
 		{
@@ -1371,10 +1424,10 @@ public abstract class Arena
 				pos++;
 			}
 		}
-		
+
 		return leaderboard;
 	}
-	
+
 	protected String decideColor(ArenaPlayer pl)
 	{
 		if (pl.getTeam() == 1)
@@ -1390,17 +1443,17 @@ public abstract class Arena
 			return "&d";
 		}
 	}
-	
+
 	public Mode getGameMode()
 	{
 		return gameMode;
 	}
-	
+
 	public void updateSigns()
 	{
 		plugin.getSignManager().updateSigns();
 	}
-	
+
 	public void announceWinner()
 	{
 		if (winningTeam == 2)
@@ -1416,43 +1469,49 @@ public abstract class Arena
 			tellPlayers("&3Game ended in a tie!");
 		}
 	}
-	
+
 	public final boolean checkValid(ArenaPlayer ap)
 	{
-		return ap != null && ! ap.isOut();
+		return ap != null && !ap.isOut();
 	}
-	
+
 	public final List<ArenaPlayer> getValidPlayers()
 	{
 		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
-		
+
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
 				validPlayers.add(ap);
 		}
-		
+
 		return validPlayers;
 	}
-	
+
 	public final class FinalizeTask extends BukkitRunnable
 	{
 		private final Arena arena;
+
 		public FinalizeTask(Arena arena)
 		{
 			this.arena = arena;
 		}
-		
+
 		@Override
 		public void run()
 		{
 			plugin.getActiveArenas().remove(arena);
 
 			plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
-			
-			try { arena.finalize(); }
-			catch (Throwable e) { }
+
+			try
+			{
+				arena.finalize();
+			}
+			catch (Throwable e)
+			{
+			}
 		}
 	}
 }

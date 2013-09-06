@@ -6,7 +6,7 @@ import net.dmulloy2.ultimatearena.types.ArenaStatistics;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class CmdStats extends UltimateArenaCommand
-{	
+{
 	public CmdStats(UltimateArena plugin)
 	{
 		super(plugin);
@@ -15,16 +15,16 @@ public class CmdStats extends UltimateArenaCommand
 		this.requiredArgs.add("arena");
 		this.description = "view an arena''s stats";
 		this.permission = Permission.STATS;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
-	public void perform() 
+	public void perform()
 	{
 		String arenaname = args[0];
 		ArenaZone az = plugin.getArenaZone(arenaname);
-		if (az != null) 
+		if (az != null)
 		{
 			ArenaStatistics as = new ArenaStatistics(az);
 			as.dumpStats(player);

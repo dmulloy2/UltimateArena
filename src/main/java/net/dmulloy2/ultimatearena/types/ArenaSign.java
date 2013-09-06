@@ -10,23 +10,29 @@ import org.bukkit.block.Sign;
 
 /**
  * Represents an ArenaSign, whether it be join or not
+ * 
  * @author dmulloy2
  */
 
-public class ArenaSign 
+public class ArenaSign
 {
 	private UltimateArena plugin;
 	private Location loc;
 	private ArenaZone zone;
 	private int id;
 	private Sign sign;
-	
+
 	/**
 	 * Creates a new ArenaSign
-	 * @param plugin - {@link UltimateArena} plugin instance
-	 * @param loc - {@link Location} of the spawn
-	 * @param zone - {@link ArenaZone} that the sign is for
-	 * @param id - The sign's ID
+	 * 
+	 * @param plugin
+	 *            - {@link UltimateArena} plugin instance
+	 * @param loc
+	 *            - {@link Location} of the spawn
+	 * @param zone
+	 *            - {@link ArenaZone} that the sign is for
+	 * @param id
+	 *            - The sign's ID
 	 */
 	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone zone, int id)
 	{
@@ -36,9 +42,10 @@ public class ArenaSign
 		this.id = id;
 		this.sign = getSign();
 	}
-	
+
 	/**
 	 * Gets the {@link Sign} instance
+	 * 
 	 * @return {@link Sign} instance
 	 */
 	public Sign getSign()
@@ -46,12 +53,12 @@ public class ArenaSign
 		Block block = loc.getWorld().getBlockAt(loc);
 		if (block.getState() instanceof Sign)
 		{
-			return (Sign)block.getState();
+			return (Sign) block.getState();
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Updates the Sign
 	 */
@@ -62,9 +69,9 @@ public class ArenaSign
 			plugin.deleteSign(this);
 			return;
 		}
-		
+
 		plugin.debug("Updating sign: {0}", id);
-		
+
 		sign.setLine(0, "[UltimateArena]");
 		sign.setLine(1, "Click to Join");
 		sign.setLine(2, zone.getArenaName());
@@ -72,9 +79,10 @@ public class ArenaSign
 
 		sign.update(true);
 	}
-	
+
 	/**
 	 * Gets the status of the {@link Arena}
+	 * 
 	 * @return Status of the {@link Arena}
 	 */
 	public String getStatus()
@@ -99,7 +107,7 @@ public class ArenaSign
 				line.append(")");
 			}
 		}
-		
+
 		return line.toString();
 	}
 
@@ -113,7 +121,7 @@ public class ArenaSign
 	{
 		return zone.getArenaName();
 	}
-	
+
 	public FieldType getArenaType()
 	{
 		return zone.getType();
@@ -123,7 +131,7 @@ public class ArenaSign
 	{
 		return id;
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -132,17 +140,17 @@ public class ArenaSign
 		ret.append("id=" + id + ", ");
 		ret.append("loc=" + Util.locationToString(loc));
 		ret.append("}");
-		
+
 		return ret.toString();
 	}
-	
+
 	@Override
 	public boolean equals(Object object)
 	{
 		if (!(object instanceof ArenaSign))
 			return false;
 
-		ArenaSign as = (ArenaSign)object;
+		ArenaSign as = (ArenaSign) object;
 		return (as.id == id);
 	}
 }

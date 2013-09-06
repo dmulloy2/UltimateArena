@@ -17,10 +17,10 @@ public class CmdClassList extends UltimateArenaCommand
 		this.aliases.add("classes");
 		this.description = "List UltimateArena classes";
 		this.permission = Permission.CLASSLIST;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
 	public void perform()
 	{

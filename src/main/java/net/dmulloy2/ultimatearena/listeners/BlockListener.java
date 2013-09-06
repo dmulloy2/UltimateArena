@@ -22,16 +22,17 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
-public class BlockListener implements Listener 
+public class BlockListener implements Listener
 {
 	private final UltimateArena plugin;
-	public BlockListener(final UltimateArena plugin) 
+
+	public BlockListener(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockBreak(BlockBreakEvent event) 
+	public void onBlockBreak(BlockBreakEvent event)
 	{
 		Block block = event.getBlock();
 		if (block == null)
@@ -40,17 +41,17 @@ public class BlockListener implements Listener
 		Player player = event.getPlayer();
 		if (player == null)
 			return;
-		
+
 		if (event.isCancelled())
 			return;
-		
+
 		if (plugin.isInArena(block))
 		{
 			/** The player is in an arena **/
 			if (plugin.isInArena(player) && plugin.getArena(player) != null)
 			{
 				Arena arena = plugin.getArena(player);
-				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
+				if (!arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
 					event.setCancelled(true);
@@ -59,7 +60,7 @@ public class BlockListener implements Listener
 			else
 			{
 				/** The player is at the site of the arena, but not in it **/
-				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
+				if (!plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
 					event.setCancelled(true);
@@ -67,9 +68,9 @@ public class BlockListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockPlace(BlockPlaceEvent event) 
+	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		Block block = event.getBlock();
 		if (block == null)
@@ -78,17 +79,17 @@ public class BlockListener implements Listener
 		Player player = event.getPlayer();
 		if (player == null)
 			return;
-		
+
 		if (event.isCancelled())
 			return;
-		
+
 		if (plugin.isInArena(block))
 		{
 			/** The player is in an arena **/
 			if (plugin.isInArena(player) && plugin.getArena(player) != null)
 			{
 				Arena arena = plugin.getArena(player);
-				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
+				if (!arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot place this!"));
 					event.setCancelled(true);
@@ -105,7 +106,7 @@ public class BlockListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onSignChange(SignChangeEvent event)
 	{
@@ -117,17 +118,17 @@ public class BlockListener implements Listener
 				{
 					if (event.getLine(2).equalsIgnoreCase("Auto Assign"))
 						return;
-					
+
 					ArenaZone az = plugin.getArenaZone(event.getLine(2));
 					if (az != null)
 					{
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, plugin.getArenaSigns().size());
 						plugin.getArenaSigns().add(sign);
-						
+
 						plugin.debug("Added new sign: {0}", sign);
-						
+
 						new SignUpdateTask(sign).runTaskLater(plugin, 60L);
-							
+
 						event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
 					}
 					else
@@ -155,22 +156,23 @@ public class BlockListener implements Listener
 			}
 		}
 	}
-	
+
 	public class SignUpdateTask extends BukkitRunnable
 	{
 		private final ArenaSign sign;
+
 		public SignUpdateTask(final ArenaSign sign)
 		{
 			this.sign = sign;
 		}
-		
+
 		@Override
 		public void run()
 		{
 			sign.update();
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSignBreak(BlockBreakEvent event)
 	{
@@ -178,7 +180,7 @@ public class BlockListener implements Listener
 		Player player = event.getPlayer();
 		if (block.getState() instanceof Sign)
 		{
-			Sign s = (Sign)block.getState();
+			Sign s = (Sign) block.getState();
 			if (s.getLine(0).equalsIgnoreCase("[UltimateArena]"))
 			{
 				ArenaSign sign = plugin.getArenaSign(block.getLocation());

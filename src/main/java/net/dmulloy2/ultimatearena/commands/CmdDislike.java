@@ -5,7 +5,7 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class CmdDislike extends UltimateArenaCommand
-{	
+{
 	public CmdDislike(UltimateArena plugin)
 	{
 		super(plugin);
@@ -14,10 +14,10 @@ public class CmdDislike extends UltimateArenaCommand
 		this.requiredArgs.add("arena");
 		this.description = "dislike an arena";
 		this.permission = Permission.DISLIKE;
-		
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -28,7 +28,7 @@ public class CmdDislike extends UltimateArenaCommand
 			if (az.canLike(player))
 			{
 				sendpMessage("&cYou have disliked: " + az.getArenaName());
-				
+
 				az.setDisliked(az.getDisliked() + 1);
 				az.getVoted().add(player.getName());
 			}

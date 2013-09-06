@@ -15,23 +15,23 @@ import org.bukkit.entity.Player;
 
 public abstract class UltimateArenaCommand implements CommandExecutor
 {
-	protected final UltimateArena plugin; 
-	
+	protected final UltimateArena plugin;
+
 	protected CommandSender sender;
 	protected Player player;
 	protected String args[];
-	
+
 	protected String name;
 	protected String description;
-	
+
 	protected Permission permission;
-	
+
 	protected boolean mustBePlayer;
-	
+
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
 	protected List<String> aliases;
-	
+
 	public UltimateArenaCommand(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -39,7 +39,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		optionalArgs = new ArrayList<String>(2);
 		aliases = new ArrayList<String>(2);
 	}
-	
+
 	@Override
 	public final boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
@@ -53,19 +53,19 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		this.args = args;
 		if (sender instanceof Player)
 			player = (Player) sender;
-		
+
 		if (mustBePlayer && !isPlayer())
 		{
 			err("You must be a player to execute this command!");
 			return;
 		}
-		
-		if (requiredArgs.size() > args.length) 
+
+		if (requiredArgs.size() > args.length)
 		{
 			invalidArgs();
 			return;
 		}
-		
+
 		if (hasPermission())
 			perform();
 		else
@@ -74,12 +74,12 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 			log(Level.WARNING, sender.getName() + " was denied access to a command!");
 		}
 	}
-	
-	protected final boolean isPlayer() 
+
+	protected final boolean isPlayer()
 	{
 		return (player != null);
 	}
-	
+
 	private final boolean hasPermission()
 	{
 		return (plugin.getPermissionHandler().hasPermission(sender, permission));
@@ -89,20 +89,20 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	{
 		return FormatUtil.format(description);
 	}
-	
+
 	public abstract void perform();
-	
-	public List<String> getAliases() 
+
+	public List<String> getAliases()
 	{
 		return aliases;
 	}
-	
-	public final String getName() 
+
+	public final String getName()
 	{
 		return name;
 	}
 
-	public final String getUsageTemplate(final boolean displayHelp) 
+	public final String getUsageTemplate(final boolean displayHelp)
 	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("&b/ua ");
@@ -112,46 +112,46 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		ret.append("&3 ");
 		for (String s : requiredArgs)
 			ret.append(String.format("<%s> ", s));
-		
+
 		for (String s : optionalArgs)
 			ret.append(String.format("[%s] ", s));
-		
+
 		if (displayHelp)
 			ret.append("&e" + description);
-		
+
 		return FormatUtil.format(ret.toString());
 	}
-	
+
 	protected final void sendpMessage(String message, Object... objects)
 	{
 		sender.sendMessage(plugin.getPrefix() + FormatUtil.format(message, objects));
 	}
-	
+
 	protected final void sendMessage(String message, Object... objects)
 	{
 		sender.sendMessage(FormatUtil.format(message, objects));
 	}
-	
+
 	protected final void log(Level level, String string, Object... objects)
 	{
 		plugin.outConsole(level, string, objects);
 	}
-	
+
 	protected final void log(String string, Object... objects)
 	{
 		log(Level.INFO, string, objects);
 	}
-	
+
 	protected final void debug(String string, Object... objects)
 	{
 		plugin.debug(string, objects);
 	}
-	
+
 	protected final void err(String string, Object... objects)
 	{
 		sendpMessage("&c" + string, objects);
 	}
-	
+
 	protected final void invalidArgs()
 	{
 		err("Invalid arguments! Try: " + getUsageTemplate(false));

@@ -10,7 +10,7 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
  * @author dmulloy2
  */
 
-public class CmdHelp extends PaginatedCommand 
+public class CmdHelp extends PaginatedCommand
 {
 	public CmdHelp(UltimateArena plugin)
 	{
@@ -22,40 +22,39 @@ public class CmdHelp extends PaginatedCommand
 	}
 
 	@Override
-	public int getListSize() 
+	public int getListSize()
 	{
 		return buildHelpMenu().size();
 	}
 
 	@Override
-	public String getHeader(int index) 
+	public String getHeader(int index)
 	{
 		return FormatUtil.format("&3====[ &eUltimateArena Help &3(&e{0}&3/&e{1}&3) ]====", index, getPageCount());
 	}
 
 	@Override
-	public List<String> getLines(int startIndex, int endIndex) 
+	public List<String> getLines(int startIndex, int endIndex)
 	{
 		List<String> lines = new ArrayList<String>();
-		for (int i = startIndex; i < endIndex && i < getListSize(); i++) 
+		for (int i = startIndex; i < endIndex && i < getListSize(); i++)
 		{
 			lines.add(buildHelpMenu().get(i));
 		}
-		
+
 		return lines;
 	}
 
-	
 	@Override
-	public String getLine(int index) 
+	public String getLine(int index)
 	{
 		return null;
 	}
-	
+
 	private final List<String> buildHelpMenu()
 	{
 		List<String> ret = new ArrayList<String>();
-		
+
 		for (UltimateArenaCommand cmd : plugin.getCommandHandler().getRegisteredCommands())
 		{
 			if (plugin.getPermissionHandler().hasPermission(sender, cmd.permission))
@@ -63,7 +62,7 @@ public class CmdHelp extends PaginatedCommand
 				ret.add(cmd.getUsageTemplate(true));
 			}
 		}
-		
+
 		return ret;
 	}
 }

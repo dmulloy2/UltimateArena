@@ -6,7 +6,7 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdForceStop extends UltimateArenaCommand
 {
-	public CmdForceStop(UltimateArena plugin) 
+	public CmdForceStop(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "forcestop";
@@ -14,12 +14,12 @@ public class CmdForceStop extends UltimateArenaCommand
 		this.optionalArgs.add("arena");
 		this.description = "force stop an arena";
 		this.permission = Permission.FORCESTOP;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
-	public void perform() 
+	public void perform()
 	{
 		if (args.length > 0)
 		{
@@ -29,7 +29,7 @@ public class CmdForceStop extends UltimateArenaCommand
 				err("This arena is not currently active!");
 				return;
 			}
-			
+
 			a.stop();
 		}
 		else

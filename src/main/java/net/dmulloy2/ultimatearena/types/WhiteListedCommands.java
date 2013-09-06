@@ -6,16 +6,17 @@ import java.util.List;
 public class WhiteListedCommands
 {
 	private List<String> allowedCommand;
-	public WhiteListedCommands() 
+
+	public WhiteListedCommands()
 	{
 		this.allowedCommand = new ArrayList<String>();
 	}
-	
+
 	public void addCommand(String str)
 	{
 		allowedCommand.add(str);
 	}
-	
+
 	public boolean isAllowed(String[] check)
 	{
 		for (String cmd : allowedCommand)
@@ -24,27 +25,27 @@ public class WhiteListedCommands
 			{
 				return true;
 			}
-			
+
 			StringBuilder check1 = new StringBuilder();
 			for (int i = 0; i < check.length; i++)
 			{
 				check1.append(check[i]);
 			}
-			
+
 			if (cmd.equalsIgnoreCase(check1.toString()))
 			{
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	public void clear() 
+
+	public void clear()
 	{
 		allowedCommand.clear();
 	}
-	
+
 	public int size()
 	{
 		return allowedCommand.size();

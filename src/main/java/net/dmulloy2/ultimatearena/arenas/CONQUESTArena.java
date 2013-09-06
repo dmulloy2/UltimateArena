@@ -15,37 +15,37 @@ public class CONQUESTArena extends Arena
 {
 	public int REDTEAMPOWER = 100;
 	public int BLUETEAMPOWER = 100;
-	
-	public CONQUESTArena(ArenaZone az) 
+
+	public CONQUESTArena(ArenaZone az)
 	{
 		super(az);
-		
+
 		this.type = FieldType.CONQUEST;
 		this.startTimer = 180;
 		this.maxGameTime = 60 * 20;
 		this.maxDeaths = 900;
-		
-		for (int i = 0; i < az.getFlags().size(); i++) 
+
+		for (int i = 0; i < az.getFlags().size(); i++)
 		{
-			flags.add( new ArenaFlag(this, az.getFlags().get(i), plugin) );
+			flags.add(new ArenaFlag(this, az.getFlags().get(i), plugin));
 		}
 	}
-	
+
 	@Override
 	public void onStart()
 	{
 		super.onStart();
 		this.REDTEAMPOWER = getActivePlayers() * 4;
 		this.BLUETEAMPOWER = REDTEAMPOWER;
-		if (REDTEAMPOWER < 4) 
+		if (REDTEAMPOWER < 4)
 		{
 			REDTEAMPOWER = 4;
 		}
-		if (REDTEAMPOWER > 150) 
+		if (REDTEAMPOWER > 150)
 		{
 			REDTEAMPOWER = 150;
 		}
-		if (BLUETEAMPOWER < 4) 
+		if (BLUETEAMPOWER < 4)
 		{
 			BLUETEAMPOWER = 4;
 		}
@@ -54,7 +54,7 @@ public class CONQUESTArena extends Arena
 			BLUETEAMPOWER = 150;
 		}
 	}
-	
+
 	@Override
 	public Location getSpawn(ArenaPlayer ap)
 	{
@@ -77,8 +77,8 @@ public class CONQUESTArena extends Arena
 					}
 				}
 			}
-				
-			if (! spawnto.isEmpty())
+
+			if (!spawnto.isEmpty())
 			{
 				int rand = Util.random(spawnto.size());
 				ArenaFlag flag = spawnto.get(rand);
@@ -92,58 +92,64 @@ public class CONQUESTArena extends Arena
 				return super.getSpawn(ap);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
-	public void onPlayerDeath(ArenaPlayer pl) 
+	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		super.onPlayerDeath(pl);
-		
+
 		int majority = 0;
 		int red = 0;
 		int blu = 0;
-		
-		for (int i = 0; i < flags.size(); i++) 
+
+		for (int i = 0; i < flags.size(); i++)
 		{
 			ArenaFlag flag = flags.get(i);
-			if (flag.getColor() == 14) 
+			if (flag.getColor() == 14)
 			{
-				if (flag.isCapped()) 
+				if (flag.isCapped())
 				{
 					red++;
 				}
 			}
-			else if (flag.getColor() == 11) 
+			else if (flag.getColor() == 11)
 			{
-				if (flag.isCapped()) 
+				if (flag.isCapped())
 				{
 					blu++;
 				}
 			}
 		}
-		
-		if (blu > red) { majority = 1; }
-		if (red > blu) { majority = 2; }
-	
-		if (majority == 1) 
+
+		if (blu > red)
+		{
+			majority = 1;
+		}
+		if (red > blu)
+		{
+			majority = 2;
+		}
+
+		if (majority == 1)
 		{
 			REDTEAMPOWER--;
 		}
-		else if (majority == 2) 
+		else if (majority == 2)
 		{
 			BLUETEAMPOWER--;
 		}
-		
-		if (pl.getTeam() == 1) 
+
+		if (pl.getTeam() == 1)
 		{
 			REDTEAMPOWER--;
-			for (int i = 0; i < arenaPlayers.size(); i++) 
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
 				if (checkValid(apl))
-				{ 
+				{
 					if (apl.getTeam() == 1)
 					{
 						apl.sendMessage("&cYour power is now: &6{0}", REDTEAMPOWER);
@@ -155,14 +161,14 @@ public class CONQUESTArena extends Arena
 				}
 			}
 		}
-		else if (pl.getTeam() == 2) 
+		else if (pl.getTeam() == 2)
 		{
 			BLUETEAMPOWER--;
-			for (int i = 0; i < arenaPlayers.size(); i++) 
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
 				if (checkValid(apl))
-				{ 
+				{
 					if (apl.getTeam() == 2)
 					{
 						apl.sendMessage("&cYour power is now: &6{0}", BLUETEAMPOWER);
@@ -175,29 +181,29 @@ public class CONQUESTArena extends Arena
 			}
 		}
 	}
-	
+
 	@Override
 	public int getTeam()
 	{
 		return getBalancedTeam();
 	}
-	
+
 	@Override
-	public void check() 
+	public void check()
 	{
 		List<ArenaPlayer> arenaPlayers = getValidPlayers();
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			
-			if (BLUETEAMPOWER <= 0) 
+
+			if (BLUETEAMPOWER <= 0)
 			{
 				if (ap.getTeam() == 2)
 				{
-					endPlayer(ap,  false);
+					endPlayer(ap, false);
 				}
 			}
-			else if (REDTEAMPOWER <= 0) 
+			else if (REDTEAMPOWER <= 0)
 			{
 				if (ap.getTeam() == 1)
 				{
@@ -205,31 +211,31 @@ public class CONQUESTArena extends Arena
 				}
 			}
 		}
-		
+
 		if (BLUETEAMPOWER <= 0)
 		{
 			setWinningTeam(1);
 		}
-		
-		if (REDTEAMPOWER <= 0) 
+
+		if (REDTEAMPOWER <= 0)
 		{
 			setWinningTeam(2);
 		}
-			
+
 		for (int i = 0; i < flags.size(); i++)
 		{
 			ArenaFlag flag = flags.get(i);
-			
+
 			flag.step();
 			flag.checkNear(arenaPlayers);
 		}
-		
-		if (startTimer <= 0) 
+
+		if (startTimer <= 0)
 		{
-			if (! simpleTeamCheck(false)) 
+			if (!simpleTeamCheck(false))
 			{
 				stop();
-				
+
 				rewardTeam(-1, false);
 			}
 		}

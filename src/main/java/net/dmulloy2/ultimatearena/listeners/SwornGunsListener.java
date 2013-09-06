@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 public class SwornGunsListener implements Listener
 {
 	private final UltimateArena plugin;
+
 	public SwornGunsListener(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -26,16 +27,16 @@ public class SwornGunsListener implements Listener
 		Player pl = event.getShooterAsPlayer();
 		if (pl != null)
 		{
-			if (plugin.isInArena(pl)) 
+			if (plugin.isInArena(pl))
 			{
-				/**Hunger Games Check**/
+				/** Hunger Games Check **/
 				if (plugin.getArena(pl).getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					event.setCancelled(true);
 					return;
 				}
-					
-				/**If its a gun in a regular arena, unlimited ammo!**/
+
+				/** If its a gun in a regular arena, unlimited ammo! **/
 				if (plugin.getConfig().getBoolean("unlimitedAmmo", true))
 				{
 					event.setAmountAmmoNeeded(0);

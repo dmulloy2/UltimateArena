@@ -16,20 +16,20 @@ public class FlagBase
 	private Block notify = null;
 	protected Arena arena;
 	protected final UltimateArena plugin;
-	
-	public FlagBase(Arena arena, Location loc, final UltimateArena plugin) 
+
+	public FlagBase(Arena arena, Location loc, final UltimateArena plugin)
 	{
 		this.arena = arena;
-		
+
 		Location safe = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
 		this.setLoc(safe.clone().subtract(0, 1, 0));
-		
+
 		this.plugin = plugin;
-		
+
 		setup();
 	}
-	
-	public void setup() 
+
+	public void setup()
 	{
 		Location flag = loc.clone().add(0, 5, 0);
 		setNotify(flag.getBlock());
@@ -47,30 +47,32 @@ public class FlagBase
 		((loc.clone()).add(0, 0, -1)).getBlock().setType(Material.STONE);
 		((loc.clone()).add(0, 0, -2)).getBlock().setType(Material.STONE);
 	}
-	
-	public synchronized void checkNear(List<ArenaPlayer> arenaplayers) {}
+
+	public synchronized void checkNear(List<ArenaPlayer> arenaplayers)
+	{
+	}
 
 	public Location getLoc()
 	{
 		return loc;
 	}
 
-	public void setLoc(Location loc) 
+	public void setLoc(Location loc)
 	{
 		this.loc = loc;
 	}
 
-	public Block getNotify() 
+	public Block getNotify()
 	{
 		return notify;
 	}
 
-	public void setNotify(Block notify) 
+	public void setNotify(Block notify)
 	{
 		this.notify = notify;
 	}
 
-	public Arena getArena() 
+	public Arena getArena()
 	{
 		return arena;
 	}

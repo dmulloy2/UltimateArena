@@ -5,7 +5,7 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class CmdLike extends UltimateArenaCommand
-{	
+{
 	public CmdLike(UltimateArena plugin)
 	{
 		super(plugin);
@@ -13,21 +13,21 @@ public class CmdLike extends UltimateArenaCommand
 		this.requiredArgs.add("arena");
 		this.description = "like an arena";
 		this.permission = Permission.LIKE;
-		
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
 		String arenaname = args[0];
 		ArenaZone az = plugin.getArenaZone(arenaname);
-		if (az != null) 
+		if (az != null)
 		{
-			if (az.canLike(player)) 
+			if (az.canLike(player))
 			{
 				sendpMessage("&aYou have voted for: {0}!", az.getArenaName());
-				
+
 				az.setLiked(az.getLiked() + 1);
 				az.getVoted().add(player.getName());
 			}

@@ -6,8 +6,8 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class CmdEnable extends UltimateArenaCommand
-{	
-	public CmdEnable(UltimateArena plugin) 
+{
+	public CmdEnable(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "enable";
@@ -15,10 +15,10 @@ public class CmdEnable extends UltimateArenaCommand
 		this.requiredArgs.add("arena");
 		this.description = "enable an arena";
 		this.permission = Permission.ENABLE;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -31,7 +31,7 @@ public class CmdEnable extends UltimateArenaCommand
 				return;
 			}
 		}
-			
+
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
 			if (az.getArenaName().equalsIgnoreCase(args[0]))
@@ -41,7 +41,7 @@ public class CmdEnable extends UltimateArenaCommand
 				return;
 			}
 		}
-		
+
 		err("Could not find an Arena by that name/type!");
 	}
 }

@@ -5,7 +5,7 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdDelete extends UltimateArenaCommand
 {
-	public CmdDelete(UltimateArena plugin) 
+	public CmdDelete(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "delete";
@@ -13,12 +13,12 @@ public class CmdDelete extends UltimateArenaCommand
 		this.requiredArgs.add("arena");
 		this.description = "delete an arena";
 		this.permission = Permission.DELETE;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
-	public void perform() 
+	public void perform()
 	{
 		plugin.deleteArena(player, args[0]);
 	}

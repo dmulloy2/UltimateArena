@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class CmdKick extends UltimateArenaCommand
 {
-	public CmdKick(UltimateArena plugin) 
+	public CmdKick(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "kick";
@@ -18,10 +18,10 @@ public class CmdKick extends UltimateArenaCommand
 		this.requiredArgs.add("player");
 		this.description = "kick a player from an arena";
 		this.permission = Permission.KICK;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -31,15 +31,15 @@ public class CmdKick extends UltimateArenaCommand
 			err("Player not found!");
 			return;
 		}
-		
-		if (! plugin.isInArena(player))
+
+		if (!plugin.isInArena(player))
 		{
 			err("That player is not in an arena!");
 			return;
 		}
-		
+
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
-		
+
 		ap.leaveArena(LeaveReason.KICK);
 	}
 }

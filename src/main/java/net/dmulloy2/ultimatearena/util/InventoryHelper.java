@@ -23,20 +23,20 @@ public class InventoryHelper
 					return false;
 				}
 			}
-		
+
 			if (inventory.getHelmet() != null)
 				return false;
-		
+
 			if (inventory.getChestplate() != null)
 				return false;
-			
+
 			if (inventory.getLeggings() != null)
 				return false;
-		
+
 			if (inventory.getBoots() != null)
 				return false;
 		}
-		
+
 		return true;
 	}
 
@@ -50,7 +50,7 @@ public class InventoryHelper
 		for (int i = 0; i < stacks.length; i++)
 		{
 			final ItemStack cItem = stacks[i];
-			if(cItem != null && cItem.getAmount() < maxAmount && cItem.isSimilar(item))
+			if (cItem != null && cItem.getAmount() < maxAmount && cItem.isSimilar(item))
 			{
 				return i;
 			}
@@ -69,12 +69,12 @@ public class InventoryHelper
 		}
 		return false;
 	}
-	
+
 	public static Map<Integer, ItemStack> addItem(final Player player, final ItemStack item)
 	{
 		if (hasRoom(item, player))
 			return addItems(player.getInventory(), item);
-		
+
 		return null;
 	}
 
@@ -109,7 +109,6 @@ public class InventoryHelper
 				}
 			}
 		}
-
 
 		for (int i = 0; i < combined.length; i++)
 		{
@@ -158,7 +157,8 @@ public class InventoryHelper
 				}
 				else
 				{
-					// So, apparently it might only partially fit, well lets do just that
+					// So, apparently it might only partially fit, well lets do
+					// just that
 					final ItemStack partialItem = inventory.getItem(firstPartial);
 
 					final int amount = item.getAmount();
@@ -179,26 +179,26 @@ public class InventoryHelper
 		}
 		return leftover;
 	}
-	
+
 	public static boolean hasRoom(ItemStack item, Player player)
 	{
 		final int maxStackSize = (item.getMaxStackSize() == -1) ? player.getInventory().getMaxStackSize() : item.getMaxStackSize();
 		int amount = item.getAmount();
-		
-		for (ItemStack stack : player.getInventory().getContents()) 
+
+		for (ItemStack stack : player.getInventory().getContents())
 		{
 			if (stack == null || stack.getType().equals(Material.AIR))
-				amount -= maxStackSize;			
-			else if (stack.getTypeId() == item.getTypeId() && 
-					stack.getDurability() == item.getDurability() &&
-					(stack.getEnchantments().size() == 0 ? item.getEnchantments().size() == 0 :
-						stack.getEnchantments().equals(item.getEnchantments())))
+				amount -= maxStackSize;
+			else if (stack.getTypeId() == item.getTypeId()
+					&& stack.getDurability() == item.getDurability()
+					&& (stack.getEnchantments().size() == 0 ? item.getEnchantments().size() == 0 : stack.getEnchantments().equals(
+							item.getEnchantments())))
 				amount -= maxStackSize - stack.getAmount();
-			
+
 			if (amount <= 0)
 				return true;
 		}
-		
+
 		return false;
 	}
 }

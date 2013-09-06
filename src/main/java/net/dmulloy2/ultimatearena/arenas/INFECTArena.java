@@ -14,26 +14,26 @@ public class INFECTArena extends PVPArena
 	public INFECTArena(ArenaZone az)
 	{
 		super(az);
-		
+
 		this.type = FieldType.INFECT;
 		this.startTimer = 80;
 		this.maxGameTime = (60 * 2) + 10;
 		this.maxDeaths = 99;
 	}
-	
+
 	@Override
-	public int getTeam() 
+	public int getTeam()
 	{
-		return 1; //blue team = default
+		return 1; // blue team = default
 	}
-	
+
 	@Override
 	public void onStart()
 	{
 		chooseInfected(0);
 	}
-	
-	public void chooseInfected(int tries) 
+
+	public void chooseInfected(int tries)
 	{
 		if (tries < 16)
 		{
@@ -53,13 +53,13 @@ public class INFECTArena extends PVPArena
 		else
 		{
 			tellPlayers("&cError starting!");
-			
+
 			stop();
 		}
 	}
 
 	@Override
-	public void onSpawn(ArenaPlayer apl) 
+	public void onSpawn(ArenaPlayer apl)
 	{
 		if (apl.getTeam() == 2)
 		{
@@ -70,7 +70,7 @@ public class INFECTArena extends PVPArena
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 1));
-			
+
 			spawn(apl.getPlayer(), true);
 			apl.clearInventory();
 			apl.decideHat();
@@ -78,64 +78,64 @@ public class INFECTArena extends PVPArena
 	}
 
 	@Override
-	public void check() 
+	public void check()
 	{
 		if (startTimer <= 0)
 		{
-			if (! simpleTeamCheck(false)) 
+			if (!simpleTeamCheck(false))
 			{
 				if (getTeam1size() == 0)
 				{
 					setWinningTeam(2);
 
 					stop();
-					
+
 					rewardTeam(2, true);
 				}
 				else
 				{
 					tellPlayers("&3One team is empty! game ended!");
-					
+
 					stop();
 				}
 			}
 			else
 			{
-				if (getStartingAmount() <= 1) 
+				if (getStartingAmount() <= 1)
 				{
 					tellPlayers("&3Not enough people to play!");
-					
+
 					stop();
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void onPreOutOfTime()
 	{
 		this.setWinningTeam(1);
 	}
-	
+
 	@Override
-	public void onOutOfTime() 
+	public void onOutOfTime()
 	{
 		rewardTeam(1, false);
 	}
-	
+
 	@Override
-	public void onPlayerDeath(ArenaPlayer pl) 
+	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		super.onPlayerDeath(pl);
-		
+
 		if (pl.getTeam() == 1)
 		{
 			pl.sendMessage("&3You have joined the Infected!");
 		}
-		
+
 		pl.setTeam(2);
 	}
-	
+
 	@Override
 	public void announceWinner()
 	{

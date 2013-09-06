@@ -38,54 +38,57 @@ public class ArenaPlayer extends PlayerExtension
 	private int baseLevel = 0;
 	private int amtKicked = 0;
 	private int healTimer = 0;
-	
+
 	private boolean out = false;
 	private boolean canReward = false;
 
 	private Player player;
-	
+
 	private String name;
-	
+
 	private Arena arena;
 	private ArenaClass mclass;
 	private Location spawnBack;
-	
+
 	private final UltimateArena plugin;
-	
+
 	private ItemStack[] inventoryContents;
 	private ItemStack[] armorContents;
-	
+
 	/**
 	 * Creates a new ArenaPlayer instance
 	 * 
-	 * @param player - Base {@link Player} to create the arena player around
-	 * @param arena - {@link Arena} the player is in
-	 * @param plugin - {@link UltimateArena} plugin instance
+	 * @param player
+	 *            - Base {@link Player} to create the arena player around
+	 * @param arena
+	 *            - {@link Arena} the player is in
+	 * @param plugin
+	 *            - {@link UltimateArena} plugin instance
 	 */
 	public ArenaPlayer(Player player, Arena arena, final UltimateArena plugin)
 	{
 		super(player);
-		
+
 		this.player = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
-		
+
 		this.arena = arena;
 		this.plugin = plugin;
 		this.mclass = plugin.getArenaClass(arena.getArenaZone().getDefaultClass());
 	}
-	
+
 	/**
 	 * Decides the player's hat
 	 */
 	public void decideHat()
 	{
-		if (mclass != null && ! mclass.usesHelmet())
+		if (mclass != null && !mclass.usesHelmet())
 		{
 			player.getInventory().setHelmet(null);
 			return;
 		}
-		
+
 		if (player.getInventory().getHelmet() == null)
 		{
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET, 1);
@@ -98,23 +101,27 @@ public class ArenaPlayer extends PlayerExtension
 			player.getInventory().setHelmet(itemStack);
 		}
 	}
-	
+
 	/**
 	 * Gives the player an item
 	 * 
-	 * @param slot - Slot to put the item in
-	 * @param stack - {@link ItemStack} to give the player
+	 * @param slot
+	 *            - Slot to put the item in
+	 * @param stack
+	 *            - {@link ItemStack} to give the player
 	 */
-	public void giveItem(int slot, ItemStack stack) 
+	public void giveItem(int slot, ItemStack stack)
 	{
 		player.getInventory().setItem(slot, stack);
 	}
-	
+
 	/**
 	 * Gives the player armor
 	 * 
-	 * @param slot - Armor slot to put. Must be between 0 and 3
-	 * @param stack - {@link ItemStack} to give as armor
+	 * @param slot
+	 *            - Armor slot to put. Must be between 0 and 3
+	 * @param stack
+	 *            - {@link ItemStack} to give as armor
 	 */
 	public void giveArmor(int slot, ItemStack stack)
 	{
@@ -134,7 +141,7 @@ public class ArenaPlayer extends PlayerExtension
 			}
 		}
 	}
-	
+
 	/**
 	 * Saves the player's inventory
 	 */
@@ -146,7 +153,7 @@ public class ArenaPlayer extends PlayerExtension
 			this.armorContents = player.getInventory().getArmorContents();
 		}
 	}
-	
+
 	/**
 	 * Clears the player's inventory
 	 */
@@ -159,7 +166,7 @@ public class ArenaPlayer extends PlayerExtension
 		inv.setBoots(null);
 		inv.clear();
 	}
-	
+
 	/**
 	 * Returns the player's inventory
 	 */
@@ -171,7 +178,7 @@ public class ArenaPlayer extends PlayerExtension
 			player.getInventory().setArmorContents(armorContents);
 		}
 	}
-	
+
 	/**
 	 * Readies the player for spawning
 	 */
@@ -182,35 +189,37 @@ public class ArenaPlayer extends PlayerExtension
 			leaveArena(LeaveReason.KICK);
 			return;
 		}
-			
+
 		clearInventory();
 		clearPotionEffects();
-		
+
 		giveClassItems();
 	}
-	
+
 	/**
 	 * Sets a player's class
 	 * 
-	 * @param ac - {@link ArenaClass} to set the player's class to
-	 * @param command - Whether or not it was changed via command
+	 * @param ac
+	 *            - {@link ArenaClass} to set the player's class to
+	 * @param command
+	 *            - Whether or not it was changed via command
 	 */
 	public void setClass(ArenaClass ac)
 	{
 		this.mclass = ac;
 	}
-	
+
 	/**
 	 * Gives the player their class items
 	 */
 	public void giveClassItems()
 	{
 		decideHat();
-		
-		if (! arena.isInGame())
+
+		if (!arena.isInGame())
 			return;
-			
-		if (mclass == null) 
+
+		if (mclass == null)
 		{
 			giveArmor(0, new ItemStack(Material.IRON_CHESTPLATE));
 			giveArmor(1, new ItemStack(Material.IRON_LEGGINGS));
@@ -218,7 +227,7 @@ public class ArenaPlayer extends PlayerExtension
 			giveItem(0, new ItemStack(Material.DIAMOND_SWORD));
 			return;
 		}
-				
+
 		if (mclass.usesEssentials())
 		{
 			try
@@ -227,18 +236,17 @@ public class ArenaPlayer extends PlayerExtension
 				Plugin essPlugin = pm.getPlugin("Essentials");
 				IEssentials ess = (IEssentials) essPlugin;
 				User user = ess.getUser(player);
-								
+
 				List<String> items = Kit.getItems(ess, user, mclass.getEssentialsKit());
-					
+
 				Kit.expandItems(ess, user, items);
 			}
 			catch (Exception e)
 			{
-				sendMessage("&cCould not give Essentials kit: {0}", 
-						e instanceof ClassNotFoundException ? "outdated Essentials!" : e);
+				sendMessage("&cCould not give Essentials kit: {0}", e instanceof ClassNotFoundException ? "outdated Essentials!" : e);
 			}
 		}
-		
+
 		for (int i = 0; i < mclass.getArmor().size(); i++)
 		{
 			ItemStack stack = mclass.getArmor(i);
@@ -247,7 +255,7 @@ public class ArenaPlayer extends PlayerExtension
 				giveArmor(i, stack);
 			}
 		}
-		
+
 		for (int i = 0; i < mclass.getWeapons().size(); i++)
 		{
 			ItemStack stack = mclass.getWeapon(i);
@@ -274,17 +282,17 @@ public class ArenaPlayer extends PlayerExtension
 		return kills;
 	}
 
-	public void setKills(int kills) 
+	public void setKills(int kills)
 	{
 		this.kills = kills;
 	}
 
-	public int getDeaths() 
+	public int getDeaths()
 	{
 		return deaths;
 	}
 
-	public void setDeaths(int deaths) 
+	public void setDeaths(int deaths)
 	{
 		this.deaths = deaths;
 	}
@@ -304,17 +312,17 @@ public class ArenaPlayer extends PlayerExtension
 		return gameXP;
 	}
 
-	public void setGameXP(int gameXP) 
+	public void setGameXP(int gameXP)
 	{
 		this.gameXP = gameXP;
 	}
 
-	public int getPoints() 
+	public int getPoints()
 	{
 		return points;
 	}
 
-	public void setPoints(int points) 
+	public void setPoints(int points)
 	{
 		this.points = points;
 	}
@@ -339,12 +347,12 @@ public class ArenaPlayer extends PlayerExtension
 		return out;
 	}
 
-	public void setOut(boolean out) 
+	public void setOut(boolean out)
 	{
 		this.out = out;
 	}
 
-	public boolean canReward() 
+	public boolean canReward()
 	{
 		return canReward;
 	}
@@ -354,27 +362,27 @@ public class ArenaPlayer extends PlayerExtension
 		this.canReward = canReward;
 	}
 
-	public Location getSpawnBack() 
+	public Location getSpawnBack()
 	{
 		return spawnBack;
 	}
 
-	public int getTeam() 
+	public int getTeam()
 	{
 		return team;
 	}
 
-	public void setTeam(int team) 
+	public void setTeam(int team)
 	{
 		this.team = team;
 	}
 
-	public int getAmtKicked() 
+	public int getAmtKicked()
 	{
 		return amtKicked;
 	}
 
-	public void setAmtKicked(int amtKicked) 
+	public void setAmtKicked(int amtKicked)
 	{
 		this.amtKicked = amtKicked;
 	}
@@ -383,13 +391,13 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		return mclass;
 	}
-	
-	public Arena getArena() 
+
+	public Arena getArena()
 	{
 		return arena;
 	}
-	
-	public void sendMessage(String string, Object...objects)
+
+	public void sendMessage(String string, Object... objects)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
@@ -399,24 +407,25 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string));
 	}
-	
+
 	public void addXP(int xp)
 	{
 		setGameXP(getGameXP() + xp);
 	}
-	
+
 	public void subtractXP(int xp)
 	{
 		setGameXP(getGameXP() - xp);
 	}
-	
+
 	public void setBaseLevel(int baseLevel)
 	{
 		this.baseLevel = baseLevel;
 	}
-	
+
 	/**
 	 * Gets a player's KDR (Kill-Death Ratio)
+	 * 
 	 * @return KDR
 	 */
 	public double getKDR()
@@ -424,44 +433,44 @@ public class ArenaPlayer extends PlayerExtension
 		double k = kills;
 		if (deaths == 0)
 			return k;
-		
+
 		double d = deaths;
 		return (k / d);
 	}
-	
+
 	private long deathTime;
-	
+
 	@Override
 	public boolean isDead()
 	{
-		return (System.currentTimeMillis() - deathTime)  < 60L;
+		return (System.currentTimeMillis() - deathTime) < 60L;
 	}
-	
+
 	public void onDeath()
 	{
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
 		this.deaths++;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return name;
 	}
-	
+
 	@Override
 	public boolean equals(Object o)
 	{
 		if (o instanceof ArenaPlayer)
 		{
-			ArenaPlayer op = (ArenaPlayer)o;
+			ArenaPlayer op = (ArenaPlayer) o;
 			return op.getName().equals(name);
 		}
 
 		return false;
 	}
-	
+
 	public void leaveArena(LeaveReason reason)
 	{
 		if (reason == LeaveReason.COMMAND)
@@ -469,34 +478,34 @@ public class ArenaPlayer extends PlayerExtension
 			arena.endPlayer(this, false);
 
 			sendMessage("&3You have left the arena!");
-			
+
 			arena.tellPlayers("&e{0} &3has left the arena!", getName());
 		}
-		
+
 		if (reason == LeaveReason.KICK)
 		{
 			arena.endPlayer(this, false);
 
 			sendMessage("&cYou have been kicked from the arena!");
-			
+
 			arena.tellPlayers("&e{0} &3has been kicked from the arena!", getName());
 		}
-		
+
 		if (reason == LeaveReason.QUIT)
 		{
 			arena.endPlayer(this, false);
 
 			arena.tellPlayers("&e{0} &3has left the arena!", getName());
 		}
-		
+
 		if (reason == LeaveReason.DEATHS)
 		{
 			arena.endPlayer(this, false);
 
 			sendMessage("&3You have been eliminated!");
-			
+
 			arena.tellPlayers("&e{0} &3has been eliminated!", getName());
 		}
-		
+
 	}
 }

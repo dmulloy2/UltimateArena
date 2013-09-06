@@ -4,19 +4,19 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 
 public class CmdJoin extends UltimateArenaCommand
 {
-	public CmdJoin(UltimateArena plugin) 
+	public CmdJoin(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "join";
 		this.aliases.add("j");
 		this.requiredArgs.add("arena");
 		this.description = "join/start an UltimateArena";
-		
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
-	public void perform() 
+	public void perform()
 	{
 		plugin.join(player, args[0]);
 	}

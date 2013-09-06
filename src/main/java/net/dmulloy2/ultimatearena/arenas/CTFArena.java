@@ -15,11 +15,11 @@ public class CTFArena extends Arena
 	public int bluecap;
 	private BukkitTask moveTask;
 	private String lastcap;
-	
+
 	public CTFArena(ArenaZone az)
 	{
 		super(az);
-		
+
 		this.type = FieldType.CTF;
 		this.startTimer = 120;
 		this.maxGameTime = 60 * 15;
@@ -27,46 +27,46 @@ public class CTFArena extends Arena
 
 		this.flagred = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
 		this.flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
-			
+
 		flagred.initialize();
 		flagblue.initialize();
-		
+
 		this.moveTask = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}
-	
+
 	@Override
 	public void check()
 	{
-		if (startTimer <= 0) 
+		if (startTimer <= 0)
 		{
-			if (!simpleTeamCheck(false)) 
+			if (!simpleTeamCheck(false))
 			{
 				tellPlayers("&3One team is empty! game ended!");
-				
+
 				stop();
 			}
 			else
 			{
-				if (getStartingAmount() <= 1) 
+				if (getStartingAmount() <= 1)
 				{
 					tellPlayers("&3Not enough people to play!");
-					
+
 					stop();
 				}
 			}
 		}
-		
-		if (redcap >= 3 || bluecap >= 3) 
+
+		if (redcap >= 3 || bluecap >= 3)
 		{
 			this.setWinningTeam(1);
 			this.lastcap = "&cRED";
-			
-			if (bluecap >= 3) 
+
+			if (bluecap >= 3)
 			{
 				this.setWinningTeam(2);
 				this.lastcap = "&9BLUE";
 			}
-			
+
 			winGame();
 		}
 		else
@@ -75,50 +75,50 @@ public class CTFArena extends Arena
 			flagblue.getFlag().tick();
 		}
 	}
-	
+
 	@Override
 	public int getTeam()
 	{
 		return getBalancedTeam();
 	}
-	
-	public void winGame() 
+
+	public void winGame()
 	{
 		if (redcap >= 3 && bluecap >= 3)
 		{
 			setWinningTeam(-1);
-			
+
 			stop();
-			
+
 			rewardTeam(-1, true);
 			return;
 		}
 
 		stop();
-		
+
 		rewardTeam(winningTeam, false);
 	}
-	
+
 	@Override
 	public void onStop()
 	{
 		flagred.getFlag().setStopped(true);
 		flagblue.getFlag().setStopped(true);
 
-		flagred.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte)0, false);
-		flagblue.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte)0, false);
+		flagred.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte) 0, false);
+		flagblue.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte) 0, false);
 		flagred.getFlag().despawn();
 		flagblue.getFlag().despawn();
 
 		moveTask.cancel();
 	}
-	
-	public class ExecuteMove extends BukkitRunnable 
+
+	public class ExecuteMove extends BukkitRunnable
 	{
 		@Override
 		public void run()
 		{
-			if (! isStopped())
+			if (!isStopped())
 			{
 				flagred.checkNear(arenaPlayers);
 				flagblue.checkNear(arenaPlayers);
@@ -129,7 +129,7 @@ public class CTFArena extends Arena
 			}
 		}
 	}
-	
+
 	@Override
 	public void announceWinner()
 	{

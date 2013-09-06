@@ -21,16 +21,16 @@ public class ArenaZone
 	private int liked;
 	private int disliked;
 	private int maxPlayers = 24;
-	
+
 	private boolean loaded = false;
 	private boolean disabled = false;
-	
+
 	private String step;
 	private String player;
 	private String defaultClass;
 	private String arenaName = "";
 	private FieldType type;
-	
+
 	private Location lobby1 = null;
 	private Location lobby2 = null;
 	private Location arena1 = null;
@@ -39,37 +39,40 @@ public class ArenaZone
 	private Location team2spawn = null;
 	private Location lobbyREDspawn = null;
 	private Location lobbyBLUspawn = null;
-	
+
 	private Field lobby;
 	private Field arena;
-	
+
 	private List<String> voted = new ArrayList<String>();
 	private List<Location> spawns = new ArrayList<Location>();
 	private List<Location> flags = new ArrayList<Location>();
-	
+
 	private World world;
-	
+
 	private final UltimateArena plugin;
-	
+
 	/**
 	 * Represents an ArenaZone to be loaded from configuration
 	 * 
-	 * @param plugin - {@link UltimateArena} plugin instance
-	 * @param file - {@link File} to load
+	 * @param plugin
+	 *            - {@link UltimateArena} plugin instance
+	 * @param file
+	 *            - {@link File} to load
 	 * @return new {@link ArenaZone}
 	 */
 	public ArenaZone(final UltimateArena plugin, File file)
 	{
 		this.arenaName = getName(file);
 		this.plugin = plugin;
-		
+
 		initialize();
 	}
-	
+
 	/**
 	 * Represents an ArenaZone to be created from an {@link ArenaCreator}
 	 * 
-	 * @param ac - {@link ArenaCreator} to create arena from
+	 * @param ac
+	 *            - {@link ArenaCreator} to create arena from
 	 * @return new {@link ArenaZone}
 	 */
 	public ArenaZone(final UltimateArena plugin, ArenaCreator ac)
@@ -93,9 +96,9 @@ public class ArenaZone
 		this.world = lobby1.getWorld();
 
 		save();
-		
+
 		initialize();
-		
+
 		if (loaded)
 		{
 			plugin.outConsole("Creation of Arena {0} successful!", arenaName);
@@ -110,18 +113,18 @@ public class ArenaZone
 	{
 		this.lobby = new Field();
 		this.arena = new Field();
-		
+
 		ArenaClass ac = plugin.getClasses().get(0);
 		if (ac != null)
 			this.defaultClass = ac.getName();
-		
+
 		load();
-		
+
 		if (isLoaded())
 		{
 			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
 			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
-			
+
 			plugin.getLoadedArenas().add(this);
 		}
 		else
@@ -129,17 +132,17 @@ public class ArenaZone
 			plugin.outConsole(Level.WARNING, "Arena {0} has failed to load!", arenaName);
 		}
 	}
-	
-	public boolean checkLocation(Location loc) 
+
+	public boolean checkLocation(Location loc)
 	{
 		return (lobby.isInside(loc) || arena.isInside(loc));
 	}
-	
+
 	public void save()
 	{
 		plugin.getFileHelper().save(this);
 	}
-	
+
 	public void load()
 	{
 		plugin.getFileHelper().load(this);
@@ -147,15 +150,15 @@ public class ArenaZone
 
 	public boolean canLike(Player player)
 	{
-		return ! voted.contains(player.getName());
+		return !voted.contains(player.getName());
 	}
-	
+
 	public String getName(File file)
 	{
 		return file.getName().replaceAll(".dat", "");
 	}
 
-	public int getAmtLobbys() 
+	public int getAmtLobbys()
 	{
 		return amtLobbys;
 	}
@@ -170,27 +173,27 @@ public class ArenaZone
 		return amtSpawnpoints;
 	}
 
-	public void setAmtSpawnpoints(int amtSpawnpoints) 
+	public void setAmtSpawnpoints(int amtSpawnpoints)
 	{
 		this.amtSpawnpoints = amtSpawnpoints;
 	}
 
-	public int getSpecialType() 
+	public int getSpecialType()
 	{
 		return specialType;
 	}
 
-	public void setSpecialType(int specialType) 
+	public void setSpecialType(int specialType)
 	{
 		this.specialType = specialType;
 	}
 
-	public int getTimesPlayed() 
+	public int getTimesPlayed()
 	{
 		return timesPlayed;
 	}
 
-	public void setTimesPlayed(int timesPlayed) 
+	public void setTimesPlayed(int timesPlayed)
 	{
 		this.timesPlayed = timesPlayed;
 	}
@@ -200,7 +203,7 @@ public class ArenaZone
 		return liked;
 	}
 
-	public void setLiked(int liked) 
+	public void setLiked(int liked)
 	{
 		this.liked = liked;
 	}
@@ -210,7 +213,7 @@ public class ArenaZone
 		return disliked;
 	}
 
-	public void setDisliked(int disliked) 
+	public void setDisliked(int disliked)
 	{
 		this.disliked = disliked;
 	}
@@ -225,17 +228,17 @@ public class ArenaZone
 		this.maxPlayers = maxPlayers;
 	}
 
-	public boolean isDisabled() 
+	public boolean isDisabled()
 	{
 		return disabled;
 	}
 
-	public void setDisabled(boolean disabled) 
+	public void setDisabled(boolean disabled)
 	{
 		this.disabled = disabled;
 	}
 
-	public String getStep() 
+	public String getStep()
 	{
 		return step;
 	}
@@ -245,12 +248,12 @@ public class ArenaZone
 		this.step = step;
 	}
 
-	public String getPlayer() 
+	public String getPlayer()
 	{
 		return player;
 	}
 
-	public void setPlayer(String player) 
+	public void setPlayer(String player)
 	{
 		this.player = player;
 	}
@@ -260,17 +263,17 @@ public class ArenaZone
 		return defaultClass;
 	}
 
-	public void setDefaultClass(String defaultClass) 
+	public void setDefaultClass(String defaultClass)
 	{
 		this.defaultClass = defaultClass;
 	}
 
-	public FieldType getType() 
+	public FieldType getType()
 	{
 		return type;
 	}
 
-	public void setArenaType(FieldType type) 
+	public void setArenaType(FieldType type)
 	{
 		this.type = type;
 	}
@@ -280,22 +283,22 @@ public class ArenaZone
 		return arenaName;
 	}
 
-	public void setArenaName(String arenaName) 
+	public void setArenaName(String arenaName)
 	{
 		this.arenaName = arenaName;
 	}
 
-	public World getWorld() 
+	public World getWorld()
 	{
 		return world;
 	}
-	
+
 	public Location getLobby1()
 	{
 		return lobby1;
 	}
 
-	public void setLobby1(Location lobby1) 
+	public void setLobby1(Location lobby1)
 	{
 		this.lobby1 = lobby1;
 	}
@@ -315,17 +318,17 @@ public class ArenaZone
 		return arena1;
 	}
 
-	public void setArena1(Location arena1) 
+	public void setArena1(Location arena1)
 	{
 		this.arena1 = arena1;
 	}
 
-	public Location getArena2() 
+	public Location getArena2()
 	{
 		return arena2;
 	}
 
-	public void setArena2(Location arena2) 
+	public void setArena2(Location arena2)
 	{
 		this.arena2 = arena2;
 	}
@@ -335,7 +338,7 @@ public class ArenaZone
 		return lobbyREDspawn;
 	}
 
-	public void setLobbyREDspawn(Location lobbyREDspawn) 
+	public void setLobbyREDspawn(Location lobbyREDspawn)
 	{
 		this.lobbyREDspawn = lobbyREDspawn;
 	}
@@ -345,27 +348,27 @@ public class ArenaZone
 		return lobbyBLUspawn;
 	}
 
-	public void setLobbyBLUspawn(Location lobbyBLUspawn) 
+	public void setLobbyBLUspawn(Location lobbyBLUspawn)
 	{
 		this.lobbyBLUspawn = lobbyBLUspawn;
 	}
 
-	public Location getTeam1spawn() 
+	public Location getTeam1spawn()
 	{
 		return team1spawn;
 	}
 
-	public void setTeam1spawn(Location team1spawn) 
+	public void setTeam1spawn(Location team1spawn)
 	{
 		this.team1spawn = team1spawn;
 	}
 
-	public Location getTeam2spawn() 
+	public Location getTeam2spawn()
 	{
 		return team2spawn;
 	}
 
-	public void setTeam2spawn(Location team2spawn) 
+	public void setTeam2spawn(Location team2spawn)
 	{
 		this.team2spawn = team2spawn;
 	}
@@ -375,7 +378,7 @@ public class ArenaZone
 		return spawns;
 	}
 
-	public void setSpawns(List<Location> spawns) 
+	public void setSpawns(List<Location> spawns)
 	{
 		this.spawns = spawns;
 	}
@@ -385,7 +388,7 @@ public class ArenaZone
 		return flags;
 	}
 
-	public void setFlags(List<Location> flags) 
+	public void setFlags(List<Location> flags)
 	{
 		this.flags = flags;
 	}
@@ -395,23 +398,23 @@ public class ArenaZone
 		return loaded;
 	}
 
-	public void setLoaded(boolean loaded) 
+	public void setLoaded(boolean loaded)
 	{
 		this.loaded = loaded;
 	}
 
-	public UltimateArena getPlugin() 
+	public UltimateArena getPlugin()
 	{
 		return plugin;
 	}
 
-	public List<String> getVoted() 
+	public List<String> getVoted()
 	{
 		return voted;
 	}
 
 	public void setWorld(World world)
 	{
-		this.world = world;	
+		this.world = world;
 	}
 }

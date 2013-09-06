@@ -8,7 +8,7 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import org.apache.commons.lang.WordUtils;
 
 public class CmdInfo extends UltimateArenaCommand
-{	
+{
 	public CmdInfo(UltimateArena plugin)
 	{
 		super(plugin);
@@ -16,19 +16,19 @@ public class CmdInfo extends UltimateArenaCommand
 		this.optionalArgs.add("arena");
 		this.description = "view info on the arena you are in";
 		this.permission = Permission.INFO;
-		
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
 		if (args.length == 0)
 		{
-			if (plugin.isInArena(player)) 
+			if (plugin.isInArena(player))
 			{
 				Arena ar = plugin.getArena(player);
-				if (ar != null) 
+				if (ar != null)
 				{
 					sendMessage("&3====[ &e{0} &3]====", WordUtils.capitalize(ar.getName()));
 
@@ -46,7 +46,7 @@ public class CmdInfo extends UltimateArenaCommand
 					}
 
 					sendMessage(""); // Empty line
-					
+
 					sendMessage("&3Active Players:");
 					for (String s : ar.buildLeaderboard(player))
 					{
@@ -66,13 +66,13 @@ public class CmdInfo extends UltimateArenaCommand
 			if (ar != null)
 			{
 				sendMessage("&3====[ &e{0} &3]====", ar.getName());
-				
+
 				sendMessage("&3Type: &e{0}", ar.getType());
-				
+
 				sendMessage(""); // Empty line
-				
+
 				sendMessage("&3&lActive Players:");
-				
+
 				for (String s : ar.buildLeaderboard(player))
 				{
 					sendMessage(s);

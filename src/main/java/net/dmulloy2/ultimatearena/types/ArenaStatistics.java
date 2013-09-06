@@ -5,34 +5,34 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
 
-public class ArenaStatistics 
+public class ArenaStatistics
 {
 	private ArenaZone arena;
-	
+
 	private double percentagePlayed;
-	
+
 	private int totalPlays;
 	private int plays;
 	private int likes;
 	private int dislikes;
-	
+
 	public ArenaStatistics(ArenaZone az)
 	{
 		this.arena = az;
 		stats();
 	}
-	
-	public void stats() 
+
+	public void stats()
 	{
 		// Calculates all the arenas stats
 		this.totalPlays = arena.getPlugin().getArenasPlayed();
 		this.plays = arena.getTimesPlayed();
-		this.percentagePlayed = (int) (((double)plays/(double)totalPlays) * 100);
+		this.percentagePlayed = (int) (((double) plays / (double) totalPlays) * 100);
 		this.likes = arena.getLiked();
 		this.dislikes = arena.getDisliked();
 	}
-	
-	public void dumpStats(Player p) 
+
+	public void dumpStats(Player p)
 	{
 		// Dumps the arenas stats to the player
 		p.sendMessage(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(arena.getArenaName())));

@@ -5,19 +5,19 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdSetDone extends UltimateArenaCommand
 {
-	public CmdSetDone(UltimateArena plugin) 
+	public CmdSetDone(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "done";
 		this.aliases.add("d");
 		this.description = "finalize a step in the UA creation process";
 		this.permission = Permission.SETDONE;
-		
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
-	public void perform() 
+	public void perform()
 	{
 		plugin.setDone(player);
 	}

@@ -15,10 +15,10 @@ public class CmdDisable extends UltimateArenaCommand
 		this.requiredArgs.add("arena");
 		this.description = "disable an arena";
 		this.permission = Permission.DISABLE;
-		
+
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -31,7 +31,7 @@ public class CmdDisable extends UltimateArenaCommand
 				return;
 			}
 		}
-			
+
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
 			if (az.getArenaName().equalsIgnoreCase(args[0]))
@@ -41,7 +41,7 @@ public class CmdDisable extends UltimateArenaCommand
 				return;
 			}
 		}
-		
+
 		err("Could not find an Arena by that name/type!");
 	}
 }

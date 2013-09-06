@@ -5,7 +5,7 @@ import net.dmulloy2.ultimatearena.permissions.Permission;
 
 public class CmdCreate extends UltimateArenaCommand
 {
-	public CmdCreate(UltimateArena plugin) 
+	public CmdCreate(UltimateArena plugin)
 	{
 		super(plugin);
 		this.name = "create";
@@ -14,10 +14,10 @@ public class CmdCreate extends UltimateArenaCommand
 		this.requiredArgs.add("type");
 		this.description = "create an UltimateArena";
 		this.permission = Permission.CREATE;
-		
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{

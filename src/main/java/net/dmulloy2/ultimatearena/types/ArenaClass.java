@@ -22,27 +22,27 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class ArenaClass 
+public class ArenaClass
 {
 	private String name;
 	private String permissionNode;
-	
+
 	private List<ItemStack> armor = new ArrayList<ItemStack>();
 	private List<ItemStack> weapons = new ArrayList<ItemStack>();
-	
+
 	private boolean loaded = true;
 	private boolean helmet = true;
-	
+
 	private boolean useEssentials = false;
 	private String essKitName;
 	private Map<String, Object> essentialsKit;
-	
+
 	private boolean hasPotionEffects = false;
 	private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
-	
+
 	private final UltimateArena plugin;
 	private File file;
-	
+
 	public ArenaClass(final UltimateArena plugin, File file)
 	{
 		this.plugin = plugin;
@@ -50,18 +50,18 @@ public class ArenaClass
 		this.name = getName(file);
 
 		this.loaded = load();
-		if (! loaded)
+		if (!loaded)
 		{
 			plugin.outConsole(Level.WARNING, "Failed to load class {0}!", name);
 		}
 	}
-	
+
 	public boolean load()
 	{
 		try
 		{
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			
+
 			String armorPath = "armor.";
 			String arm1 = fc.getString(armorPath + "chestplate");
 			if (arm1 != null)
@@ -69,8 +69,7 @@ public class ArenaClass
 				if (arm1.contains(","))
 				{
 					String[] split = arm1.split(",");
-					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0,
-							readArmorEnchantments(split[1]));
+					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0, readArmorEnchantments(split[1]));
 					armor.add(stack);
 				}
 				else
@@ -79,15 +78,14 @@ public class ArenaClass
 					armor.add(stack);
 				}
 			}
-			
+
 			String arm2 = fc.getString(armorPath + "leggings");
 			if (arm2 != null)
 			{
 				if (arm2.contains(","))
 				{
 					String[] split = arm2.split(",");
-					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0,
-							readArmorEnchantments(split[1]));
+					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0, readArmorEnchantments(split[1]));
 					armor.add(stack);
 				}
 				else
@@ -96,15 +94,14 @@ public class ArenaClass
 					armor.add(stack);
 				}
 			}
-			
+
 			String arm3 = fc.getString(armorPath + "boots");
 			if (arm3 != null)
 			{
 				if (arm3.contains(","))
 				{
 					String[] split = arm3.split(",");
-					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0,
-							readArmorEnchantments(split[1]));
+					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0, readArmorEnchantments(split[1]));
 					armor.add(stack);
 				}
 				else
@@ -113,7 +110,7 @@ public class ArenaClass
 					armor.add(stack);
 				}
 			}
-			
+
 			for (int i = 0; i < 9; i++)
 			{
 				String path = "tools." + i;
@@ -139,13 +136,13 @@ public class ArenaClass
 					}
 				}
 			}
-			
+
 			useEssentials = fc.getBoolean("useEssentials");
-			
+
 			if (useEssentials)
 			{
 				String line = fc.getString("essentialsKit");
-				
+
 				// Initialize Essentials Hook
 				PluginManager pm = plugin.getServer().getPluginManager();
 				if (pm.isPluginEnabled("Essentials"))
@@ -158,12 +155,12 @@ public class ArenaClass
 						this.essentialsKit = kit;
 					}
 				}
-				
+
 				this.essKitName = line;
 			}
 
 			hasPotionEffects = fc.getBoolean("hasPotionEffects");
-			
+
 			if (hasPotionEffects)
 			{
 				String effects = fc.getString("potionEffects");
@@ -172,9 +169,9 @@ public class ArenaClass
 					this.potionEffects = readPotionEffects(effects);
 				}
 			}
-			
+
 			helmet = fc.getBoolean("useHelmet");
-			
+
 			String node = fc.getString("permissionNode");
 			if (node != null)
 			{
@@ -186,15 +183,15 @@ public class ArenaClass
 			plugin.outConsole(Level.SEVERE, "Error loading class \"{0}\": {1}", name, e.getMessage());
 			return false;
 		}
-		
+
 		plugin.debug("Successfully loaded class {0}!", name);
 		return true;
 	}
-	
+
 	public List<PotionEffect> readPotionEffects(String str)
 	{
 		List<PotionEffect> ret = new ArrayList<PotionEffect>();
-		
+
 		str = str.replaceAll(" ", "");
 		if (str.contains(","))
 		{
@@ -205,14 +202,25 @@ public class ArenaClass
 				{
 					PotionEffectType type = null;
 					int strength = 0;
-										
-					String[] split1 = s.split(":");
-					try { type = PotionEffectType.getByName(split1[0]); }
-					catch (Exception e) { type = PotionEffectType.getById(Integer.parseInt(split1[0])); }
 
-					try { strength = Integer.parseInt(split1[1]); }
-					catch (Exception e) {}
-					
+					String[] split1 = s.split(":");
+					try
+					{
+						type = PotionEffectType.getByName(split1[0]);
+					}
+					catch (Exception e)
+					{
+						type = PotionEffectType.getById(Integer.parseInt(split1[0]));
+					}
+
+					try
+					{
+						strength = Integer.parseInt(split1[1]);
+					}
+					catch (Exception e)
+					{
+					}
+
 					if (type != null)
 					{
 						ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
@@ -226,45 +234,67 @@ public class ArenaClass
 			{
 				PotionEffectType type = null;
 				int strength = 0;
-									
-				String[] split1 = str.split(":");
-				try { type = PotionEffectType.getByName(split1[0]); }
-				catch (Exception e) { type = PotionEffectType.getById(Integer.parseInt(split1[0])); }
 
-				try { strength = Integer.parseInt(split1[1]); }
-				catch (Exception e) {}
-				
+				String[] split1 = str.split(":");
+				try
+				{
+					type = PotionEffectType.getByName(split1[0]);
+				}
+				catch (Exception e)
+				{
+					type = PotionEffectType.getById(Integer.parseInt(split1[0]));
+				}
+
+				try
+				{
+					strength = Integer.parseInt(split1[1]);
+				}
+				catch (Exception e)
+				{
+				}
+
 				if (type != null)
 				{
 					ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 				}
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	public Map<Enchantment, Integer> readArmorEnchantments(String string)
 	{
 		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 		if (string.contains(":"))
 		{
 			String[] split2 = string.split(":");
-					
+
 			Enchantment enchantment = null;
-			try { enchantment = EnchantmentType.toEnchantment(split2[0]); }
-			catch (Exception e) { enchantment = Enchantment.getByName(split2[0].toUpperCase()); }
-					
+			try
+			{
+				enchantment = EnchantmentType.toEnchantment(split2[0]);
+			}
+			catch (Exception e)
+			{
+				enchantment = Enchantment.getByName(split2[0].toUpperCase());
+			}
+
 			int level = 0;
-			try { level = Integer.parseInt(split2[1]); }
-			catch (Exception e) {}
-					
+			try
+			{
+				level = Integer.parseInt(split2[1]);
+			}
+			catch (Exception e)
+			{
+			}
+
 			if (enchantment != null && level > 0)
 			{
 				enchants.put(enchantment, level);
 			}
 		}
-		
+
 		return enchants;
 	}
 
@@ -272,15 +302,15 @@ public class ArenaClass
 	{
 		if (permissionNode.equals(""))
 			return true;
-			
+
 		return plugin.getPermissionHandler().hasPermission(player, permissionNode);
-	}	
-	
+	}
+
 	public String getName(File file)
 	{
 		return file.getName().replaceAll(".yml", "");
 	}
-	
+
 	private ItemStack buildItemStack(int id, int amt, byte dat, Map<Enchantment, Integer> enchants)
 	{
 		if (id > 0)
@@ -292,68 +322,68 @@ public class ArenaClass
 				{
 					Enchantment ench = entry.getKey();
 					int level = entry.getValue();
-					
+
 					if (ench != null && level > 0)
 					{
 						itemStack.addUnsafeEnchantment(ench, level);
 					}
 				}
 			}
-			
+
 			if (dat > 0)
 			{
 				MaterialData data = itemStack.getData();
 				data.setData(dat);
 				itemStack.setData(data);
 			}
-			
+
 			return itemStack;
 		}
-		
+
 		return null;
 	}
-	
+
 	public List<ItemStack> getArmor()
 	{
 		return armor;
 	}
-	
+
 	public List<ItemStack> getWeapons()
 	{
 		return weapons;
 	}
-	
+
 	public ItemStack getArmor(int index)
 	{
 		if (armor.size() >= index)
 		{
 			return armor.get(index);
 		}
-		
+
 		return null;
 	}
-	
+
 	public ItemStack getWeapon(int index)
 	{
 		if (weapons.size() >= index)
 		{
 			return weapons.get(index);
 		}
-		
+
 		return null;
 	}
-	
+
 	public boolean usesHelmet()
 	{
 		return helmet;
 	}
-	
+
 	public boolean usesEssentials()
 	{
 		return useEssentials;
 	}
 
-	public String getEssKitName() 
+	public String getEssKitName()
 	{
 		return essKitName;
 	}
@@ -363,21 +393,21 @@ public class ArenaClass
 		return essentialsKit;
 	}
 
-	public List<PotionEffect> getPotionEffects() 
+	public List<PotionEffect> getPotionEffects()
 	{
 		return potionEffects;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public boolean hasPotionEffects()
 	{
 		return hasPotionEffects;
 	}
-	
+
 	public boolean isLoaded()
 	{
 		return loaded;

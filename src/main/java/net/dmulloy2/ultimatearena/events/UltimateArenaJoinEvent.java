@@ -15,50 +15,57 @@ import org.bukkit.event.HandlerList;
 public class UltimateArenaJoinEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();
-	
+
 	private final ArenaPlayer arenaPlayer;
 	private final Arena arena;
-	
+
 	/**
 	 * Called when a player joins an arena
-	 * @param arenaPlayer - The ArenaPlayer that joined
-	 * @param arena - The Arena the player joined
+	 * 
+	 * @param arenaPlayer
+	 *            - The ArenaPlayer that joined
+	 * @param arena
+	 *            - The Arena the player joined
 	 */
 	public UltimateArenaJoinEvent(final ArenaPlayer arenaPlayer, final Arena arena)
 	{
 		this.arenaPlayer = arenaPlayer;
 		this.arena = arena;
 	}
-	
+
 	/**
 	 * Get the ArenaPlayer who joined
+	 * 
 	 * @return The ArenaPlayer who joined
 	 */
 	public ArenaPlayer getArenaPlayer()
 	{
 		return arenaPlayer;
 	}
-	
+
 	/**
 	 * Get the Arena joined
+	 * 
 	 * @return The arena joined
 	 */
 	public Arena getArena()
 	{
 		return arena;
 	}
-	
+
 	/**
 	 * Get the type of the Arena joined
+	 * 
 	 * @return The type of the arena joined
 	 */
 	public FieldType getArenaType()
 	{
 		return arena.getType();
 	}
-	
+
 	/**
 	 * Get the player that joined
+	 * 
 	 * @return The player that joined
 	 */
 	public Player getPlayer()
