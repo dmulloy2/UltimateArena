@@ -180,6 +180,7 @@ public class InventoryHelper
 		return leftover;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean hasRoom(ItemStack item, Player player)
 	{
 		final int maxStackSize = (item.getMaxStackSize() == -1) ? player.getInventory().getMaxStackSize() : item.getMaxStackSize();

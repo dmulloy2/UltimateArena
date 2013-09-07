@@ -34,6 +34,7 @@ public class ArenaFlag extends FlagBase
 		getLoc().getBlock().setType(Material.WOOL);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void step()
 	{
 		setCapped(false);

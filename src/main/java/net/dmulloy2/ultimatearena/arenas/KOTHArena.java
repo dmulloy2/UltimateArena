@@ -46,6 +46,7 @@ public class KOTHArena extends Arena
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void doKillStreak(ArenaPlayer ap)
 	{

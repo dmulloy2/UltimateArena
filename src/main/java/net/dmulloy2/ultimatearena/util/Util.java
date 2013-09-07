@@ -141,6 +141,8 @@ public class Util
 	 * @param i
 	 *            - Data
 	 */
+	
+	@SuppressWarnings("deprecation")
 	public static void playEffect(Effect effect, Location loc, int i)
 	{
 		for (Player player : Bukkit.getOnlinePlayers())

@@ -29,7 +29,7 @@
   </repositories>
   
   <build>
-    <plugins> 
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -49,19 +49,6 @@
           </archive>
           <finalName>${project.name}</finalName>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok-maven-plugin</artifactId>
-        <version>0.12.0.0</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>delombok</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
     <resources>
@@ -83,40 +70,12 @@
       </resource>
     </resources>
   </build>
-  <profiles>
-    <profile>
-      <id>lombok-needs-tools-jar</id>
-      <activation>
-        <file>
-          <exists>${java.home}/../lib/tools.jar</exists>
-        </file>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-maven-plugin</artifactId>
-            <version>0.12.0.0</version>
-            <dependencies>
-              <dependency>
-                <groupId>sun.jdk</groupId>
-                <artifactId>tools</artifactId>
-                <version>1.6</version>
-                <scope>system</scope>
-                <systemPath>${java.home}/../lib/tools.jar</systemPath>
-              </dependency>
-            </dependencies>        
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.6.2-R0.1-SNAPSHOT</version>
+      <version>1.6.2-R0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>net.dmulloy2</groupId>

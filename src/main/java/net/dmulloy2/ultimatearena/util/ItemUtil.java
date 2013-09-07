@@ -8,7 +8,6 @@ import net.dmulloy2.ultimatearena.types.EnchantmentType;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
@@ -27,11 +26,12 @@ public class ItemUtil
 	 *            - String to read
 	 * @return ItemStack from given string
 	 */
+	@SuppressWarnings("deprecation")
 	public static ItemStack readItem(String string)
 	{
 		int id = 0;
 		int amt = 0;
-		byte dat = 0;
+		short dat = 0;
 
 		Map<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 
@@ -43,7 +43,7 @@ public class ItemUtil
 			{
 				id = Integer.parseInt(s.substring(0, s.indexOf(":")));
 
-				dat = Byte.parseByte(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
+				dat = Short.parseShort(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
 			}
 			else
 			{
@@ -97,15 +97,9 @@ public class ItemUtil
 			}
 		}
 
-		ItemStack ret = new ItemStack(id, amt);
-		if (dat > 0)
-		{
-			MaterialData data = ret.getData();
-			data.setData(dat);
-			ret.setData(data);
-		}
+		ItemStack ret = new ItemStack(id, amt, dat);
 
-		if (!enchantments.isEmpty())
+		if (! enchantments.isEmpty())
 		{
 			for (Entry<Enchantment, Integer> entry : enchantments.entrySet())
 			{
@@ -197,7 +191,7 @@ public class ItemUtil
 	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("Type: " + FormatUtil.getFriendlyName(stack.getType()));
-		ret.append(" Data: " + stack.getData().getData());
+		ret.append(" Data: " + stack.getDurability());
 		ret.append(" Amount: " + stack.getAmount());
 		ret.append(" Enchants:");
 		for (Entry<Enchantment, Integer> enchantment : stack.getEnchantments().entrySet())

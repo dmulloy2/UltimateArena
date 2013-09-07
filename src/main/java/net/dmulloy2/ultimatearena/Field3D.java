@@ -63,13 +63,14 @@ public class Field3D extends Field
 
 		return false;
 	}
-
-	public void setType(Material mat)
+	
+	@SuppressWarnings("deprecation")
+	public void setType(final int id)
 	{
-		setType(mat.getId());
+		setType(Material.getMaterial(id));
 	}
 
-	public void setType(final int id)
+	public void setType(final Material mat)
 	{
 		for (int i = minx; i <= maxx; i++)
 		{
@@ -78,7 +79,7 @@ public class Field3D extends Field
 				for (int iii = minz; iii <= maxz; iii++)
 				{
 					Block b = world.getBlockAt(i, ii, iii);
-					b.setTypeId(id);
+					b.setType(mat);
 				}
 			}
 		}

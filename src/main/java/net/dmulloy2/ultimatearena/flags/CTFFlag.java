@@ -47,7 +47,7 @@ public class CTFFlag
 		this.lastloc = loc.clone();
 		this.toloc = loc.clone();
 
-		loc.getBlock().setTypeIdAndData(0, (byte) 0, false);
+		loc.getBlock().setType(Material.AIR);
 
 		setup();
 	}
@@ -75,6 +75,7 @@ public class CTFFlag
 		arena.tellPlayers("&e{0} &3seconds left until &e{1} &3flag returns!", timer, getFlagType());
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setup()
 	{
 		final Block current = myloc.getBlock();
@@ -194,6 +195,7 @@ public class CTFFlag
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void despawn()
 	{
 		setStopped(true);
@@ -227,6 +229,7 @@ public class CTFFlag
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setFlag()
 	{
 		if (isStopped())
@@ -248,9 +251,9 @@ public class CTFFlag
 	private void setFlagBlock(Block c)
 	{
 		if (color == 11)
-			c.setTypeIdAndData(Material.LAPIS_BLOCK.getId(), (byte) 0, true);
+			c.setType(Material.LAPIS_BLOCK);
 		if (color == 14)
-			c.setTypeIdAndData(Material.NETHERRACK.getId(), (byte) 0, true);
+			c.setType(Material.NETHERRACK);
 	}
 
 	public int getTeam()

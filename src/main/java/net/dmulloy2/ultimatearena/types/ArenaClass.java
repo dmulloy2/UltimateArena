@@ -16,7 +16,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
@@ -188,6 +187,7 @@ public class ArenaClass
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	public List<PotionEffect> readPotionEffects(String str)
 	{
 		List<PotionEffect> ret = new ArrayList<PotionEffect>();
@@ -311,11 +311,12 @@ public class ArenaClass
 		return file.getName().replaceAll(".yml", "");
 	}
 
-	private ItemStack buildItemStack(int id, int amt, byte dat, Map<Enchantment, Integer> enchants)
+	@SuppressWarnings("deprecation")
+	private ItemStack buildItemStack(int id, int amt, short dat, Map<Enchantment, Integer> enchants)
 	{
 		if (id > 0)
 		{
-			ItemStack itemStack = new ItemStack(id, amt);
+			ItemStack itemStack = new ItemStack(id, amt, dat);
 			if (enchants != null && enchants.size() > 0)
 			{
 				for (Entry<Enchantment, Integer> entry : enchants.entrySet())
@@ -328,13 +329,6 @@ public class ArenaClass
 						itemStack.addUnsafeEnchantment(ench, level);
 					}
 				}
-			}
-
-			if (dat > 0)
-			{
-				MaterialData data = itemStack.getData();
-				data.setData(dat);
-				itemStack.setData(data);
 			}
 
 			return itemStack;

@@ -151,6 +151,7 @@ public class MOBArena extends Arena
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void doKillStreak(ArenaPlayer ap)
 	{
@@ -168,7 +169,7 @@ public class MOBArena extends Arena
 		if (ap.getKillStreak() == 24)
 		{
 			givePotion(pl, "heal", 1, 1, false, "&e24 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e24 &3kills! Unlocked food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (short) 0, 2, "&e24 &3kills! Unlocked food!");
 		}
 
 		if (ap.getKillStreak() == 32)
@@ -184,14 +185,14 @@ public class MOBArena extends Arena
 		if (ap.getKillStreak() == 40)
 		{
 			givePotion(pl, "regen", 1, 1, false, "&e40 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e40 kills! Unlocked food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (short) 0, 2, "&e40 kills! Unlocked food!");
 		}
 
 		if (ap.getKillStreak() == 72)
-			giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte) 0, 2, "&e72 &3kills! Unlocked Golden Apples!");
+			giveItem(pl, Material.GOLDEN_APPLE.getId(), (short) 0, 2, "&e72 &3kills! Unlocked Golden Apples!");
 
 		if (ap.getKillStreak() == 112)
-			giveItem(pl, Material.GOLDEN_APPLE.getId(), (byte) 0, 2, "&e112 &3kills! Unlocked Golden Apples!");
+			giveItem(pl, Material.GOLDEN_APPLE.getId(), (short) 0, 2, "&e112 &3kills! Unlocked Golden Apples!");
 	}
 
 	@Override

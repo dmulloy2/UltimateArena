@@ -159,7 +159,8 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public void clearInventory()
 	{
-		PlayerInventory inv = getPlayer().getInventory();
+		PlayerInventory inv = getInventory();
+		
 		inv.setHelmet(null);
 		inv.setChestplate(null);
 		inv.setLeggings(null);
@@ -216,7 +217,7 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		decideHat();
 
-		if (!arena.isInGame())
+		if (! arena.isInGame())
 			return;
 
 		if (mclass == null)
@@ -232,7 +233,7 @@ public class ArenaPlayer extends PlayerExtension
 		{
 			try
 			{
-				PluginManager pm = plugin.getServer().getPluginManager();
+				PluginManager pm = getServer().getPluginManager();
 				Plugin essPlugin = pm.getPlugin("Essentials");
 				IEssentials ess = (IEssentials) essPlugin;
 				User user = ess.getUser(player);
@@ -271,9 +272,9 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public void clearPotionEffects()
 	{
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for (PotionEffect effect : getActivePotionEffects())
 		{
-			player.removePotionEffect(effect.getType());
+			removePotionEffect(effect.getType());
 		}
 	}
 

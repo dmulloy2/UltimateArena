@@ -50,6 +50,7 @@ public class SPLEEFArena extends FFAArena
 		return getBlockInSpleefArena(0);
 	}
 
+	@SuppressWarnings("deprecation")
 	public Location getBlockInSpleefArena(int repeat)
 	{
 		Random rand = new Random();

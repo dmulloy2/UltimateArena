@@ -35,7 +35,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -647,21 +646,17 @@ public abstract class Arena
 	 * @param message
 	 *            - Message to send the {@link Player}
 	 */
-	public final void giveItem(Player pl, int id, byte dat, int amt, String message)
+	
+	@SuppressWarnings("deprecation")
+	public final void giveItem(Player pl, int id, short dat, int amt, String message)
 	{
 		if (! message.isEmpty())
 		{
 			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
 		}
 
-		ItemStack item = new ItemStack(id, amt);
-		if (dat != 0)
-		{
-			MaterialData data = new MaterialData(id);
-			data.setData(dat);
-			item.setData(data);
-		}
-
+		ItemStack item = new ItemStack(id, amt, dat);
+		
 		InventoryHelper.addItem(pl, item);
 	}
 
@@ -707,6 +702,8 @@ public abstract class Arena
 	 * @param ap
 	 *            - {@link ArenaPlayer} to do killstreak for
 	 */
+	
+	@SuppressWarnings("deprecation")
 	public void doKillStreak(ArenaPlayer ap)
 	{
 		/** Hunger Arena check **/
@@ -721,7 +718,7 @@ public abstract class Arena
 		if (ap.getKillStreak() == 4)
 		{
 			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e4 &3kills! Unlocked Food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (short) 0, 2, "&e4 &3kills! Unlocked Food!");
 		}
 
 		if (ap.getKillStreak() == 5)
@@ -747,7 +744,7 @@ public abstract class Arena
 		if (ap.getKillStreak() == 12)
 		{
 			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e12 &3kills! Unlocked Food!");
+			giveItem(pl, Material.GRILLED_PORK.getId(), (short) 0, 2, "&e12 &3kills! Unlocked Food!");
 		}
 	}
 

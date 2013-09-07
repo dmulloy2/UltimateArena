@@ -4,6 +4,7 @@ import net.dmulloy2.ultimatearena.flags.CTFFlagBase;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
+import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -105,8 +106,8 @@ public class CTFArena extends Arena
 		flagred.getFlag().setStopped(true);
 		flagblue.getFlag().setStopped(true);
 
-		flagred.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte) 0, false);
-		flagblue.getFlag().getReturnto().getBlock().setTypeIdAndData(0, (byte) 0, false);
+		flagred.getFlag().getReturnto().getBlock().setType(Material.AIR);
+		flagblue.getFlag().getReturnto().getBlock().setType(Material.AIR);
 		flagred.getFlag().despawn();
 		flagblue.getFlag().despawn();
 
