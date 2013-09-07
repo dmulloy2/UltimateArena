@@ -27,7 +27,7 @@ import com.earth2me.essentials.User;
  * @author dmulloy2
  */
 
-public class ArenaPlayer extends PlayerExtension
+public class ArenaPlayer
 {
 	private int kills = 0;
 	private int deaths = 0;
@@ -67,8 +67,6 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public ArenaPlayer(Player player, Arena arena, final UltimateArena plugin)
 	{
-		super(player);
-
 		this.player = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
@@ -159,7 +157,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public void clearInventory()
 	{
-		PlayerInventory inv = getInventory();
+		PlayerInventory inv = player.getInventory();
 		
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -233,7 +231,7 @@ public class ArenaPlayer extends PlayerExtension
 		{
 			try
 			{
-				PluginManager pm = getServer().getPluginManager();
+				PluginManager pm = plugin.getServer().getPluginManager();
 				Plugin essPlugin = pm.getPlugin("Essentials");
 				IEssentials ess = (IEssentials) essPlugin;
 				User user = ess.getUser(player);
@@ -272,9 +270,9 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public void clearPotionEffects()
 	{
-		for (PotionEffect effect : getActivePotionEffects())
+		for (PotionEffect effect : player.getActivePotionEffects())
 		{
-			removePotionEffect(effect.getType());
+			player.removePotionEffect(effect.getType());
 		}
 	}
 
@@ -403,12 +401,12 @@ public class ArenaPlayer extends PlayerExtension
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
-	@Override
+/*	@Override
 	public void sendMessage(String string)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string));
 	}
-
+*/
 	public void addXP(int xp)
 	{
 		setGameXP(getGameXP() + xp);
@@ -441,7 +439,7 @@ public class ArenaPlayer extends PlayerExtension
 
 	private long deathTime;
 
-	@Override
+//	@Override
 	public boolean isDead()
 	{
 		return (System.currentTimeMillis() - deathTime) < 60L;
@@ -507,6 +505,15 @@ public class ArenaPlayer extends PlayerExtension
 
 			arena.tellPlayers("&e{0} &3has been eliminated!", getName());
 		}
-
+	}
+	
+	public Player getPlayer()
+	{
+		return player;
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 }

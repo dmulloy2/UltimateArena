@@ -1,14 +1,11 @@
 package net.dmulloy2.ultimatearena.types;
 
-import lombok.Delegate;
-
-import org.bukkit.entity.Player;
-
 /**
  * Used for {@link Player} methods
+ * Maybe I'll actually be able to use this one day
  * 
  * @author dmulloy2
- */
+
 
 public class PlayerExtension
 {
@@ -20,3 +17,4 @@ public class PlayerExtension
 		this.base = base;
 	}
 }
+*/

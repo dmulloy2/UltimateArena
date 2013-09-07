@@ -148,7 +148,7 @@ public class CTFFlag
 				ArenaPlayer pl = arenaplayers.get(i);
 				if (pl != null && !pl.isOut())
 				{
-					if (Util.pointDistance(pl.getLocation(), myloc) < 1.75 && pl.getHealth() > 0.0D)
+					if (Util.pointDistance(pl.getPlayer().getLocation(), myloc) < 1.75 && pl.getPlayer().getHealth() > 0.0D)
 					{
 						if (pl.getTeam() != getTeam())
 						{
@@ -156,8 +156,8 @@ public class CTFFlag
 							this.pickedUp = true;
 							this.riding = pl.getPlayer();
 
-							pl.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
-							pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
+							pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
+							pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
 							arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", pl.getName(), getFlagType());
 							return;
 						}

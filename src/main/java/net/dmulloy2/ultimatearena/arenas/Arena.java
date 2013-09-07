@@ -598,9 +598,9 @@ public abstract class Arena
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
 			{
-				Location ploc = ap.getLocation();
+				Location ploc = ap.getPlayer().getLocation();
 				if (Util.pointDistance(loc, ploc) < rad)
-					ap.setHealth(0.0D);
+					ap.getPlayer().setHealth(0.0D);
 			}
 		}
 	}
@@ -727,7 +727,7 @@ public abstract class Arena
 			{
 				ap.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
 				for (int i = 0; i < 4; i++)
-					ap.getLocation().getWorld().spawnEntity(ap.getLocation(), EntityType.ZOMBIE);
+					ap.getPlayer().getLocation().getWorld().spawnEntity(ap.getPlayer().getLocation(), EntityType.ZOMBIE);
 			}
 		}
 
@@ -736,7 +736,7 @@ public abstract class Arena
 			ap.sendMessage(plugin.getPrefix() + "&e8 &3kills! Unlocked attackdogs!");
 			for (int i = 0; i < 2; i++)
 			{
-				Wolf wolf = (Wolf) ap.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
+				Wolf wolf = (Wolf) ap.getPlayer().getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
 				wolf.setOwner(ap.getPlayer());
 			}
 		}
@@ -1006,8 +1006,8 @@ public abstract class Arena
 				// Check players in the Arena
 				if (isInLobby())
 				{
-					ap.setFireTicks(0);
-					ap.setFoodLevel(20);
+					ap.getPlayer().setFireTicks(0);
+					ap.getPlayer().setFoodLevel(20);
 					ap.decideHat();
 				}
 
@@ -1018,11 +1018,11 @@ public abstract class Arena
 				{
 					if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 					{
-						if (ap.getHealth() + 1 <= 20)
+						if (ap.getPlayer().getHealth() + 1 <= 20)
 						{
-							if (ap.getHealth() < 0)
-								ap.setHealth(1);
-							ap.setHealth(ap.getHealth() + 1);
+							if (ap.getPlayer().getHealth() < 0)
+								ap.getPlayer().setHealth(1);
+							ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
 							ap.setHealTimer(2);
 						}
 					}
@@ -1034,15 +1034,15 @@ public abstract class Arena
 						{
 							for (PotionEffect effect : ac.getPotionEffects())
 							{
-								if (!ap.hasPotionEffect(effect.getType()))
-									ap.addPotionEffect(effect);
+								if (!ap.getPlayer().hasPotionEffect(effect.getType()))
+									ap.getPlayer().addPotionEffect(effect);
 							}
 						}
 					}
 				}
 
 				// Make sure they are still in the Arena
-				if (!plugin.isInArena(ap.getLocation()))
+				if (!plugin.isInArena(ap.getPlayer().getLocation()))
 				{
 					spawn(ap.getPlayer(), false);
 					ap.setAmtKicked(ap.getAmtKicked() + 1);
@@ -1098,7 +1098,7 @@ public abstract class Arena
 				{
 					if (ap.getDeaths() >= getMaxDeaths())
 					{
-						if (ap.getHealth() > 0)
+						if (ap.getPlayer().getHealth() > 0)
 						{
 							endPlayer(ap, true);
 						}
@@ -1126,12 +1126,12 @@ public abstract class Arena
 			{
 				if (isInGame())
 				{
-					ap.setLevel(gameTimer);
+					ap.getPlayer().setLevel(gameTimer);
 				}
 
 				if (isInLobby())
 				{
-					ap.setLevel(startTimer);
+					ap.getPlayer().setLevel(startTimer);
 				}
 			}
 		}
@@ -1150,11 +1150,11 @@ public abstract class Arena
 			plugin.debug("Returning XP for player: {0}. Levels: {1}", ap.getName(), ap.getBaseLevel());
 
 			// Clear XP
-			ap.setExp(0);
-			ap.setLevel(0);
+			ap.getPlayer().setExp(0);
+			ap.getPlayer().setLevel(0);
 
 			// Give Base XP
-			ap.setLevel(ap.getBaseLevel());
+			ap.getPlayer().setLevel(ap.getBaseLevel());
 		}
 	}
 
