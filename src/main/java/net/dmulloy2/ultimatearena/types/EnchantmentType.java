@@ -11,10 +11,28 @@ import org.bukkit.enchantments.Enchantment;
 
 public enum EnchantmentType
 {
-	ARROW_DAMAGE("power"), ARROW_FIRE("fire"), ARROW_INFINITE("inf"), ARROW_KNOCKBACK("arrowkb"), DAMAGE_ALL("sharp"), DAMAGE_ARTHROPODS(
-			"bane"), DAMAGE_UNDEAD("smite"), DIG_SPEED("eff"), DURABILITY("dura"), FIRE_ASPECT("fireaspect"), KNOCKBACK("knockback"), LOOT_BONUS_BLOCKS(
-			"fortune"), LOOT_BONUS_MOBS("looting"), OXYGEN("breathing"), PROTECTION_ENVIRONMENTAL("prot"), PROTECTION_EXPLOSIONS("blast"), PROTECTION_FALL(
-			"feather"), PROTECTION_FIRE("fireprot"), PROTECTION_PROJECTILE("proj"), SILK_TOUCH("silk"), THORNS("thorns"), WATER_WORKER("aqua");
+	ARROW_DAMAGE("power"),
+	ARROW_FIRE("fire"),
+	ARROW_INFINITE("inf"),
+	ARROW_KNOCKBACK("arrowkb"),
+	DAMAGE_ALL("sharp"),
+	DAMAGE_ARTHROPODS("bane"), 
+	DAMAGE_UNDEAD("smite"),
+	DIG_SPEED("eff"),
+	DURABILITY("dura"),
+	FIRE_ASPECT("fireaspect"),
+	KNOCKBACK("knockback"),
+	LOOT_BONUS_BLOCKS("fortune"), 
+	LOOT_BONUS_MOBS("looting"), 
+	OXYGEN("breathing"), 
+	PROTECTION_ENVIRONMENTAL("prot"),
+	PROTECTION_EXPLOSIONS("blast"),
+	PROTECTION_FALL("feather"),
+	PROTECTION_FIRE("fireprot"),
+	PROTECTION_PROJECTILE("proj"),
+	SILK_TOUCH("silk"),
+	THORNS("thorns"),
+	WATER_WORKER("aqua");
 
 	public String name;
 

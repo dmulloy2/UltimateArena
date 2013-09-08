@@ -1,6 +1,7 @@
-package net.dmulloy2.ultimatearena.permissions;
+package net.dmulloy2.ultimatearena.handlers;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.types.Permission;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

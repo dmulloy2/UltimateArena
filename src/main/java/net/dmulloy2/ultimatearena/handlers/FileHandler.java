@@ -1,10 +1,11 @@
-package net.dmulloy2.ultimatearena;
+package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
@@ -16,11 +17,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author dmulloy2
  */
 
-public class FileHelper
+public class FileHandler
 {
 	private final UltimateArena plugin;
-
-	public FileHelper(final UltimateArena plugin)
+	public FileHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}

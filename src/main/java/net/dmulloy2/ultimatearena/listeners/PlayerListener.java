@@ -1,15 +1,15 @@
 package net.dmulloy2.ultimatearena.listeners;
 
-import net.dmulloy2.ultimatearena.ArenaJoinTask;
-import net.dmulloy2.ultimatearena.Field3D;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
-import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
+import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.Material;

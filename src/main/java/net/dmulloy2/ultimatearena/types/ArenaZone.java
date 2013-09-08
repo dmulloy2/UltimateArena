@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import net.dmulloy2.ultimatearena.Field;
 import net.dmulloy2.ultimatearena.UltimateArena;
 
 import org.bukkit.Location;
@@ -140,12 +139,12 @@ public class ArenaZone
 
 	public void save()
 	{
-		plugin.getFileHelper().save(this);
+		plugin.getFileHandler().save(this);
 	}
 
 	public void load()
 	{
-		plugin.getFileHelper().load(this);
+		plugin.getFileHandler().load(this);
 	}
 
 	public boolean canLike(Player player)

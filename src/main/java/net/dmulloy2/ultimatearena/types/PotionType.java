@@ -6,8 +6,18 @@ package net.dmulloy2.ultimatearena.types;
 
 public enum PotionType
 {
-	FIRE_RESISTANCE("fireres"), INSTANT_DAMAGE("damage"), INSTANT_HEAL("heal"), INVISIBILITY("invis"), NIGHT_VISION("nvg"), POISON("poison"), REGEN(
-			"regen"), SLOWNESS("slow"), SPEED("speed"), STRENGTH("strength"), WATER("water"), WEAKNESS("weak");
+	FIRE_RESISTANCE("fireres"), 
+	INSTANT_DAMAGE("damage"),
+	INSTANT_HEAL("heal"),
+	INVISIBILITY("invis"), 
+	NIGHT_VISION("nvg"),
+	POISON("poison"), 
+	REGEN("regen"), 
+	SLOWNESS("slow"),
+	SPEED("speed"),
+	STRENGTH("strength"),
+	WATER("water"),
+	WEAKNESS("weak");
 
 	public String name;
 

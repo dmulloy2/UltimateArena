@@ -1,4 +1,6 @@
-package net.dmulloy2.ultimatearena;
+package net.dmulloy2.ultimatearena.tasks;
+
+import net.dmulloy2.ultimatearena.UltimateArena;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

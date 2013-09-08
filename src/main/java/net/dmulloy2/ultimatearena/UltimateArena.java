@@ -57,13 +57,15 @@ import net.dmulloy2.ultimatearena.commands.CmdSetPoint;
 import net.dmulloy2.ultimatearena.commands.CmdStart;
 import net.dmulloy2.ultimatearena.commands.CmdStats;
 import net.dmulloy2.ultimatearena.commands.CmdStop;
-import net.dmulloy2.ultimatearena.commands.CommandHandler;
+import net.dmulloy2.ultimatearena.handlers.CommandHandler;
+import net.dmulloy2.ultimatearena.handlers.FileHandler;
+import net.dmulloy2.ultimatearena.handlers.PermissionHandler;
+import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
 import net.dmulloy2.ultimatearena.listeners.SwornGunsListener;
-import net.dmulloy2.ultimatearena.permissions.Permission;
-import net.dmulloy2.ultimatearena.permissions.PermissionHandler;
+import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
@@ -72,6 +74,7 @@ import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
+import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.types.WhiteListedCommands;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
@@ -91,13 +94,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class UltimateArena extends JavaPlugin
 {
-	private @Getter FileHelper fileHelper;
 	private @Getter Economy economy;
 
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 
-	private @Getter SignManager signManager;
+	private @Getter FileHandler fileHandler;
+	private @Getter SignHandler signHandler;
 
 	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
@@ -129,7 +132,7 @@ public class UltimateArena extends JavaPlugin
 		permissionHandler = new PermissionHandler(this);
 		commandHandler = new CommandHandler(this);
 
-		fileHelper = new FileHelper(this);
+		fileHandler = new FileHandler(this);
 
 		// Register Commands
 		commandHandler.setCommandPrefix("ua");
@@ -176,7 +179,7 @@ public class UltimateArena extends JavaPlugin
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
 
 		// Load Files
-		loadFiles();
+		loadFiles(false);
 
 		long finish = System.currentTimeMillis();
 
@@ -196,7 +199,7 @@ public class UltimateArena extends JavaPlugin
 		stopAll();
 
 		// Save Signs
-		signManager.refreshSave();
+		signHandler.refreshSave();
 
 		// Refresh arena saves
 		for (ArenaZone az : loadedArenas)
@@ -239,9 +242,9 @@ public class UltimateArena extends JavaPlugin
 		debug("Broadcasted message: {0}", broadcast);
 	}
 
-	public void loadFiles()
+	public void loadFiles(boolean alreadyTried)
 	{
-		if (getServer().getWorlds().isEmpty())
+		if (getServer().getWorlds().size() <= 1 && ! alreadyTried)
 		{
 			outConsole("Delaying the loading of files until all worlds have loaded.");
 
@@ -250,7 +253,7 @@ public class UltimateArena extends JavaPlugin
 				@Override
 				public void run()
 				{
-					loadFiles();
+					loadFiles(true);
 				}
 			}.runTaskLater(this, 10L);
 		}
@@ -353,7 +356,7 @@ public class UltimateArena extends JavaPlugin
 		if (!file.exists())
 		{
 			outConsole("Generating WhiteListedCommands file!");
-			fileHelper.generateWhitelistedCmds();
+			fileHandler.generateWhitelistedCmds();
 		}
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
@@ -375,7 +378,7 @@ public class UltimateArena extends JavaPlugin
 		if (! file.exists())
 		{
 			outConsole("Generating config for: {0}", str);
-			fileHelper.generateArenaConfig(str);
+			fileHandler.generateArenaConfig(str);
 		}
 
 		ArenaConfig a = new ArenaConfig(this, str, file);
@@ -394,7 +397,7 @@ public class UltimateArena extends JavaPlugin
 		File[] children = folder.listFiles();
 		if (children.length == 0)
 		{
-			fileHelper.generateStockClasses();
+			fileHandler.generateStockClasses();
 			outConsole("Generating stock classes!");
 		}
 
@@ -416,7 +419,7 @@ public class UltimateArena extends JavaPlugin
 
 	public void loadSigns()
 	{
-		signManager = new SignManager(this);
+		signHandler = new SignHandler(this);
 		outConsole("Loaded {0} arena signs!", arenaSigns.size());
 	}
 
@@ -515,7 +518,7 @@ public class UltimateArena extends JavaPlugin
 
 		arenaSigns.remove(sign);
 
-		signManager.refreshSave();
+		signHandler.refreshSave();
 	}
 
 	// Checks for whether or not something is in an arena

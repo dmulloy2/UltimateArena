@@ -1,9 +1,11 @@
-package net.dmulloy2.ultimatearena.commands;
+package net.dmulloy2.ultimatearena.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.commands.CmdHelp;
+import net.dmulloy2.ultimatearena.commands.UltimateArenaCommand;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

@@ -2,9 +2,9 @@ package net.dmulloy2.ultimatearena.listeners;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.block.Block;

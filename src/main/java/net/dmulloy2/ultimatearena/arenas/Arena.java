@@ -14,13 +14,13 @@ import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaLeaveEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaSpawnEvent;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
-import net.dmulloy2.ultimatearena.permissions.Permission;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSpawn;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.types.PotionType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
@@ -224,21 +224,23 @@ public abstract class Arena
 	{
 		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
-			if (!plugin.isInArena(player))
+			if (! plugin.isInArena(player))
 			{
 				if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
 				{
 					if (announced == 0)
 					{
-						player.sendMessage(plugin.getPrefix()
-								+ FormatUtil.format("&e{0} &3arena has been created!", WordUtils.capitalize(type.getName())));
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&e{0} &3arena has been created!", type.stylize()));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getName()));
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.stylize()));
 					}
 
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getArenaName()));
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getArenaName()));
 				}
 			}
 		}
@@ -404,7 +406,7 @@ public abstract class Arena
 
 					ap.spawn();
 
-					if (!alreadySpawned)
+					if (! alreadySpawned)
 					{
 						onSpawn(ap);
 					}
@@ -417,7 +419,7 @@ public abstract class Arena
 	 * Called when a player is spawned.
 	 * 
 	 * @param apl
-	 *            {@link ArenaPlayer} who was spawned
+	 *            - {@link ArenaPlayer} who was spawned
 	 */
 	public void onSpawn(ArenaPlayer apl)
 	{
@@ -1444,7 +1446,7 @@ public abstract class Arena
 
 	public void updateSigns()
 	{
-		plugin.getSignManager().updateSigns();
+		plugin.getSignHandler().updateSigns();
 	}
 
 	public void announceWinner()

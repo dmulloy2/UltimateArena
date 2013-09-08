@@ -2,12 +2,21 @@ package net.dmulloy2.ultimatearena.types;
 
 public enum FieldType
 {
-	BOMB("bomb"), CONQUEST("cq"), CTF("ctf"), FFA("ffa"), HUNGER("hunger"), INFECT("infect"), KOTH("koth"), MOB("mob"), PVP("pvp"), SPLEEF(
-			"spleef");
+	BOMB("bomb", "Bomb"), 
+	CONQUEST("cq", "CQ"), 
+	CTF("ctf", "CTF"),
+	FFA("ffa", "FFA"),
+	HUNGER("hunger", "Hunger"), 
+	INFECT("infect", "Infect"), 
+	KOTH("koth", "KOTH"),
+	MOB("mob", "Mob"),
+	PVP("pvp", "PvP"), 
+	SPLEEF("spleef", "Spleef");
 
 	private String name;
+	private String stylized;
 
-	FieldType(String name)
+	FieldType(String name, String stylized)
 	{
 		this.name = name;
 	}
@@ -31,5 +40,10 @@ public enum FieldType
 	public String getName()
 	{
 		return name;
+	}
+	
+	public String stylize()
+	{
+		return stylized;
 	}
 }

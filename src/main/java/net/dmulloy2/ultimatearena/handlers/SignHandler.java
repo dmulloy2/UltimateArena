@@ -1,8 +1,9 @@
-package net.dmulloy2.ultimatearena;
+package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.io.IOException;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 
@@ -16,13 +17,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author dmulloy2
  */
 
-public class SignManager
+public class SignHandler
 {
 	private File signsSave;
 
 	private final UltimateArena plugin;
 
-	public SignManager(final UltimateArena plugin)
+	public SignHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 

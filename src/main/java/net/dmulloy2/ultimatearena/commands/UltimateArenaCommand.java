@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.permissions.Permission;
+import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.command.Command;
