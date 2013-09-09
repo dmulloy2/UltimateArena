@@ -112,6 +112,7 @@ public class CTFArena extends Arena
 		flagblue.getFlag().despawn();
 
 		moveTask.cancel();
+		moveTask = null;
 	}
 
 	public class ExecuteMove extends BukkitRunnable

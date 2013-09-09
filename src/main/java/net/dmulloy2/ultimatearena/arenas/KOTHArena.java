@@ -151,9 +151,12 @@ public class KOTHArena extends Arena
 		return leaderboard;
 	}
 
+	/**
+	 * This is handled in {@link Arena#checkPlayerPoints(int max)} 
+	 */
 	@Override
 	public void announceWinner()
 	{
-		// Do nothing...
+		//
 	}
 }

@@ -179,9 +179,6 @@ public class UltimateArena extends JavaPlugin
 		// Vault
 		checkVault(pm);
 
-		// Arena Updater
-		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
-
 		// Load Files
 		loadFiles(false);
 
@@ -1035,24 +1032,5 @@ public class UltimateArena extends JavaPlugin
 		line.replace(line.lastIndexOf(","), line.lastIndexOf(" "), ".");
 		
 		outConsole(line.toString());
-	}
-
-	/**
-	 * Arena Update Task. This is temporary while I look for a better solution
-	 * to {@link Arena#check()}
-	 * 
-	 * @deprecated - Replace this with more active updaters.
-	 */
-	public class ArenaUpdateTask extends BukkitRunnable
-	{
-		@Override
-		public void run()
-		{
-			for (int i = 0; i < activeArenas.size(); i++)
-			{
-				Arena arena = activeArenas.get(i);
-				arena.check();
-			}
-		}
 	}
 }

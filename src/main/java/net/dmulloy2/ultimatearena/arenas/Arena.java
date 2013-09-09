@@ -1008,6 +1008,8 @@ public abstract class Arena
 			{
 				checkTimers();
 				
+				check(); // TODO: Remove this / find a better solution
+				
 				// Timer Stuff
 				if (!isPauseStartTimer())
 				{
