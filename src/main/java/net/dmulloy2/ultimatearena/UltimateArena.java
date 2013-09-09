@@ -59,6 +59,7 @@ import net.dmulloy2.ultimatearena.commands.CmdStats;
 import net.dmulloy2.ultimatearena.commands.CmdStop;
 import net.dmulloy2.ultimatearena.handlers.CommandHandler;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
+import net.dmulloy2.ultimatearena.handlers.LogHandler;
 import net.dmulloy2.ultimatearena.handlers.PermissionHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
@@ -98,13 +99,15 @@ public class UltimateArena extends JavaPlugin
 
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
+	private @Getter LogHandler logHandler;
 
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
-
+	
 	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
+	private @Getter List<JavaPlugin> pluginsUsingAPI = new ArrayList<JavaPlugin>();
 	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	private @Getter List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
@@ -131,6 +134,7 @@ public class UltimateArena extends JavaPlugin
 		// Register Handlers and Helpers
 		permissionHandler = new PermissionHandler(this);
 		commandHandler = new CommandHandler(this);
+		logHandler = new LogHandler(this);
 
 		fileHandler = new FileHandler(this);
 
@@ -218,19 +222,19 @@ public class UltimateArena extends JavaPlugin
 	// Console logging
 	public void outConsole(Level level, String string, Object... objects)
 	{
-		getLogger().log(level, FormatUtil.format(string, objects));
+		logHandler.log(level, FormatUtil.format(string, objects));
 	}
 
 	public void outConsole(String string, Object... objects)
 	{
-		outConsole(Level.INFO, string, objects);
+		logHandler.log(string, objects);
 	}
 
 	public void debug(String string, Object... objects)
 	{
 		if (getConfig().getBoolean("debug", false))
 		{
-			outConsole("[Debug] " + string, objects);
+			logHandler.log("[Debug] " + string, objects);
 		}
 	}
 
@@ -1004,8 +1008,41 @@ public class UltimateArena extends JavaPlugin
 
 		return economy != null;
 	}
+	
+	public void acceptRegistration(JavaPlugin plugin)
+	{
+		outConsole("Accepted API registration from {0}", plugin.getName());
+		
+		pluginsUsingAPI.add(plugin);
+	}
+	
+	public void dumpRegistrations()
+	{
+		if (pluginsUsingAPI.isEmpty())
+		{
+			outConsole("No plugins currently using the UltimateArena API");
+			return;
+		}
+		
+		StringBuilder line = new StringBuilder();
+		line.append("Plugins currently using the UltimateArena API: ");
+		
+		for (JavaPlugin plugin : pluginsUsingAPI)
+		{
+			line.append(plugin.getName() + ", ");
+		}
+		
+		line.replace(line.lastIndexOf(","), line.lastIndexOf(" "), ".");
+		
+		outConsole(line.toString());
+	}
 
-	@Deprecated
+	/**
+	 * Arena Update Task. This is temporary while I look for a better solution
+	 * to {@link Arena#check()}
+	 * 
+	 * @deprecated - Replace this with more active updaters.
+	 */
 	public class ArenaUpdateTask extends BukkitRunnable
 	{
 		@Override
@@ -1014,7 +1051,7 @@ public class UltimateArena extends JavaPlugin
 			for (int i = 0; i < activeArenas.size(); i++)
 			{
 				Arena arena = activeArenas.get(i);
-				arena.update();
+				arena.check();
 			}
 		}
 	}

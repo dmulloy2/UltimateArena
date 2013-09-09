@@ -29,18 +29,19 @@ import com.earth2me.essentials.User;
 
 public class ArenaPlayer
 {
-	private int kills = 0;
-	private int deaths = 0;
-	private int killStreak = 0;
-	private int gameXP = 0;
+	private int kills;
+	private int deaths;
+	private int killStreak;
+	private int gameXP;
 	private int team = 1;
-	private int points = 0;
-	private int baseLevel = 0;
-	private int amtKicked = 0;
-	private int healTimer = 0;
+	private int points;
+	private int baseLevel;
+	private int amtKicked;
+	private int healTimer;
 
-	private boolean out = false;
-	private boolean canReward = false;
+	private boolean out;
+	private boolean canReward;
+	private boolean changeClassOnRespawn;
 
 	private Player player;
 
@@ -200,12 +201,12 @@ public class ArenaPlayer
 	 * 
 	 * @param ac
 	 *            - {@link ArenaClass} to set the player's class to
-	 * @param command
-	 *            - Whether or not it was changed via command
 	 */
 	public void setClass(ArenaClass ac)
 	{
 		this.mclass = ac;
+		
+		this.changeClassOnRespawn = true;
 	}
 
 	/**
@@ -263,6 +264,8 @@ public class ArenaPlayer
 				giveItem(i, stack);
 			}
 		}
+		
+		this.changeClassOnRespawn = false;
 	}
 
 	/**
@@ -374,6 +377,8 @@ public class ArenaPlayer
 	public void setTeam(int team)
 	{
 		this.team = team;
+		
+		arena.updateTeams();
 	}
 
 	public int getAmtKicked()
@@ -446,7 +451,7 @@ public class ArenaPlayer
 	}
 
 	public void onDeath()
-	{
+	{	
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
 		this.deaths++;
@@ -515,5 +520,10 @@ public class ArenaPlayer
 	public String getName()
 	{
 		return name;
+	}
+
+	public boolean changeClassOnRespawn()
+	{
+		return changeClassOnRespawn;
 	}
 }

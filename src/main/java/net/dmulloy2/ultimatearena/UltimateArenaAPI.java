@@ -215,9 +215,9 @@ public class UltimateArenaAPI
 	public static UltimateArenaAPI hookIntoUA(JavaPlugin plugin)
 	{
 		PluginManager pm = plugin.getServer().getPluginManager();
-		if (!pm.isPluginEnabled("UltimateArena"))
+		if (! pm.isPluginEnabled("UltimateArena"))
 		{
-			plugin.getLogger().severe("Could not hook into UltimateArena: Plugin not installed.");
+			plugin.getLogger().severe("Could not hook into UltimateArena: Plugin not enabled!");
 			return null;
 		}
 
@@ -225,10 +225,14 @@ public class UltimateArenaAPI
 		if (p instanceof UltimateArena)
 		{
 			plugin.getLogger().info("Successfully hooked into UltimateArena");
+			
+			UltimateArena ua = (UltimateArena) p;
+			ua.acceptRegistration(plugin);
+			
 			return new UltimateArenaAPI(p);
 		}
 
-		plugin.getLogger().severe("Could not hook into UltimateArena! Is there a plugin by the same name?");
+		plugin.getLogger().severe("Could not hook into UltimateArena: Is there a plugin by the same name?");
 		return null;
 	}
 }

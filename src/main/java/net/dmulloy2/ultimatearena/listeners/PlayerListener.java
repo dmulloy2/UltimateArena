@@ -11,6 +11,7 @@ import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -34,7 +36,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 public class PlayerListener implements Listener
 {
 	private final UltimateArena plugin;
-
 	public PlayerListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -49,7 +50,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerKick(PlayerKickEvent event)
 	{
-		if (!event.isCancelled())
+		if (! event.isCancelled())
 		{
 			onPlayerDisconnect(event.getPlayer());
 		}
@@ -84,13 +85,13 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event)
 	{
-		if (!event.isCancelled())
+		if (! event.isCancelled())
 		{
 			Player pl = event.getPlayer();
 			if (plugin.isInArena(pl))
 			{
 				Arena arena = plugin.getArena(pl);
-				if (!arena.getType().getName().equalsIgnoreCase("Hunger"))
+				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -101,7 +102,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event)
 	{
-		if (!event.isCancelled())
+		if (! event.isCancelled())
 		{
 			Player pl = event.getPlayer();
 			if (plugin.isInArena(pl))
@@ -215,7 +216,7 @@ public class PlayerListener implements Listener
 										}
 									}
 								}
-								if (!found)
+								if (! found)
 								{
 									if (plugin.getLoadedArenas().size() > 0)
 									{
@@ -243,7 +244,7 @@ public class PlayerListener implements Listener
 										}
 									}
 								}
-								if (!found)
+								if (! found)
 								{
 									for (ArenaZone az : plugin.getLoadedArenas())
 									{
@@ -253,7 +254,7 @@ public class PlayerListener implements Listener
 											found = true;
 										}
 									}
-									if (!found)
+									if (! found)
 									{
 										player.sendMessage(plugin.getPrefix()
 												+ FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
@@ -275,17 +276,14 @@ public class PlayerListener implements Listener
 		{
 			Arena a = plugin.getArena(pl);
 			ArenaPlayer apl = plugin.getArenaPlayer(pl);
-			if (a.checkValid(apl))
+			if (apl.getDeaths() < a.getMaxDeaths())
 			{
-				if (apl.getDeaths() < a.getMaxDeaths())
+				if (a.isInGame() && ! a.isStopped())
 				{
-					if (a.isInGame() && !a.isStopped())
+					if (a.getSpawn(apl) != null)
 					{
-						if (a.getSpawn(apl) != null)
-						{
-							event.setRespawnLocation(a.getSpawn(apl));
-							a.spawn(pl, false);
-						}
+						event.setRespawnLocation(a.getSpawn(apl));
+						a.spawn(pl, false);
 					}
 				}
 			}
@@ -293,18 +291,72 @@ public class PlayerListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerMove(PlayerMoveEvent event)
+	public void onPlayerMoveMonitor(PlayerMoveEvent event)
 	{
-		Player p = event.getPlayer();
-		for (int i = 0; i < plugin.getWaiting().size(); i++)
+		if (! event.isCancelled())
 		{
-			ArenaJoinTask task = plugin.getWaiting().get(i);
-			if (task.getPlayer().getName().equals(p.getName()))
+			// If they're the same location, do nothing
+			if (Util.checkLocation(event.getFrom(), event.getTo()))
+				return;
+			
+			Player player = event.getPlayer();
+			
+			for (int i = 0; i < plugin.getWaiting().size(); i++)
 			{
-				task.cancel();
-				plugin.getWaiting().remove(task);
+				ArenaJoinTask task = plugin.getWaiting().get(i);
+				if (task.getPlayer().getName().equals(player.getName()))
+				{
+					task.cancel();
+					plugin.getWaiting().remove(task);
 
-				p.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCancelled!"));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCancelled!"));
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerMoveLowest(PlayerMoveEvent event)
+	{
+		if (! event.isCancelled())
+		{
+			Player player = event.getPlayer();
+			if (! plugin.isInArena(player))
+				return;
+			
+			if (! plugin.isInArena(event.getFrom()))
+			{
+				if (! plugin.isInArena(event.getTo()))
+				{
+					plugin.getArena(player).spawn(player, false);
+				}
+				else
+				{
+					event.setCancelled(true);
+					
+					ArenaPlayer ap = plugin.getArenaPlayer(player);
+					ap.setAmtKicked(ap.getAmtKicked() + 1);
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onFoodLevelChange(FoodLevelChangeEvent event)
+	{
+		if (! event.isCancelled())
+		{
+			if (event.getEntity() instanceof Player)
+			{
+				Player player = (Player) event.getEntity();
+				if (plugin.isInArena(player))
+				{
+					Arena a = plugin.getArena(player);
+					if (a.isInLobby())
+					{
+						event.setFoodLevel(20);
+					}
+				}
 			}
 		}
 	}
@@ -312,7 +364,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
-		if (!event.isCancelled())
+		if (! event.isCancelled())
 		{
 			Player player = event.getPlayer();
 			if (plugin.isInArena(player))
@@ -320,11 +372,9 @@ public class PlayerListener implements Listener
 				if (event.getCause() == TeleportCause.COMMAND)
 				{
 					ArenaPlayer ap = plugin.getArenaPlayer(player);
-					if (ap != null && !ap.isOut())
-					{
-						ap.sendMessage("&cYou cannot teleport while ingame!");
-						event.setCancelled(true);
-					}
+					ap.sendMessage("&cYou cannot teleport while ingame!");
+					
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -333,15 +383,15 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
-		if (!event.isCancelled())
+		if (! event.isCancelled())
 		{
 			Player player = event.getPlayer();
-			if (!plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
+			if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 			{
 				String cmd = event.getMessage().toLowerCase();
 
 				String[] check = cmd.split(" ");
-				if (!cmd.contains("/ua") && plugin.isInArena(player) && !plugin.getWhiteListedCommands().isAllowed(check))
+				if (! cmd.contains("/ua") && plugin.isInArena(player) && ! plugin.getWhiteListedCommands().isAllowed(check))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));

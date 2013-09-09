@@ -23,7 +23,7 @@ public class CmdClass extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		if (!plugin.isInArena(player))
+		if (! plugin.isInArena(player))
 		{
 			err("You are not in an arena!");
 			return;
@@ -47,18 +47,25 @@ public class CmdClass extends UltimateArenaCommand
 			ArenaClass cl = plugin.getArenaClass(args[0]);
 			if (cl != null)
 			{
-				ap.setClass(cl);
-
-				String name = cl.getName();
-				String article = FormatUtil.getArticle(name);
-
-				if (ap.getArena().isInLobby())
+				if (cl.checkPermission(player))
 				{
-					sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
+					ap.setClass(cl);
+	
+					String name = cl.getName();
+					String article = FormatUtil.getArticle(name);
+	
+					if (ap.getArena().isInLobby())
+					{
+						sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
+					}
+					else
+					{
+						sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
+					}
 				}
 				else
 				{
-					sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
+					err("You do not have permissions for this class.");
 				}
 			}
 			else

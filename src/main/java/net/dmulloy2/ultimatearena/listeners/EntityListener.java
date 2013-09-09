@@ -20,6 +20,7 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -32,7 +33,6 @@ import org.bukkit.inventory.ItemStack;
 public class EntityListener implements Listener
 {
 	private final UltimateArena plugin;
-
 	public EntityListener(final UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -48,6 +48,24 @@ public class EntityListener implements Listener
 			if (plugin.isInArena(event.getLocation()))
 			{
 				if (!event.blockList().isEmpty())
+				{
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityCombust(EntityCombustEvent event)
+	{
+		Entity combusted = event.getEntity();
+		if (combusted instanceof Player)
+		{
+			Player combustedPlayer = (Player)combusted;
+			if (plugin.isInArena(combustedPlayer))
+			{
+				Arena a = plugin.getArena(combustedPlayer);
+				if (a.isInLobby())
 				{
 					event.setCancelled(true);
 				}
@@ -259,12 +277,7 @@ public class EntityListener implements Listener
 					Arena ar = plugin.getArena(pdied);
 					ar.onPlayerDeath(dp);
 
-					if (pdied.getKiller() instanceof Player) // This should
-																// cover all PVP
-																// scenarios
-																// (except
-																// Projectiles
-																// maybe)
+					if (pdied.getKiller() instanceof Player)
 					{
 						Player killer = pdied.getKiller();
 						if (killer.getName().equals(pdied.getName())) // Suicide
@@ -285,8 +298,7 @@ public class EntityListener implements Listener
 								pdied.sendMessage(line);
 							}
 						}
-						else
-						// PVP
+						else // PVP
 						{
 							plugin.debug("PVP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
 
