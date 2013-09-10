@@ -95,15 +95,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class UltimateArena extends JavaPlugin
 {
+	// Economy
 	private @Getter Economy economy;
 
+	// Handlers
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
-	private @Getter LogHandler logHandler;
-
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
+	private @Getter LogHandler logHandler;
 	
+	// Lists
 	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
@@ -113,16 +115,24 @@ public class UltimateArena extends JavaPlugin
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
 	private @Getter List<Arena> activeArenas = new ArrayList<Arena>();
 
+	// Whitelisted Commands
 	private @Getter WhiteListedCommands whiteListedCommands = new WhiteListedCommands();
 
 	private @Getter @Setter int arenasPlayed = 0;
 
+	// Global prefix
 	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
 
 	@Override
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
+		
+		// Register Handlers
+		permissionHandler = new PermissionHandler(this);
+		commandHandler = new CommandHandler(this);
+		fileHandler = new FileHandler(this);
+		logHandler = new LogHandler(this);
 
 		// Dependencies
 		checkDependencyVersions();
@@ -130,13 +140,6 @@ public class UltimateArena extends JavaPlugin
 		// IO Stuff
 		checkDirectories();
 		saveDefaultConfig();
-
-		// Register Handlers and Helpers
-		permissionHandler = new PermissionHandler(this);
-		commandHandler = new CommandHandler(this);
-		logHandler = new LogHandler(this);
-
-		fileHandler = new FileHandler(this);
 
 		// Register Commands
 		commandHandler.setCommandPrefix("ua");
