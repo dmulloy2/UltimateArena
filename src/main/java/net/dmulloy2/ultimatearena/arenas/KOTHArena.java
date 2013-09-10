@@ -46,7 +46,6 @@ public class KOTHArena extends Arena
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void doKillStreak(ArenaPlayer ap)
 	{
@@ -59,12 +58,12 @@ public class KOTHArena extends Arena
 		if (ap.getKillStreak() == 4)
 		{
 			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e4 &3kills! Unlocked food!");
+			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e4 &3kills! Unlocked food!");
 		}
 		if (ap.getKillStreak() == 12)
 		{
 			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (byte) 0, 2, "&e12 &3kills! Unlocked food!");
+			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e12 &3kills! Unlocked food!");
 		}
 	}
 

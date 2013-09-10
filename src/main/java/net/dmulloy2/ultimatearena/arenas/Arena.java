@@ -39,7 +39,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
@@ -117,8 +116,6 @@ public abstract class Arena
 		}
 
 		this.gameMode = Mode.LOBBY;
-		
-		startTimer();
 
 		updateSigns();
 	}
@@ -437,8 +434,6 @@ public abstract class Arena
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		pl.setAmtKicked(0);
-		
-		updateTeams();
 
 		// Call ArenaDeathEvent
 		UltimateArenaDeathEvent deathEvent = new UltimateArenaDeathEvent(pl, this);
@@ -638,14 +633,28 @@ public abstract class Arena
 
 		return null;
 	}
-
+	
+	/**
+	 * Alias for {@link Arena#giveItem(Player, Material, int, short, String)}
+	 */
+	public final void giveItem(Player pl, int id, short dat, int amt, String message)
+	{
+		@SuppressWarnings("deprecation")
+		Material mat = Material.getMaterial(id);
+		
+		if (mat != null)
+		{
+			giveItem(pl, mat, amt, dat, message);
+		}
+	}
+	
 	/**
 	 * Gives a {@link Player} an item
 	 * 
-	 * @param pl
+	 * @param player
 	 *            - {@link Player} to give items to
-	 * @param id
-	 *            - ItemId of the item to give
+	 * @param mat
+	 *            - {@link Material} of the item to give
 	 * @param dat
 	 *            - Data value of the item
 	 * @param amt
@@ -653,18 +662,16 @@ public abstract class Arena
 	 * @param message
 	 *            - Message to send the {@link Player}
 	 */
-	
-	@SuppressWarnings("deprecation")
-	public final void giveItem(Player pl, int id, short dat, int amt, String message)
+	public final void giveItem(Player player, Material mat, int amt, short dat, String message)
 	{
 		if (! message.isEmpty())
 		{
-			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
 		}
-
-		ItemStack item = new ItemStack(id, amt, dat);
 		
-		InventoryHelper.addItem(pl, item);
+		ItemStack item = new ItemStack(mat, amt, dat);
+		
+		InventoryHelper.addItem(player, item);
 	}
 
 	/**
@@ -709,8 +716,6 @@ public abstract class Arena
 	 * @param ap
 	 *            - {@link ArenaPlayer} to do killstreak for
 	 */
-	
-	@SuppressWarnings("deprecation")
 	public void doKillStreak(ArenaPlayer ap)
 	{
 		/** Hunger Arena check **/
@@ -725,7 +730,7 @@ public abstract class Arena
 		if (ap.getKillStreak() == 4)
 		{
 			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (short) 0, 2, "&e4 &3kills! Unlocked Food!");
+			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e4 &3kills! Unlocked Food!");
 		}
 
 		if (ap.getKillStreak() == 5)
@@ -740,7 +745,7 @@ public abstract class Arena
 
 		if (ap.getKillStreak() == 8)
 		{
-			ap.sendMessage(plugin.getPrefix() + "&e8 &3kills! Unlocked attackdogs!");
+			ap.sendMessage("&e8 &3kills! Unlocked attackdogs!");
 			for (int i = 0; i < 2; i++)
 			{
 				Wolf wolf = (Wolf) ap.getPlayer().getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
@@ -751,7 +756,7 @@ public abstract class Arena
 		if (ap.getKillStreak() == 12)
 		{
 			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK.getId(), (short) 0, 2, "&e12 &3kills! Unlocked Food!");
+			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e12 &3kills! Unlocked Food!");
 		}
 	}
 
@@ -805,8 +810,6 @@ public abstract class Arena
 
 		this.gameMode = Mode.IDLE;
 
-		stopTimer();
-		
 		updateSigns();
 
 		new FinalizeTask(this).runTaskLater(plugin, 120L);
@@ -973,164 +976,148 @@ public abstract class Arena
 			spawnAll();
 		}
 	}
-	
-	private BukkitTask timerTask;
-	
-	/**
-	 * Starts the Arena's timer
-	 */
-	public final void startTimer()
-	{
-		this.timerTask = new TimerTask().runTaskTimer(plugin, 0L, 20L);
-	}
-	
-	/**
-	 * Stops the Arena's timer
-	 */
-	public final void stopTimer()
-	{
-		this.timerTask.cancel();
-		
-		this.timerTask = null;
-	}
-	
-	/**
-	 * Basic Timer Task
-	 * 
-	 * @author dmulloy2
-	 */
-	public final class TimerTask extends BukkitRunnable
-	{
-		@Override
-		public void run()
-		{
-			while (! isStopped())
-			{
-				checkTimers();
-				
-				check(); // TODO: Remove this / find a better solution
-				
-				// Timer Stuff
-				if (!isPauseStartTimer())
-				{
-					if (startTimer == 120)
-					{
-						tellPlayers("&e120 &3seconds until start!");
-					}
-					if (startTimer == 60)
-					{
-						tellPlayers("&e60 &3seconds until start!");
-					}
-					if (startTimer == 45)
-					{
-						tellPlayers("&e45 &3seconds until start!");
-					}
-					if (startTimer == 30)
-					{
-						tellPlayers("&e30 &3seconds until start!");
-					}
-					if (startTimer == 15)
-					{
-						tellPlayers("&e15 &3seconds until start!");
-					}
-					if (startTimer > 0 && startTimer < 11)
-					{
-						tellPlayers("&e{0} &3second(s) until start!", startTimer);
-					}
-				}
 
-				if (gameTimer > 0 && gameTimer < 21)
-				{
-					tellPlayers("&e{0} &3second(s) until end!", gameTimer);
-				}
-				
-				if (gameTimer == 60 && maxGameTime > 60)
-				{
-					tellPlayers("&e{0} &3minute(s) until end!", gameTimer / 60);
-				}
-				
-				if (gameTimer == maxGameTime / 2)
-				{
-					tellPlayers("&e{0} &3second(s) until end!", maxGameTime / 2);
-				}
-				
-				// Stop the arena if there are no players
-				if (getActivePlayers() == 0)
-				{
-					stop();
-					return;
-				}
-
-				for (int i = 0; i < arenaPlayers.size(); i++)
-				{
-					ArenaPlayer ap = arenaPlayers.get(i);
-					if (checkValid(ap))
-					{
-						// End dead players, since some of them take awhile
-						// to respawn.
-						if (ap.getDeaths() >= getMaxDeaths())
-						{
-							if (ap.getPlayer().getHealth() > 0)
-							{
-								endPlayer(ap, true);
-								return;
-							}
-						}
-						
-						ap.setHealTimer(ap.getHealTimer() - 1);
-						
-						if (! ap.changeClassOnRespawn())
-						{
-							ArenaClass ac = ap.getArenaClass();
-							if (ac != null)
-							{
-								if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
-								{
-									if (ap.getPlayer().getHealth() + 1 <= 20)
-									{
-										if (ap.getPlayer().getHealth() < 0)
-											ap.getPlayer().setHealth(1);
-										ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
-										ap.setHealTimer(2);
-									}
-								}
-	
-								// Class based potion effects
-								if (ac.hasPotionEffects())
-								{
-									if (ac.getPotionEffects().size() > 0)
-									{
-										for (PotionEffect effect : ac.getPotionEffects())
-										{
-											if (! ap.getPlayer().hasPotionEffect(effect.getType()))
-												ap.getPlayer().addPotionEffect(effect);
-										}
-									}
-								}
-							}
-						}
-						
-						// XP Bar
-						decideXPBar(ap);
-					}
-				}
-			}
-		}
-	}
-	
-	public final void updateTeams()
+	/**
+	 * Arena Updater
+	 */
+	public final void update()
 	{
+		this.team1size = 0;
+		this.team2size = 0;
+
+		checkTimers();
+
+		// Get how many people are in the arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
 			{
-				if (ap.getTeam() == 1)
-					team1size++;
-				else
-					team2size++;
+				Player player = Util.matchPlayer(ap.getName());
+				if (player != null)
+				{
+					if (ap.getTeam() == 1)
+						team1size++;
+					else
+						team2size++;
+				}
 			}
 		}
+
+		check();
+
+		for (int i = 0; i < arenaPlayers.size(); i++)
+		{
+			ArenaPlayer ap = arenaPlayers.get(i);
+			if (checkValid(ap))
+			{
+				// Check players in the Arena
+				if (isInLobby())
+				{
+//					ap.getPlayer().setFireTicks(0);
+//					ap.getPlayer().setFoodLevel(20);
+					ap.decideHat();
+				}
+
+				ap.setHealTimer(ap.getHealTimer() - 1);
+
+				ArenaClass ac = ap.getArenaClass();
+				if (ac != null)
+				{
+					if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
+					{
+						if (ap.getPlayer().getHealth() + 1 <= 20)
+						{
+							if (ap.getPlayer().getHealth() < 0)
+								ap.getPlayer().setHealth(1);
+							ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
+							ap.setHealTimer(2);
+						}
+					}
+
+					// Class based potion effects
+					if (ac.hasPotionEffects())
+					{
+						if (ac.getPotionEffects().size() > 0)
+						{
+							for (PotionEffect effect : ac.getPotionEffects())
+							{
+								if (!ap.getPlayer().hasPotionEffect(effect.getType()))
+									ap.getPlayer().addPotionEffect(effect);
+							}
+						}
+					}
+				}
+
+/*				// Make sure they are still in the Arena
+				if (!plugin.isInArena(ap.getPlayer().getLocation()))
+				{
+					spawn(ap.getPlayer(), false);
+					ap.setAmtKicked(ap.getAmtKicked() + 1);
+				}
+*/
+				// Timer Stuff
+				if (!isPauseStartTimer())
+				{
+					if (startTimer == 120)
+					{
+						ap.sendMessage("&e120 &3seconds until start!");
+					}
+					if (startTimer == 60)
+					{
+						ap.sendMessage("&e60 &3seconds until start!");
+					}
+					if (startTimer == 45)
+					{
+						ap.sendMessage("&e45 &3seconds until start!");
+					}
+					if (startTimer == 30)
+					{
+						ap.sendMessage("&e30 &3seconds until start!");
+					}
+					if (startTimer == 15)
+					{
+						ap.sendMessage("&e15 &3seconds until start!");
+					}
+					if (startTimer > 0 && startTimer < 11)
+					{
+						ap.sendMessage("&e{0} &3second(s) until start!", startTimer);
+					}
+				}
+
+				if (gameTimer > 0 && gameTimer < 21)
+				{
+					ap.sendMessage("&e{0} &3second(s) until end!", gameTimer);
+				}
+				if (gameTimer == 60 && maxGameTime > 60)
+				{
+					ap.sendMessage("&e{0} &3minute(s) until end!", gameTimer / 60);
+				}
+				if (gameTimer == maxGameTime / 2)
+				{
+					ap.sendMessage("&e{0} &3second(s) until end!", maxGameTime / 2);
+				}
+
+				// XP Bar
+				decideXPBar(ap);
+
+				// End dead players
+				if (! stopped)
+				{
+					if (ap.getDeaths() >= getMaxDeaths())
+					{
+						if (ap.getPlayer().getHealth() > 0)
+						{
+							endPlayer(ap, true);
+						}
+					}
+				}
+			}
+		}
+
+		// Stop the arena if there are no players
+		if (getActivePlayers() == 0)
+			stop();
 	}
 
 	/**

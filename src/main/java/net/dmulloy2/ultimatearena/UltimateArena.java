@@ -184,6 +184,9 @@ public class UltimateArena extends JavaPlugin
 
 		// Load Files
 		loadFiles(false);
+		
+		// Arena Updater
+		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
 
 		long finish = System.currentTimeMillis();
 
@@ -1035,5 +1038,22 @@ public class UltimateArena extends JavaPlugin
 		line.replace(line.lastIndexOf(","), line.lastIndexOf(" "), ".");
 		
 		outConsole(line.toString());
+	}
+	
+	/**
+	 * Arena Update Task. While I hate  that I have to use it,
+	 * it works.
+	 */
+	public class ArenaUpdateTask extends BukkitRunnable
+	{
+		@Override
+		public void run()
+		{
+			for (int i = 0; i < activeArenas.size(); i++)
+			{
+				Arena arena = activeArenas.get(i);
+				arena.check();
+			}
+		}
 	}
 }

@@ -377,8 +377,6 @@ public class ArenaPlayer
 	public void setTeam(int team)
 	{
 		this.team = team;
-		
-		arena.updateTeams();
 	}
 
 	public int getAmtKicked()
