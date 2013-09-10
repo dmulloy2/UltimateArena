@@ -1052,7 +1052,7 @@ public class UltimateArena extends JavaPlugin
 			for (int i = 0; i < activeArenas.size(); i++)
 			{
 				Arena arena = activeArenas.get(i);
-				arena.check();
+				arena.update();
 			}
 		}
 	}
