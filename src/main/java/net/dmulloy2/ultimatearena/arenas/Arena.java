@@ -333,7 +333,7 @@ public abstract class Arena
 	/**
 	 * Spawns all players in an arena.
 	 */
-	public void spawnAll()
+	public final void spawnAll()
 	{
 		plugin.debug("Spawning players for Arena: {0}", getArenaZone().getArenaName());
 
@@ -391,7 +391,7 @@ public abstract class Arena
 			{
 				if (ap.getDeaths() < getMaxDeaths())
 				{
-					plugin.debug("Spawning player: {0}", name);
+					plugin.debug("Spawning player: {0}", player.getName());
 
 					Location loc = getSpawn(ap);
 					if (loc != null)
@@ -1189,47 +1189,47 @@ public abstract class Arena
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
-	public String getName()
+	public final String getName()
 	{
 		return name;
 	}
 
-	public int getStartingAmount()
+	public final int getStartingAmount()
 	{
 		return startingAmount;
 	}
 
-	public void setStartingAmount(int startingAmount)
+	public final void setStartingAmount(int startingAmount)
 	{
 		this.startingAmount = startingAmount;
 	}
 
-	public boolean isForceStop()
+	public final boolean isForceStop()
 	{
 		return forceStop;
 	}
 
-	public void setForceStop(boolean forceStop)
+	public final void setForceStop(boolean forceStop)
 	{
 		this.forceStop = forceStop;
 	}
 
-	public List<ArenaPlayer> getArenaPlayers()
+	public final List<ArenaPlayer> getArenaPlayers()
 	{
 		return arenaPlayers;
 	}
 
-	public int getStartTimer()
+	public final int getStartTimer()
 	{
 		return startTimer;
 	}
 
-	public ArenaZone getArenaZone()
+	public final ArenaZone getArenaZone()
 	{
 		return az;
 	}
 
-	public int getActivePlayers()
+	public final int getActivePlayers()
 	{
 		int amt = 0;
 		for (ArenaPlayer ap : arenaPlayers)
@@ -1241,142 +1241,142 @@ public abstract class Arena
 		return amt;
 	}
 
-	public boolean isDisabled()
+	public final boolean isDisabled()
 	{
 		return disabled;
 	}
 
-	public void setDisabled(boolean disabled)
+	public final void setDisabled(boolean disabled)
 	{
 		this.disabled = disabled;
 	}
 
-	public FieldType getType()
+	public final FieldType getType()
 	{
 		return type;
 	}
 
-	public int getGameTimer()
+	public final int getGameTimer()
 	{
 		return gameTimer;
 	}
 
-	public int getMaxGameTime()
+	public final int getMaxGameTime()
 	{
 		return maxGameTime;
 	}
 
-	public int getMaxDeaths()
+	public final int getMaxDeaths()
 	{
 		return maxDeaths;
 	}
 
-	public void setMaxDeaths(int maxDeaths)
+	public final void setMaxDeaths(int maxDeaths)
 	{
 		this.maxDeaths = maxDeaths;
 	}
 
-	public boolean isUpdatedTeams()
+	public final boolean isUpdatedTeams()
 	{
 		return updatedTeams;
 	}
 
-	public void setUpdatedTeams(boolean updatedTeams)
+	public final void setUpdatedTeams(boolean updatedTeams)
 	{
 		this.updatedTeams = updatedTeams;
 	}
 
-	public List<ArenaFlag> getFlags()
+	public final List<ArenaFlag> getFlags()
 	{
 		return flags;
 	}
 
-	public void setFlags(List<ArenaFlag> flags)
+	public final void setFlags(List<ArenaFlag> flags)
 	{
 		this.flags = flags;
 	}
 
-	public int getWinningTeam()
+	public final int getWinningTeam()
 	{
 		return winningTeam;
 	}
 
-	public boolean isStopped()
+	public final boolean isStopped()
 	{
 		return stopped;
 	}
 
-	public void setStopped(boolean stopped)
+	public final void setStopped(boolean stopped)
 	{
 		this.stopped = stopped;
 	}
 
-	public boolean isAllowTeamKilling()
+	public final boolean isAllowTeamKilling()
 	{
 		return allowTeamKilling;
 	}
 
-	public void setAllowTeamKilling(boolean allowTeamKilling)
+	public final void setAllowTeamKilling(boolean allowTeamKilling)
 	{
 		this.allowTeamKilling = allowTeamKilling;
 	}
 
-	public List<ArenaSpawn> getSpawns()
+	public final List<ArenaSpawn> getSpawns()
 	{
 		return spawns;
 	}
 
-	public void setSpawns(List<ArenaSpawn> spawns)
+	public final void setSpawns(List<ArenaSpawn> spawns)
 	{
 		this.spawns = spawns;
 	}
 
-	public World getWorld()
+	public final World getWorld()
 	{
 		return world;
 	}
 
-	public int getWave()
+	public final int getWave()
 	{
 		return wave;
 	}
 
-	public int getMaxWave()
+	public final int getMaxWave()
 	{
 		return maxWave;
 	}
 
-	public int getTeam1size()
+	public final int getTeam1size()
 	{
 		return team1size;
 	}
 
-	public void setTeam1size(int team1size)
+	public final void setTeam1size(int team1size)
 	{
 		this.team1size = team1size;
 	}
 
-	public boolean isPauseStartTimer()
+	public final boolean isPauseStartTimer()
 	{
 		return pauseStartTimer;
 	}
 
-	public void setPauseStartTimer(boolean pauseStartTimer)
+	public final void setPauseStartTimer(boolean pauseStartTimer)
 	{
 		this.pauseStartTimer = pauseStartTimer;
 	}
 
-	public void setType(FieldType type)
+	public final void setType(FieldType type)
 	{
 		this.type = type;
 	}
 
-	public boolean isInGame()
+	public final boolean isInGame()
 	{
 		return (startTimer < 1 && gameTimer > 0);
 	}
 
-	public boolean isInLobby()
+	public final boolean isInLobby()
 	{
 		return (startTimer > 1);
 	}
@@ -1445,12 +1445,12 @@ public abstract class Arena
 		}
 	}
 
-	public Mode getGameMode()
+	public final Mode getGameMode()
 	{
 		return gameMode;
 	}
 
-	public void updateSigns()
+	public final void updateSigns()
 	{
 		plugin.getSignHandler().updateSigns();
 	}
@@ -1493,7 +1493,6 @@ public abstract class Arena
 	public final class FinalizeTask extends BukkitRunnable
 	{
 		private final Arena arena;
-
 		public FinalizeTask(Arena arena)
 		{
 			this.arena = arena;
