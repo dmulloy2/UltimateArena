@@ -215,11 +215,10 @@ public class ArenaPlayer
 	 */
 	public void giveClassItems()
 	{
-		if (arena.isStopped()) return;
+		if (! arena.isInGame()) 
+			return;
 		
-		decideHat(); // Give hats in arenas
-		
-		if (! arena.isInGame()) return;
+		decideHat();
 
 		if (mclass == null)
 		{

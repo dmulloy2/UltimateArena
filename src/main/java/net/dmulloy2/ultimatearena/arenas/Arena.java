@@ -194,6 +194,9 @@ public abstract class Arena
 
 		// Clear potion effects
 		pl.clearPotionEffects();
+		
+		// Decide Hat
+		pl.decideHat();
 
 		// Finally add the player
 		arenaPlayers.add(pl);
