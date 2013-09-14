@@ -155,10 +155,11 @@ public abstract class Arena
 
 		// Update Teams
 		pl.setTeam(getTeam());
+		
 		this.updatedTeams = true;
 
 		// Teleport the player to the lobby spawn
-		spawn(player, false);
+		spawnLobby(pl);
 
 		// Inventory
 		pl.saveInventory();
@@ -413,6 +414,26 @@ public abstract class Arena
 				}
 			}
 		}
+	}
+	
+	public final void spawnLobby(ArenaPlayer ap)
+	{
+		Location loc = getSpawn(ap);
+		if (loc != null)
+		{
+			plugin.debug("Spawning player {0} in the lobby", ap.getName());
+			
+			teleport(ap.getPlayer(), loc);
+			
+			// Call spawn event
+			ArenaSpawn spawn = new ArenaSpawn(loc);
+			UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
+			plugin.getServer().getPluginManager().callEvent(spawnEvent);
+		}
+		
+		ap.spawn();
+		
+		onSpawn(ap);
 	}
 
 	/**
