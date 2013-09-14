@@ -27,6 +27,7 @@ public enum Permission
 	START,
 	STATS,
 	STOP,
+	VERSION,
 
 	BUILD, 
 	BYPASS;

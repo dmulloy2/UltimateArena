@@ -57,6 +57,7 @@ import net.dmulloy2.ultimatearena.commands.CmdSetPoint;
 import net.dmulloy2.ultimatearena.commands.CmdStart;
 import net.dmulloy2.ultimatearena.commands.CmdStats;
 import net.dmulloy2.ultimatearena.commands.CmdStop;
+import net.dmulloy2.ultimatearena.commands.CmdVersion;
 import net.dmulloy2.ultimatearena.handlers.CommandHandler;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.LogHandler;
@@ -165,6 +166,7 @@ public class UltimateArena extends JavaPlugin
 		commandHandler.registerCommand(new CmdStart(this));
 		commandHandler.registerCommand(new CmdStats(this));
 		commandHandler.registerCommand(new CmdStop(this));
+		commandHandler.registerCommand(new CmdVersion(this));
 
 		// SwornGuns
 		PluginManager pm = getServer().getPluginManager();

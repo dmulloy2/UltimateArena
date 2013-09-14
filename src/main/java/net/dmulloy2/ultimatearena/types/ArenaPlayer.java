@@ -66,7 +66,7 @@ public class ArenaPlayer
 	 * @param plugin
 	 *            - {@link UltimateArena} plugin instance
 	 */
-	public ArenaPlayer(Player player, Arena arena, final UltimateArena plugin)
+	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
 		this.player = player;
 		this.name = player.getName();
@@ -90,7 +90,7 @@ public class ArenaPlayer
 
 		if (player.getInventory().getHelmet() == null)
 		{
-			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET, 1);
+			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
 			Color teamColor = Color.RED;
 			if (getTeam() == 2)
@@ -159,7 +159,7 @@ public class ArenaPlayer
 	public void clearInventory()
 	{
 		PlayerInventory inv = player.getInventory();
-		
+
 		inv.setHelmet(null);
 		inv.setChestplate(null);
 		inv.setLeggings(null);
@@ -205,7 +205,7 @@ public class ArenaPlayer
 	public void setClass(ArenaClass ac)
 	{
 		this.mclass = ac;
-		
+
 		this.changeClassOnRespawn = true;
 	}
 
@@ -237,13 +237,14 @@ public class ArenaPlayer
 				IEssentials ess = (IEssentials) essPlugin;
 				User user = ess.getUser(player);
 
-				List<String> items = Kit.getItems(ess, user, mclass.getEssentialsKit());
+				List<String> items = Kit.getItems(ess, user, mclass.getEssKitName(), mclass.getEssentialsKit());
 
 				Kit.expandItems(ess, user, items);
 			}
-			catch (Exception e)
+			catch (Throwable e)
 			{
-				sendMessage("&cCould not give Essentials kit: {0}", e instanceof ClassNotFoundException ? "outdated Essentials!" : e);
+				sendMessage("&cCould not give Essentials kit: {0}",
+						e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e);
 			}
 		}
 
@@ -264,7 +265,7 @@ public class ArenaPlayer
 				giveItem(i, stack);
 			}
 		}
-		
+
 		this.changeClassOnRespawn = false;
 	}
 
@@ -404,12 +405,6 @@ public class ArenaPlayer
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
-/*	@Override
-	public void sendMessage(String string)
-	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string));
-	}
-*/
 	public void addXP(int xp)
 	{
 		setGameXP(getGameXP() + xp);
@@ -442,14 +437,13 @@ public class ArenaPlayer
 
 	private long deathTime;
 
-//	@Override
 	public boolean isDead()
 	{
 		return (System.currentTimeMillis() - deathTime) < 60L;
 	}
 
 	public void onDeath()
-	{	
+	{
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
 		this.deaths++;
@@ -509,12 +503,12 @@ public class ArenaPlayer
 			arena.tellPlayers("&e{0} &3has been eliminated!", getName());
 		}
 	}
-	
+
 	public Player getPlayer()
 	{
 		return player;
 	}
-	
+
 	public String getName()
 	{
 		return name;
