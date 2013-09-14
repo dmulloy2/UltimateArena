@@ -98,6 +98,9 @@ permissions:
   ultimatearena.stop:
     description: Allows the usage of /ua stop
     default: false
+  ultimatearena.version:
+    description: Allows usage of /ua version
+    default: true
   ultimatearena.build:
     description: Allows the breaking and placing of blocks in arenas
     default: false
