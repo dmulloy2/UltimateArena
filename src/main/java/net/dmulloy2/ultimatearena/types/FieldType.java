@@ -23,6 +23,7 @@ public enum FieldType
 	FieldType(String name, String stylized)
 	{
 		this.name = name;
+		this.stylized = stylized;
 	}
 
 	public static FieldType getByName(String string)
