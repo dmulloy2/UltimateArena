@@ -5,6 +5,10 @@ import net.dmulloy2.ultimatearena.types.ArenaStatistics;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdStats extends UltimateArenaCommand
 {
 	public CmdStats(UltimateArena plugin)
@@ -22,16 +26,13 @@ public class CmdStats extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		String arenaname = args[0];
-		ArenaZone az = plugin.getArenaZone(arenaname);
-		if (az != null)
-		{
-			ArenaStatistics as = new ArenaStatistics(az);
-			as.dumpStats(player);
-		}
-		else
+		ArenaZone az = plugin.getArenaZone(args[0]);
+		if (az == null)
 		{
 			err("This arena doesn't exist!");
 		}
+
+		ArenaStatistics as = new ArenaStatistics(az);
+		as.dumpStats(player);
 	}
 }

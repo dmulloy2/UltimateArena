@@ -14,6 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CTFFlag
 {
 	private Player riding;

@@ -5,6 +5,7 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.ess3.api.IEssentials;
 
 import org.bukkit.Color;
@@ -82,7 +83,7 @@ public class ArenaPlayer
 	 */
 	public void decideHat()
 	{
-		if (mclass != null && !mclass.usesHelmet())
+		if (mclass != null && ! mclass.isUsesHelmet())
 		{
 			player.getInventory().setHelmet(null);
 			return;
@@ -214,10 +215,11 @@ public class ArenaPlayer
 	 */
 	public void giveClassItems()
 	{
-		decideHat();
-
-		if (! arena.isInGame())
-			return;
+		if (arena.isStopped()) return;
+		
+		decideHat(); // Give hats in arenas
+		
+		if (! arena.isInGame()) return;
 
 		if (mclass == null)
 		{
@@ -228,7 +230,7 @@ public class ArenaPlayer
 			return;
 		}
 
-		if (mclass.usesEssentials())
+		if (mclass.isUsesEssentials())
 		{
 			try
 			{
@@ -247,23 +249,18 @@ public class ArenaPlayer
 						e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e);
 			}
 		}
-
+		
 		for (int i = 0; i < mclass.getArmor().size(); i++)
 		{
 			ItemStack stack = mclass.getArmor(i);
 			if (stack != null)
-			{
 				giveArmor(i, stack);
-			}
 		}
-
-		for (int i = 0; i < mclass.getWeapons().size(); i++)
+		
+		for (ItemStack weapon : mclass.getWeapons())
 		{
-			ItemStack stack = mclass.getWeapon(i);
-			if (stack != null)
-			{
-				giveItem(i, stack);
-			}
+			if (weapon != null)
+				InventoryHelper.addItem(player, weapon);
 		}
 
 		this.changeClassOnRespawn = false;

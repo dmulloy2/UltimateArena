@@ -11,6 +11,10 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CONQUESTArena extends Arena
 {
 	public int REDTEAMPOWER = 100;

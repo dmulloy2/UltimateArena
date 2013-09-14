@@ -13,6 +13,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ */
+
 public class ArenaFlag extends FlagBase
 {
 	protected int power;

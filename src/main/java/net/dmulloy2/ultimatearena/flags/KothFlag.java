@@ -17,6 +17,10 @@ import net.dmulloy2.ultimatearena.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ */
+
 public class KothFlag extends ArenaFlag
 {
 	private ArenaPlayer leader;

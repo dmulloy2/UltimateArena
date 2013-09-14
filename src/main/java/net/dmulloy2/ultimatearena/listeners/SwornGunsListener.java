@@ -15,8 +15,7 @@ import org.bukkit.event.Listener;
 public class SwornGunsListener implements Listener
 {
 	private final UltimateArena plugin;
-
-	public SwornGunsListener(final UltimateArena plugin)
+	public SwornGunsListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}

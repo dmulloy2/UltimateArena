@@ -1036,7 +1036,7 @@ public abstract class Arena
 					}
 
 					// Class based potion effects
-					if (ac.hasPotionEffects())
+					if (ac.isHasPotionEffects())
 					{
 						if (ac.getPotionEffects().size() > 0)
 						{

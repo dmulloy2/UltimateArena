@@ -33,6 +33,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
+/**
+ * @author dmulloy2
+ */
+
 public class PlayerListener implements Listener
 {
 	private final UltimateArena plugin;

@@ -3,6 +3,10 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdStop extends UltimateArenaCommand
 {
 	public CmdStop(UltimateArena plugin)
@@ -19,13 +23,12 @@ public class CmdStop extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		if (plugin.isPlayerCreatingArena(player))
-		{
-			plugin.stopCreatingArena(player);
-		}
-		else
+		if (! plugin.isPlayerCreatingArena(player))
 		{
 			err("You are not creating an arena!");
+			return;
 		}
+		
+		plugin.stopCreatingArena(player);
 	}
 }

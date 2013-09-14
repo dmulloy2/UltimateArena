@@ -1,12 +1,15 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.entity.Player;
+
+/**
+ * @author dmulloy2
+ */
 
 public class CmdKick extends UltimateArenaCommand
 {
@@ -32,14 +35,12 @@ public class CmdKick extends UltimateArenaCommand
 			return;
 		}
 
-		if (!plugin.isInArena(player))
+		if (! plugin.isInArena(player))
 		{
 			err("That player is not in an arena!");
 			return;
 		}
-
-		ArenaPlayer ap = plugin.getArenaPlayer(player);
-
-		ap.leaveArena(LeaveReason.KICK);
+		
+		plugin.getArenaPlayer(player).leaveArena(LeaveReason.KICK);
 	}
 }

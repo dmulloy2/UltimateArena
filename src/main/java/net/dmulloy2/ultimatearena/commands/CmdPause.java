@@ -4,6 +4,10 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdPause extends UltimateArenaCommand
 {
 	public CmdPause(UltimateArena plugin)
@@ -20,8 +24,7 @@ public class CmdPause extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		String name = args[0];
-		Arena arena = plugin.getArena(name);
+		Arena arena = plugin.getArena(args[0]);
 		if (arena == null)
 		{
 			err("No arena with that name...");

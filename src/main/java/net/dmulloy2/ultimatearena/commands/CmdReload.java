@@ -5,6 +5,10 @@ import net.dmulloy2.ultimatearena.types.Permission;
 
 import org.bukkit.plugin.PluginManager;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdReload extends UltimateArenaCommand
 {
 	public CmdReload(UltimateArena plugin)

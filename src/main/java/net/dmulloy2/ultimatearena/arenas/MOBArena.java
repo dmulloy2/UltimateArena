@@ -19,6 +19,10 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * @author dmulloy2
+ */
+
 public class MOBArena extends Arena
 {
 	private int mobtimer = 0;

@@ -10,6 +10,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+/**
+ * @author dmulloy2
+ */
+
 public class FlagBase
 {
 	private Location loc;

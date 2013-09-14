@@ -2,6 +2,10 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdJoin extends UltimateArenaCommand
 {
 	public CmdJoin(UltimateArena plugin)

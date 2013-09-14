@@ -1,6 +1,5 @@
 /**
- * UltimateArena - a bukkit plugin
- * Copyright (C) 2013 Minesworn/dmulloy2
+ * UltimateArena (C) 2013 MineSworn / dmulloy2
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +92,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+
+/**
+ * @author dmulloy2
+ */
 
 public class UltimateArena extends JavaPlugin
 {
@@ -458,18 +461,6 @@ public class UltimateArena extends JavaPlugin
 		activeArenas.clear();
 	}
 
-	public ArenaSign getArenaSign(Location loc)
-	{
-		for (int i = 0; i < arenaSigns.size(); i++)
-		{
-			ArenaSign sign = arenaSigns.get(i);
-			if (Util.checkLocation(sign.getLocation(), loc))
-				return sign;
-		}
-
-		return null;
-	}
-
 	public ArenaClass getArenaClass(String line)
 	{
 		for (int i = 0; i < classes.size(); i++)
@@ -505,9 +496,9 @@ public class UltimateArena extends JavaPlugin
 			for (int i = 0; i < arenaSigns.size(); i++)
 			{
 				ArenaSign as = arenaSigns.get(i);
-				if (as.getArena().equalsIgnoreCase(str))
+				if (as.getArena().getArenaName().equalsIgnoreCase(str))
 				{
-					deleteSign(as);
+					signHandler.deleteSign(as);
 				}
 			}
 
@@ -519,15 +510,6 @@ public class UltimateArena extends JavaPlugin
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cCould not find an arena by the name of \"{0}\"!", str));
 		}
-	}
-
-	public void deleteSign(ArenaSign sign)
-	{
-		debug("Deleting sign {0}!", sign.getId());
-
-		arenaSigns.remove(sign);
-
-		signHandler.refreshSave();
 	}
 
 	// Checks for whether or not something is in an arena

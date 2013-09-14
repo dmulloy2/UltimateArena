@@ -4,6 +4,10 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdForceStop extends UltimateArenaCommand
 {
 	public CmdForceStop(UltimateArena plugin)

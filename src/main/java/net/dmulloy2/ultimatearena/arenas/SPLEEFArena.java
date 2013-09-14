@@ -12,6 +12,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ */
+
 public class SPLEEFArena extends FFAArena
 {
 	private Field3D spleefGround;

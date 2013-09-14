@@ -2,6 +2,10 @@ package net.dmulloy2.ultimatearena.util;
 
 import org.bukkit.ChatColor;
 
+/**
+ * @author dmulloy2
+ */
+
 public class TeamHelper
 {
 	/**

@@ -8,10 +8,15 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+/**
+ * @author dmulloy2
+ */
 
 public abstract class UltimateArenaCommand implements CommandExecutor
 {
@@ -27,6 +32,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	protected Permission permission;
 
 	protected boolean mustBePlayer;
+	protected boolean mustBeInArena;
 
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
@@ -35,9 +41,10 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	public UltimateArenaCommand(UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		requiredArgs = new ArrayList<String>(2);
-		optionalArgs = new ArrayList<String>(2);
-		aliases = new ArrayList<String>(2);
+
+		this.requiredArgs = new ArrayList<String>(2);
+		this.optionalArgs = new ArrayList<String>(2);
+		this.aliases = new ArrayList<String>(2);
 	}
 
 	@Override
@@ -51,12 +58,19 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	{
 		this.sender = sender;
 		this.args = args;
+
 		if (sender instanceof Player)
 			player = (Player) sender;
 
-		if (mustBePlayer && !isPlayer())
+		if (mustBePlayer && ! isPlayer())
 		{
 			err("You must be a player to execute this command!");
+			return;
+		}
+		
+		if (mustBeInArena && ! isInArena())
+		{
+			err("You must be in an arena to execute this command!");
 			return;
 		}
 
@@ -65,34 +79,40 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 			invalidArgs();
 			return;
 		}
-
-		if (hasPermission())
-			perform();
-		else
+		
+		if (! hasPermission())
 		{
 			err("You do not have permission to perform this command!");
 			log(Level.WARNING, sender.getName() + " was denied access to a command!");
+			return;
 		}
+		
+		perform();
 	}
+	
+	public abstract void perform();
 
 	protected final boolean isPlayer()
 	{
-		return (player != null);
+		return player != null;
 	}
 
 	private final boolean hasPermission()
 	{
-		return (plugin.getPermissionHandler().hasPermission(sender, permission));
+		return plugin.getPermissionHandler().hasPermission(sender, permission);
+	}
+	
+	private final boolean isInArena()
+	{
+		return player != null && plugin.isInArena(player);
 	}
 
-	public String getDescription()
+	public final String getDescription()
 	{
 		return FormatUtil.format(description);
 	}
 
-	public abstract void perform();
-
-	public List<String> getAliases()
+	public final List<String> getAliases()
 	{
 		return aliases;
 	}
@@ -131,22 +151,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	{
 		sender.sendMessage(FormatUtil.format(message, objects));
 	}
-
-	protected final void log(Level level, String string, Object... objects)
-	{
-		plugin.outConsole(level, string, objects);
-	}
-
-	protected final void log(String string, Object... objects)
-	{
-		log(Level.INFO, string, objects);
-	}
-
-	protected final void debug(String string, Object... objects)
-	{
-		plugin.debug(string, objects);
-	}
-
+	
 	protected final void err(String string, Object... objects)
 	{
 		sendpMessage("&c" + string, objects);
@@ -155,5 +160,25 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	protected final void invalidArgs()
 	{
 		err("Invalid arguments! Try: " + getUsageTemplate(false));
+	}
+
+	protected final void log(Level level, String string, Object... objects)
+	{
+		plugin.outConsole(level, string, objects);
+	}
+
+	protected final void log(String string, Object... objects)
+	{
+		plugin.outConsole(Level.INFO, string, objects);
+	}
+
+	protected final void debug(String string, Object... objects)
+	{
+		plugin.debug(string, objects);
+	}
+	
+	protected final String capitalize(String string)
+	{
+		return WordUtils.capitalize(string);
 	}
 }

@@ -5,6 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+/**
+ * @author dmulloy2
+ */
+
 public class Field3D extends Field
 {
 	protected int miny;

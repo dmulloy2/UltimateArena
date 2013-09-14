@@ -11,6 +11,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * @author dmulloy2
+ */
+
 public class UltimateArenaSpawnEvent extends Event
 {
 	private static final HandlerList handlers = new HandlerList();

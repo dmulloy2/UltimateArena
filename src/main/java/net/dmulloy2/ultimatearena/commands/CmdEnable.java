@@ -5,6 +5,10 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdEnable extends UltimateArenaCommand
 {
 	public CmdEnable(UltimateArena plugin)

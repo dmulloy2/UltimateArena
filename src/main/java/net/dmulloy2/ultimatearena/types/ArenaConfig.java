@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import lombok.Getter;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -15,15 +17,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * @author dmulloy2
+ */
+
+@Getter
 public class ArenaConfig
 {
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
 
 	private boolean allowTeamKilling;
+	private boolean loaded;
 
 	private List<ItemStack> rewards = new ArrayList<ItemStack>();
-
-	private boolean loaded = false;
 
 	private String arenaName;
 	private File file;
@@ -36,7 +42,7 @@ public class ArenaConfig
 		this.plugin = plugin;
 
 		this.loaded = load();
-		if (!loaded)
+		if (! loaded)
 		{
 			plugin.outConsole(Level.SEVERE, "Could not load config for " + arenaName + "!");
 		}
@@ -107,45 +113,5 @@ public class ArenaConfig
 				}
 			}
 		}
-	}
-
-	public int getGameTime()
-	{
-		return gameTime;
-	}
-
-	public int getLobbyTime()
-	{
-		return lobbyTime;
-	}
-
-	public int getMaxDeaths()
-	{
-		return maxDeaths;
-	}
-
-	public int getMaxWave()
-	{
-		return maxWave;
-	}
-
-	public int getCashReward()
-	{
-		return cashReward;
-	}
-
-	public boolean isAllowTeamKilling()
-	{
-		return allowTeamKilling;
-	}
-
-	public String getArenaName()
-	{
-		return arenaName;
-	}
-
-	public boolean isLoaded()
-	{
-		return loaded;
 	}
 }

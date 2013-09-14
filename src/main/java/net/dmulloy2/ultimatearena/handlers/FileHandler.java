@@ -721,7 +721,7 @@ public class FileHandler
 			return;
 		}
 
-		az.setArenaType(FieldType.getByName(fc.getString("type")));
+		az.setType(FieldType.getByName(fc.getString("type")));
 
 		World world = plugin.getServer().getWorld(fc.getString("world"));
 		if (world == null)

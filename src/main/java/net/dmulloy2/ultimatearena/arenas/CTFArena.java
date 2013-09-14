@@ -8,6 +8,10 @@ import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CTFArena extends Arena
 {
 	public CTFFlagBase flagred;

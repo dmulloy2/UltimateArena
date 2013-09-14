@@ -5,6 +5,10 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ */
+
 public class ArenaStatistics
 {
 	private ArenaZone arena;

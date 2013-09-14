@@ -10,6 +10,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+/**
+ * @author dmulloy2
+ */
+
 public class InventoryHelper
 {
 	public static boolean isEmpty(PlayerInventory inventory)

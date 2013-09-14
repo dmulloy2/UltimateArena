@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import lombok.Getter;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.ess3.api.IEssentials;
@@ -21,6 +23,11 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+/**
+ * @author dmulloy2
+ */
+
+@Getter
 public class ArenaClass
 {
 	private String name;
@@ -30,26 +37,28 @@ public class ArenaClass
 	private List<ItemStack> weapons = new ArrayList<ItemStack>();
 
 	private boolean loaded = true;
-	private boolean helmet = true;
+	private boolean usesHelmet = true;
 
-	private boolean useEssentials = false;
+	// Essentials Integration
 	private String essKitName;
+	private boolean usesEssentials = false;
 	private Map<String, Object> essentialsKit;
 
+	// Potion Effects
 	private boolean hasPotionEffects = false;
 	private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 
-	private final UltimateArena plugin;
 	private File file;
+	private final UltimateArena plugin;
 
-	public ArenaClass(final UltimateArena plugin, File file)
+	public ArenaClass(UltimateArena plugin, File file)
 	{
 		this.plugin = plugin;
 		this.file = file;
 		this.name = getName(file);
 
 		this.loaded = load();
-		if (!loaded)
+		if (! loaded)
 		{
 			plugin.outConsole(Level.WARNING, "Failed to load class {0}!", name);
 		}
@@ -136,46 +145,46 @@ public class ArenaClass
 				}
 			}
 
-			useEssentials = fc.getBoolean("useEssentials");
+			usesEssentials = fc.getBoolean("useEssentials", false);
 
-			if (useEssentials)
+			if (usesEssentials)
 			{
-				String line = fc.getString("essentialsKit");
-
-				// Initialize Essentials Hook
-				PluginManager pm = plugin.getServer().getPluginManager();
-				if (pm.isPluginEnabled("Essentials"))
+				try
 				{
-					Plugin essPlugin = pm.getPlugin("Essentials");
-					IEssentials ess = (IEssentials) essPlugin;
-					Map<String, Object> kit = ess.getSettings().getKit(line);
-					if (kit != null)
-					{
-						this.essentialsKit = kit;
-					}
-				}
+					String line = fc.getString("essentialsKit", "");
 
-				this.essKitName = line;
+					// Initialize Essentials Hook
+					PluginManager pm = plugin.getServer().getPluginManager();
+					if (pm.isPluginEnabled("Essentials"))
+					{
+						Plugin essPlugin = pm.getPlugin("Essentials");
+						IEssentials ess = (IEssentials) essPlugin;
+						Map<String, Object> kit = ess.getSettings().getKit(line);
+						if (kit != null)
+						{
+							essentialsKit = kit;
+						}
+					}
+
+					essKitName = line;
+				}
+				catch (Throwable e)
+				{
+					plugin.outConsole(Level.WARNING, "Could not load Essentials kit for class {0}: {1}", 
+							name, e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e);
+				}
 			}
 
-			hasPotionEffects = fc.getBoolean("hasPotionEffects");
+			hasPotionEffects = fc.getBoolean("hasPotionEffects", false);
 
 			if (hasPotionEffects)
 			{
-				String effects = fc.getString("potionEffects");
-				if (effects != null)
-				{
-					this.potionEffects = readPotionEffects(effects);
-				}
+				potionEffects = readPotionEffects(fc.getString("potionEffects"));
 			}
 
-			helmet = fc.getBoolean("useHelmet");
-
-			String node = fc.getString("permissionNode");
-			if (node != null)
-			{
-				permissionNode = node;
-			}
+			usesHelmet = fc.getBoolean("useHelmet", true);
+			
+			permissionNode = fc.getString("permissionNode", "");
 		}
 		catch (Exception e)
 		{
@@ -337,16 +346,6 @@ public class ArenaClass
 		return null;
 	}
 
-	public List<ItemStack> getArmor()
-	{
-		return armor;
-	}
-
-	public List<ItemStack> getWeapons()
-	{
-		return weapons;
-	}
-
 	public ItemStack getArmor(int index)
 	{
 		if (armor.size() >= index)
@@ -365,45 +364,5 @@ public class ArenaClass
 		}
 
 		return null;
-	}
-
-	public boolean usesHelmet()
-	{
-		return helmet;
-	}
-
-	public boolean usesEssentials()
-	{
-		return useEssentials;
-	}
-
-	public String getEssKitName()
-	{
-		return essKitName;
-	}
-
-	public Map<String, Object> getEssentialsKit()
-	{
-		return essentialsKit;
-	}
-
-	public List<PotionEffect> getPotionEffects()
-	{
-		return potionEffects;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public boolean hasPotionEffects()
-	{
-		return hasPotionEffects;
-	}
-
-	public boolean isLoaded()
-	{
-		return loaded;
 	}
 }

@@ -1,5 +1,9 @@
 package net.dmulloy2.ultimatearena.types;
 
+/**
+ * @author dmulloy2
+ */
+
 public enum FieldType
 {
 	BOMB("bomb", "Bomb"), 

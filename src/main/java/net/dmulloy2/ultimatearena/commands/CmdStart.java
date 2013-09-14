@@ -4,6 +4,10 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdStart extends UltimateArenaCommand
 {
 	public CmdStart(UltimateArena plugin)
@@ -25,7 +29,7 @@ public class CmdStart extends UltimateArenaCommand
 		{
 			if (args.length == 0)
 			{
-				if (!plugin.isInArena(player))
+				if (! plugin.isInArena(player))
 				{
 					err("Please specify a valid arena!");
 					return;

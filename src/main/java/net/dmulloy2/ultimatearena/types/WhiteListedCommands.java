@@ -3,6 +3,10 @@ package net.dmulloy2.ultimatearena.types;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dmulloy2
+ */
+
 public class WhiteListedCommands
 {
 	private List<String> allowedCommand;

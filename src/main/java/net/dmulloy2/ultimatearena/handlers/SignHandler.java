@@ -2,10 +2,13 @@ package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -22,7 +25,6 @@ public class SignHandler
 	private File signsSave;
 
 	private final UltimateArena plugin;
-
 	public SignHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -35,7 +37,7 @@ public class SignHandler
 		plugin.debug("Loading all signs!");
 
 		this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
-		if (!signsSave.exists())
+		if (! signsSave.exists())
 		{
 			try
 			{
@@ -43,6 +45,7 @@ public class SignHandler
 			}
 			catch (IOException e)
 			{
+				plugin.debug("Could not create new signs save: {0}", e);
 				return;
 			}
 		}
@@ -56,7 +59,7 @@ public class SignHandler
 				plugin.debug("Attempting to load sign: {0}", i);
 
 				String path = "signs." + i + ".";
-				if (!fc.isSet(path))
+				if (! fc.isSet(path))
 					continue;
 
 				String arenaName = fc.getString(path + "name");
@@ -95,6 +98,7 @@ public class SignHandler
 		}
 		catch (IOException e)
 		{
+			plugin.debug("Could not refresh sign save: {0}", e);
 			return;
 		}
 
@@ -132,10 +136,42 @@ public class SignHandler
 
 	public void updateSigns()
 	{
-		for (int i = 0; i < plugin.getArenaSigns().size(); i++)
+		for (ArenaSign sign : plugin.getArenaSigns())
 		{
-			ArenaSign sign = plugin.getArenaSigns().get(i);
 			sign.update();
 		}
+	}
+	
+	public ArenaSign getSign(Location loc)
+	{
+		for (ArenaSign sign : plugin.getArenaSigns())
+		{
+			if (Util.checkLocation(sign.getLocation(), loc))
+				return sign;
+		}
+
+		return null;
+	}
+	
+	public List<ArenaSign> getSigns(ArenaZone az)
+	{
+		List<ArenaSign> ret = new ArrayList<ArenaSign>();
+		
+		for (ArenaSign sign : plugin.getArenaSigns())
+		{
+			if (sign.getArena().getArenaName().equals(az.getArenaName()))
+				ret.add(sign);
+		}
+		
+		return ret;
+	}
+	
+	public void deleteSign(ArenaSign sign)
+	{
+		plugin.debug("Deleting sign {0}!", sign.getId());
+
+		plugin.getArenaSigns().remove(sign);
+
+		refreshSave();
 	}
 }

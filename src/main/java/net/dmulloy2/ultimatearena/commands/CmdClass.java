@@ -6,6 +6,10 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdClass extends UltimateArenaCommand
 {
 	public CmdClass(UltimateArena plugin)
@@ -17,18 +21,12 @@ public class CmdClass extends UltimateArenaCommand
 		this.description = "Switch UltimateArena classes";
 		this.permission = Permission.CLASS;
 
-		this.mustBePlayer = true;
+		this.mustBeInArena = true;
 	}
 
 	@Override
 	public void perform()
 	{
-		if (! plugin.isInArena(player))
-		{
-			err("You are not in an arena!");
-			return;
-		}
-
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
 
 		if (args.length == 0)
@@ -40,43 +38,35 @@ public class CmdClass extends UltimateArenaCommand
 			}
 
 			sendpMessage("&3Your current class is: &e{0}", ap.getArenaClass().getName());
-			return;
 		}
 		else if (args.length == 1)
 		{
 			ArenaClass cl = plugin.getArenaClass(args[0]);
-			if (cl != null)
+			if (cl == null)
 			{
-				if (cl.checkPermission(player))
-				{
-					ap.setClass(cl);
+				err("You do not have permissions for this class.");
+				return;
+			}
+			
+			if (! cl.checkPermission(player))
+			{
+				err("You do not have permissions for this class.");
+				return;
+			}
+
+			ap.setClass(cl);
 	
-					String name = cl.getName();
-					String article = FormatUtil.getArticle(name);
+			String name = cl.getName();
+			String article = FormatUtil.getArticle(name);
 	
-					if (ap.getArena().isInLobby())
-					{
-						sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
-					}
-					else
-					{
-						sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
-					}
-				}
-				else
-				{
-					err("You do not have permissions for this class.");
-				}
+			if (ap.getArena().isInLobby())
+			{
+				sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
 			}
 			else
 			{
-				err("Invalid class \"{0}\"!", args[0]);
+				sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
 			}
-		}
-		else
-		{
-			err("Invalid input! Try /ua class <class>");
-			return;
 		}
 	}
 }

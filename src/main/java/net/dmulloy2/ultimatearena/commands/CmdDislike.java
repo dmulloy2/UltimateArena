@@ -4,6 +4,10 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdDislike extends UltimateArenaCommand
 {
 	public CmdDislike(UltimateArena plugin)
@@ -21,25 +25,22 @@ public class CmdDislike extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		String arenaname = args[0];
-		ArenaZone az = plugin.getArenaZone(arenaname);
-		if (az != null)
-		{
-			if (az.canLike(player))
-			{
-				sendpMessage("&cYou have disliked: " + az.getArenaName());
-
-				az.setDisliked(az.getDisliked() + 1);
-				az.getVoted().add(player.getName());
-			}
-			else
-			{
-				err("You already voted for this arena!");
-			}
-		}
-		else
+		ArenaZone az = plugin.getArenaZone(args[0]);
+		if (az == null)
 		{
 			err("This arena doesn't exist!");
+			return;
 		}
+
+		if (! az.canLike(player))
+		{
+			err("You already voted for this arena!");
+			return;
+		}
+
+		sendpMessage("&cYou have disliked: " + az.getArenaName());
+
+		az.setDisliked(az.getDisliked() + 1);
+		az.getVoted().add(player.getName());
 	}
 }

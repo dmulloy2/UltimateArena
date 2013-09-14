@@ -5,6 +5,10 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+/**
+ * @author dmulloy2
+ */
+
 public class ArenaJoinTask extends BukkitRunnable
 {
 	private final UltimateArena plugin;

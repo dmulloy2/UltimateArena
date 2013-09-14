@@ -33,7 +33,7 @@ import org.bukkit.inventory.ItemStack;
 public class EntityListener implements Listener
 {
 	private final UltimateArena plugin;
-	public EntityListener(final UltimateArena plugin)
+	public EntityListener(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}

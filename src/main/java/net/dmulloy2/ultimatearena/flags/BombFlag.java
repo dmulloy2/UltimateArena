@@ -14,6 +14,10 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ */
+
 public class BombFlag extends ArenaFlag
 {
 	private int bnum;

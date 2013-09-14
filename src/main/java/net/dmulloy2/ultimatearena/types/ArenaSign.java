@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.types;
 
+import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -14,13 +15,15 @@ import org.bukkit.block.Sign;
  * @author dmulloy2
  */
 
+@Getter
 public class ArenaSign
 {
-	private UltimateArena plugin;
-	private Location loc;
-	private ArenaZone zone;
+	private Location location;
+	private ArenaZone arena;
 	private int id;
 	private Sign sign;
+	
+	private final UltimateArena plugin;
 
 	/**
 	 * Creates a new ArenaSign
@@ -37,8 +40,8 @@ public class ArenaSign
 	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone zone, int id)
 	{
 		this.plugin = plugin;
-		this.loc = loc;
-		this.zone = zone;
+		this.location = loc;
+		this.arena = zone;
 		this.id = id;
 		this.sign = getSign();
 	}
@@ -50,7 +53,7 @@ public class ArenaSign
 	 */
 	public Sign getSign()
 	{
-		Block block = loc.getWorld().getBlockAt(loc);
+		Block block = location.getWorld().getBlockAt(location);
 		if (block.getState() instanceof Sign)
 		{
 			return (Sign) block.getState();
@@ -66,7 +69,7 @@ public class ArenaSign
 	{
 		if (getSign() == null)
 		{
-			plugin.deleteSign(this);
+			plugin.getSignHandler().deleteSign(this);
 			return;
 		}
 
@@ -74,7 +77,7 @@ public class ArenaSign
 
 		sign.setLine(0, "[UltimateArena]");
 		sign.setLine(1, "Click to Join");
-		sign.setLine(2, zone.getArenaName());
+		sign.setLine(2, arena.getArenaName());
 		sign.setLine(3, getStatus());
 
 		sign.update(true);
@@ -88,48 +91,27 @@ public class ArenaSign
 	public String getStatus()
 	{
 		StringBuilder line = new StringBuilder();
-		if (plugin.getArena(zone.getArenaName()) != null)
+		if (plugin.getArena(arena.getArenaName()) != null)
 		{
-			Arena a = plugin.getArena(zone.getArenaName());
+			Arena a = plugin.getArena(arena.getArenaName());
 			line.append(a.getGameMode().toString() + " (");
-			line.append(a.getActivePlayers() + "/" + zone.getMaxPlayers() + ")");
+			line.append(a.getActivePlayers() + "/" + arena.getMaxPlayers() + ")");
 		}
 		else
 		{
-			if (zone.isDisabled())
+			if (arena.isDisabled())
 			{
 				line.append("DISABLED (0/0)");
 			}
 			else
 			{
 				line.append("IDLE (0/");
-				line.append(zone.getMaxPlayers());
+				line.append(arena.getMaxPlayers());
 				line.append(")");
 			}
 		}
 
 		return line.toString();
-	}
-
-	// TODO: Explanations for these little methods
-	public Location getLocation()
-	{
-		return loc;
-	}
-
-	public String getArena()
-	{
-		return zone.getArenaName();
-	}
-
-	public FieldType getArenaType()
-	{
-		return zone.getType();
-	}
-
-	public int getId()
-	{
-		return id;
 	}
 
 	@Override
@@ -138,19 +120,9 @@ public class ArenaSign
 		StringBuilder ret = new StringBuilder();
 		ret.append("ArenaSign {");
 		ret.append("id=" + id + ", ");
-		ret.append("loc=" + Util.locationToString(loc));
+		ret.append("loc=" + Util.locationToString(location));
 		ret.append("}");
 
 		return ret.toString();
-	}
-
-	@Override
-	public boolean equals(Object object)
-	{
-		if (!(object instanceof ArenaSign))
-			return false;
-
-		ArenaSign as = (ArenaSign) object;
-		return (as.id == id);
 	}
 }

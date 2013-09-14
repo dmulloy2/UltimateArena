@@ -13,8 +13,7 @@ import org.bukkit.entity.Player;
 public class PermissionHandler
 {
 	private final UltimateArena plugin;
-
-	public PermissionHandler(final UltimateArena plugin)
+	public PermissionHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}

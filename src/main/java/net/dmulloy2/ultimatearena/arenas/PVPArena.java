@@ -3,6 +3,10 @@ package net.dmulloy2.ultimatearena.arenas;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
+/**
+ * @author dmulloy2
+ */
+
 public class PVPArena extends Arena
 {
 	public PVPArena(ArenaZone az)

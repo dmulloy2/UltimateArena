@@ -5,8 +5,11 @@ import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.inventory.ItemStack;
+
+/**
+ * @author dmulloy2
+ */
 
 public class CmdClassList extends UltimateArenaCommand
 {
@@ -28,7 +31,7 @@ public class CmdClassList extends UltimateArenaCommand
 
 		for (ArenaClass ac : plugin.getClasses())
 		{
-			String name = WordUtils.capitalize(ac.getName());
+			String name = capitalize(ac.getName());
 			sendMessage("&3===[ &e{0} &3]===", name);
 			for (ItemStack weapon : ac.getWeapons())
 			{

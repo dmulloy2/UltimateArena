@@ -8,10 +8,12 @@
 ######################################################
 
 # By dmulloy2
+#
 # If you get configuration errors, check here:
-# <insert github link here>
+# https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/config.yml
+#
 # This configuration follows standard YAML procedure, found here:
-# <insert yaml link here>
+# http://yaml.org/
 
 # Whether or not cash rewards are given upon completion
 # Input - boolean

@@ -14,6 +14,10 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+/**
+ * @author dmulloy2
+ */
+
 public class HUNGERArena extends Arena
 {
 	private ArenaPlayer winner;

@@ -2,10 +2,11 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Permission;
 
-import org.apache.commons.lang.WordUtils;
+/**
+ * @author dmulloy2
+ */
 
 public class CmdInfo extends UltimateArenaCommand
 {
@@ -23,69 +24,37 @@ public class CmdInfo extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
+		Arena arena = null;
+		
 		if (args.length == 0)
 		{
-			if (plugin.isInArena(player))
-			{
-				Arena ar = plugin.getArena(player);
-				if (ar != null)
-				{
-					sendMessage("&3====[ &e{0} &3]====", WordUtils.capitalize(ar.getName()));
-
-					ArenaPlayer ap = plugin.getArenaPlayer(player);
-					if (ap != null)
-					{
-						if (ap.isOut())
-						{
-							sendMessage("&3You are &cOUT&3!");
-						}
-						else
-						{
-							sendMessage("&3You are &aNOT OUT&3!");
-						}
-					}
-
-					sendMessage(""); // Empty line
-
-					sendMessage("&3Active Players:");
-					for (String s : ar.buildLeaderboard(player))
-					{
-						sendMessage(s);
-					}
-				}
-			}
-			else
+			if (! plugin.isInArena(player))
 			{
 				err("You are not in an arena!");
+				return;
 			}
-		}
-		else if (args.length == 1)
-		{
-			String arenaname = args[0];
-			Arena ar = plugin.getArena(arenaname);
-			if (ar != null)
-			{
-				sendMessage("&3====[ &e{0} &3]====", ar.getName());
-
-				sendMessage("&3Type: &e{0}", ar.getType());
-
-				sendMessage(""); // Empty line
-
-				sendMessage("&3&lActive Players:");
-
-				for (String s : ar.buildLeaderboard(player))
-				{
-					sendMessage(s);
-				}
-			}
-			else
-			{
-				err("This arena isn't running!");
-			}
+			
+			arena = plugin.getArena(player);
 		}
 		else
 		{
-			err("Please supply an arena name");
+			arena = plugin.getArena(args[0]);
+		}
+		
+		if (arena == null)
+		{
+			err("Please specify a valid arena!");
+			return;
+		}
+
+		sendMessage("&3====[ &e{0} &3]====", capitalize(arena.getName()));
+
+		sendMessage(""); // Empty line
+
+		sendMessage("&3Active Players:");
+		for (String s : arena.buildLeaderboard(player))
+		{
+			sendMessage(s);
 		}
 	}
 }

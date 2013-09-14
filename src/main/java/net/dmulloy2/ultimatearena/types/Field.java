@@ -3,6 +3,10 @@ package net.dmulloy2.ultimatearena.types;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+/**
+ * @author dmulloy2
+ */
+
 public class Field
 {
 	protected int minx;
