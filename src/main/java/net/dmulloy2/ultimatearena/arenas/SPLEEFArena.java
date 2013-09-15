@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import java.util.List;
 import java.util.Random;
 
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -112,6 +113,16 @@ public class SPLEEFArena extends FFAArena
 			spleefGround.setType(az.getSpecialType()); // Refresh the ground
 
 			rewardTeam(-1, false);
+			
+			if (getStartingAmount() > 1)
+			{
+				List<ArenaPlayer> arenaPlayers = getValidPlayers();
+				for (int i = 0; i < arenaPlayers.size(); i++)
+				{
+					this.winner = arenaPlayers.get(i);
+				}
+			}
+			
 			stop();
 		}
 	}
@@ -124,6 +135,7 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void announceWinner()
 	{
-		tellPlayers("&3You won!");
+		if (winner != null)
+			tellAllPlayers("&e{0} &3has won!", winner.getName());
 	}
 }

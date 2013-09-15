@@ -132,7 +132,7 @@ public class HUNGERArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellPlayers("&e{0} &3has won the HungerGames!", winner.getName());
+			tellAllPlayers("&e{0} &3is the victor!", winner.getName());
 	}
 
 	@Override

@@ -155,7 +155,7 @@ public class KOTHArena extends Arena
 	}
 
 	/**
-	 * This is handled in {@link Arena#checkPlayerPoints(int max)} 
+	 * This is handled in {@link Arena#checkPlayerPoints(int)} 
 	 */
 	@Override
 	public void announceWinner()

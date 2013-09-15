@@ -20,7 +20,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class FFAArena extends Arena
 {
-	private ArenaPlayer winner;
+	protected ArenaPlayer winner;
 
 	public FFAArena(ArenaZone az)
 	{
@@ -132,7 +132,7 @@ public class FFAArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellPlayers("&e{0} &3has won!", winner.getName());
+			tellAllPlayers("&e{0} &3has won!", winner.getName());
 	}
 
 	@Override

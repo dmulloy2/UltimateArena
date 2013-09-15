@@ -549,7 +549,7 @@ public abstract class Arena
 			{
 				if (ap.getPoints() >= max)
 				{
-					tellPlayers("&3Player &e{0} &3has won!", ap.getName());
+					tellAllPlayers("&3Player &e{0} &3has won!", ap.getName());
 
 					stop();
 
@@ -597,6 +597,26 @@ public abstract class Arena
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
 			if (checkValid(ap))
+			{
+				ap.sendMessage(string, objects);
+			}
+		}
+	}
+	
+	/**
+	 * Tells all players a message.
+	 * 
+	 * @param string
+	 *            - Base message
+	 * @param objects
+	 *            - Objects to format in
+	 */
+	public final void tellAllPlayers(String string, Object... objects)
+	{
+		for (int i = 0; i < arenaPlayers.size(); i++)
+		{
+			ArenaPlayer ap = arenaPlayers.get(i);
+			if (ap != null && ap.getPlayer().isOnline())
 			{
 				ap.sendMessage(string, objects);
 			}
@@ -1479,15 +1499,15 @@ public abstract class Arena
 	{
 		if (winningTeam == 2)
 		{
-			tellPlayers("&eBlue &3team won!");
+			tellAllPlayers("&eBlue &3team won!");
 		}
 		else if (winningTeam == 1)
 		{
-			tellPlayers("&eRed &3team won!");
+			tellAllPlayers("&eRed &3team won!");
 		}
 		else if (winningTeam == -1)
 		{
-			tellPlayers("&3Game ended in a tie!");
+			tellAllPlayers("&3Game ended in a tie!");
 		}
 	}
 

@@ -145,11 +145,11 @@ public class INFECTArena extends PVPArena
 	{
 		if (winningTeam == 2)
 		{
-			tellPlayers("&3The infected win!");
+			tellAllPlayers("&3The infected win!");
 		}
 		else if (winningTeam == 1)
 		{
-			tellPlayers("&3You have survived!");
+			tellAllPlayers("&3The humans have survived!");
 		}
 	}
 }
