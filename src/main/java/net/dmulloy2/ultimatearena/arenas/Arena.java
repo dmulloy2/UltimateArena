@@ -433,10 +433,6 @@ public abstract class Arena
 			UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
 			plugin.getServer().getPluginManager().callEvent(spawnEvent);
 		}
-		
-		ap.spawn();
-		
-		onSpawn(ap);
 	}
 
 	/**
