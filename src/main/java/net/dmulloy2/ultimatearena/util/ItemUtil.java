@@ -41,6 +41,7 @@ public class ItemUtil
 			String s = string.substring(0, string.indexOf(","));
 			if (s.contains(":"))
 			{
+				// TODO: Find a way around magic values
 				id = Integer.parseInt(s.substring(0, s.indexOf(":")));
 
 				dat = Short.parseShort(s.substring(s.indexOf(":") + 1, s.indexOf(",")));

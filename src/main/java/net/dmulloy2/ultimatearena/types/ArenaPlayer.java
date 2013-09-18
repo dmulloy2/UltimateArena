@@ -245,7 +245,7 @@ public class ArenaPlayer
 			catch (Throwable e)
 			{
 				sendMessage("&cCould not give Essentials kit: {0}",
-						e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e);
+						e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e.getMessage());
 			}
 		}
 		

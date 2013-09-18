@@ -83,6 +83,8 @@ public class ArenaConfig
 
 	public void giveRewards(Player player, boolean half)
 	{
+		plugin.debug("Rewarding player {0}. Half: {1}", player.getName(), half);
+		
 		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
 		if (event.isCancelled())
 			return;
@@ -109,7 +111,8 @@ public class ArenaConfig
 				{
 					plugin.getEconomy().depositPlayer(player.getName(), cashReward);
 					String format = plugin.getEconomy().format(cashReward);
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format("&a{0} has been added to your account!", format));
 				}
 			}
 		}

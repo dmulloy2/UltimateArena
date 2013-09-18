@@ -108,6 +108,9 @@ public class UltimateArena extends JavaPlugin
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
 	private @Getter LogHandler logHandler;
+
+//  TODO WorldEdit integration
+//	private @Getter WorldEditPlugin worldEdit;
 	
 	// Lists
 	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
@@ -139,8 +142,9 @@ public class UltimateArena extends JavaPlugin
 		logHandler = new LogHandler(this);
 
 		// Dependencies
-		checkDependencyVersions();
-
+		if (! checkDependencies())
+			return;
+		
 		// IO Stuff
 		checkDirectories();
 		saveDefaultConfig();
@@ -278,8 +282,10 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 
-	public void checkDependencyVersions()
+	public boolean checkDependencies()
 	{
+		PluginManager pm = getServer().getPluginManager();
+		
 		try
 		{
 			Class.forName("org.bukkit.entity.Horse");
@@ -290,8 +296,23 @@ public class UltimateArena extends JavaPlugin
 			outConsole(Level.WARNING, "Using older builds has been known to cause game-ending errors!");
 			outConsole(Level.WARNING, "Consider updating to the latest build!");
 
-			getServer().getPluginManager().disablePlugin(this);
+			pm.disablePlugin(this);
+			return false;
 		}
+
+//		if (pm.isPluginEnabled("WorldEdit"))
+//		{
+//			Plugin plugin = pm.getPlugin("WorldEdit");
+//			if (plugin instanceof WorldEditPlugin)
+//			{
+//				worldEdit = (WorldEditPlugin) plugin;
+//				
+//				outConsole("Integration with WorldEdit successful!");
+//			}
+//		}
+//		
+//		outConsole(Level.WARNING, "Could not hook into WorldEdit!");
+		return true;
 	}
 
 	// Create Directories

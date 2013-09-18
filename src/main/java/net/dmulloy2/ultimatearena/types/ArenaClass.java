@@ -131,6 +131,10 @@ public class ArenaClass
 						ItemStack stack = ItemUtil.readPotion(entry);
 						if (stack != null)
 						{
+//							plugin.outConsole("Detected deprecated potion entry. Converting!");
+//							
+//							fc.set(path, stack.getTypeId() + ":" + stack.getDurability() + "," + stack.getAmount());
+							
 							weapons.add(stack);
 						}
 					}
@@ -170,8 +174,8 @@ public class ArenaClass
 				}
 				catch (Throwable e)
 				{
-					plugin.outConsole(Level.WARNING, "Could not load Essentials kit for class {0}: {1}", 
-							name, e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e);
+					plugin.outConsole(Level.WARNING, "Could not load Essentials kit for class {0}: {1}", name, 
+							e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e.getMessage());
 				}
 			}
 

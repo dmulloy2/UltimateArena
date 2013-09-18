@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
+// TODO: Incorporate WorldEdit, cleanup code
 public class ArenaCreator
 {
 	protected String step;

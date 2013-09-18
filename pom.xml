@@ -25,7 +25,11 @@
     <repository>
       <id>shadowvolt-repo</id>
       <url>http://ci.shadowvolt.com/plugin/repository/everything</url>
-    </repository>
+    </repository> <!--
+    <repository>
+      <id>sk89q-repo</id>
+      <url>http://maven.sk89q.com/repo</url>
+    </repository> -->
   </repositories>
   
   <build>
@@ -99,6 +103,11 @@
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
       <version>1.2.27-SNAPSHOT</version>
-    </dependency>
+    </dependency> <!--
+    <dependency>
+      <groupId>com.sk89q</groupId>
+      <artifactId>worldedit</artifactId>
+      <version>5.5.8-SNAPSHOT</version>
+    </dependency> -->
   </dependencies>
 </project>

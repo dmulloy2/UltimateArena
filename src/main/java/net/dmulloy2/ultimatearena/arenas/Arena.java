@@ -257,7 +257,7 @@ public abstract class Arena
 	 * 
 	 * @return The team the player should be on
 	 */
-	public int getBalancedTeam()
+	public final int getBalancedTeam()
 	{
 		int amt1 = 0;
 		int amt2 = 0;
@@ -268,22 +268,13 @@ public abstract class Arena
 			if (checkValid(ap))
 			{
 				if (ap.getTeam() == 1)
-				{
 					amt1++;
-				}
 				else
-				{
 					amt2++;
-				}
 			}
 		}
-
-		if (amt1 > amt2)
-		{
-			return 2;
-		}
-
-		return 1;
+		
+		return amt1 > amt2 ? 2 : 1;
 	}
 
 	/**
@@ -292,21 +283,16 @@ public abstract class Arena
 	 * @param stopifEmpty
 	 *            - Stops the arena if empty
 	 */
-	public boolean simpleTeamCheck(boolean stopifEmpty)
+	public final boolean simpleTeamCheck(boolean stopifEmpty)
 	{
-		if (getTeam1size() == 0 || team2size == 0)
+		if (team1size == 0 || team2size == 0)
 		{
 			if (stopifEmpty)
 			{
 				stop();
 			}
-
-			if (startingAmount > 1)
-			{
-				return false;
-			}
-
-			return true;
+			
+			return startingAmount < 1;
 		}
 
 		return true;
@@ -470,8 +456,6 @@ public abstract class Arena
 	 */
 	public void reward(ArenaPlayer ap, boolean half)
 	{
-		plugin.debug("Rewarding player: {0}. Half: {1}", ap.getName(), half);
-
 		if (config != null)
 		{
 			config.giveRewards(ap.getPlayer(), half);
@@ -494,8 +478,6 @@ public abstract class Arena
 	 */
 	public void rewardTeam(int team, boolean half)
 	{
-		plugin.debug("Rewarding team {0}. Half: {1}", team, half);
-
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);

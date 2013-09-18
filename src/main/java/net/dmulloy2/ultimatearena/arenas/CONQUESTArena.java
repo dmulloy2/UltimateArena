@@ -156,11 +156,11 @@ public class CONQUESTArena extends Arena
 				{
 					if (apl.getTeam() == 1)
 					{
-						apl.sendMessage("&cYour power is now: &6{0}", REDTEAMPOWER);
+						apl.sendMessage("&cYour power is now: &6" + REDTEAMPOWER);
 					}
 					else
 					{
-						apl.sendMessage("&cThe other team's power is now: &6{0}", REDTEAMPOWER);
+						apl.sendMessage("&cThe other team's power is now: &6" + REDTEAMPOWER);
 					}
 				}
 			}
@@ -175,11 +175,11 @@ public class CONQUESTArena extends Arena
 				{
 					if (apl.getTeam() == 2)
 					{
-						apl.sendMessage("&cYour power is now: &6{0}", BLUETEAMPOWER);
+						apl.sendMessage("&cYour power is now: &6" + BLUETEAMPOWER);
 					}
 					else
 					{
-						apl.sendMessage("&cThe other team's power is now: &6{0}", BLUETEAMPOWER);
+						apl.sendMessage("&cThe other team's power is now: &6" + BLUETEAMPOWER);
 					}
 				}
 			}
