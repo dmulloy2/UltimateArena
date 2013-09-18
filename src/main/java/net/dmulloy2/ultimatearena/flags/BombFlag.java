@@ -7,7 +7,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Effect;
@@ -38,7 +37,7 @@ public class BombFlag extends ArenaFlag
 		if (fused)
 		{
 			timer--;
-			Util.playEffect(Effect.STEP_SOUND, this.getLoc(), 4);
+			Util.playEffect(Effect.STEP_SOUND, getLoc(), 4);
 
 			if (timer == 30 || timer == 20 || timer == 10 || timer <= 5)
 			{
@@ -49,7 +48,8 @@ public class BombFlag extends ArenaFlag
 			{
 				if (!isExploded())
 				{
-					Util.playEffect(Effect.EXTINGUISH, this.getLoc(), 4);
+					Util.playEffect(Effect.EXTINGUISH, getLoc(), 4);
+					
 					BOMBArena ba = null;
 					if (getArena() instanceof BOMBArena)
 					{
@@ -65,12 +65,13 @@ public class BombFlag extends ArenaFlag
 							amte++;
 
 						if (amte == 0)
-							arena.killAllNear(this.getLoc(), 12);
+							arena.killAllNear(getLoc(), 12);
 					}
-
-					setExploded(true);
-					fused = false;
-					arena.tellPlayers("&cRED &3team blew up bomb &e{0}&3!", getBnum());
+					
+					this.fused = false;
+					this.exploded = true;
+					
+					arena.tellPlayers("&cRED &3team blew up bomb &e{0}&3!", bnum);
 				}
 			}
 		}
@@ -101,18 +102,17 @@ public class BombFlag extends ArenaFlag
 			}
 		}
 
-		if (!(fuse && defuse) && !isExploded())
+		if (! (fuse && defuse) && ! exploded)
 		{
 			if (capturer != null)
 			{
-				Player pl = capturer.getPlayer();
 				if (fuse)
 				{
-					if (!fused)
+					if (! fused)
 					{
 						// team 1 is fusing
 						fuser++;
-						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", getBnum(), fuser));
+						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", getBnum(), fuser);
 						if (fuser > 10)
 						{
 							fuser = 0;
@@ -127,7 +127,7 @@ public class BombFlag extends ArenaFlag
 					if (fused)
 					{
 						fuser++;
-						pl.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", getBnum(), fuser));
+						capturer.sendMessage("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", getBnum(), fuser);
 						if (fuser > 10)
 						{
 							fuser = 0;
@@ -137,7 +137,6 @@ public class BombFlag extends ArenaFlag
 						}
 					}
 				}
-
 			}
 		}
 	}
