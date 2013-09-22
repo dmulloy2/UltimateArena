@@ -9,9 +9,12 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
+import org.bukkit.material.Wool;
 
 /**
  * @author dmulloy2
@@ -19,12 +22,12 @@ import org.bukkit.entity.Player;
 
 public class ArenaFlag extends FlagBase
 {
+	protected int team;
 	protected int power;
-	private int color = 14;
-	private int team = 0;
-	protected int added = 0;
+	protected int added;
+	protected int color = 14;
 
-	private boolean capped = false;
+	protected boolean capped;
 
 	public ArenaFlag(Arena arena, Location loc, final UltimateArena plugin)
 	{
@@ -38,41 +41,62 @@ public class ArenaFlag extends FlagBase
 		getLoc().getBlock().setType(Material.WOOL);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void step()
 	{
-		setCapped(false);
-		setColor(8);
-		setTeam(0);
+		this.capped = false;
+		this.color = 8;
+		this.team = 0;
+
 		if (added > 50)
 		{
-			setColor(14);
-			setTeam(1);
+			this.color = 14;
+			this.team = 1;
 		}
 		if (added < -50)
 		{
-			setColor(11);
-			setTeam(2);
+			this.color = 11;
+			this.team = 2;
 		}
 		if (added >= 150)
 		{
-			added = 150;
-			setCapped(true);
+			this.added = 150;
+			this.capped = true;
 		}
 		if (added <= -150)
 		{
-			added = -150;
-			setCapped(true);
+			this.added = -150;
+			this.capped = true;
 		}
 
-		if (isCapped())
+		if (capped)
 		{
-			getNotify().setData((byte) getColor());
+			MaterialData dat = getNotify().getState().getData();
+			if (dat instanceof Wool)
+			{
+				((Wool)dat).setColor(getColor(color));
+			}
 		}
 		else
 		{
-			getNotify().setData((byte) 8);
+			MaterialData dat = getNotify().getState().getData();
+			if (dat instanceof Wool)
+			{
+				((Wool)dat).setColor(getColor(8));
+			}
 		}
+	}
+	
+	public DyeColor getColor(int color)
+	{
+		if (color == 8)
+			return DyeColor.SILVER;
+		else if (color == 11)
+			return DyeColor.BLUE;
+		else if (color == 14)
+			return DyeColor.RED;
+		else
+			return DyeColor.WHITE;
+		
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.types.EnchantmentType;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
@@ -26,10 +27,10 @@ public class ItemUtil
 	 *            - String to read
 	 * @return ItemStack from given string
 	 */
-	@SuppressWarnings("deprecation")
 	public static ItemStack readItem(String string)
 	{
-		int id = 0;
+		Material mat = null;
+
 		int amt = 0;
 		short dat = 0;
 
@@ -41,14 +42,21 @@ public class ItemUtil
 			String s = string.substring(0, string.indexOf(","));
 			if (s.contains(":"))
 			{
-				// TODO: Find a way around magic values
-				id = Integer.parseInt(s.substring(0, s.indexOf(":")));
-
+				String str = s.substring(0, s.indexOf(":"));
+				if (Util.isInteger(str))
+				{
+					int id = Integer.parseInt(s.substring(0, s.indexOf(":")));
+					
+					mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(id).getMaterial();
+				}
+				
 				dat = Short.parseShort(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
 			}
 			else
 			{
-				id = Integer.parseInt(s);
+				int id = Integer.parseInt(s);
+				
+				mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(id).getMaterial();
 			}
 
 			s = string.substring(string.indexOf(",") + 1);
@@ -98,7 +106,7 @@ public class ItemUtil
 			}
 		}
 
-		ItemStack ret = new ItemStack(id, amt, dat);
+		ItemStack ret = new ItemStack(mat, amt, dat);
 
 		if (! enchantments.isEmpty())
 		{

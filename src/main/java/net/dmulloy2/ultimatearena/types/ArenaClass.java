@@ -12,6 +12,7 @@ import lombok.Getter;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
+import net.dmulloy2.ultimatearena.util.Util;
 import net.ess3.api.IEssentials;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.Material;
 
 /**
  * @author dmulloy2
@@ -70,52 +72,62 @@ public class ArenaClass
 		{
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
-			String armorPath = "armor.";
-			String arm1 = fc.getString(armorPath + "chestplate");
-			if (arm1 != null)
+			String[] armor = new String[] { "chestplate", "leggings", "boots" };
+			
+			for (String armorPath : armor)
 			{
-				if (arm1.contains(","))
-				{
-					String[] split = arm1.split(",");
-					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0, readArmorEnchantments(split[1]));
-					armor.add(stack);
-				}
-				else
-				{
-					ItemStack stack = buildItemStack(Integer.parseInt(arm1), 1, (byte) 0, null);
-					armor.add(stack);
-				}
-			}
-
-			String arm2 = fc.getString(armorPath + "leggings");
-			if (arm2 != null)
-			{
-				if (arm2.contains(","))
-				{
-					String[] split = arm2.split(",");
-					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0, readArmorEnchantments(split[1]));
-					armor.add(stack);
-				}
-				else
-				{
-					ItemStack stack = buildItemStack(Integer.parseInt(arm2), 1, (byte) 0, null);
-					armor.add(stack);
-				}
-			}
-
-			String arm3 = fc.getString(armorPath + "boots");
-			if (arm3 != null)
-			{
-				if (arm3.contains(","))
-				{
-					String[] split = arm3.split(",");
-					ItemStack stack = buildItemStack(Integer.parseInt(split[0]), 1, (byte) 0, readArmorEnchantments(split[1]));
-					armor.add(stack);
-				}
-				else
-				{
-					ItemStack stack = buildItemStack(Integer.parseInt(arm3), 1, (byte) 0, null);
-					armor.add(stack);
+				if (fc.isSet("armor." + armorPath))
+				{	
+					Material mat = null;
+					
+					Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+					
+					String arm = fc.getString("armor." + armorPath);
+					if (arm.contains(","))
+					{
+						String[] split = arm.split(",");
+						if (Util.isInteger(split[0]))
+						{
+							mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(Integer.parseInt(split[0])).getMaterial();
+						}
+						else
+						{
+							mat = Material.getMaterial(split[0].toUpperCase());
+						}
+						
+						StringBuilder line = new StringBuilder();
+						for (int i = 1; i < split.length; i++)
+						{
+							line.append(line + " ");
+						}
+						
+						line.delete(line.length() - 1, line.length());
+						
+						enchants = readArmorEnchantments(line.toString());
+					}
+					else
+					{
+						if (Util.isInteger(arm))
+						{
+							mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(Integer.parseInt(arm)).getMaterial();
+						}
+						else
+						{
+							mat = Material.getMaterial(arm.toUpperCase());
+						}
+					}
+					
+					ItemStack stack = new ItemStack(mat, 1);
+					
+					if (! enchants.isEmpty())
+					{
+						for (Entry<Enchantment, Integer> entry : enchants.entrySet())
+						{
+							stack.addUnsafeEnchantment(entry.getKey(), entry.getValue());
+						}
+					}
+					
+					this.armor.add(stack);
 				}
 			}
 
@@ -131,9 +143,11 @@ public class ArenaClass
 						ItemStack stack = ItemUtil.readPotion(entry);
 						if (stack != null)
 						{
-//							plugin.outConsole("Detected deprecated potion entry. Converting!");
-//							
-//							fc.set(path, stack.getTypeId() + ":" + stack.getDurability() + "," + stack.getAmount());
+							plugin.outConsole("Detected deprecated potion entry. Converting!");
+							
+							int id = net.dmulloy2.ultimatearena.types.Material.getTypeId(stack.getType());
+							
+							fc.set(path, id + ":" + stack.getDurability() + "," + stack.getAmount());
 							
 							weapons.add(stack);
 						}
@@ -200,7 +214,6 @@ public class ArenaClass
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	public List<PotionEffect> readPotionEffects(String str)
 	{
 		List<PotionEffect> ret = new ArrayList<PotionEffect>();
@@ -213,25 +226,19 @@ public class ArenaClass
 			{
 				if (s.contains(":"))
 				{
-					PotionEffectType type = null;
-					int strength = 0;
-
 					String[] split1 = s.split(":");
-					try
-					{
-						type = PotionEffectType.getByName(split1[0]);
-					}
-					catch (Exception e)
-					{
-						type = PotionEffectType.getById(Integer.parseInt(split1[0]));
-					}
 
+					PotionEffectType type = PotionEffectType.getByName(split1[0]);
+
+					int strength = 0;
+					
 					try
 					{
 						strength = Integer.parseInt(split1[1]);
 					}
 					catch (Exception e)
 					{
+						//
 					}
 
 					if (type != null)
@@ -245,25 +252,19 @@ public class ArenaClass
 		{
 			if (str.contains(":"))
 			{
-				PotionEffectType type = null;
-				int strength = 0;
-
 				String[] split1 = str.split(":");
-				try
-				{
-					type = PotionEffectType.getByName(split1[0]);
-				}
-				catch (Exception e)
-				{
-					type = PotionEffectType.getById(Integer.parseInt(split1[0]));
-				}
+				
+				PotionEffectType type = PotionEffectType.getByName(split1[0]);
 
+				int strength = 0;
+				
 				try
 				{
 					strength = Integer.parseInt(split1[1]);
 				}
 				catch (Exception e)
 				{
+					//
 				}
 
 				if (type != null)
@@ -322,32 +323,6 @@ public class ArenaClass
 	public String getName(File file)
 	{
 		return file.getName().replaceAll(".yml", "");
-	}
-
-	@SuppressWarnings("deprecation")
-	private ItemStack buildItemStack(int id, int amt, short dat, Map<Enchantment, Integer> enchants)
-	{
-		if (id > 0)
-		{
-			ItemStack itemStack = new ItemStack(id, amt, dat);
-			if (enchants != null && enchants.size() > 0)
-			{
-				for (Entry<Enchantment, Integer> entry : enchants.entrySet())
-				{
-					Enchantment ench = entry.getKey();
-					int level = entry.getValue();
-
-					if (ench != null && level > 0)
-					{
-						itemStack.addUnsafeEnchantment(ench, level);
-					}
-				}
-			}
-
-			return itemStack;
-		}
-
-		return null;
 	}
 
 	public ItemStack getArmor(int index)

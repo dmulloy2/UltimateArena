@@ -7,10 +7,12 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -20,26 +22,27 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CTFFlag
 {
-	private Player riding;
+	protected Player riding;
 
-	private String flagType = "";
+	protected String flagType = "";
 
-	private Arena arena;
+	protected Arena arena;
 
-	private Location returnto;
-	private Location myloc;
-	private Location toloc;
-	private Location lastloc;
+	protected Location returnto;
+	protected Location myloc;
+	protected Location toloc;
+	protected Location lastloc;
 
-	private int lastBlockType;
-	private int team;
-	private int timer = 15;
+	protected int team;
+	protected int timer = 15;
 
-	private boolean pickedUp;
-	private boolean stopped;
-
-	private byte color;
-	private byte lastBlockDat;
+	protected boolean pickedUp;
+	protected boolean stopped;
+	
+	protected Material lastBlockType;
+	
+	protected DyeColor color;
+	protected MaterialData lastBlockDat;
 
 	public CTFFlag(Arena a, Location loc, int team)
 	{
@@ -79,27 +82,27 @@ public class CTFFlag
 		arena.tellPlayers("&e{0} &3seconds left until &e{1} &3flag returns!", timer, getFlagType());
 	}
 
-	@SuppressWarnings("deprecation")
 	public void setup()
 	{
-		final Block current = myloc.getBlock();
-		lastBlockDat = current.getData();
-		lastBlockType = current.getTypeId();
+		Block current = myloc.getBlock();
+		lastBlockDat = current.getState().getData();
+		lastBlockType = current.getType();
+
 		colorize();
 	}
 
 	public void colorize()
 	{
 		Block current = myloc.getBlock();
-		if (getTeam() == 1)
+		if (team == 1)
 		{
-			color = 14; // Red team
-			setFlagType(ChatColor.RED + "RED");
+			this.color = DyeColor.RED;
+			this.flagType = ChatColor.RED + "RED";
 		}
 		else
 		{
-			color = 11; // Blue team
-			setFlagType(ChatColor.BLUE + "BLUE");
+			this.color = DyeColor.BLUE;
+			this.flagType = ChatColor.BLUE + "BLUE";
 		}
 
 		setFlagBlock(current);
@@ -199,13 +202,14 @@ public class CTFFlag
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void despawn()
 	{
-		setStopped(true);
+		this.stopped = true;
 
 		Block last = lastloc.getBlock();
-		last.setTypeIdAndData(lastBlockType, lastBlockDat, false);
+		last.setType(lastBlockType);
+		last.getState().setData(lastBlockDat);
+		last.getState().update();
 	}
 
 	public void tick()
@@ -233,31 +237,36 @@ public class CTFFlag
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void setFlag()
 	{
-		if (isStopped())
-			return;
+		if (stopped) return;
 
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
 
-		if (!Util.checkLocation(lastloc, myloc))
+		if (! Util.checkLocation(lastloc, myloc))
 		{
-			last.setTypeIdAndData(lastBlockType, lastBlockDat, true);
-			lastBlockDat = current.getData();
-			lastBlockType = current.getTypeId();
-			lastloc = myloc.clone();
+			last.setType(lastBlockType);
+			last.getState().setData(lastBlockDat);
+			last.getState().update();
+			
+			this.lastBlockType = current.getType();
+			this.lastBlockDat = current.getState().getData();
+			
+			this.lastloc = myloc.clone();
+
 			setFlagBlock(current);
 		}
 	}
 
 	private void setFlagBlock(Block c)
 	{
-		if (color == 11)
+		if (color == DyeColor.BLUE)
 			c.setType(Material.LAPIS_BLOCK);
-		if (color == 14)
+		else if (color == DyeColor.RED)
 			c.setType(Material.NETHERRACK);
+		else
+			c.setType(Material.WOOL);
 	}
 
 	public int getTeam()

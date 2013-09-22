@@ -23,8 +23,8 @@ import org.bukkit.entity.Player;
 
 public class KothFlag extends ArenaFlag
 {
-	private ArenaPlayer leader;
-	private KOTHArena marena;
+	protected ArenaPlayer leader;
+	protected KOTHArena marena;
 
 	public KothFlag(KOTHArena arena, Location loc, final UltimateArena plugin)
 	{

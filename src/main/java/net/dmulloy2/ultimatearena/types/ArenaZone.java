@@ -12,6 +12,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.Material;
 
 /**
  * @author dmulloy2
@@ -22,11 +23,13 @@ public class ArenaZone
 {
 	private int amtLobbys = 2;
 	private int amtSpawnpoints = 2;
-	private int specialType = 20;
+//	private int specialType = 20;
 	private int timesPlayed = 0;
 	private int liked;
 	private int disliked;
 	private int maxPlayers = 24;
+	
+	private Material specialType;
 
 	private boolean loaded = false;
 	private boolean disabled = false;
@@ -97,7 +100,7 @@ public class ArenaZone
 		this.spawns = ac.spawns;
 		this.flags = ac.flags;
 		this.maxPlayers = 24;
-		this.specialType = 80;
+		this.specialType = Material.SNOW_BLOCK;
 		this.defaultClass = plugin.getClasses().get(0).getName();
 		this.world = lobby1.getWorld();
 

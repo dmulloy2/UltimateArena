@@ -184,7 +184,6 @@ public class InventoryHelper
 		return leftover;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static boolean hasRoom(ItemStack item, Player player)
 	{
 		final int maxStackSize = (item.getMaxStackSize() == -1) ? player.getInventory().getMaxStackSize() : item.getMaxStackSize();
@@ -194,7 +193,7 @@ public class InventoryHelper
 		{
 			if (stack == null || stack.getType().equals(Material.AIR))
 				amount -= maxStackSize;
-			else if (stack.getTypeId() == item.getTypeId()
+			else if (stack.getType() == item.getType()
 					&& stack.getDurability() == item.getDurability()
 					&& (stack.getEnchantments().size() == 0 ? item.getEnchantments().size() == 0 : stack.getEnchantments().equals(
 							item.getEnchantments())))

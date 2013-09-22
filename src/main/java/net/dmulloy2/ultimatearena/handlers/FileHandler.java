@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.ultimatearena.types.Material;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -842,7 +843,7 @@ public class FileHandler
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
-				az.setSpecialType(fc.getInt("specialType"));
+				az.setSpecialType(Material.getMaterial(fc.getInt("specialType")).getMaterial());
 
 				for (int i = 0; i < 4; i++)
 				{

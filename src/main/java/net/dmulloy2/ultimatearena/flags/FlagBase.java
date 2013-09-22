@@ -16,17 +16,18 @@ import org.bukkit.block.Block;
 
 public class FlagBase
 {
-	private Location loc;
-	private Block notify = null;
+	protected Location loc;
+	protected Block notify;
 	protected Arena arena;
+	
 	protected final UltimateArena plugin;
 
-	public FlagBase(Arena arena, Location loc, final UltimateArena plugin)
+	public FlagBase(Arena arena, Location loc, UltimateArena plugin)
 	{
 		this.arena = arena;
 
-		Location safe = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
-		this.setLoc(safe.clone().subtract(0, 1, 0));
+//		Location safe = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
+		this.loc = loc.clone().subtract(0, 1, 0);
 
 		this.plugin = plugin;
 

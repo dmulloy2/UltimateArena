@@ -67,12 +67,6 @@ public class Field3D extends Field
 
 		return false;
 	}
-	
-	@SuppressWarnings("deprecation")
-	public void setType(final int id)
-	{
-		setType(Material.getMaterial(id));
-	}
 
 	public void setType(final Material mat)
 	{

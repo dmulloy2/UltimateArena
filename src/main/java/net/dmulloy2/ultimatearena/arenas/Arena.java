@@ -35,6 +35,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -185,7 +186,8 @@ public abstract class Arena
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("Essentials"))
 		{
-			IEssentials ess = Util.getEssentials();
+			Plugin plugin = pm.getPlugin("Essentials");
+			IEssentials ess = (IEssentials)plugin;
 			User user = ess.getUser(player);
 
 			// Disable GodMode in the arena
@@ -654,20 +656,6 @@ public abstract class Arena
 		}
 
 		return null;
-	}
-	
-	/**
-	 * Alias for {@link Arena#giveItem(Player, Material, int, short, String)}
-	 */
-	public final void giveItem(Player pl, int id, short dat, int amt, String message)
-	{
-		@SuppressWarnings("deprecation")
-		Material mat = Material.getMaterial(id);
-		
-		if (mat != null)
-		{
-			giveItem(pl, mat, amt, dat, message);
-		}
 	}
 	
 	/**

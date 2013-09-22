@@ -55,7 +55,6 @@ public class SPLEEFArena extends FFAArena
 		return getBlockInSpleefArena(0);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Location getBlockInSpleefArena(int repeat)
 	{
 		Random rand = new Random();
@@ -67,7 +66,7 @@ public class SPLEEFArena extends FFAArena
 		Block b = getSpleefGround().getBlockAt(checkx + 1, 0, checkz + 1);
 
 		Material mat = b.getType();
-		if (mat.getId() == getArenaZone().getSpecialType())
+		if (mat == getArenaZone().getSpecialType())
 		{
 			ret = b.getLocation();
 		}

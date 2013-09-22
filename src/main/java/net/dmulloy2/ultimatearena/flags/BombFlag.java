@@ -19,12 +19,12 @@ import org.bukkit.entity.Player;
 
 public class BombFlag extends ArenaFlag
 {
-	private int bnum;
-	private int fuser = 0;
-	private int timer = 45;
+	protected int bnum;
+	protected int fuser;
+	protected int timer = 45;
 
-	private boolean fused = false;
-	private boolean exploded = false;
+	protected boolean fused;
+	protected boolean exploded;
 
 	public BombFlag(Arena arena, Location loc, final UltimateArena plugin)
 	{

@@ -21,11 +21,11 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CTFFlagBase extends FlagBase
 {
-	private CTFArena ctf;
-	private CTFFlag flag;
-	private CTFFlag enemyflag;
+	protected CTFArena ctf;
+	protected CTFFlag flag;
+	protected CTFFlag enemyflag;
 
-	private int team;
+	protected int team;
 
 	public CTFFlagBase(Arena arena, Location loc, int team, final UltimateArena plugin)
 	{

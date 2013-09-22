@@ -8,9 +8,6 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
-
-import com.earth2me.essentials.IEssentials;
 
 /**
  * Base Util class
@@ -142,7 +139,7 @@ public class Util
 	 *            - Data
 	 */
 	
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") // TODO: Need a replacement for this.
 	public static void playEffect(Effect effect, Location loc, int i)
 	{
 		for (Player player : Bukkit.getOnlinePlayers())
@@ -166,6 +163,12 @@ public class Util
 				.getWorld().getUID() == loc2.getWorld().getUID());
 	}
 
+	/**
+	 * Turns a {@link Location} into a string for debug purpouses
+	 * 
+	 * @param loc - {@link Location} to convert
+	 * @return String for debug purpouses
+	 */
 	public static String locationToString(Location loc)
 	{
 		StringBuilder ret = new StringBuilder();
@@ -176,14 +179,24 @@ public class Util
 		return ret.toString();
 	}
 
-	public static IEssentials getEssentials()
+	/**
+	 * Returns whether or not a String can be parsed as an Integer
+	 * 
+	 * @param string - String to check
+	 * @return Whether or not a String can be parsed as an Integer
+	 */
+	public static boolean isInteger(String string)
 	{
-		PluginManager pm = Bukkit.getPluginManager();
-		if (pm.isPluginEnabled("Essentials"))
+		int ret = -1;
+		try
 		{
-			return (IEssentials) pm.getPlugin("Essentials");
+			ret = Integer.parseInt(string);
 		}
-
-		return null;
+		catch (Exception e)
+		{
+			//
+		}
+		
+		return ret != -1;
 	}
 }
