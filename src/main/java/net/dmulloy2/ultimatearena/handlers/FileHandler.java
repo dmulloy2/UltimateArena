@@ -595,7 +595,7 @@ public class FileHandler
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 
-				fc.set("specialType", az.getSpecialType());
+				fc.set("specialType", Material.getTypeId(az.getSpecialType()));
 
 				for (int i = 0; i < 4; i++)
 				{
