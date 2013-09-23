@@ -42,21 +42,13 @@ public class ItemUtil
 			String s = string.substring(0, string.indexOf(","));
 			if (s.contains(":"))
 			{
-				String str = s.substring(0, s.indexOf(":"));
-				if (Util.isInteger(str))
-				{
-					int id = Integer.parseInt(s.substring(0, s.indexOf(":")));
-					
-					mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(id).getMaterial();
-				}
+				mat = MaterialUtil.getMaterial(s.substring(0, s.indexOf(":")));
 				
 				dat = Short.parseShort(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
 			}
 			else
 			{
-				int id = Integer.parseInt(s);
-				
-				mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(id).getMaterial();
+				mat = MaterialUtil.getMaterial(s);
 			}
 
 			s = string.substring(string.indexOf(",") + 1);

@@ -244,10 +244,7 @@ public class UltimateArena extends JavaPlugin
 
 	public void debug(String string, Object... objects)
 	{
-		if (getConfig().getBoolean("debug", false))
-		{
-			logHandler.log("[Debug] " + string, objects);
-		}
+		logHandler.debug(string, objects);
 	}
 
 	public void broadcast(String string, Object... objects)

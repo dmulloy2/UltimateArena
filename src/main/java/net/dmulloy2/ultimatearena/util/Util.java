@@ -178,25 +178,4 @@ public class Util
 		ret.append(" Z: " + loc.getBlockZ());
 		return ret.toString();
 	}
-
-	/**
-	 * Returns whether or not a String can be parsed as an Integer
-	 * 
-	 * @param string - String to check
-	 * @return Whether or not a String can be parsed as an Integer
-	 */
-	public static boolean isInteger(String string)
-	{
-		int ret = -1;
-		try
-		{
-			ret = Integer.parseInt(string);
-		}
-		catch (Exception e)
-		{
-			//
-		}
-		
-		return ret != -1;
-	}
 }

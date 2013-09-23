@@ -9,12 +9,12 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.ultimatearena.util.MaterialUtil;
 import net.ess3.api.IEssentials;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -23,7 +23,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.Material;
 
 /**
  * @author dmulloy2
@@ -86,15 +85,9 @@ public class ArenaClass
 					if (arm.contains(","))
 					{
 						String[] split = arm.split(",");
-						if (Util.isInteger(split[0]))
-						{
-							mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(Integer.parseInt(split[0])).getMaterial();
-						}
-						else
-						{
-							mat = Material.getMaterial(split[0].toUpperCase());
-						}
 						
+						mat = MaterialUtil.getMaterial(split[0]);
+
 						StringBuilder line = new StringBuilder();
 						for (int i = 1; i < split.length; i++)
 						{
@@ -107,14 +100,7 @@ public class ArenaClass
 					}
 					else
 					{
-						if (Util.isInteger(arm))
-						{
-							mat = net.dmulloy2.ultimatearena.types.Material.getMaterial(Integer.parseInt(arm)).getMaterial();
-						}
-						else
-						{
-							mat = Material.getMaterial(arm.toUpperCase());
-						}
+						mat = MaterialUtil.getMaterial(arm);
 					}
 					
 					ItemStack stack = new ItemStack(mat, 1);

@@ -11,7 +11,7 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 public class LogHandler
 {
-	private UltimateArena plugin;
+	private final UltimateArena plugin;
 	public LogHandler(UltimateArena plugin) 
 	{
 		this.plugin = plugin;
@@ -19,11 +19,19 @@ public class LogHandler
 
 	public final void log(Level level, String msg, Object... objects)
 	{
-		plugin.getLogger().log(level, FormatUtil.format(msg, objects));		
+		plugin.getLogger().log(level, FormatUtil.format(msg, objects));
 	}
 
 	public final void log(String msg, Object... objects)
 	{
-		log(Level.INFO, msg, objects);
+		plugin.getLogger().info(FormatUtil.format(msg, objects));
+	}
+	
+	public final void debug(String msg, Object... objects)
+	{
+		if (plugin.getConfig().getBoolean("debug", false))
+		{
+			plugin.getLogger().info(FormatUtil.format(msg, objects));
+		}
 	}
 }
