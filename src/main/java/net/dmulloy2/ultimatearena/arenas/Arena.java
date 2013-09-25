@@ -327,13 +327,11 @@ public abstract class Arena
 	 */
 	public final void spawnAll()
 	{
-		plugin.debug("Spawning players for Arena: {0}", getArenaZone().getArenaName());
-
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		plugin.debug("Spawning players for Arena: {0}", name);
+		
+		for (ArenaPlayer ap : getValidPlayers())
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
-			if (checkValid(ap))
-				spawn(ap.getPlayer(), false);
+			spawn(ap.getPlayer());
 		}
 	}
 
@@ -369,10 +367,8 @@ public abstract class Arena
 	 * 
 	 * @param name
 	 *            - Player to spawn
-	 * @param alreadyspawned
-	 *            - Have they already been spawned?
 	 */
-	public final void spawn(Player player, boolean alreadySpawned)
+	public final void spawn(Player player)
 	{
 		plugin.debug("Attempting to spawn player: {0}", player.getName());
 
@@ -391,17 +387,12 @@ public abstract class Arena
 						teleport(player, loc);
 
 						// Call spawn event
-						ArenaSpawn spawn = new ArenaSpawn(loc);
-						UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
+						UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, false);
 						plugin.getServer().getPluginManager().callEvent(spawnEvent);
 					}
 
 					ap.spawn();
-
-					if (! alreadySpawned)
-					{
-						onSpawn(ap);
-					}
+					onSpawn(ap);
 				}
 			}
 		}
@@ -417,8 +408,7 @@ public abstract class Arena
 			teleport(ap.getPlayer(), loc);
 			
 			// Call spawn event
-			ArenaSpawn spawn = new ArenaSpawn(loc);
-			UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, spawn);
+			UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, true);
 			plugin.getServer().getPluginManager().callEvent(spawnEvent);
 		}
 	}

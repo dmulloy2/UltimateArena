@@ -3,7 +3,6 @@ package net.dmulloy2.ultimatearena.events;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSpawn;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
 import org.bukkit.Location;
@@ -12,6 +11,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * Called when a {@link Player} spawns in a {@link Arena}
+ * 
  * @author dmulloy2
  */
 
@@ -21,29 +22,21 @@ public class UltimateArenaSpawnEvent extends Event
 
 	private final ArenaPlayer arenaPlayer;
 	private final Arena arena;
-	private final ArenaSpawn spawn;
+	private final Location spawn;
+	private final boolean lobby;
 
-	/**
-	 * Called when a player spawns in an arena
-	 * 
-	 * @param arenaPlayer
-	 *            - The ArenaPlayer that spawned
-	 * @param arena
-	 *            - The Arena the player spawned in
-	 * @param spawn
-	 *            - The spawn location
-	 */
-	public UltimateArenaSpawnEvent(final ArenaPlayer arenaPlayer, final Arena arena, final ArenaSpawn spawn)
+	public UltimateArenaSpawnEvent(final ArenaPlayer arenaPlayer, final Arena arena, final Location spawn, final boolean lobby)
 	{
 		this.arenaPlayer = arenaPlayer;
 		this.arena = arena;
 		this.spawn = spawn;
+		this.lobby = lobby;
 	}
 
 	/**
-	 * Get the ArenaPlayer getting spawned
+	 * Gets the {@link ArenaPlayer} who spawned
 	 * 
-	 * @return ArenaPlayer getting spawned
+	 * @return The {@link ArenaPlayer} who spawned
 	 */
 	public ArenaPlayer getArenaPlayer()
 	{
@@ -81,29 +74,29 @@ public class UltimateArenaSpawnEvent extends Event
 	}
 
 	/**
-	 * Get the ArenaSpawn
+	 * Gets the player's spawn {@link Location}
 	 * 
-	 * @return ArenaSpawn
+	 * @return The player's spawn {@link Location}
 	 */
-	public ArenaSpawn getSpawn()
+	public Location getSpawn()
 	{
 		return spawn;
 	}
-
+	
 	/**
-	 * Get the Location
+	 * Gets whether or not the spawn occured in the lobby
 	 * 
-	 * @return Location
+	 * @return Whether or not the spawn occured in the lobby
 	 */
-	public Location getArenaSpawnAsLocation()
+	public final boolean isLobbySpawn()
 	{
-		return spawn.getLocation();
+		return lobby;
 	}
 
 	/**
-	 * Get the player's ArenaClass
+	 * Gets the player's {@link ArenaClass}
 	 * 
-	 * @return Player's ArenaClass
+	 * @return The player's {@link ArenaClass}
 	 */
 	public ArenaClass getArenaClass()
 	{

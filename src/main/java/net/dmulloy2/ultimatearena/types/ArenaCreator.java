@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.sk89q.worldedit.bukkit.selections.Selection;
+
 /**
  * @author dmulloy2
  */
 
-// TODO: Incorporate WorldEdit, cleanup code
 public class ArenaCreator
 {
 	protected String step;
@@ -130,8 +132,8 @@ public class ArenaCreator
 		ArenaZone az = new ArenaZone(plugin, this);
 		if (az.isLoaded())
 		{
-			sendMessage("&aSuccessfully created arena &e{0}&a!", az.getArenaName());
-			sendMessage("&aUse &e/ua join {0} &ato play!", az.getArenaName());
+			sendMessage("&3Successfully created arena &e{0}&3!", az.getArenaName());
+			sendMessage("&3Use &e/ua join {0} &3to play!", az.getArenaName());
 		}
 		else
 		{
@@ -374,137 +376,178 @@ public class ArenaCreator
 
 	public void setPoint(Player player)
 	{
+		this.msg = "";
+
 		Location loc = player.getLocation();
-		setMsg("");
-		if (lobby1 == null)
+
+		WorldEditHandler worldEdit = plugin.getWorldEditHandler();
+		if (worldEdit.useWorldEdit())
 		{
-			lobby1 = loc;
-			setMsg("Lobby &e1 &3point set, please set one more!");
-		}
-		else if (lobby2 == null)
-		{
-			lobby2 = loc;
-			setMsg("Lobby &e2 &3point set, if two points are set, use &e/ua done");
-		}
-		else if (arena1 == null)
-		{
-			arena1 = loc;
-			setMsg("Arena &e1 &3point set, please set a second one!");
-		}
-		else if (arena2 == null)
-		{
-			arena2 = loc;
-			setMsg("Arena &e2 &3point set, if two points are set, use &e/ua done");
+			if (! worldEdit.hasSelection(player))
+			{
+				sendMessage("&cYou must have a WorldEdit selection to do this!");
+				return;
+			}
+
+			Selection sel = worldEdit.getSelection(player);
+			if (! worldEdit.isCuboidSelection(sel))
+			{
+				sendMessage("&cYou must have a cuboid selection to do this!");
+				return;
+			}
+
+			if (lobby1 == null || lobby2 == null)
+			{
+				lobby1 = sel.getMaximumPoint();
+				lobby2 = sel.getMinimumPoint();
+
+				sendMessage("&3Lobby points set! Use &e/ua done");
+				return;
+			}
+
+			if (arena1 == null || arena2 == null)
+			{
+				arena1 = sel.getMaximumPoint();
+				arena2 = sel.getMinimumPoint();
+
+				sendMessage("&3Arena points set! Use &e/ua done");
+				return;
+			}
 		}
 		else
 		{
-			if (lobbyREDspawn == null)
+			if (lobby1 == null)
 			{
-				lobbyREDspawn = loc;
-				setMsg("Red Team Lobby point set");
-				if (amtLobbys > 1)
+				lobby1 = loc;
+				this.msg = "Lobby &e1 &3point set, please set one more!";
+				return;
+			}
+			else if (lobby2 == null)
+			{
+				lobby2 = loc;
+				setMsg("Lobby &e2 &3point set, if two points are set, use &e/ua done");
+				return;
+			}
+			else if (arena1 == null)
+			{
+				arena1 = loc;
+				setMsg("Arena &e1 &3point set, please set a second one!");
+				return;
+			}
+			else if (arena2 == null)
+			{
+				arena2 = loc;
+				setMsg("Arena &e2 &3point set, if two points are set, use &e/ua done");
+				return;
+			}
+		}
+
+		if (lobbyREDspawn == null)
+		{
+			lobbyREDspawn = loc;
+			setMsg("Red Team Lobby point set");
+			if (amtLobbys > 1)
+			{
+				setMsg(getMsg() + ", please set a second one for the BLU team");
+			}
+			else
+			{
+				setMsg(getMsg() + (", if the lobby points are done, use &e/ua done"));
+			}
+
+			return;
+		}
+		if (lobbyBLUspawn == null)
+		{
+			if (amtLobbys > 1)
+			{
+				setMsg("BLUE team lobby point set!, if the lobby points are done, use &e/ua done");
+				lobbyBLUspawn = loc;
+
+				return;
+			}
+		}
+		if (step.contains("ArenaSpawn"))
+		{
+			if (team1spawn == null)
+			{
+				team1spawn = loc;
+				setMsg("RED spawn point set");
+				if (amtSpawnpoints > 1)
 				{
-					setMsg(getMsg() + ", please set a second one for the BLU team");
+					setMsg(getMsg() + ", please set a second one for the BLUE team");
 				}
 				else
 				{
-					setMsg(getMsg() + (", if the lobby points are done, use &e/ua done"));
+					setMsg(getMsg() + (", if the spawn points are done, use &e/ua done"));
 				}
 
 				return;
 			}
-			if (lobbyBLUspawn == null)
+			if (team2spawn == null)
 			{
-				if (amtLobbys > 1)
+				if (amtSpawnpoints > 1)
 				{
-					setMsg("BLUE team lobby point set!, if the lobby points are done, use &e/ua done");
-					lobbyBLUspawn = loc;
-
+					team2spawn = loc;
+					setMsg("BLUE spawn point set!, if the spawn points are done, use &e/ua done");
 					return;
 				}
 			}
-			if (step.contains("ArenaSpawn"))
-			{
-				if (team1spawn == null)
-				{
-					team1spawn = loc;
-					setMsg("RED spawn point set");
-					if (amtSpawnpoints > 1)
-					{
-						setMsg(getMsg() + ", please set a second one for the BLUE team");
-					}
-					else
-					{
-						setMsg(getMsg() + (", if the spawn points are done, use &e/ua done"));
-					}
-
-					return;
-				}
-				if (team2spawn == null)
-				{
-					if (amtSpawnpoints > 1)
-					{
-						team2spawn = loc;
-						setMsg("BLUE spawn point set!, if the spawn points are done, use &e/ua done");
-						return;
-					}
-				}
-			}
-			if (step.equalsIgnoreCase("playerspawn"))
-			{
-				this.spawns.add(player.getLocation());
-				sendMessage("&3Added a player spawn!");
-				return;
-			}
-			if (step.equalsIgnoreCase("spleefzone"))
+		}
+		if (step.equalsIgnoreCase("playerspawn"))
+		{
+			this.spawns.add(player.getLocation());
+			sendMessage("&3Added a player spawn!");
+			return;
+		}
+		if (step.equalsIgnoreCase("spleefzone"))
+		{
+			this.flags.add(player.getLocation());
+			sendMessage("&3Added a spleefzone!");
+			return;
+		}
+		if (step.equalsIgnoreCase("outzone"))
+		{
+			this.flags.add(player.getLocation());
+			sendMessage("&3Added an outzone location!");
+			return;
+		}
+		if (step.equalsIgnoreCase("kothflag"))
+		{
+			if (flags.size() == 0)
 			{
 				this.flags.add(player.getLocation());
-				sendMessage("&3Added a spleefzone!");
+				sendMessage("&3Added the flag point!");
+				setMsg("please type &e/ua done");
 				return;
 			}
-			if (step.equalsIgnoreCase("outzone"))
+		}
+		if (step.equalsIgnoreCase("MobSpawn"))
+		{
+			this.spawns.add(player.getLocation());
+			sendMessage("&3Added mob spawn!");
+			return;
+		}
+		if (step.equalsIgnoreCase("flagspawn"))
+		{
+			if (arenaType.getName().equalsIgnoreCase("bomb") || arenaType.getName().equalsIgnoreCase("ctf"))
 			{
-				this.flags.add(player.getLocation());
-				sendMessage("&3Added an outzone location!");
-				return;
-			}
-			if (step.equalsIgnoreCase("kothflag"))
-			{
-				if (flags.size() == 0)
-				{
-					this.flags.add(player.getLocation());
-					sendMessage("&3Added the flag point!");
-					setMsg("please type &e/ua done");
-					return;
-				}
-			}
-			if (step.equalsIgnoreCase("MobSpawn"))
-			{
-				this.spawns.add(player.getLocation());
-				sendMessage("&3Added mob spawn!");
-				return;
-			}
-			if (step.equalsIgnoreCase("flagspawn"))
-			{
-				if (arenaType.getName().equalsIgnoreCase("bomb") || arenaType.getName().equalsIgnoreCase("ctf"))
-				{
-					if (flags.size() < 2)
-					{
-						this.flags.add(player.getLocation());
-						sendMessage("&3Added a flag spawn!");
-					}
-					else
-					{
-						sendMessage("&3Already have &e2 &3flags!");
-					}
-				}
-				else
+				if (flags.size() < 2)
 				{
 					this.flags.add(player.getLocation());
 					sendMessage("&3Added a flag spawn!");
 				}
-				return;
+				else
+				{
+					sendMessage("&3Already have &e2 &3flags!");
+				}
 			}
+			else
+			{
+				this.flags.add(player.getLocation());
+				sendMessage("&3Added a flag spawn!");
+			}
+			return;
 		}
 	}
 

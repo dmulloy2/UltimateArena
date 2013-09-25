@@ -18,6 +18,7 @@ package net.dmulloy2.ultimatearena;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -62,6 +63,7 @@ import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.LogHandler;
 import net.dmulloy2.ultimatearena.handlers.PermissionHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
+import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
@@ -87,11 +89,14 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 /**
  * @author dmulloy2
@@ -109,8 +114,9 @@ public class UltimateArena extends JavaPlugin
 	private @Getter SignHandler signHandler;
 	private @Getter LogHandler logHandler;
 
-//  TODO WorldEdit integration
-//	private @Getter WorldEditPlugin worldEdit;
+	// WorldEdit
+	private @Getter WorldEditPlugin worldEdit;
+	private @Getter WorldEditHandler worldEditHandler;
 	
 	// Lists
 	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
@@ -144,6 +150,10 @@ public class UltimateArena extends JavaPlugin
 		// Dependencies
 		if (! checkDependencies())
 			return;
+		
+		hookIntoWorldEdit();
+		
+		worldEditHandler = new WorldEditHandler(this);
 		
 		// IO Stuff
 		checkDirectories();
@@ -192,7 +202,7 @@ public class UltimateArena extends JavaPlugin
 		checkVault(pm);
 
 		// Load Files
-		loadFiles(false);
+		loadFiles();
 		
 		// Arena Updater
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
@@ -255,27 +265,60 @@ public class UltimateArena extends JavaPlugin
 		debug("Broadcasted message: {0}", broadcast);
 	}
 
-	public void loadFiles(boolean alreadyTried)
+//  This method can be normal now, since we fixed multiverse shit.
+//	public void loadFiles(boolean alreadyTried)
+//	{
+//		if (getServer().getWorlds().size() <= 1 && ! alreadyTried)
+//		{
+//			outConsole("Delaying the loading of files until all worlds have loaded.");
+//
+//			new BukkitRunnable()
+//			{
+//				@Override
+//				public void run()
+//				{
+//					loadFiles(true);
+//				}
+//			}.runTaskLater(this, 10L);
+//		}
+//		else
+//		{
+//			loadClasses();
+//			loadConfigs();
+//			loadArenas();
+//			loadSigns();
+//		}
+//	}
+	
+	/** 
+	 * Loads all files.
+	 */
+	public void loadFiles()
 	{
-		if (getServer().getWorlds().size() <= 1 && ! alreadyTried)
-		{
-			outConsole("Delaying the loading of files until all worlds have loaded.");
+		loadClasses();
+		loadConfigs();
+		loadArenas();
+		loadSigns();
+	}
 
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					loadFiles(true);
-				}
-			}.runTaskLater(this, 10L);
-		}
-		else
+	/**
+	 * Basic reload method.
+	 */
+	public void reload()
+	{
+		loadedArenas.clear();
+		configs.clear();
+		classes.clear();
+		
+		reloadConfig();
+		
+		loadClasses();
+		loadConfigs();
+		loadArenas();
+		
+		for (Arena a : Collections.unmodifiableList(activeArenas))
 		{
-			loadClasses();
-			loadConfigs();
-			loadArenas();
-			loadSigns();
+			a.reloadConfig();
 		}
 	}
 
@@ -297,19 +340,27 @@ public class UltimateArena extends JavaPlugin
 			return false;
 		}
 
-//		if (pm.isPluginEnabled("WorldEdit"))
-//		{
-//			Plugin plugin = pm.getPlugin("WorldEdit");
-//			if (plugin instanceof WorldEditPlugin)
-//			{
-//				worldEdit = (WorldEditPlugin) plugin;
-//				
-//				outConsole("Integration with WorldEdit successful!");
-//			}
-//		}
-//		
-//		outConsole(Level.WARNING, "Could not hook into WorldEdit!");
 		return true;
+	}
+	
+	public boolean hookIntoWorldEdit()
+	{
+		PluginManager pm = getServer().getPluginManager();
+		
+		if (pm.isPluginEnabled("WorldEdit"))
+		{
+			Plugin plugin = pm.getPlugin("WorldEdit");
+			if (plugin instanceof WorldEditPlugin)
+			{
+				worldEdit = (WorldEditPlugin) plugin;
+				
+				outConsole("Integration with WorldEdit successful!");
+				return true;
+			}
+		}
+		
+		outConsole(Level.WARNING, "Could not hook into WorldEdit!");
+		return false;
 	}
 
 	// Create Directories

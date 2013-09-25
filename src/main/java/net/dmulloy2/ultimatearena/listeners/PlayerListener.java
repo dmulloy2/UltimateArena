@@ -11,7 +11,6 @@ import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -287,7 +286,7 @@ public class PlayerListener implements Listener
 					if (a.getSpawn(apl) != null)
 					{
 						event.setRespawnLocation(a.getSpawn(apl));
-						a.spawn(pl, false);
+						a.spawn(pl);
 					}
 				}
 			}
@@ -299,10 +298,11 @@ public class PlayerListener implements Listener
 	{
 		if (! event.isCancelled())
 		{
-			// If they're the same location, do nothing
-			if (Util.checkLocation(event.getFrom(), event.getTo()))
+			// If they didnt move, don't do anything.
+			if (event.getFrom().getBlockX() == event.getTo().getBlockX() &&
+					event.getFrom().getBlockZ() == event.getTo().getBlockY())
 				return;
-			
+
 			Player player = event.getPlayer();
 			
 			for (int i = 0; i < plugin.getWaiting().size(); i++)
@@ -332,14 +332,11 @@ public class PlayerListener implements Listener
 			{
 				if (! plugin.isInArena(event.getTo()))
 				{
-					plugin.getArena(player).spawn(player, false);
+					plugin.getArena(player).spawn(player);
 				}
 				else
 				{
 					event.setCancelled(true);
-					
-					ArenaPlayer ap = plugin.getArenaPlayer(player);
-					ap.setAmtKicked(ap.getAmtKicked() + 1);
 				}
 			}
 		}

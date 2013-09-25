@@ -3,8 +3,6 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.Permission;
 
-import org.bukkit.plugin.PluginManager;
-
 /**
  * @author dmulloy2
  */
@@ -25,16 +23,12 @@ public class CmdReload extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
+		long start = System.currentTimeMillis();
+		
 		sendMessage("&aReloading UltimateArena...");
 
-		long start = System.currentTimeMillis();
+		plugin.reload();
 
-		PluginManager pm = plugin.getServer().getPluginManager();
-		pm.disablePlugin(plugin);
-		pm.enablePlugin(plugin);
-
-		long finish = System.currentTimeMillis();
-
-		sendMessage("&aReload Complete! Took {0} ms!", finish - start);
+		sendMessage("&aReload Complete! Took {0} ms!", System.currentTimeMillis() - start);
 	}
 }
