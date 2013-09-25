@@ -101,18 +101,16 @@ public class ArenaPlayer
 			player.getInventory().setHelmet(itemStack);
 		}
 	}
-
+	
 	/**
 	 * Gives the player an item
 	 * 
-	 * @param slot
-	 *            - Slot to put the item in
 	 * @param stack
 	 *            - {@link ItemStack} to give the player
 	 */
-	public void giveItem(int slot, ItemStack stack)
+	public void giveItem(ItemStack stack)
 	{
-		player.getInventory().setItem(slot, stack);
+		InventoryHelper.addItem(player, stack);
 	}
 
 	/**
@@ -160,6 +158,8 @@ public class ArenaPlayer
 	public void clearInventory()
 	{
 		PlayerInventory inv = player.getInventory();
+		
+		player.closeInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -225,7 +225,7 @@ public class ArenaPlayer
 			giveArmor(0, new ItemStack(Material.IRON_CHESTPLATE));
 			giveArmor(1, new ItemStack(Material.IRON_LEGGINGS));
 			giveArmor(2, new ItemStack(Material.IRON_BOOTS));
-			giveItem(0, new ItemStack(Material.DIAMOND_SWORD));
+			giveItem(new ItemStack(Material.DIAMOND_SWORD));
 			return;
 		}
 
@@ -259,7 +259,7 @@ public class ArenaPlayer
 		for (ItemStack weapon : mclass.getWeapons())
 		{
 			if (weapon != null)
-				InventoryHelper.addItem(player, weapon);
+				giveItem(weapon);
 		}
 
 		this.changeClassOnRespawn = false;
