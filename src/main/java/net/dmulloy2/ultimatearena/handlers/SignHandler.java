@@ -111,7 +111,7 @@ public class SignHandler
 
 			String path = "signs." + sign.getId() + ".";
 
-			fc.set(path + "name", sign.getArena());
+			fc.set(path + "name", sign.getArena().getArenaName());
 
 			Location location = sign.getLocation();
 			String locPath = path + "location.";
