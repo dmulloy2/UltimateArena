@@ -107,10 +107,10 @@ public class HUNGERArena extends Arena
 
 				if (getStartingAmount() > 1)
 				{
-					List<ArenaPlayer> arenaPlayers = getValidPlayers();
-					for (int i = 0; i < arenaPlayers.size(); i++)
+					List<ArenaPlayer> validPlayers = getValidPlayers();
+					if (! validPlayers.isEmpty())
 					{
-						this.winner = arenaPlayers.get(i);
+						this.winner = validPlayers.get(0);
 					}
 				}
 

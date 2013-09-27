@@ -58,7 +58,7 @@ public class INFECTArena extends PVPArena
 		}
 	}
 
-// Basically, zombies are no longer helpless.
+//  Basically, zombies are no longer helpless.
 //	@Override
 //	public void onSpawn(ArenaPlayer apl)
 //	{

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Data;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.events.UltimateArenaDeathEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
@@ -45,12 +47,14 @@ import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 /**
- * Base Data Container for an arena. This can be extended for specific arena
- * types.
+ * Base Data Container for an arena. 
+ * <p>
+ * This can be extended for specific arena types.
  * 
  * @author dmulloy2
  */
 
+@Data
 public abstract class Arena
 {
 	public static enum Mode
@@ -61,40 +65,41 @@ public abstract class Arena
 	protected List<ArenaPlayer> arenaPlayers = new ArrayList<ArenaPlayer>();
 	protected List<ArenaSpawn> spawns = new ArrayList<ArenaSpawn>();
 	protected List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
-
-	protected int startingAmount = 0;
+	
 	protected int broadcastTimer = 45;
 	protected int winningTeam = 999;
-	protected int announced = 0;
+	protected int maxPoints = 60;
 	protected int maxDeaths = 1;
 	protected int maxWave = 15;
-	protected int wave = 0;
 
+	protected int startingAmount;
 	protected int maxGameTime;
 	protected int startTimer;
 	protected int gameTimer;
 	protected int team1size;
 	protected int team2size;
+	protected int announced;
+	protected int wave;
 
-	protected boolean allowTeamKilling = false;
-	protected boolean pauseStartTimer = false;
-	protected boolean forceStop = false;
-	protected boolean stopped = false;
-	protected boolean start = false;
+	protected boolean allowTeamKilling;
+	protected boolean pauseStartTimer;
+	protected boolean forceStop;
+	protected boolean stopped;
+	protected boolean start;
 
 	protected boolean updatedTeams;
 	protected boolean disabled;
 
 	protected Mode gameMode = Mode.DISABLED;
 
-	protected World world;
+	protected final World world;
 
 	protected FieldType type;
 	protected String name;
 
 	protected final UltimateArena plugin;
+	protected final ArenaZone az;
 	protected ArenaConfig config;
-	protected ArenaZone az;
 
 	/**
 	 * Creates a new Arena based around an {@link ArenaZone}
@@ -107,9 +112,9 @@ public abstract class Arena
 		this.az = az;
 		this.plugin = az.getPlugin();
 		this.name = az.getArenaName();
+		this.type = az.getType();
 		this.world = az.getWorld();
 		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
-		this.plugin.setArenasPlayed(plugin.getArenasPlayed() + 1);
 
 		if (maxDeaths < 1)
 		{
@@ -134,6 +139,7 @@ public abstract class Arena
 			this.maxDeaths = config.getMaxDeaths();
 			this.allowTeamKilling = config.isAllowTeamKilling();
 			this.maxWave = config.getMaxWave();
+			this.maxPoints = config.getMaxPoints();
 
 			if (maxDeaths < 1)
 			{
@@ -143,7 +149,9 @@ public abstract class Arena
 	}
 
 	/**
-	 * Adds a player to an {@link Arena}. Should not be overriden.
+	 * Adds a player to an {@link Arena}.
+	 * <p>
+	 * Should not be overriden.
 	 * 
 	 * @param player
 	 *            - {@link Player} to add to an arena
@@ -302,6 +310,12 @@ public abstract class Arena
 
 	/**
 	 * Gets the player's arena player instance.
+	 * <p>
+	 * Every player who has joined this arena will have an ArenaPlayer instance.
+	 * It is important to note, however, that players who are out will still have
+	 * arena player instances until the arena concludes.
+	 * Use {@link #checkValid(ArenaPlayer)} to make sure the player is actually in
+	 * the arena.
 	 * 
 	 * @param p
 	 *            - Player instance
@@ -336,8 +350,9 @@ public abstract class Arena
 	}
 
 	/**
-	 * Gets the spawn for an {@link ArenaPlayer}. Will return null if used by
-	 * another {@link Arena}.
+	 * Gets the spawn for an {@link ArenaPlayer}.
+	 * <p>
+	 * Will return null under certain circumstances.
 	 * 
 	 * @param ap
 	 *            - {@link ArenaPlayer} instance
@@ -354,7 +369,7 @@ public abstract class Arena
 		}
 		else
 		{
-			loc = getArenaZone().getTeam1spawn();
+			loc = az.getTeam1spawn();
 			if (ap.getTeam() == 2)
 				loc = az.getTeam2spawn();
 		}
@@ -363,7 +378,9 @@ public abstract class Arena
 	}
 
 	/**
-	 * Spawns a player in an {@link Arena}. This should not be overriden.
+	 * Spawns a player in an {@link Arena}.
+	 * <p>
+	 * This should not be overriden.
 	 * 
 	 * @param name
 	 *            - Player to spawn
@@ -398,6 +415,12 @@ public abstract class Arena
 		}
 	}
 	
+	/**
+	 * Spawns an {@link ArenaPlayer} into the lobby
+	 * 
+	 * @param ap 
+	 *            - {@link ArenaPlayer} to spawn
+	 */
 	public final void spawnLobby(ArenaPlayer ap)
 	{
 		Location loc = getSpawn(ap);
@@ -473,7 +496,7 @@ public abstract class Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && ap.canReward())
+			if (ap != null && ap.isCanReward())
 			{
 				if (ap.getTeam() == team || team == -1)
 				{
@@ -554,7 +577,7 @@ public abstract class Arena
 	 */
 	public final boolean isEmpty()
 	{
-		return (isInGame() && getActivePlayers() <= 1);
+		return isInGame() && getActivePlayers() <= 1;
 	}
 
 	/**
@@ -863,7 +886,7 @@ public abstract class Arena
 		ap.clearInventory();
 		ap.returnInventory();
 
-		plugin.removePotions(ap.getPlayer());
+		ap.clearPotionEffects();
 
 		teleport(ap.getPlayer(), ap.getSpawnBack());
 
@@ -890,7 +913,6 @@ public abstract class Arena
 	 */
 	public void onStart()
 	{
-		this.startingAmount = getActivePlayers();
 	}
 
 	/**
@@ -908,7 +930,9 @@ public abstract class Arena
 	}
 
 	/**
-	 * Checks timers
+	 * Basic timer checker.
+	 * <p>
+	 * Should not be overriden.
 	 */
 	public final void checkTimers()
 	{
@@ -954,7 +978,9 @@ public abstract class Arena
 	}
 
 	/**
-	 * Starts the arena. Should not be overriden.
+	 * Starts the arena. 
+	 * <p>
+	 * Should not be overriden.
 	 */
 	public final void start()
 	{
@@ -1049,13 +1075,13 @@ public abstract class Arena
 					}
 				}
 
-/*				// Make sure they are still in the Arena
-				if (!plugin.isInArena(ap.getPlayer().getLocation()))
-				{
-					spawn(ap.getPlayer(), false);
-					ap.setAmtKicked(ap.getAmtKicked() + 1);
-				}
-*/
+//				Removed in favor of active updating (see listener)
+//				if (!plugin.isInArena(ap.getPlayer().getLocation()))
+//				{
+//					spawn(ap.getPlayer(), false);
+//					ap.setAmtKicked(ap.getAmtKicked() + 1);
+//				}
+
 				// Timer Stuff
 				if (!isPauseStartTimer())
 				{
@@ -1189,46 +1215,6 @@ public abstract class Arena
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
-	public final String getName()
-	{
-		return name;
-	}
-
-	public final int getStartingAmount()
-	{
-		return startingAmount;
-	}
-
-	public final void setStartingAmount(int startingAmount)
-	{
-		this.startingAmount = startingAmount;
-	}
-
-	public final boolean isForceStop()
-	{
-		return forceStop;
-	}
-
-	public final void setForceStop(boolean forceStop)
-	{
-		this.forceStop = forceStop;
-	}
-
-	public final List<ArenaPlayer> getArenaPlayers()
-	{
-		return arenaPlayers;
-	}
-
-	public final int getStartTimer()
-	{
-		return startTimer;
-	}
-
-	public final ArenaZone getArenaZone()
-	{
-		return az;
-	}
-
 	public final int getActivePlayers()
 	{
 		int amt = 0;
@@ -1241,144 +1227,14 @@ public abstract class Arena
 		return amt;
 	}
 
-	public final boolean isDisabled()
-	{
-		return disabled;
-	}
-
-	public final void setDisabled(boolean disabled)
-	{
-		this.disabled = disabled;
-	}
-
-	public final FieldType getType()
-	{
-		return type;
-	}
-
-	public final int getGameTimer()
-	{
-		return gameTimer;
-	}
-
-	public final int getMaxGameTime()
-	{
-		return maxGameTime;
-	}
-
-	public final int getMaxDeaths()
-	{
-		return maxDeaths;
-	}
-
-	public final void setMaxDeaths(int maxDeaths)
-	{
-		this.maxDeaths = maxDeaths;
-	}
-
-	public final boolean isUpdatedTeams()
-	{
-		return updatedTeams;
-	}
-
-	public final void setUpdatedTeams(boolean updatedTeams)
-	{
-		this.updatedTeams = updatedTeams;
-	}
-
-	public final List<ArenaFlag> getFlags()
-	{
-		return flags;
-	}
-
-	public final void setFlags(List<ArenaFlag> flags)
-	{
-		this.flags = flags;
-	}
-
-	public final int getWinningTeam()
-	{
-		return winningTeam;
-	}
-
-	public final boolean isStopped()
-	{
-		return stopped;
-	}
-
-	public final void setStopped(boolean stopped)
-	{
-		this.stopped = stopped;
-	}
-
-	public final boolean isAllowTeamKilling()
-	{
-		return allowTeamKilling;
-	}
-
-	public final void setAllowTeamKilling(boolean allowTeamKilling)
-	{
-		this.allowTeamKilling = allowTeamKilling;
-	}
-
-	public final List<ArenaSpawn> getSpawns()
-	{
-		return spawns;
-	}
-
-	public final void setSpawns(List<ArenaSpawn> spawns)
-	{
-		this.spawns = spawns;
-	}
-
-	public final World getWorld()
-	{
-		return world;
-	}
-
-	public final int getWave()
-	{
-		return wave;
-	}
-
-	public final int getMaxWave()
-	{
-		return maxWave;
-	}
-
-	public final int getTeam1size()
-	{
-		return team1size;
-	}
-
-	public final void setTeam1size(int team1size)
-	{
-		this.team1size = team1size;
-	}
-
-	public final boolean isPauseStartTimer()
-	{
-		return pauseStartTimer;
-	}
-
-	public final void setPauseStartTimer(boolean pauseStartTimer)
-	{
-		this.pauseStartTimer = pauseStartTimer;
-	}
-
-	public final void setType(FieldType type)
-	{
-		this.type = type;
-	}
-
 	public final boolean isInGame()
 	{
-		return (startTimer < 1 && gameTimer > 0);
+		return startTimer < 1 && gameTimer > 0;
 	}
 
 	public final boolean isInLobby()
 	{
-		return (startTimer > 1);
+		return startTimer > 1;
 	}
 
 	public List<String> buildLeaderboard(Player player)
@@ -1445,11 +1301,6 @@ public abstract class Arena
 		}
 	}
 
-	public final Mode getGameMode()
-	{
-		return gameMode;
-	}
-
 	public final void updateSigns()
 	{
 		plugin.getSignHandler().updateSigns();
@@ -1471,6 +1322,12 @@ public abstract class Arena
 		}
 	}
 
+	/**
+	 * Checks if an {@link ArenaPlayer} is active in the arena.
+	 * 
+	 * @param ap - {@link ArenaPlayer} to check
+	 * @return Whether or not the player is active
+	 */
 	public final boolean checkValid(ArenaPlayer ap)
 	{
 		return ap != null && ! ap.isOut();

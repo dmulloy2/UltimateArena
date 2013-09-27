@@ -51,23 +51,23 @@ public class BombFlag extends ArenaFlag
 					Util.playEffect(Effect.EXTINGUISH, getLoc(), 4);
 					
 					BOMBArena ba = null;
-					if (getArena() instanceof BOMBArena)
+					if (arena instanceof BOMBArena)
 					{
-						ba = (BOMBArena) getArena();
+						ba = (BOMBArena) arena;
 					}
 
 					if (ba != null)
 					{
 						int amte = 0;
-						if (ba.bomb1.isExploded())
+						if (ba.getBomb1().isExploded())
 							amte++;
-						if (ba.bomb2.isExploded())
+						if (ba.getBomb2().isExploded())
 							amte++;
 
 						if (amte == 0)
-							arena.killAllNear(getLoc(), 12);
+							arena.killAllNear(loc, 12);
 					}
-					
+
 					this.fused = false;
 					this.exploded = true;
 					
@@ -112,12 +112,12 @@ public class BombFlag extends ArenaFlag
 					{
 						// team 1 is fusing
 						fuser++;
-						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", getBnum(), fuser);
+						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", bnum, fuser);
 						if (fuser > 10)
 						{
 							fuser = 0;
 							fused = true;
-							arena.tellPlayers("&3Bomb &e{0} &3is now &efused&3!", getBnum());
+							arena.tellPlayers("&3Bomb &e{0} &3is now &efused&3!", bnum);
 						}
 					}
 				}
@@ -127,26 +127,21 @@ public class BombFlag extends ArenaFlag
 					if (fused)
 					{
 						fuser++;
-						capturer.sendMessage("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", getBnum(), fuser);
+						capturer.sendMessage("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", bnum, fuser);
 						if (fuser > 10)
 						{
 							fuser = 0;
 							fused = false;
 							timer = 45;
-							arena.tellPlayers("&3Bomb &e{0} &3is now &edefused&3!", getBnum());
+							arena.tellPlayers("&3Bomb &e{0} &3is now &edefused&3!", bnum);
 						}
 					}
 				}
 			}
 		}
 	}
-
-	public int getBnum()
-	{
-		return bnum;
-	}
-
-	public void setBnum(int bnum)
+	
+	public void setBombNumber(int bnum)
 	{
 		this.bnum = bnum;
 	}

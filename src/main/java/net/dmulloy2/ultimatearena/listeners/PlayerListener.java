@@ -61,7 +61,7 @@ public class PlayerListener implements Listener
 
 	public void onPlayerDisconnect(Player player)
 	{
-		if (plugin.isPlayerCreatingArena(player))
+		if (plugin.isCreatingArena(player))
 		{
 			plugin.debug("Player {0} left the game, stopping the creation of an arena", player.getName());
 			plugin.getMakingArena().remove(plugin.getArenaCreator(player));
@@ -355,7 +355,9 @@ public class PlayerListener implements Listener
 					Arena a = plugin.getArena(player);
 					if (a.isInLobby())
 					{
-						event.setFoodLevel(20);
+						// Prevent food level change
+						player.setFoodLevel(20);
+						event.setCancelled(true);
 					}
 				}
 			}
@@ -390,9 +392,7 @@ public class PlayerListener implements Listener
 			if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 			{
 				String cmd = event.getMessage().toLowerCase();
-
-				String[] check = cmd.split(" ");
-				if (! cmd.contains("/ua") && plugin.isInArena(player) && ! plugin.getWhiteListedCommands().isAllowed(check))
+				if (! cmd.contains("/ua") && plugin.isInArena(player) && ! plugin.isWhitelistedCommand(cmd))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));

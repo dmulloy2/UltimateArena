@@ -63,7 +63,7 @@ public class CTFFlagBase extends FlagBase
 		for (int i = 0; i < arenaplayers.size(); i++)
 		{
 			ArenaPlayer a = arenaplayers.get(i);
-			if (!a.isOut() && a.getPlayer().isOnline() && !a.getPlayer().isDead())
+			if (arena.checkValid(a) && a.getPlayer().isOnline() && ! a.getPlayer().isDead())
 			{
 				if (a.getTeam() == team)
 				{
@@ -84,7 +84,7 @@ public class CTFFlagBase extends FlagBase
 							for (int ii = 0; ii < arenaplayers.size(); ii++)
 							{
 								ArenaPlayer ap = arenaplayers.get(ii);
-								if (!ap.isOut())
+								if (arena.checkValid(ap))
 								{
 									if (ap.getTeam() == a.getTeam())
 									{
@@ -100,14 +100,16 @@ public class CTFFlagBase extends FlagBase
 
 							if (team == 1)
 							{
-								ctf.redcap++;
-								getArena().tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.redcap);
+								ctf.setRedCap(ctf.getRedCap() + 1);
+								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.getRedCap());
 							}
+
 							if (team == 2)
 							{
-								ctf.bluecap++;
-								getArena().tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.bluecap);
+								ctf.setBlueCap(ctf.getBlueCap());
+								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.getBlueCap());
 							}
+
 							return;
 						}
 					}
@@ -119,9 +121,9 @@ public class CTFFlagBase extends FlagBase
 	public void initialize()
 	{
 		if (team == 1)
-			this.enemyflag = ctf.flagblue.getFlag();
+			this.enemyflag = ctf.getBlueFlag().getFlag();
 		if (team == 2)
-			this.enemyflag = ctf.flagred.getFlag();
+			this.enemyflag = ctf.getRedFlag().getFlag();
 	}
 
 	public CTFFlag getFlag()

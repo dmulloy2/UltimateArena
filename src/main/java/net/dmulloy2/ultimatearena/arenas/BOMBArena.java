@@ -11,9 +11,10 @@ import net.dmulloy2.ultimatearena.types.FieldType;
 
 public class BOMBArena extends Arena
 {
-	public int REDTEAMPOWER = 100;
-	public BombFlag bomb1;
-	public BombFlag bomb2;
+	private int redTeamPower;
+	
+	private BombFlag bomb1;
+	private BombFlag bomb2;
 
 	public BOMBArena(ArenaZone az)
 	{
@@ -26,22 +27,22 @@ public class BOMBArena extends Arena
 
 		bomb1 = new BombFlag(this, az.getFlags().get(0), plugin);
 		bomb2 = new BombFlag(this, az.getFlags().get(1), plugin);
-		bomb1.setBnum(1);
-		bomb2.setBnum(2);
+		bomb1.setBombNumber(1);
+		bomb2.setBombNumber(2);
 	}
 
 	@Override
 	public void onStart()
 	{
 		super.onStart();
-		this.REDTEAMPOWER = getActivePlayers() * 3;
-		if (REDTEAMPOWER < 10)
+		this.redTeamPower = getActivePlayers() * 3;
+		if (redTeamPower < 10)
 		{
-			REDTEAMPOWER = 10;
+			this.redTeamPower = 10;
 		}
-		if (REDTEAMPOWER > 150)
+		if (redTeamPower > 150)
 		{
-			REDTEAMPOWER = 150;
+			this.redTeamPower = 150;
 		}
 	}
 
@@ -59,7 +60,7 @@ public class BOMBArena extends Arena
 
 		if (pl.getTeam() == 1)
 		{
-			REDTEAMPOWER--;
+			redTeamPower--;
 			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
@@ -67,11 +68,11 @@ public class BOMBArena extends Arena
 				{
 					if (apl.getTeam() == 1)
 					{
-						apl.sendMessage("&cYour power is now: &6" + REDTEAMPOWER);
+						apl.sendMessage("&cYour power is now: &6" + redTeamPower);
 					}
 					else
 					{
-						apl.sendMessage("&cThe other team's power is now: &6" + REDTEAMPOWER);
+						apl.sendMessage("&cThe other team's power is now: &6" + redTeamPower);
 					}
 				}
 			}
@@ -87,7 +88,7 @@ public class BOMBArena extends Arena
 	@Override
 	public void check()
 	{
-		if (getStartTimer() <= 0)
+		if (startTimer <= 0)
 		{
 			simpleTeamCheck(true);
 		}
@@ -105,7 +106,7 @@ public class BOMBArena extends Arena
 			return;
 		}
 
-		if (REDTEAMPOWER <= 0)
+		if (redTeamPower <= 0)
 		{
 			setWinningTeam(2);
 
@@ -114,5 +115,15 @@ public class BOMBArena extends Arena
 			rewardTeam(2, false);
 			return;
 		}
+	}
+	
+	public BombFlag getBomb1()
+	{
+		return bomb1;
+	}
+	
+	public BombFlag getBomb2()
+	{
+		return bomb2;
 	}
 }

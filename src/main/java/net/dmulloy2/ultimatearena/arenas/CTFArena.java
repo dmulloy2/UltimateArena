@@ -1,5 +1,7 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.flags.CTFFlagBase;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
@@ -12,12 +14,15 @@ import org.bukkit.scheduler.BukkitTask;
  * @author dmulloy2
  */
 
+@Getter
+@Setter
 public class CTFArena extends Arena
 {
-	public CTFFlagBase flagred;
-	public CTFFlagBase flagblue;
-	public int redcap;
-	public int bluecap;
+	private CTFFlagBase redFlag;
+	private CTFFlagBase blueFlag;
+	
+	private int redCap, blueCap;
+
 	private BukkitTask moveTask;
 	private String lastcap;
 
@@ -30,11 +35,11 @@ public class CTFArena extends Arena
 		this.maxGameTime = 60 * 15;
 		this.maxDeaths = 990;
 
-		this.flagred = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
-		this.flagblue = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
+		this.redFlag = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
+		this.blueFlag = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
 
-		flagred.initialize();
-		flagblue.initialize();
+		redFlag.initialize();
+		blueFlag.initialize();
 
 		this.moveTask = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}
@@ -61,12 +66,13 @@ public class CTFArena extends Arena
 			}
 		}
 
-		if (redcap >= 3 || bluecap >= 3)
+		if (redCap >= 3 || blueCap >= 3)
 		{
-			this.setWinningTeam(1);
+			setWinningTeam(1);
+			
 			this.lastcap = "&cRED";
 
-			if (bluecap >= 3)
+			if (blueCap >= 3)
 			{
 				this.setWinningTeam(2);
 				this.lastcap = "&9BLUE";
@@ -76,8 +82,8 @@ public class CTFArena extends Arena
 		}
 		else
 		{
-			flagred.getFlag().tick();
-			flagblue.getFlag().tick();
+			redFlag.getFlag().tick();
+			blueFlag.getFlag().tick();
 		}
 	}
 
@@ -89,7 +95,7 @@ public class CTFArena extends Arena
 
 	public void winGame()
 	{
-		if (redcap >= 3 && bluecap >= 3)
+		if (redCap >= 3 && blueCap >= 3)
 		{
 			setWinningTeam(-1);
 
@@ -107,13 +113,13 @@ public class CTFArena extends Arena
 	@Override
 	public void onStop()
 	{
-		flagred.getFlag().setStopped(true);
-		flagblue.getFlag().setStopped(true);
+		redFlag.getFlag().setStopped(true);
+		blueFlag.getFlag().setStopped(true);
 
-		flagred.getFlag().getReturnto().getBlock().setType(Material.AIR);
-		flagblue.getFlag().getReturnto().getBlock().setType(Material.AIR);
-		flagred.getFlag().despawn();
-		flagblue.getFlag().despawn();
+		redFlag.getFlag().getReturnto().getBlock().setType(Material.AIR);
+		blueFlag.getFlag().getReturnto().getBlock().setType(Material.AIR);
+		redFlag.getFlag().despawn();
+		blueFlag.getFlag().despawn();
 
 		moveTask.cancel();
 		moveTask = null;
@@ -126,8 +132,8 @@ public class CTFArena extends Arena
 		{
 			if (!isStopped())
 			{
-				flagred.checkNear(arenaPlayers);
-				flagblue.checkNear(arenaPlayers);
+				redFlag.checkNear(arenaPlayers);
+				blueFlag.checkNear(arenaPlayers);
 			}
 			else
 			{

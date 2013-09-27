@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 @Getter
 public class ArenaConfig
 {
-	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward;
+	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
 	private boolean allowTeamKilling;
 	private boolean loaded;
@@ -35,7 +35,7 @@ public class ArenaConfig
 	private File file;
 	private final UltimateArena plugin;
 
-	public ArenaConfig(final UltimateArena plugin, String str, File file)
+	public ArenaConfig(UltimateArena plugin, String str, File file)
 	{
 		this.arenaName = str;
 		this.file = file;
@@ -57,6 +57,11 @@ public class ArenaConfig
 			{
 				this.maxWave = fc.getInt("maxWave");
 			}
+			
+			if (arenaName.equalsIgnoreCase("koth"))
+			{
+				this.maxPoints = fc.getInt("maxPoints", 60);
+			}
 
 			this.gameTime = fc.getInt("gameTime");
 			this.lobbyTime = fc.getInt("lobbyTime");
@@ -64,11 +69,11 @@ public class ArenaConfig
 			this.allowTeamKilling = fc.getBoolean("allowTeamKilling");
 			this.cashReward = fc.getInt("cashReward");
 
-			List<String> words = fc.getStringList("rewards");
-			for (String word : words)
+			for (String reward : fc.getStringList("rewards"))
 			{
-				ItemStack stack = ItemUtil.readItem(word);
-				rewards.add(stack);
+				ItemStack stack = ItemUtil.readItem(reward);
+				if (stack != null)
+					rewards.add(stack);
 			}
 		}
 		catch (Exception e)

@@ -61,7 +61,8 @@ public class KothFlag extends ArenaFlag
 				capturer.setPoints(capturer.getPoints() + 1);
 
 				pl.sendMessage(plugin.getPrefix()
-						+ FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(), marena.MAXPOWER));
+						+ FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)",
+								capturer.getPoints(), marena.getMaxPoints()));
 
 				leadChange();
 			}
@@ -70,13 +71,11 @@ public class KothFlag extends ArenaFlag
 
 	private void leadChange()
 	{
-		// Build kills map
-		// TODO: There's probably a better way to do this
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
 		for (int i = 0; i < marena.getArenaPlayers().size(); i++)
 		{
 			ArenaPlayer ap = marena.getArenaPlayers().get(i);
-			if (ap != null && !ap.isOut())
+			if (marena.checkValid(ap))
 			{
 				pointsMap.put(ap.getName(), ap.getPoints());
 			}

@@ -66,7 +66,7 @@ public class SPLEEFArena extends FFAArena
 		Block b = getSpleefGround().getBlockAt(checkx + 1, 0, checkz + 1);
 
 		Material mat = b.getType();
-		if (mat == getArenaZone().getSpecialType())
+		if (mat == az.getSpecialType())
 		{
 			ret = b.getLocation();
 		}
@@ -115,10 +115,10 @@ public class SPLEEFArena extends FFAArena
 			
 			if (getStartingAmount() > 1)
 			{
-				List<ArenaPlayer> arenaPlayers = getValidPlayers();
-				for (int i = 0; i < arenaPlayers.size(); i++)
+				List<ArenaPlayer> validPlayers = getValidPlayers();
+				if (! validPlayers.isEmpty())
 				{
-					this.winner = arenaPlayers.get(i);
+					this.winner = validPlayers.get(0);
 				}
 			}
 			
@@ -135,6 +135,6 @@ public class SPLEEFArena extends FFAArena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellAllPlayers("&e{0} &3has won!", winner.getName());
+			tellAllPlayers("&e{0} &3has won the Spleef tourney at &e{1}", winner.getName(), name);
 	}
 }

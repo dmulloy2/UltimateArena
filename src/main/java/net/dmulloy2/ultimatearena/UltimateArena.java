@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.arenas.CONQUESTArena;
@@ -78,7 +77,6 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.types.WhiteListedCommands;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -93,7 +91,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -126,12 +123,8 @@ public class UltimateArena extends JavaPlugin
 	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	private @Getter List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
+	private @Getter List<String> whitelistedCommands = new ArrayList<String>();
 	private @Getter List<Arena> activeArenas = new ArrayList<Arena>();
-
-	// Whitelisted Commands
-	private @Getter WhiteListedCommands whiteListedCommands = new WhiteListedCommands();
-
-	private @Getter @Setter int arenasPlayed = 0;
 
 	// Global prefix
 	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
@@ -151,7 +144,7 @@ public class UltimateArena extends JavaPlugin
 		if (! checkDependencies())
 			return;
 		
-		hookIntoWorldEdit();
+		setupWorldEditIntegration();
 		
 		worldEditHandler = new WorldEditHandler(this);
 		
@@ -199,11 +192,11 @@ public class UltimateArena extends JavaPlugin
 		pm.registerEvents(new PlayerListener(this), this);
 
 		// Vault
-		checkVault(pm);
+		setupVaultIntegration();
 
 		// Load Files
 		loadFiles();
-		
+
 		// Arena Updater
 		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
 
@@ -322,11 +315,18 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 
+	/**
+	 * Checks the {@link Bukkit} version.
+	 * <p>
+	 * UltimateArena is not compatible below 1.6.
+	 * 
+	 * @return Whether or not the Bukkit version is up-to-date
+	 */
 	public boolean checkDependencies()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		
-		try
+		try 
 		{
 			Class.forName("org.bukkit.entity.Horse");
 		}
@@ -343,7 +343,7 @@ public class UltimateArena extends JavaPlugin
 		return true;
 	}
 	
-	public boolean hookIntoWorldEdit()
+	public void setupWorldEditIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		
@@ -355,12 +355,11 @@ public class UltimateArena extends JavaPlugin
 				worldEdit = (WorldEditPlugin) plugin;
 				
 				outConsole("Integration with WorldEdit successful!");
-				return true;
+				return;
 			}
 		}
 		
 		outConsole(Level.WARNING, "Could not hook into WorldEdit!");
-		return false;
 	}
 
 	// Create Directories
@@ -434,22 +433,20 @@ public class UltimateArena extends JavaPlugin
 	public void loadWhiteListedCommands()
 	{
 		File file = new File(getDataFolder(), "whiteListedCommands.yml");
-		if (!file.exists())
+		if (! file.exists())
 		{
-			outConsole("Generating WhiteListedCommands file!");
+			outConsole("Generating Whitelisted Commands file!");
 			fileHandler.generateWhitelistedCmds();
 		}
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		List<String> whiteListedCommands = fc.getStringList("whiteListedCmds");
-		for (String whiteListed : whiteListedCommands)
+		
+		for (String cmd : fc.getStringList("whiteListedCmds"))
 		{
-			this.whiteListedCommands.addCommand(whiteListed);
-
-			debug("Added whitelisted command: \"{0}\"!", whiteListed);
+			whitelistedCommands.add(cmd);
 		}
 
-		outConsole("Loaded {0} whitelisted commands!", whiteListedCommands.size());
+		debug("Loaded {0} whitelisted commands!", fc.getStringList("whiteListedCmds").size());
 	}
 
 	public boolean loadConfig(String str)
@@ -644,7 +641,7 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 
-		if (isPlayerCreatingArena(player))
+		if (isCreatingArena(player))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou are in the middle of making an arena!"));
 			return;
@@ -920,71 +917,19 @@ public class UltimateArena extends JavaPlugin
 
 		return null;
 	}
-
-	// Arena Creator stuff
-	public void setPoint(Player player)
+	
+	//---- Arena Creation ----//
+	
+	/**
+	 * Attempts to create a new {@link Arena}
+	 * 
+	 * @param player - {@link Player} who is creating the arena
+	 * @param name - Name of the new arena
+	 * @param type - Type of the new arena
+	 */
+	public void createArena(Player player, String name, String type)
 	{
-		ArenaCreator ac = getArenaCreator(player);
-		if (ac != null)
-		{
-			ac.setPoint(player);
-			if (! ac.getMsg().isEmpty())
-			{
-				player.sendMessage(prefix + FormatUtil.format("&3" + ac.getMsg()));
-			}
-		}
-		else
-		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
-		}
-	}
-
-	public void setDone(Player player)
-	{
-		ArenaCreator ac = getArenaCreator(player);
-		if (ac != null)
-		{
-			ac.setDone(player);
-		}
-		else
-		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
-		}
-	}
-
-	public boolean isPlayerCreatingArena(Player player)
-	{
-		return (getArenaCreator(player) != null);
-	}
-
-	public void stopCreatingArena(Player player)
-	{
-		for (int i = 0; i < makingArena.size(); i++)
-		{
-			ArenaCreator ac = makingArena.get(i);
-			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
-			{
-				makingArena.remove(ac);
-				player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
-			}
-		}
-	}
-
-	public ArenaCreator getArenaCreator(Player player)
-	{
-		for (int i = 0; i < makingArena.size(); i++)
-		{
-			ArenaCreator ac = makingArena.get(i);
-			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
-				return ac;
-		}
-
-		return null;
-	}
-
-	public void createField(Player player, String name, String type)
-	{
-		if (isPlayerCreatingArena(player))
+		if (isCreatingArena(player))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou are already creating an arena!"));
 			return;
@@ -1012,11 +957,102 @@ public class UltimateArena extends JavaPlugin
 		ac.setArena(name, type);
 		makingArena.add(ac);
 	}
+	
+	/**
+	 * Returns a player's {@link ArenaCreator} instance
+	 * <p>
+	 * Will return <code>null</code> if the player is not creating an arena.
+	 * 
+	 * @param player - {@link Player} to get {@link ArenaCreator} instance for.
+	 * 
+	 * @return The player's {@link ArenaCreator} instance
+	 */
+	public ArenaCreator getArenaCreator(Player player)
+	{
+		for (ArenaCreator ac : makingArena)
+		{
+			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
+				return ac;
+		}
 
-	// Clear memory
+		return null;
+	}
+	
+	/**
+	 * Returns whether or not a {@link Player} is creating an arena.
+	 * 
+	 * @param player - {@link Player} to check
+	 * @return Whether or not a {@link Player} is creating an arena.
+	 */
+	public boolean isCreatingArena(Player player)
+	{
+		return getArenaCreator(player) != null;
+	}
+	
+	/**
+	 * Sets a point in the arena creation process
+	 * 
+	 * @param player - {@link Player} setting the point
+	 */
+	public void setPoint(Player player)
+	{
+		if (! isCreatingArena(player))
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
+			return;
+		}
+		
+		ArenaCreator ac = getArenaCreator(player);
+		
+		ac.setPoint(player);
+		
+		if (! ac.getMsg().isEmpty())
+		{
+			player.sendMessage(prefix + FormatUtil.format("&3" + ac.getMsg()));
+		}
+	}
+
+	/**
+	 * Finalizes a step in the arena creation process.
+	 * 
+	 * @param player - {@link Player} who is finalizing
+	 */
+	public void setDone(Player player)
+	{
+		if (! isCreatingArena(player))
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
+			return;
+		}
+		
+		ArenaCreator ac = getArenaCreator(player);
+		ac.setDone(player);
+	}
+
+	/**
+	 * Stops the creation of an arena
+	 * 
+	 * @param player - {@link Player} who is stopping
+	 */
+	public void stopCreatingArena(Player player)
+	{
+		for (int i = 0; i < makingArena.size(); i++)
+		{
+			ArenaCreator ac = makingArena.get(i);
+			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
+			{
+				makingArena.remove(ac);
+				player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
+			}
+		}
+	}
+
+	/**
+	 * Clears memory
+	 */
 	public void clearMemory()
 	{
-		whiteListedCommands.clear();
+		whitelistedCommands.clear();
 
 		loadedArenas.clear();
 		activeArenas.clear();
@@ -1026,23 +1062,20 @@ public class UltimateArena extends JavaPlugin
 		classes.clear();
 		configs.clear();
 	}
-
-	// Removes potion effects
-	public void removePotions(Player pl)
+	
+	/**
+	 * Vault {@link Economy} integration
+	 */
+	public void setupVaultIntegration()
 	{
-		for (PotionEffect effect : pl.getActivePotionEffects())
-		{
-			pl.removePotionEffect(effect.getType());
-		}
-	}
-
-	// Vault Stuff
-	private void checkVault(PluginManager pm)
-	{
+		PluginManager pm = getServer().getPluginManager();
 		if (pm.isPluginEnabled("Vault"))
 		{
-			if (setupEconomy())
+			RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+			if (economyProvider != null)
 			{
+				economy = economyProvider.getProvider();
+				
 				outConsole("Enabled economy through {0}!", economy.getName());
 			}
 			else
@@ -1052,19 +1085,11 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 
-	private boolean setupEconomy()
-	{
-		debug("Setting up Vault economy");
-
-		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-		if (economyProvider != null)
-		{
-			this.economy = economyProvider.getProvider();
-		}
-
-		return economy != null;
-	}
-	
+	/**
+	 * Accepts registration from a {@link JavaPlugin}
+	 * 
+	 * @param plugin - {@link JavaPlugin} to accept the registration from
+	 */
 	public void acceptRegistration(JavaPlugin plugin)
 	{
 		outConsole("Accepted API registration from {0}", plugin.getName());
@@ -1072,6 +1097,9 @@ public class UltimateArena extends JavaPlugin
 		pluginsUsingAPI.add(plugin);
 	}
 	
+	/**
+	 * Dumps plugins currently using the UltimateArena API
+	 */
 	public void dumpRegistrations()
 	{
 		if (pluginsUsingAPI.isEmpty())
@@ -1094,8 +1122,45 @@ public class UltimateArena extends JavaPlugin
 	}
 	
 	/**
-	 * Arena Update Task. While I hate  that I have to use it,
-	 * it works.
+	 * Returns whether or not a command is whitelisted
+	 * 
+	 * @param command - Command to check
+	 * @return Whether or not a command is whitelisted
+	 */
+	public boolean isWhitelistedCommand(String command)
+	{
+		for (String cmd : whitelistedCommands)
+		{
+			if (cmd.matches(cmd.contains("/") ? "" : "/" + cmd + ".*"))
+				return true;
+		}
+
+		return false;
+	}
+	
+	/**
+	 * Returns how many arenas have been played
+	 * <p>
+	 * Will return 1 if none have been played
+	 * 
+	 * @return How many arenas have been played
+	 */
+	public int getTotalArenasPlayed()
+	{
+		int ret = 0;
+		
+		for (ArenaZone az : loadedArenas)
+		{
+			ret += az.getTimesPlayed();
+		}
+		
+		return ret > 0 ? ret : 1;
+	}
+
+	/**
+	 * Arena Update Task
+	 * <p>
+	 * While I hate to use it, it works.
 	 */
 	public class ArenaUpdateTask extends BukkitRunnable
 	{

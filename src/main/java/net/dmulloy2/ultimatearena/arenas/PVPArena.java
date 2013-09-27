@@ -1,5 +1,8 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import java.util.List;
+
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
@@ -9,6 +12,8 @@ import net.dmulloy2.ultimatearena.types.FieldType;
 
 public class PVPArena extends Arena
 {
+	private ArenaPlayer winner;
+	
 	public PVPArena(ArenaZone az)
 	{
 		super(az);
@@ -33,6 +38,15 @@ public class PVPArena extends Arena
 			if (!simpleTeamCheck(false))
 			{
 				setWinningTeam(-1);
+				
+				if (getStartingAmount() > 1)
+				{
+					List<ArenaPlayer> validPlayers = getValidPlayers();
+					if (! validPlayers.isEmpty())
+					{
+						this.winner = validPlayers.get(0);
+					}
+				}
 
 				stop();
 
@@ -48,5 +62,12 @@ public class PVPArena extends Arena
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void announceWinner()
+	{
+		if (winner != null)
+			tellAllPlayers("&e{0} &3won the match at &e{1}&3!", winner.getName(), name);
 	}
 }

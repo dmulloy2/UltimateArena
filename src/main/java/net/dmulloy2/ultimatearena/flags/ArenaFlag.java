@@ -38,7 +38,7 @@ public class ArenaFlag extends FlagBase
 	public synchronized void setup()
 	{
 		super.setup();
-		getLoc().getBlock().setType(Material.WOOL);
+		loc.getBlock().setType(Material.WOOL);
 	}
 
 	public void step()
@@ -129,11 +129,11 @@ public class ArenaFlag extends FlagBase
 		}
 
 		int percent = 0;
-		if (getColor() == 14)
+		if (color == 14)
 		{
 			percent = added - 50;
 		}
-		else if (getColor() == 11)
+		else if (color == 11)
 		{
 			percent = Math.abs(added) - 50;
 		}

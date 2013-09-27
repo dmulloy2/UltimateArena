@@ -17,8 +17,8 @@ import org.bukkit.Location;
 
 public class CONQUESTArena extends Arena
 {
-	public int REDTEAMPOWER = 100;
-	public int BLUETEAMPOWER = 100;
+	private int redTeamPower;
+	private int blueTeamPower;
 
 	public CONQUESTArena(ArenaZone az)
 	{
@@ -39,23 +39,23 @@ public class CONQUESTArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.REDTEAMPOWER = getActivePlayers() * 4;
-		this.BLUETEAMPOWER = REDTEAMPOWER;
-		if (REDTEAMPOWER < 4)
+		this.redTeamPower = getActivePlayers() * 4;
+		this.blueTeamPower = redTeamPower;
+		if (redTeamPower < 4)
 		{
-			REDTEAMPOWER = 4;
+			this.redTeamPower = 4;
 		}
-		if (REDTEAMPOWER > 150)
+		if (redTeamPower > 150)
 		{
-			REDTEAMPOWER = 150;
+			this.redTeamPower = 150;
 		}
-		if (BLUETEAMPOWER < 4)
+		if (blueTeamPower < 4)
 		{
-			BLUETEAMPOWER = 4;
+			this.blueTeamPower = 4;
 		}
-		if (BLUETEAMPOWER > 150)
+		if (blueTeamPower > 150)
 		{
-			BLUETEAMPOWER = 150;
+			this.blueTeamPower = 150;
 		}
 	}
 
@@ -139,16 +139,16 @@ public class CONQUESTArena extends Arena
 
 		if (majority == 1)
 		{
-			REDTEAMPOWER--;
+			redTeamPower--;
 		}
 		else if (majority == 2)
 		{
-			BLUETEAMPOWER--;
+			blueTeamPower--;
 		}
 
 		if (pl.getTeam() == 1)
 		{
-			REDTEAMPOWER--;
+			redTeamPower--;
 			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
@@ -156,18 +156,18 @@ public class CONQUESTArena extends Arena
 				{
 					if (apl.getTeam() == 1)
 					{
-						apl.sendMessage("&cYour power is now: &6" + REDTEAMPOWER);
+						apl.sendMessage("&cYour power is now: &6" + redTeamPower);
 					}
 					else
 					{
-						apl.sendMessage("&cThe other team's power is now: &6" + REDTEAMPOWER);
+						apl.sendMessage("&cThe other team's power is now: &6" + redTeamPower);
 					}
 				}
 			}
 		}
 		else if (pl.getTeam() == 2)
 		{
-			BLUETEAMPOWER--;
+			blueTeamPower--;
 			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
 				ArenaPlayer apl = arenaPlayers.get(i);
@@ -175,11 +175,11 @@ public class CONQUESTArena extends Arena
 				{
 					if (apl.getTeam() == 2)
 					{
-						apl.sendMessage("&cYour power is now: &6" + BLUETEAMPOWER);
+						apl.sendMessage("&cYour power is now: &6" + blueTeamPower);
 					}
 					else
 					{
-						apl.sendMessage("&cThe other team's power is now: &6" + BLUETEAMPOWER);
+						apl.sendMessage("&cThe other team's power is now: &6" + blueTeamPower);
 					}
 				}
 			}
@@ -200,14 +200,14 @@ public class CONQUESTArena extends Arena
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
 
-			if (BLUETEAMPOWER <= 0)
+			if (blueTeamPower <= 0)
 			{
 				if (ap.getTeam() == 2)
 				{
 					endPlayer(ap, false);
 				}
 			}
-			else if (REDTEAMPOWER <= 0)
+			else if (redTeamPower <= 0)
 			{
 				if (ap.getTeam() == 1)
 				{
@@ -216,12 +216,12 @@ public class CONQUESTArena extends Arena
 			}
 		}
 
-		if (BLUETEAMPOWER <= 0)
+		if (blueTeamPower <= 0)
 		{
 			setWinningTeam(1);
 		}
 
-		if (REDTEAMPOWER <= 0)
+		if (redTeamPower <= 0)
 		{
 			setWinningTeam(2);
 		}

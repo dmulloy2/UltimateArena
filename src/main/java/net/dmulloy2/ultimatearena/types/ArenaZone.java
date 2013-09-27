@@ -8,7 +8,9 @@ import java.util.logging.Level;
 import lombok.Data;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -144,7 +146,7 @@ public class ArenaZone
 
 	public boolean checkLocation(Location loc)
 	{
-		return (lobby.isInside(loc) || arena.isInside(loc));
+		return lobby.isInside(loc) || arena.isInside(loc);
 	}
 
 	public void save()
@@ -159,11 +161,39 @@ public class ArenaZone
 
 	public boolean canLike(Player player)
 	{
-		return !voted.contains(player.getName());
+		return ! voted.contains(player.getName());
 	}
 
 	public String getName(File file)
 	{
 		return file.getName().replaceAll(".dat", "");
+	}
+	
+	public List<String> getStats()
+	{
+		List<String> lines = new ArrayList<String>();
+		
+		StringBuilder line = new StringBuilder();
+		line.append(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(arenaName)));
+		lines.add(line.toString());
+		
+		// Calculate percentage
+		int total = plugin.getTotalArenasPlayed();
+		int plays = timesPlayed;
+		
+		double percentage = ((double) plays / (double) total) * 100;
+		
+		line = new StringBuilder();
+		line.append(FormatUtil.format("&3Plays: &e{0}&3/&e{1} &3(&e{2}&3)", plays, total, percentage));
+		lines.add(line.toString());
+		
+		// Calculate popularity
+		percentage = ((double) liked / (double) voted.size()) * 100;
+		
+		line = new StringBuilder();
+		line.append(FormatUtil.format("&3Popularity: &e{0}&3/&e{1} &3(&e{2}&3)", liked, disliked, percentage));
+		lines.add(line.toString());
+		
+		return lines;
 	}
 }

@@ -23,7 +23,7 @@ public class CmdStop extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		if (! plugin.isPlayerCreatingArena(player))
+		if (! plugin.isCreatingArena(player))
 		{
 			err("You are not creating an arena!");
 			return;

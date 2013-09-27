@@ -110,13 +110,13 @@ public class CTFFlag
 
 	public void fall()
 	{
-		arena.tellPlayers("&e{0} &3has dropped the &e{1} &3flag!", getRiding().getName(), getFlagType());
-		timer = 15;
-		toloc = getRiding().getLocation();
-		setPickedUp(false);
-		setRiding(null);
+		arena.tellPlayers("&e{0} &3has dropped the &e{1} &3flag!", riding.getName(), flagType);
 
-		myloc = toloc.clone();
+		this.timer = 15;
+		this.toloc = riding.getLocation();
+		this.myloc = toloc.clone();
+		this.pickedUp = false;
+		this.riding = null;
 
 		int count = 0;
 		boolean can = true;
@@ -124,10 +124,10 @@ public class CTFFlag
 		{
 			if (can)
 			{
-				Block BlockUnder = ((myloc.clone()).subtract(0, i, 0)).getBlock();
-				if (BlockUnder != null)
+				Block under = myloc.clone().subtract(0, i, 0).getBlock();
+				if (under != null)
 				{
-					if (BlockUnder.getType().equals(Material.AIR) || BlockUnder.getType().equals(Material.WATER))
+					if (under.getType().equals(Material.AIR) || under.getType().equals(Material.WATER))
 					{
 						count++;
 					}
@@ -139,21 +139,22 @@ public class CTFFlag
 			}
 		}
 
-		toloc = myloc.clone().subtract(0, count, 0);
+		this.toloc = myloc.clone().subtract(0, count, 0);
+
 		setFlag();
 	}
 
-	public void checkNear(List<ArenaPlayer> arenaplayers)
+	public void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
 		if (isStopped())
 			return;
 
-		if (!isPickedUp())
+		if (! isPickedUp())
 		{
-			for (int i = 0; i < arenaplayers.size(); i++)
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
-				ArenaPlayer pl = arenaplayers.get(i);
-				if (pl != null && !pl.isOut())
+				ArenaPlayer pl = arenaPlayers.get(i);
+				if (arena.checkValid(pl))
 				{
 					if (Util.pointDistance(pl.getPlayer().getLocation(), myloc) < 1.75 && pl.getPlayer().getHealth() > 0.0D)
 					{
@@ -165,7 +166,7 @@ public class CTFFlag
 
 							pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
 							pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-							arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", pl.getName(), getFlagType());
+							arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", pl.getName(), flagType);
 							return;
 						}
 						else
@@ -174,8 +175,8 @@ public class CTFFlag
 							{
 								// If the flag is not at its flagstand
 								pl.sendMessage("&aFlag Returned! &c+50 XP");
-								arenaplayers.get(i).setGameXP(arenaplayers.get(i).getGameXP() + 50);
-								arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), getFlagType());
+								pl.setGameXP(pl.getGameXP() + 50);
+								arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), flagType);
 								respawn();
 								return;
 							}
@@ -197,7 +198,8 @@ public class CTFFlag
 				fall();
 			}
 
-			myloc = toloc.clone();
+			this.myloc = toloc.clone();
+
 			setFlag();
 		}
 	}
@@ -217,9 +219,9 @@ public class CTFFlag
 		if (isStopped())
 			return;
 
-		if (!pickedUp)
+		if (! pickedUp)
 		{
-			if (!myloc.equals(getReturnto()))
+			if (! myloc.equals(returnto))
 			{
 				// if the flag is not at its flagstand
 				timer--;
@@ -227,7 +229,7 @@ public class CTFFlag
 				{
 					respawn();
 
-					arena.tellPlayers("&3The &e{0} &3flag has respawned!", getFlagType());
+					arena.tellPlayers("&3The &e{0} &3flag has respawned!", flagType);
 				}
 				else
 				{

@@ -1,7 +1,6 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.types.ArenaStatistics;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 
@@ -30,9 +29,12 @@ public class CmdStats extends UltimateArenaCommand
 		if (az == null)
 		{
 			err("This arena doesn't exist!");
+			return;
 		}
 
-		ArenaStatistics as = new ArenaStatistics(az);
-		as.dumpStats(player);
+		for (String s : az.getStats())
+		{
+			sendMessage(s);
+		}
 	}
 }

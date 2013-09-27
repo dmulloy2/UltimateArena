@@ -25,6 +25,6 @@ public class CmdCreate extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		plugin.createField(player, args[0], args[1]);
+		plugin.createArena(player, args[0], args[1]);
 	}
 }

@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
 
 public class KOTHArena extends Arena
 {
-	public int MAXPOWER;
+	protected int maxPower;
 
 	public KOTHArena(ArenaZone az)
 	{
@@ -38,7 +38,7 @@ public class KOTHArena extends Arena
 		this.maxGameTime = 60 * 20;
 		this.maxDeaths = 900;
 		this.allowTeamKilling = true;
-		this.MAXPOWER = 60;
+		this.maxPower = 60;
 
 		for (int i = 0; i < az.getFlags().size(); i++)
 		{
@@ -74,7 +74,7 @@ public class KOTHArena extends Arena
 	@Override
 	public void reward(ArenaPlayer ap, boolean half)
 	{
-		if (ap.getPoints() >= MAXPOWER)
+		if (ap.getPoints() >= maxPower)
 		{
 			// If you scored at least 60 points
 			super.reward(ap, half);
@@ -101,7 +101,7 @@ public class KOTHArena extends Arena
 			flag.checkNear(arenaPlayers);
 		}
 
-		checkPlayerPoints(MAXPOWER);
+		checkPlayerPoints(maxPower);
 		checkEmpty();
 	}
 

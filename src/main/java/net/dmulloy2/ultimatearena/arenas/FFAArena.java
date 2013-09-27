@@ -107,10 +107,10 @@ public class FFAArena extends Arena
 
 				if (getStartingAmount() > 1)
 				{
-					List<ArenaPlayer> arenaPlayers = getValidPlayers();
-					for (int i = 0; i < arenaPlayers.size(); i++)
+					List<ArenaPlayer> validPlayers = getValidPlayers();
+					if (! validPlayers.isEmpty())
 					{
-						this.winner = arenaPlayers.get(i);
+						this.winner = validPlayers.get(0);
 					}
 				}
 
@@ -132,7 +132,7 @@ public class FFAArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellAllPlayers("&e{0} &3has won!", winner.getName());
+			tellAllPlayers("&e{0} &3won the match at &e{0}", winner.getName(), name);
 	}
 
 	@Override

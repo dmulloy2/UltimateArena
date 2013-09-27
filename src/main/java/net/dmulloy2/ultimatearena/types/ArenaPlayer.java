@@ -2,6 +2,8 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.util.List;
 
+import lombok.Data;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -23,11 +25,18 @@ import com.earth2me.essentials.Kit;
 import com.earth2me.essentials.User;
 
 /**
- * Represents a player inside an {@link Arena}
+ * Represents a player inside an {@link Arena}.
+ * <p>
+ * Every player who has joined this arena will have an ArenaPlayer instance.
+ * It is important to note, however, that players who are out will still have
+ * arena player instances until the arena concludes.
+ * Use {@link Arena#checkValid(ArenaPlayer)} to make sure the player is actually in
+ * the arena.
  * 
  * @author dmulloy2
  */
 
+@Data
 public class ArenaPlayer
 {
 	private int kills;
@@ -49,7 +58,7 @@ public class ArenaPlayer
 	private String name;
 
 	private Arena arena;
-	private ArenaClass mclass;
+	private ArenaClass arenaClass;
 	private Location spawnBack;
 
 	private final UltimateArena plugin;
@@ -75,7 +84,7 @@ public class ArenaPlayer
 
 		this.arena = arena;
 		this.plugin = plugin;
-		this.mclass = plugin.getArenaClass(arena.getArenaZone().getDefaultClass());
+		this.arenaClass = plugin.getArenaClass(arena.getAz().getDefaultClass());
 	}
 
 	/**
@@ -83,7 +92,7 @@ public class ArenaPlayer
 	 */
 	public void decideHat()
 	{
-		if (mclass != null && ! mclass.isUsesHelmet())
+		if (arenaClass != null && ! arenaClass.isUsesHelmet())
 		{
 			player.getInventory().setHelmet(null);
 			return;
@@ -205,7 +214,7 @@ public class ArenaPlayer
 	 */
 	public void setClass(ArenaClass ac)
 	{
-		this.mclass = ac;
+		this.arenaClass = ac;
 
 		this.changeClassOnRespawn = true;
 	}
@@ -220,7 +229,7 @@ public class ArenaPlayer
 		
 		decideHat();
 
-		if (mclass == null)
+		if (arenaClass == null)
 		{
 			giveArmor(0, new ItemStack(Material.IRON_CHESTPLATE));
 			giveArmor(1, new ItemStack(Material.IRON_LEGGINGS));
@@ -229,7 +238,7 @@ public class ArenaPlayer
 			return;
 		}
 
-		if (mclass.isUsesEssentials())
+		if (arenaClass.isUsesEssentials())
 		{
 			try
 			{
@@ -238,7 +247,7 @@ public class ArenaPlayer
 				IEssentials ess = (IEssentials) essPlugin;
 				User user = ess.getUser(player);
 
-				List<String> items = Kit.getItems(ess, user, mclass.getEssKitName(), mclass.getEssentialsKit());
+				List<String> items = Kit.getItems(ess, user, arenaClass.getEssKitName(), arenaClass.getEssentialsKit());
 
 				Kit.expandItems(ess, user, items);
 			}
@@ -249,14 +258,14 @@ public class ArenaPlayer
 			}
 		}
 		
-		for (int i = 0; i < mclass.getArmor().size(); i++)
+		for (int i = 0; i < arenaClass.getArmor().size(); i++)
 		{
-			ItemStack stack = mclass.getArmor(i);
+			ItemStack stack = arenaClass.getArmor(i);
 			if (stack != null)
 				giveArmor(i, stack);
 		}
 		
-		for (ItemStack weapon : mclass.getWeapons())
+		for (ItemStack weapon : arenaClass.getWeapons())
 		{
 			if (weapon != null)
 				giveItem(weapon);
@@ -276,126 +285,6 @@ public class ArenaPlayer
 		}
 	}
 
-	public int getKills()
-	{
-		return kills;
-	}
-
-	public void setKills(int kills)
-	{
-		this.kills = kills;
-	}
-
-	public int getDeaths()
-	{
-		return deaths;
-	}
-
-	public void setDeaths(int deaths)
-	{
-		this.deaths = deaths;
-	}
-
-	public int getKillStreak()
-	{
-		return killStreak;
-	}
-
-	public void setKillStreak(int killStreak)
-	{
-		this.killStreak = killStreak;
-	}
-
-	public int getGameXP()
-	{
-		return gameXP;
-	}
-
-	public void setGameXP(int gameXP)
-	{
-		this.gameXP = gameXP;
-	}
-
-	public int getPoints()
-	{
-		return points;
-	}
-
-	public void setPoints(int points)
-	{
-		this.points = points;
-	}
-
-	public int getBaseLevel()
-	{
-		return baseLevel;
-	}
-
-	public int getHealTimer()
-	{
-		return healTimer;
-	}
-
-	public void setHealTimer(int healTimer)
-	{
-		this.healTimer = healTimer;
-	}
-
-	public boolean isOut()
-	{
-		return out;
-	}
-
-	public void setOut(boolean out)
-	{
-		this.out = out;
-	}
-
-	public boolean canReward()
-	{
-		return canReward;
-	}
-
-	public void setCanReward(boolean canReward)
-	{
-		this.canReward = canReward;
-	}
-
-	public Location getSpawnBack()
-	{
-		return spawnBack;
-	}
-
-	public int getTeam()
-	{
-		return team;
-	}
-
-	public void setTeam(int team)
-	{
-		this.team = team;
-	}
-
-	public int getAmtKicked()
-	{
-		return amtKicked;
-	}
-
-	public void setAmtKicked(int amtKicked)
-	{
-		this.amtKicked = amtKicked;
-	}
-
-	public ArenaClass getArenaClass()
-	{
-		return mclass;
-	}
-
-	public Arena getArena()
-	{
-		return arena;
-	}
-
 	public void sendMessage(String string, Object... objects)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
@@ -409,11 +298,6 @@ public class ArenaPlayer
 	public void subtractXP(int xp)
 	{
 		setGameXP(getGameXP() - xp);
-	}
-
-	public void setBaseLevel(int baseLevel)
-	{
-		this.baseLevel = baseLevel;
 	}
 
 	/**
@@ -443,24 +327,6 @@ public class ArenaPlayer
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
 		this.deaths++;
-	}
-
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if (o instanceof ArenaPlayer)
-		{
-			ArenaPlayer op = (ArenaPlayer) o;
-			return op.getName().equals(name);
-		}
-
-		return false;
 	}
 
 	public void leaveArena(LeaveReason reason)
@@ -498,20 +364,5 @@ public class ArenaPlayer
 
 			arena.tellPlayers("&e{0} &3has been eliminated!", getName());
 		}
-	}
-
-	public Player getPlayer()
-	{
-		return player;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public boolean changeClassOnRespawn()
-	{
-		return changeClassOnRespawn;
 	}
 }

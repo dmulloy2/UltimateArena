@@ -138,13 +138,13 @@ public class Util
 	 * @param i
 	 *            - Data
 	 */
-	
-	@SuppressWarnings("deprecation") // TODO: Need a replacement for this.
-	public static void playEffect(Effect effect, Location loc, int i)
+
+	@SuppressWarnings("deprecation") // TODO: Is there a replacement for this?
+	public static void playEffect(Effect effect, Location loc, int data)
 	{
 		for (Player player : Bukkit.getOnlinePlayers())
 		{
-			player.playEffect(loc, effect, i);
+			player.playEffect(loc, effect, data);
 		}
 	}
 
