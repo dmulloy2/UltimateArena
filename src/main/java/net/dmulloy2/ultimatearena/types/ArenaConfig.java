@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import lombok.Getter;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;

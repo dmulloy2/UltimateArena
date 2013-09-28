@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import lombok.Getter;
-
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;

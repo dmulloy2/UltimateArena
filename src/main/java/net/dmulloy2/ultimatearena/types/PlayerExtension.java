@@ -1,5 +1,7 @@
 package net.dmulloy2.ultimatearena.types;
 
+import org.bukkit.entity.Player;
+
 /**
  * Used for {@link Player} methods
  * Maybe I'll actually be able to use this one day
