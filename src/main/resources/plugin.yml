@@ -89,6 +89,9 @@ permissions:
   ultimatearena.setpoint:
     description: Allows the usage of /ua setpoint
     default: false
+  ultimatearena.spectate:
+    description: Allows the usage of /ua spectate
+    default: true
   ultimatearena.start:
     description: Allows the force starting of arenas
     default: false
