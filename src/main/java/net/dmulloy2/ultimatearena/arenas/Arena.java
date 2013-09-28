@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Data;
-
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.events.UltimateArenaDeathEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
@@ -17,7 +16,6 @@ import net.dmulloy2.ultimatearena.events.UltimateArenaLeaveEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaSpawnEvent;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
-import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSpawn;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -99,7 +97,7 @@ public abstract class Arena
 
 	protected final UltimateArena plugin;
 	protected final ArenaZone az;
-	protected ArenaConfig config;
+//	protected ArenaConfig config;
 
 	/**
 	 * Creates a new Arena based around an {@link ArenaZone}
@@ -116,6 +114,14 @@ public abstract class Arena
 		this.world = az.getWorld();
 		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
 
+		this.maxGameTime = az.getGameTime();
+		this.gameTimer = az.getGameTime();
+		this.startTimer = az.getLobbyTime();
+		this.maxDeaths = az.getMaxDeaths();
+		this.allowTeamKilling = az.isAllowTeamKilling();
+		this.maxWave = az.getMaxWave();
+		this.maxPoints = az.getMaxPoints();
+
 		if (maxDeaths < 1)
 		{
 			this.maxDeaths = 1;
@@ -126,28 +132,6 @@ public abstract class Arena
 		plugin.getSpectatingHandler().registerArena(this);
 
 		updateSigns();
-	}
-
-	/**
-	 * Reloads the arena's configuration
-	 */
-	public final void reloadConfig()
-	{
-		if (config != null)
-		{
-			this.maxGameTime = az.getGameTime();
-			this.gameTimer = az.getGameTime();
-			this.startTimer = az.getLobbyTime();
-			this.maxDeaths = az.getMaxDeaths();
-			this.allowTeamKilling = az.isAllowTeamKilling();
-			this.maxWave = az.getMaxWave();
-			this.maxPoints = az.getMaxPoints();
-
-			if (maxDeaths < 1)
-			{
-				this.maxDeaths = 1;
-			}
-		}
 	}
 
 	/**
@@ -473,14 +457,7 @@ public abstract class Arena
 	 */
 	public void reward(ArenaPlayer ap, boolean half)
 	{
-		if (config != null)
-		{
-			config.giveRewards(ap.getPlayer(), half);
-		}
-		else
-		{
-			InventoryHelper.addItem(ap.getPlayer(), new ItemStack(Material.GOLD_INGOT));
-		}
+		az.giveRewards(ap.getPlayer(), half);
 	}
 
 	/**
@@ -832,6 +809,8 @@ public abstract class Arena
 				}
 			}
 		}
+		
+		plugin.getSpectatingHandler().unregisterArena(this);
 
 		this.gameMode = Mode.IDLE;
 
@@ -944,11 +923,11 @@ public abstract class Arena
 			return;
 		}
 
-		if (config == null)
-		{
-			config = plugin.getConfig(type.getName());
-			reloadConfig();
-		}
+//		if (config == null)
+//		{
+//			config = plugin.getConfig(type.getName());
+//			reloadConfig();
+//		}
 
 		if (! pauseStartTimer)
 		{

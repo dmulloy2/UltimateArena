@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.types.Permission;
 
 /**
@@ -30,9 +31,18 @@ public class CmdSpectate extends UltimateArenaCommand
 			err("Could not find an active arena by the name of {0}", args[0]);
 			return;
 		}
-		
-		sendpMessage("&3Spectating arena: &e{0}", arena.getName());
-		
-		plugin.getSpectatingHandler().addSpectator(arena, player);
+
+		SpectatingHandler spectatingHandler = plugin.getSpectatingHandler();
+
+		if (spectatingHandler.isSpectating(player))
+		{
+			spectatingHandler.removeSpectator(spectatingHandler.getSpectator(player));	
+		}
+		else
+		{
+			spectatingHandler.addSpectator(arena, player);
+		}
+
+		sendpMessage("&3{0} spectating arena: &e{1}", spectatingHandler.isSpectating(player) ? "Now" : "No longer", arena.getName());
 	}
 }

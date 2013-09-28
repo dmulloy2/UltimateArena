@@ -18,7 +18,6 @@ package net.dmulloy2.ultimatearena;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -53,6 +52,7 @@ import net.dmulloy2.ultimatearena.commands.CmdPause;
 import net.dmulloy2.ultimatearena.commands.CmdReload;
 import net.dmulloy2.ultimatearena.commands.CmdSetDone;
 import net.dmulloy2.ultimatearena.commands.CmdSetPoint;
+import net.dmulloy2.ultimatearena.commands.CmdSpectate;
 import net.dmulloy2.ultimatearena.commands.CmdStart;
 import net.dmulloy2.ultimatearena.commands.CmdStats;
 import net.dmulloy2.ultimatearena.commands.CmdStop;
@@ -83,6 +83,7 @@ import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -176,6 +177,7 @@ public class UltimateArena extends JavaPlugin
 		commandHandler.registerCommand(new CmdReload(this));
 		commandHandler.registerCommand(new CmdSetDone(this));
 		commandHandler.registerCommand(new CmdSetPoint(this));
+		commandHandler.registerCommand(new CmdSpectate(this));
 		commandHandler.registerCommand(new CmdStart(this));
 		commandHandler.registerCommand(new CmdStats(this));
 		commandHandler.registerCommand(new CmdStop(this));
@@ -312,10 +314,10 @@ public class UltimateArena extends JavaPlugin
 		loadConfigs();
 		loadArenas();
 		
-		for (Arena a : Collections.unmodifiableList(activeArenas))
-		{
-			a.reloadConfig();
-		}
+//		for (Arena a : Collections.unmodifiableList(activeArenas))
+//   	{
+//			a.reloadConfig();
+//		}
 	}
 
 	/**
