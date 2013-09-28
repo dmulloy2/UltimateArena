@@ -219,12 +219,12 @@ public class ArenaZone
 			ArenaConfig conf = plugin.getConfig(type.getName());
 			
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			if (arenaName.equalsIgnoreCase("mob"))
+			if (type.getName().equalsIgnoreCase("mob"))
 			{
 				this.maxWave = fc.getInt("maxWave", conf.getMaxWave());
 			}
 
-			if (arenaName.equalsIgnoreCase("koth"))
+			if (type.getName().equalsIgnoreCase("koth"))
 			{
 				this.maxPoints = fc.getInt("maxPoints", conf.getMaxPoints());
 			}

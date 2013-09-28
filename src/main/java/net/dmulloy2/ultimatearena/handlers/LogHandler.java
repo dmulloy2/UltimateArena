@@ -31,7 +31,7 @@ public class LogHandler
 	{
 		if (plugin.getConfig().getBoolean("debug", false))
 		{
-			plugin.getLogger().info(FormatUtil.format(msg, objects));
+			plugin.getLogger().info(FormatUtil.format("[Debug] " + msg, objects));
 		}
 	}
 }
