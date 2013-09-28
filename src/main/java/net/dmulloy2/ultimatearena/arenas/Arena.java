@@ -8,16 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.events.UltimateArenaDeathEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaLeaveEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaSpawnEvent;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
+import net.dmulloy2.ultimatearena.tasks.ArenaFinalizeTask;
+import net.dmulloy2.ultimatearena.tasks.EntityClearTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSpawn;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.Permission;
@@ -26,7 +28,6 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,7 +40,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
@@ -52,7 +52,8 @@ import com.earth2me.essentials.User;
  * @author dmulloy2
  */
 
-@Data
+@Getter
+@Setter
 public abstract class Arena
 {
 	public static enum Mode
@@ -61,8 +62,8 @@ public abstract class Arena
 	}
 
 	protected List<ArenaPlayer> arenaPlayers = new ArrayList<ArenaPlayer>();
-	protected List<ArenaSpawn> spawns = new ArrayList<ArenaSpawn>();
 	protected List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
+	protected List<Location> spawns = new ArrayList<Location>();
 	
 	protected int broadcastTimer = 45;
 	protected int winningTeam = 999;
@@ -638,12 +639,8 @@ public abstract class Arena
 		{
 			if (! spawns.isEmpty())
 			{
-				int rand = Util.random(spawns.size());
-				ArenaSpawn spawn = spawns.get(rand);
-				if (spawn != null)
-				{
-					return spawn.getLocation();
-				}
+				return spawns.get(Util.random(spawns.size()));
+				
 			}
 		}
 
@@ -815,8 +812,10 @@ public abstract class Arena
 		this.gameMode = Mode.IDLE;
 
 		updateSigns();
+		
+		clearEntities();
 
-		new FinalizeTask(this).runTaskLater(plugin, 120L);
+		new ArenaFinalizeTask(this).runTaskLater(plugin, 120L);
 	}
 
 	/**
@@ -1207,6 +1206,18 @@ public abstract class Arena
 
 		return amt;
 	}
+	
+	public final void clearEntities()
+	{
+		if (plugin.isStopping())
+		{
+			new EntityClearTask(this).run();
+		}
+		else
+		{
+			new EntityClearTask(this).runTaskLater(plugin, 2L);
+		}
+	}
 
 	public final boolean isInGame()
 	{
@@ -1327,29 +1338,17 @@ public abstract class Arena
 
 		return validPlayers;
 	}
-
-	public final class FinalizeTask extends BukkitRunnable
+	
+	@Override
+	public final void finalize()
 	{
-		private final Arena arena;
-		public FinalizeTask(Arena arena)
+		try
 		{
-			this.arena = arena;
+			super.finalize();
 		}
-
-		@Override
-		public void run()
+		catch (Throwable e)
 		{
-			plugin.getActiveArenas().remove(arena);
-
-			plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
-
-			try
-			{
-				arena.finalize();
-			}
-			catch (Throwable e)
-			{
-			}
+			//
 		}
 	}
 }

@@ -24,7 +24,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -84,7 +86,7 @@ public class SpectatingHandler implements Listener
 
 		spectator.spawn();
 		
-		openInventory(player, arena);
+		spectating.get(arena).add(spectator);
 
 		return spectator;
 	}
@@ -256,7 +258,17 @@ public class SpectatingHandler implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onSignChange(PlayerPickupItemEvent event)
+	public void onItemPickup(PlayerPickupItemEvent event)
+	{
+		Player player = event.getPlayer();
+		if (isSpectating(player))
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onItemDrop(PlayerDropItemEvent event)
 	{
 		Player player = event.getPlayer();
 		if (isSpectating(player))
@@ -287,6 +299,22 @@ public class SpectatingHandler implements Listener
 			if (isSpectating(player))
 			{
 				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerMoveLowest(PlayerMoveEvent event)
+	{
+		if (! event.isCancelled())
+		{
+			Player player = event.getPlayer();
+			if (isSpectating(player))
+			{
+				if (! plugin.isInArena(event.getFrom()))
+				{
+					event.setCancelled(true);
+				}
 			}
 		}
 	}

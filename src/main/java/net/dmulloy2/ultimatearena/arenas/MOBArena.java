@@ -61,7 +61,8 @@ public class MOBArena extends Arena
 
 		wave++;
 		this.mobPerWave = 4 + ((int) (getWave() * 1.5)) + (getActivePlayers() * 3);
-		mobtimer = (wave * 4) + 20;
+		this.mobtimer = (wave * 4) + 20;
+
 		if (getWave() <= 1)
 		{
 			mobtimer = 1;
@@ -145,14 +146,14 @@ public class MOBArena extends Arena
 	@Override
 	public void onStop()
 	{
-		synchronized (mobs)
-		{
-			for (LivingEntity entity : mobs)
-			{
-				if (entity != null)
-					entity.remove();
-			}
-		}
+//		synchronized (mobs)
+//		{
+//			for (LivingEntity entity : mobs)
+//			{
+//				if (entity != null)
+//					entity.remove();
+//			}
+//		}
 	}
 
 	@Override

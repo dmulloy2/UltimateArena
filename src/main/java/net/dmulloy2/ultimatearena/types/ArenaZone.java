@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -15,17 +15,18 @@ import net.dmulloy2.ultimatearena.util.ItemUtil;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
 
 /**
  * @author dmulloy2
  */
 
-@Data
+@Getter
+@Setter
 public class ArenaZone
 {
 	private int amtLobbys = 2;

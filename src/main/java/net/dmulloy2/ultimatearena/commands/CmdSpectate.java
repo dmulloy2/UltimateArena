@@ -15,7 +15,7 @@ public class CmdSpectate extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "spectate";
-		this.requiredArgs.add("arena");
+		this.optionalArgs.add("arena");
 		this.description = "Spectates an arena";
 		this.permission = Permission.SPECTATE;
 		
@@ -25,21 +25,25 @@ public class CmdSpectate extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		Arena arena = plugin.getArena(args[0]);
-		if (arena == null)
-		{
-			err("Could not find an active arena by the name of {0}", args[0]);
-			return;
-		}
+		Arena arena = null;
 
 		SpectatingHandler spectatingHandler = plugin.getSpectatingHandler();
 
 		if (spectatingHandler.isSpectating(player))
 		{
+			arena = spectatingHandler.getArena(spectatingHandler.getSpectator(player));
+			
 			spectatingHandler.removeSpectator(spectatingHandler.getSpectator(player));	
 		}
 		else
 		{
+			arena = plugin.getArena(args[0]);
+			if (arena == null)
+			{
+				err("Could not find an active arena by the name of {0}", args[0]);
+				return;
+			}
+	
 			spectatingHandler.addSpectator(arena, player);
 		}
 

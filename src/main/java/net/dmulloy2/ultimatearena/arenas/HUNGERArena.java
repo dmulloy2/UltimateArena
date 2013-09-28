@@ -3,7 +3,6 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSpawn;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -34,7 +33,7 @@ public class HUNGERArena extends Arena
 
 		for (int i = 0; i < az.getSpawns().size(); i++)
 		{
-			spawns.add(new ArenaSpawn(az.getSpawns().get(i)));
+			spawns.add(az.getSpawns().get(i));
 		}
 	}
 
@@ -105,7 +104,7 @@ public class HUNGERArena extends Arena
 			{
 				setWinningTeam(-1);
 
-				if (getStartingAmount() > 1)
+				if (startingAmount > 1)
 				{
 					List<ArenaPlayer> validPlayers = getValidPlayers();
 					if (! validPlayers.isEmpty())
@@ -116,7 +115,7 @@ public class HUNGERArena extends Arena
 
 				stop();
 
-				if (getStartingAmount() > 1)
+				if (startingAmount > 1)
 				{
 					rewardTeam(winningTeam, false);
 				}

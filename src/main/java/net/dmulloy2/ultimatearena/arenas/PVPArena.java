@@ -35,31 +35,27 @@ public class PVPArena extends Arena
 	{
 		if (isInGame())
 		{
-			if (!simpleTeamCheck(false))
+			if (startingAmount <= 1)
+			{
+				tellPlayers("&3Not enough people to play!");
+				
+				stop();
+				return;
+			}
+			
+			if (! simpleTeamCheck(false))
 			{
 				setWinningTeam(-1);
 				
-				if (getStartingAmount() > 1)
+				List<ArenaPlayer> validPlayers = getValidPlayers();
+				if (! validPlayers.isEmpty())
 				{
-					List<ArenaPlayer> validPlayers = getValidPlayers();
-					if (! validPlayers.isEmpty())
-					{
-						this.winner = validPlayers.get(0);
-					}
+					this.winner = validPlayers.get(0);
 				}
-
+				
 				stop();
-
+				
 				rewardTeam(-1, false);
-			}
-			else
-			{
-				if (getStartingAmount() <= 1)
-				{
-					tellPlayers("&3Not enough people to play!");
-
-					stop();
-				}
 			}
 		}
 	}

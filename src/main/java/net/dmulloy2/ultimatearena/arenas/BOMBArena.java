@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import lombok.Getter;
 import net.dmulloy2.ultimatearena.flags.BombFlag;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -9,10 +10,11 @@ import net.dmulloy2.ultimatearena.types.FieldType;
  * @author dmulloy2
  */
 
+@Getter
 public class BOMBArena extends Arena
 {
 	private int redTeamPower;
-	
+
 	private BombFlag bomb1;
 	private BombFlag bomb2;
 
@@ -115,15 +117,5 @@ public class BOMBArena extends Arena
 			rewardTeam(2, false);
 			return;
 		}
-	}
-	
-	public BombFlag getBomb1()
-	{
-		return bomb1;
-	}
-	
-	public BombFlag getBomb2()
-	{
-		return bomb2;
 	}
 }

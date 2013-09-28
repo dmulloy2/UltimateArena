@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.flags.KothFlag;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSpawn;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -46,7 +45,7 @@ public class KOTHArena extends Arena
 		}
 		for (int i = 0; i < az.getSpawns().size(); i++)
 		{
-			spawns.add(new ArenaSpawn(az.getSpawns().get(i)));
+			spawns.add(az.getSpawns().get(i));
 		}
 	}
 

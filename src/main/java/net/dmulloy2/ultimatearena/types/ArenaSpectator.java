@@ -1,12 +1,14 @@
 package net.dmulloy2.ultimatearena.types;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -18,7 +20,8 @@ import org.bukkit.potion.PotionEffect;
  * @author dmulloy2
  */
 
-@Data
+@Getter
+@Setter
 public class ArenaSpectator
 {
 	private int baseLevel;
@@ -76,6 +79,8 @@ public class ArenaSpectator
 		player.setAllowFlight(true);
 		player.setFlySpeed(0.1F);
 		player.setFlying(false);
+		
+		player.getInventory().addItem(new ItemStack(Material.COMPASS));
 		
 		for (ArenaPlayer ap : arena.getValidPlayers())
 		{

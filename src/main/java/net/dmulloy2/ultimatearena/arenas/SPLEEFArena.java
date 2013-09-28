@@ -3,6 +3,8 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.List;
 import java.util.Random;
 
+import lombok.Getter;
+
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
@@ -17,6 +19,7 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
+@Getter
 public class SPLEEFArena extends FFAArena
 {
 	private Field3D spleefGround;
@@ -124,11 +127,6 @@ public class SPLEEFArena extends FFAArena
 			
 			stop();
 		}
-	}
-
-	public Field3D getSpleefGround()
-	{
-		return spleefGround;
 	}
 
 	@Override

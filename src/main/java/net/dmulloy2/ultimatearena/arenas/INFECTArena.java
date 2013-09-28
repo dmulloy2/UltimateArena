@@ -78,13 +78,13 @@ public class INFECTArena extends PVPArena
 //			apl.decideHat();
 //		}
 //	}
-//
+
 	@Override
 	public void check()
 	{
 		if (startTimer <= 0)
 		{
-			if (!simpleTeamCheck(false))
+			if (! simpleTeamCheck(false))
 			{
 				if (getTeam1size() == 0)
 				{
@@ -103,7 +103,7 @@ public class INFECTArena extends PVPArena
 			}
 			else
 			{
-				if (getStartingAmount() <= 1)
+				if (startingAmount <= 1)
 				{
 					tellPlayers("&3Not enough people to play!");
 
@@ -116,7 +116,7 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onPreOutOfTime()
 	{
-		this.setWinningTeam(1);
+		setWinningTeam(1);
 	}
 
 	@Override

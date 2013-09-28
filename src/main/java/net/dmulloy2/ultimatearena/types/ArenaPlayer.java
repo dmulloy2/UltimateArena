@@ -2,8 +2,8 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.util.List;
 
-import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -36,7 +36,8 @@ import com.earth2me.essentials.User;
  * @author dmulloy2
  */
 
-@Data
+@Getter
+@Setter
 public class ArenaPlayer
 {
 	private int kills;

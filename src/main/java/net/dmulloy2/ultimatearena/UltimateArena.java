@@ -128,6 +128,8 @@ public class UltimateArena extends JavaPlugin
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
 	private @Getter List<String> whitelistedCommands = new ArrayList<String>();
 	private @Getter List<Arena> activeArenas = new ArrayList<Arena>();
+	
+	private @Getter boolean stopping;
 
 	// Global prefix
 	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
@@ -218,6 +220,8 @@ public class UltimateArena extends JavaPlugin
 		// Unregister
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
+		
+		stopping = true;
 
 		// Stop all arenas
 		stopAll();
@@ -621,6 +625,18 @@ public class UltimateArena extends JavaPlugin
 				return getArena(az.getArenaName());
 		}
 
+		return null;
+	}
+	
+	public Arena getArenaInside(Entity entity)
+	{
+		for (int i = 0; i < loadedArenas.size(); i++)
+		{
+			ArenaZone az = loadedArenas.get(i);
+			if (az.checkLocation(entity.getLocation()))
+				return getArena(az.getArenaName());
+		}
+		
 		return null;
 	}
 

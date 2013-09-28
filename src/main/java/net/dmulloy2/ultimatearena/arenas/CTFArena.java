@@ -74,8 +74,9 @@ public class CTFArena extends Arena
 
 			if (blueCap >= 3)
 			{
-				this.setWinningTeam(2);
 				this.lastcap = "&9BLUE";
+
+				setWinningTeam(2);
 			}
 
 			winGame();
