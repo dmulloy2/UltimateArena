@@ -122,6 +122,8 @@ public abstract class Arena
 		}
 
 		this.gameMode = Mode.LOBBY;
+		
+		plugin.getSpectatingHandler().registerArena(this);
 
 		updateSigns();
 	}

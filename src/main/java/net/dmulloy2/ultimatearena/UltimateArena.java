@@ -62,6 +62,7 @@ import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.LogHandler;
 import net.dmulloy2.ultimatearena.handlers.PermissionHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
+import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
@@ -106,6 +107,7 @@ public class UltimateArena extends JavaPlugin
 
 	// Handlers
 	private @Getter PermissionHandler permissionHandler;
+	private @Getter SpectatingHandler spectatingHandler;
 	private @Getter CommandHandler commandHandler;
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
@@ -136,6 +138,7 @@ public class UltimateArena extends JavaPlugin
 		
 		// Register Handlers
 		permissionHandler = new PermissionHandler(this);
+		spectatingHandler = new SpectatingHandler(this);
 		commandHandler = new CommandHandler(this);
 		fileHandler = new FileHandler(this);
 		logHandler = new LogHandler(this);

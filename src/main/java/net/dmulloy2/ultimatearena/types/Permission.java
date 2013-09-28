@@ -24,6 +24,7 @@ public enum Permission
 	RELOAD, 
 	SETDONE, 
 	SETPOINT,
+	SPECTATE,
 	START,
 	STATS,
 	STOP,
