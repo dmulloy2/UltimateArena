@@ -135,13 +135,13 @@ public abstract class Arena
 	{
 		if (config != null)
 		{
-			this.maxGameTime = config.getGameTime();
-			this.gameTimer = config.getGameTime();
-			this.startTimer = config.getLobbyTime();
-			this.maxDeaths = config.getMaxDeaths();
-			this.allowTeamKilling = config.isAllowTeamKilling();
-			this.maxWave = config.getMaxWave();
-			this.maxPoints = config.getMaxPoints();
+			this.maxGameTime = az.getGameTime();
+			this.gameTimer = az.getGameTime();
+			this.startTimer = az.getLobbyTime();
+			this.maxDeaths = az.getMaxDeaths();
+			this.allowTeamKilling = az.isAllowTeamKilling();
+			this.maxWave = az.getMaxWave();
+			this.maxPoints = az.getMaxPoints();
 
 			if (maxDeaths < 1)
 			{

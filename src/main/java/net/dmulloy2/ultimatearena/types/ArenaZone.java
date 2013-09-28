@@ -9,11 +9,14 @@ import lombok.Data;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.ItemUtil;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
 
 /**
@@ -50,6 +53,8 @@ public class ArenaZone
 	private Location team2spawn = null;
 	private Location lobbyREDspawn = null;
 	private Location lobbyBLUspawn = null;
+	
+	private File file;
 
 	private Field lobby;
 	private Field arena;
@@ -75,6 +80,7 @@ public class ArenaZone
 	{
 		this.arenaName = getName(file);
 		this.plugin = plugin;
+		this.file = file;
 
 		initialize();
 	}
@@ -157,6 +163,8 @@ public class ArenaZone
 	public void load()
 	{
 		plugin.getFileHandler().load(this);
+		
+		loadConfiguration();
 	}
 
 	public boolean canLike(Player player)
@@ -195,5 +203,55 @@ public class ArenaZone
 		lines.add(line.toString());
 		
 		return lines;
+	}
+	
+	// ---- Configuration ---- //
+	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
+
+	private boolean allowTeamKilling;
+	
+	private List<ItemStack> rewards = new ArrayList<ItemStack>();
+	
+	public void loadConfiguration()
+	{
+		try
+		{
+			ArenaConfig conf = plugin.getConfig(type.getName());
+			
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			if (arenaName.equalsIgnoreCase("mob"))
+			{
+				this.maxWave = fc.getInt("maxWave", conf.getMaxWave());
+			}
+
+			if (arenaName.equalsIgnoreCase("koth"))
+			{
+				this.maxPoints = fc.getInt("maxPoints", conf.getMaxPoints());
+			}
+
+			this.gameTime = fc.getInt("gameTime", conf.getGameTime());
+			this.lobbyTime = fc.getInt("lobbyTime", conf.getLobbyTime());
+			this.maxDeaths = fc.getInt("maxDeaths", conf.getMaxDeaths());
+			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", conf.isAllowTeamKilling());
+			this.cashReward = fc.getInt("cashReward", conf.getCashReward());
+			
+			if (fc.isSet("rewards"))
+			{
+				for (String reward : fc.getStringList("rewards"))
+				{
+					ItemStack stack = ItemUtil.readItem(reward);
+					if (stack != null)
+						rewards.add(stack);
+				}
+			}
+			else
+			{
+				rewards.addAll(conf.getRewards());
+			}
+		}
+		catch (Exception e)
+		{
+			//
+		}
 	}
 }
