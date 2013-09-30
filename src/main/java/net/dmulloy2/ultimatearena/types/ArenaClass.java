@@ -66,9 +66,11 @@ public class ArenaClass
 	}
 
 	public boolean load()
-	{
+	{	
 		try
 		{
+			boolean save = false;
+			
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
 			String[] armor = new String[] { "chestplate", "leggings", "boots" };
@@ -129,12 +131,11 @@ public class ArenaClass
 						ItemStack stack = ItemUtil.readPotion(entry);
 						if (stack != null)
 						{
-							plugin.outConsole("Detected deprecated potion entry. Converting!");
-							
-							int id = net.dmulloy2.ultimatearena.types.Material.getTypeId(stack.getType());
-							
-							fc.set(path, id + ":" + stack.getDurability() + "," + stack.getAmount());
-							
+							plugin.debug("Detected deprecated potion entry. Converting!");
+
+							fc.set(path, stack.getType().toString() + ":" + stack.getDurability() + "," + stack.getAmount());
+							save = true;
+
 							weapons.add(stack);
 						}
 					}
@@ -189,6 +190,9 @@ public class ArenaClass
 			usesHelmet = fc.getBoolean("useHelmet", true);
 			
 			permissionNode = fc.getString("permissionNode", "");
+			
+			// Save the file if changes were made
+			if (save) fc.save(file);
 		}
 		catch (Exception e)
 		{
