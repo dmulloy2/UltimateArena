@@ -94,6 +94,9 @@ public class ArenaSpectator
 	{
 		player.setExp(0.0F);
 		player.setLevel(baseLevel);
+		
+		player.setAllowFlight(false);
+		player.setFlying(false);
 
 		clearInventory();
 		returnInventory();

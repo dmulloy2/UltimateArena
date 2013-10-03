@@ -102,13 +102,13 @@ public class CTFArena extends Arena
 
 			stop();
 
-			rewardTeam(-1, true);
+			rewardTeam(-1);
 			return;
 		}
 
 		stop();
 
-		rewardTeam(winningTeam, false);
+		rewardTeam(winningTeam);
 	}
 
 	@Override

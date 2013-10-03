@@ -12,6 +12,7 @@ import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.MaterialUtil;
+import net.dmulloy2.ultimatearena.util.Util;
 import net.ess3.api.IEssentials;
 
 import org.bukkit.Material;
@@ -93,7 +94,7 @@ public class ArenaClass
 						StringBuilder line = new StringBuilder();
 						for (int i = 1; i < split.length; i++)
 						{
-							line.append(line + " ");
+							line.append(split[i] + " ");
 						}
 						
 						line.delete(line.length() - 1, line.length());
@@ -124,28 +125,38 @@ public class ArenaClass
 				String path = "tools." + i;
 				if (fc.isSet(path))
 				{
-					String entry = fc.getString(path);
-					entry = entry.replaceAll(" ", "");
-					if (entry.startsWith("potion:"))
+					try
 					{
-						ItemStack stack = ItemUtil.readPotion(entry);
-						if (stack != null)
+						String entry = fc.getString(path);
+						entry = entry.replaceAll(" ", "");
+						if (entry.startsWith("potion:"))
 						{
-							plugin.debug("Detected deprecated potion entry. Converting!");
-
-							fc.set(path, stack.getType().toString() + ":" + stack.getDurability() + "," + stack.getAmount());
-							save = true;
-
-							weapons.add(stack);
+							ItemStack stack = ItemUtil.readPotion(entry);
+							if (stack != null)
+							{
+								plugin.debug("Detected deprecated potion entry. Converting!");
+	
+								fc.set(path, stack.getType().toString() + ":" + stack.getDurability() + "," + stack.getAmount());
+								save = true;
+	
+								weapons.add(stack);
+							}
+						}
+						else
+						{
+							ItemStack stack = ItemUtil.readItem(entry);
+							if (stack != null)
+							{
+								weapons.add(stack);
+							}
 						}
 					}
-					else
+					catch (Exception e)
 					{
-						ItemStack stack = ItemUtil.readItem(entry);
-						if (stack != null)
-						{
-							weapons.add(stack);
-						}
+						plugin.outConsole(Level.SEVERE, "Exception occured while loading class {0}", name);
+						plugin.outConsole(Level.SEVERE, "Could not parse item \"{0}\": {1}", fc.getString(path), e);
+						
+						plugin.debug(Util.getUsefulStack(e));
 					}
 				}
 			}
@@ -177,6 +188,8 @@ public class ArenaClass
 				{
 					plugin.outConsole(Level.WARNING, "Could not load Essentials kit for class {0}: {1}", name, 
 							e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e.getMessage());
+					
+					plugin.debug(Util.getUsefulStack(e));
 				}
 			}
 
@@ -197,6 +210,8 @@ public class ArenaClass
 		catch (Exception e)
 		{
 			plugin.outConsole(Level.SEVERE, "Error loading class \"{0}\": {1}", name, e.getMessage());
+			
+			plugin.debug(Util.getUsefulStack(e));
 			return false;
 		}
 

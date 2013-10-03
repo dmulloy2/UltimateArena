@@ -11,6 +11,7 @@ import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class ArenaConfig
 {
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
-	private boolean allowTeamKilling;
+	private boolean allowTeamKilling, countMobKills;
 	private boolean loaded;
 
 	private List<ItemStack> rewards = new ArrayList<ItemStack>();
@@ -67,6 +68,8 @@ public class ArenaConfig
 			this.maxDeaths = fc.getInt("maxDeaths");
 			this.allowTeamKilling = fc.getBoolean("allowTeamKilling");
 			this.cashReward = fc.getInt("cashReward");
+			this.countMobKills = fc.getBoolean("countMobKills", 
+					arenaName.equalsIgnoreCase("mob"));
 
 			for (String reward : fc.getStringList("rewards"))
 			{
@@ -78,6 +81,8 @@ public class ArenaConfig
 		catch (Exception e)
 		{
 			plugin.outConsole(Level.SEVERE, "Failed to load config for \"{0}\": {1}", arenaName, e.getMessage());
+			
+			plugin.debug(Util.getUsefulStack(e));
 			return false;
 		}
 

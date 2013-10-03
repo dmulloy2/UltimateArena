@@ -5,6 +5,10 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 /**
  * @author dmulloy2
  */
@@ -42,7 +46,7 @@ public class INFECTArena extends PVPArena
 			{
 				apl.setTeam(2);
 				apl.sendMessage("&3You have been chosen for the infected!");
-//				onSpawn(apl);
+				onSpawn(apl);
 				tellPlayers("&e{0} &3is the zombie!", apl.getPlayer().getName());
 			}
 			else
@@ -58,26 +62,25 @@ public class INFECTArena extends PVPArena
 		}
 	}
 
-//  Basically, zombies are no longer helpless.
-//	@Override
-//	public void onSpawn(ArenaPlayer apl)
-//	{
-//		if (apl.getTeam() == 2)
-//		{
-//			Player pl = apl.getPlayer();
-//			apl.clearInventory();
-//
-//			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 2));
-//			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2400, 1));
-//			pl.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 2400, 1));
-//			pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 1));
-//
-//			spawn(apl.getPlayer(), false);
-//
-//			apl.clearInventory();
-//			apl.decideHat();
-//		}
-//	}
+	@Override
+	public void onSpawn(ArenaPlayer apl)
+	{
+		if (apl.getTeam() == 2)
+		{
+			Player pl = apl.getPlayer();
+			apl.clearInventory();
+
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 5));
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2400, 3));
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2400, 1));
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2400, 1));
+
+			spawn(pl, true);
+
+			apl.clearInventory();
+			apl.decideHat();
+		}
+	}
 
 	@Override
 	public void check()
@@ -86,13 +89,13 @@ public class INFECTArena extends PVPArena
 		{
 			if (! simpleTeamCheck(false))
 			{
-				if (getTeam1size() == 0)
+				if (team1size == 0)
 				{
 					setWinningTeam(2);
 
 					stop();
 
-					rewardTeam(2, true);
+					rewardTeam(2);
 				}
 				else
 				{
@@ -122,7 +125,7 @@ public class INFECTArena extends PVPArena
 	@Override
 	public void onOutOfTime()
 	{
-		rewardTeam(1, false);
+		rewardTeam(1);
 	}
 
 	@Override

@@ -200,6 +200,7 @@ public class FileHandler
 				fc.set("maxWave", 15);
 				fc.set("allowTeamKilling", false);
 				fc.set("cashReward", 15);
+				fc.set("countMobKills", true);
 
 				List<String> rewards = new ArrayList<String>();
 				rewards.add("266,3");

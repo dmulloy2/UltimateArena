@@ -240,7 +240,7 @@ public class CONQUESTArena extends Arena
 			{
 				stop();
 
-				rewardTeam(-1, false);
+				rewardTeam(-1);
 			}
 		}
 	}

@@ -218,6 +218,8 @@ public class ArenaPlayer
 		this.arenaClass = ac;
 
 		this.changeClassOnRespawn = true;
+		
+		clearPotionEffects();
 	}
 
 	/**
@@ -286,19 +288,39 @@ public class ArenaPlayer
 		}
 	}
 
+	/**
+	 * Sends the player a message
+	 * 
+	 * @param string 
+	 *            - Base message
+	 * @param objects
+	 *            - Objects to format in
+	 */
 	public void sendMessage(String string, Object... objects)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
+	/**
+	 * Gives the player xp
+	 * 
+	 * @param xp
+	 *            - XP to give the player
+	 */
 	public void addXP(int xp)
 	{
-		setGameXP(getGameXP() + xp);
+		this.gameXP += xp;
 	}
 
+	/**
+	 * Subtracts xp from the player
+	 * 
+	 * @param xp
+	 *            - XP to subtract
+	 */
 	public void subtractXP(int xp)
 	{
-		setGameXP(getGameXP() - xp);
+		this.gameXP -= xp;
 	}
 
 	/**
@@ -318,18 +340,34 @@ public class ArenaPlayer
 
 	private long deathTime;
 
+	/**
+	 * Returns whether or not the player is dead
+	 * 
+	 * @return Whether or not the player is dead
+	 */
 	public boolean isDead()
 	{
 		return (System.currentTimeMillis() - deathTime) < 60L;
 	}
 
+	/**
+	 * Handles the player's death
+	 */
 	public void onDeath()
 	{
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
 		this.deaths++;
+		
+		arena.onPlayerDeath(this);
 	}
 
+	/**
+	 * Makes the player leave their {@link Arena}
+	 * 
+	 * @param reason
+	 *            - Reason the player is leaving
+	 */
 	public void leaveArena(LeaveReason reason)
 	{
 		if (reason == LeaveReason.COMMAND)
@@ -365,5 +403,10 @@ public class ArenaPlayer
 
 			arena.tellPlayers("&e{0} &3has been eliminated!", getName());
 		}
+	}
+	
+	public boolean isValid()
+	{
+		return arena.checkValid(this);
 	}
 }

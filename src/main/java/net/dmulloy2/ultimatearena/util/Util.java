@@ -178,4 +178,20 @@ public class Util
 		ret.append(" Z: " + loc.getBlockZ());
 		return ret.toString();
 	}
+
+	public static String getUsefulStack(Throwable e)
+	{
+		StringBuilder ret = new StringBuilder();
+		ret.append("Encountered an exception!" + '\n');
+		ret.append(e.getClass().getName() + ":" + e.getMessage() + '\n');
+		ret.append("Affected classes: " + '\n');
+
+		for (StackTraceElement ste : e.getStackTrace())
+		{
+			if (ste.getClassName().contains("net.dmulloy2.ultimatearena"))
+				ret.append('\t' + ste.toString() + '\n');
+		}
+
+		return ret.toString();
+	}
 }

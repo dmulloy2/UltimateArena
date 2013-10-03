@@ -9,9 +9,9 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSpectator;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.Util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -93,18 +93,11 @@ public class SpectatingHandler implements Listener
 
 	public void removeSpectator(ArenaSpectator spectator)
 	{
-		Arena arena = getArena(spectator);
-		if (arena != null)
-		{
-			spectator.endPlayer();
-			
-			spectating.get(arena).remove(spectator);
-		}
+		spectator.endPlayer();
+		
+		spectating.values().remove(spectator);
 
-		if (isBrowsingInventory(spectator.getPlayer()))
-		{
-			closeInventory(spectator.getPlayer());
-		}
+		closeInventory(spectator.getPlayer());
 	}
 
 	public boolean isSpectating(Player player)
@@ -130,12 +123,12 @@ public class SpectatingHandler implements Listener
 
 	public void openInventory(Player p, Arena a)
 	{
-		String name = ChatColor.DARK_RED + "" + ChatColor.BOLD + "Active Players";
-		Inventory inventory = Bukkit.createInventory(p, 27, name);
+		String name = FormatUtil.format("&4&lActive Players");
+		Inventory inventory = plugin.getServer().createInventory(p, 27, name);
 
 		for (ArenaPlayer pl : a.getValidPlayers())
 		{
-			ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+			ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 			SkullMeta meta = (SkullMeta) skull.getItemMeta();
 			meta.setOwner(pl.getName());
 			skull.setItemMeta(meta);
@@ -148,7 +141,7 @@ public class SpectatingHandler implements Listener
 
 	public void closeInventory(Player p)
 	{
-		if (browsingInventory.contains(p.getName()))
+		if (isBrowsingInventory(p))
 		{
 			browsingInventory.remove(p.getName());
 			p.closeInventory();
@@ -229,13 +222,13 @@ public class SpectatingHandler implements Listener
 					SkullMeta meta = (SkullMeta) stack.getItemMeta();
 					if (meta.hasOwner())
 					{
-						Player p = plugin.getServer().getPlayerExact(meta.getOwner());
-						if (p != null)
+						Player pl = Util.matchPlayer(meta.getOwner());
+						if (pl != null)
 						{
-							if (plugin.isInArena(p))
+							if (plugin.isInArena(pl))
 							{
 								event.setCancelled(true);
-								player.teleport(p);
+								player.teleport(pl);
 							}
 						}
 					}

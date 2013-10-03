@@ -71,12 +71,12 @@ public class KOTHArena extends Arena
 	}
 
 	@Override
-	public void reward(ArenaPlayer ap, boolean half)
+	public void reward(ArenaPlayer ap)
 	{
 		if (ap.getPoints() >= maxPower)
 		{
 			// If you scored at least 60 points
-			super.reward(ap, half);
+			super.reward(ap);
 		}
 	}
 

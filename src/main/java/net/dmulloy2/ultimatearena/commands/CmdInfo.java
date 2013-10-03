@@ -14,6 +14,7 @@ public class CmdInfo extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "info";
+		this.aliases.add("lb");
 		this.optionalArgs.add("arena");
 		this.description = "view info on the arena you are in";
 		this.permission = Permission.INFO;
@@ -52,7 +53,7 @@ public class CmdInfo extends UltimateArenaCommand
 		sendMessage(""); // Empty line
 
 		sendMessage("&3Active Players:");
-		for (String s : arena.buildLeaderboard(player))
+		for (String s : arena.getLeaderboard(player))
 		{
 			sendMessage(s);
 		}

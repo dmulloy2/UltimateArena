@@ -16,8 +16,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * Basic API for hooking into {@link UltimateArena} TODO: Implement this like a
- * true API
+ * Basic API for hooking into {@link UltimateArena}
+ * <p>
+ * TODO: Implement this like a true API
  * 
  * @author dmulloy2
  */

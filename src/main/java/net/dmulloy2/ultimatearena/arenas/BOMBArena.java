@@ -52,7 +52,7 @@ public class BOMBArena extends Arena
 	public void onOutOfTime()
 	{
 		setWinningTeam(2);
-		rewardTeam(winningTeam, false);
+		rewardTeam(winningTeam);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class BOMBArena extends Arena
 
 			stop();
 
-			rewardTeam(1, false);
+			rewardTeam(1);
 			return;
 		}
 
@@ -114,7 +114,7 @@ public class BOMBArena extends Arena
 
 			stop();
 
-			rewardTeam(2, false);
+			rewardTeam(2);
 			return;
 		}
 	}

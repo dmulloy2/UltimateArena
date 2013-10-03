@@ -11,10 +11,7 @@ import java.util.Map.Entry;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.events.UltimateArenaDeathEvent;
 import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
-import net.dmulloy2.ultimatearena.events.UltimateArenaLeaveEvent;
-import net.dmulloy2.ultimatearena.events.UltimateArenaSpawnEvent;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.tasks.ArenaFinalizeTask;
 import net.dmulloy2.ultimatearena.tasks.EntityClearTask;
@@ -82,6 +79,7 @@ public abstract class Arena
 
 	protected boolean allowTeamKilling;
 	protected boolean pauseStartTimer;
+	protected boolean countMobKills;
 	protected boolean forceStop;
 	protected boolean stopped;
 	protected boolean start;
@@ -98,7 +96,6 @@ public abstract class Arena
 
 	protected final UltimateArena plugin;
 	protected final ArenaZone az;
-//	protected ArenaConfig config;
 
 	/**
 	 * Creates a new Arena based around an {@link ArenaZone}
@@ -122,6 +119,7 @@ public abstract class Arena
 		this.allowTeamKilling = az.isAllowTeamKilling();
 		this.maxWave = az.getMaxWave();
 		this.maxPoints = az.getMaxPoints();
+		this.countMobKills = az.isCountMobKills();
 
 		if (maxDeaths < 1)
 		{
@@ -371,8 +369,10 @@ public abstract class Arena
 	 * 
 	 * @param name
 	 *            - Player to spawn
+	 * @param alreadySpawned
+	 *            - Whether or not they've already spawned
 	 */
-	public final void spawn(Player player)
+	public final void spawn(Player player, boolean alreadySpawned)
 	{
 		plugin.debug("Attempting to spawn player: {0}", player.getName());
 
@@ -390,16 +390,33 @@ public abstract class Arena
 					{
 						teleport(player, loc);
 
-						// Call spawn event
-						UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, false);
-						plugin.getServer().getPluginManager().callEvent(spawnEvent);
+//						Temporarily disable the event API, see if it helps fix some lag
+//						UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, false);
+//						plugin.getServer().getPluginManager().callEvent(spawnEvent);
 					}
 
 					ap.spawn();
-					onSpawn(ap);
+					
+					if (! alreadySpawned)
+					{
+						onSpawn(ap);
+					}
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Alias for {@link #spawn(Player, Boolean)}
+	 * <p>
+	 * Has the same effect of <code>spawn(player, false);</code>
+	 * 
+	 * @param player
+	 *            - Player to spawn
+	 */
+	public final void spawn(Player player)
+	{
+		spawn(player, false);
 	}
 	
 	/**
@@ -416,10 +433,10 @@ public abstract class Arena
 			plugin.debug("Spawning player {0} in the lobby", ap.getName());
 			
 			teleport(ap.getPlayer(), loc);
-			
-			// Call spawn event
-			UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, true);
-			plugin.getServer().getPluginManager().callEvent(spawnEvent);
+
+//			Temporarily disable the event API, see if it helps fix some lag
+//			UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, true);
+//			plugin.getServer().getPluginManager().callEvent(spawnEvent);
 		}
 	}
 
@@ -442,10 +459,12 @@ public abstract class Arena
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		pl.setAmtKicked(0);
+		
+		this.updateLeaderboard = true;
 
-		// Call ArenaDeathEvent
-		UltimateArenaDeathEvent deathEvent = new UltimateArenaDeathEvent(pl, this);
-		plugin.getServer().getPluginManager().callEvent(deathEvent);
+//		Temporarily disable the event API, see if it helps fix some lag
+//		UltimateArenaDeathEvent deathEvent = new UltimateArenaDeathEvent(pl, this);
+//		plugin.getServer().getPluginManager().callEvent(deathEvent);
 	}
 
 	/**
@@ -453,12 +472,10 @@ public abstract class Arena
 	 * 
 	 * @param ap
 	 *            - {@link ArenaPlayer} to reward
-	 * @param half
-	 *            - Whether or not to reward half
 	 */
-	public void reward(ArenaPlayer ap, boolean half)
+	public void reward(ArenaPlayer ap)
 	{
-		az.giveRewards(ap.getPlayer(), half);
+		az.giveRewards(ap);
 	}
 
 	/**
@@ -466,12 +483,8 @@ public abstract class Arena
 	 * 
 	 * @param team
 	 *            - Team to reward
-	 * @param string
-	 *            - Reward message
-	 * @param half
-	 *            - Whether or not to reward half
 	 */
-	public void rewardTeam(int team, boolean half)
+	public final void rewardTeam(int team)
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
@@ -480,7 +493,7 @@ public abstract class Arena
 			{
 				if (ap.getTeam() == team || team == -1)
 				{
-					reward(ap, half);
+					reward(ap);
 				}
 			}
 		}
@@ -492,7 +505,7 @@ public abstract class Arena
 	 * @param team
 	 *            - Winning team
 	 */
-	public void setWinningTeam(int team)
+	public final void setWinningTeam(int team)
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
@@ -517,7 +530,7 @@ public abstract class Arena
 	 * @param max
 	 *            - Max points for an arena
 	 */
-	public void checkPlayerPoints(int max)
+	public final void checkPlayerPoints(int max)
 	{
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
@@ -530,7 +543,7 @@ public abstract class Arena
 
 					stop();
 
-					reward(ap, false);
+					reward(ap);
 				}
 			}
 		}
@@ -738,7 +751,7 @@ public abstract class Arena
 			{
 				ap.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
 				for (int i = 0; i < 4; i++)
-					ap.getPlayer().getLocation().getWorld().spawnEntity(ap.getPlayer().getLocation(), EntityType.ZOMBIE);
+					pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.ZOMBIE);
 			}
 		}
 
@@ -747,8 +760,8 @@ public abstract class Arena
 			ap.sendMessage("&e8 &3kills! Unlocked attackdogs!");
 			for (int i = 0; i < 2; i++)
 			{
-				Wolf wolf = (Wolf) ap.getPlayer().getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
-				wolf.setOwner(ap.getPlayer());
+				Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
+				wolf.setOwner(pl);
 			}
 		}
 
@@ -860,6 +873,7 @@ public abstract class Arena
 		ap.setOut(true);
 
 		this.updatedTeams = true;
+		this.updateLeaderboard = true;
 
 		returnXP(ap);
 
@@ -870,9 +884,9 @@ public abstract class Arena
 
 		teleport(ap.getPlayer(), ap.getSpawnBack());
 
-		// Call Arena leave event
-		UltimateArenaLeaveEvent leaveEvent = new UltimateArenaLeaveEvent(ap, this);
-		plugin.getServer().getPluginManager().callEvent(leaveEvent);
+//		Temporarily disable the event API, see if it helps fix some lag
+//		UltimateArenaLeaveEvent leaveEvent = new UltimateArenaLeaveEvent(ap, this);
+//		plugin.getServer().getPluginManager().callEvent(leaveEvent);
 
 		updateSigns();
 
@@ -1228,8 +1242,24 @@ public abstract class Arena
 	{
 		return startTimer > 1;
 	}
+	
+	// ---- Leaderboard ---- //
+	
+	protected boolean updateLeaderboard = true;
 
-	public List<String> buildLeaderboard(Player player)
+	protected List<String> leaderboard;
+	
+	public List<String> getLeaderboard(Player player)
+	{
+		if (updateLeaderboard)
+		{
+			leaderboard = buildLeaderboard(player);
+		}
+		
+		return leaderboard;
+	}
+
+	protected List<String> buildLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
 

@@ -113,7 +113,7 @@ public class SPLEEFArena extends FFAArena
 		{
 			spleefGround.setType(az.getSpecialType()); // Refresh the ground
 
-			rewardTeam(-1, false);
+			rewardTeam(-1);
 			
 			if (getStartingAmount() > 1)
 			{

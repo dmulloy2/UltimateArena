@@ -55,7 +55,7 @@ public class PVPArena extends Arena
 				
 				stop();
 				
-				rewardTeam(-1, false);
+				rewardTeam(-1);
 			}
 		}
 	}

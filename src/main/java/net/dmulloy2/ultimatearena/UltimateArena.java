@@ -266,31 +266,6 @@ public class UltimateArena extends JavaPlugin
 
 		debug("Broadcasted message: {0}", broadcast);
 	}
-
-//  This method can be normal now, since we fixed multiverse shit.
-//	public void loadFiles(boolean alreadyTried)
-//	{
-//		if (getServer().getWorlds().size() <= 1 && ! alreadyTried)
-//		{
-//			outConsole("Delaying the loading of files until all worlds have loaded.");
-//
-//			new BukkitRunnable()
-//			{
-//				@Override
-//				public void run()
-//				{
-//					loadFiles(true);
-//				}
-//			}.runTaskLater(this, 10L);
-//		}
-//		else
-//		{
-//			loadClasses();
-//			loadConfigs();
-//			loadArenas();
-//			loadSigns();
-//		}
-//	}
 	
 	/** 
 	 * Loads all files.
@@ -774,6 +749,7 @@ public class UltimateArena extends JavaPlugin
 			}
 			else
 			{
+				// TODO: Allow joins?
 				player.sendMessage(prefix + FormatUtil.format("&cThis arena has already started!"));
 			}
 		}

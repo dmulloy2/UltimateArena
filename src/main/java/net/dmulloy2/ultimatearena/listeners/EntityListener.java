@@ -167,10 +167,12 @@ public class EntityListener implements Listener
 			{
 				if (plugin.isInArena(def))
 				{
+					Arena ar = plugin.getArena(def);
 					ArenaPlayer dp = plugin.getArenaPlayer(def);
-					if (dp != null && !dp.isOut())
+					if (ar.checkValid(dp))
 					{
-						att.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
+						att.sendMessage(plugin.getPrefix() +
+								FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
 						event.setCancelled(true);
 						return;
 					}
@@ -211,30 +213,24 @@ public class EntityListener implements Listener
 				if (damaged instanceof Player)
 				{
 					ArenaPlayer dp = plugin.getArenaPlayer((Player) damaged);
-					if (dp != null && !dp.isOut())
+					if (dp.isValid())
 					{
 						ArenaPlayer ap = plugin.getArenaPlayer(player);
-						if (ap != null && !ap.isOut())
+						if (ap.isValid())
 						{
 							if (ap.getTeam() == dp.getTeam())
 							{
 								ArenaClass ac = ap.getArenaClass();
-								if (ac != null)
+								if (ac != null && ac.getName().equalsIgnoreCase("healer"))
 								{
-									if (ac.getName().equalsIgnoreCase("healer"))
+									if (inHand != null && inHand.getType() == Material.GOLD_AXE)
 									{
-										if (inHand != null)
+										Player pl = dp.getPlayer();
+										if ((pl.getHealth() + 2.0D) <= 20.0D)
 										{
-											if (inHand.getType() == Material.GOLD_AXE)
-											{
-												Player pl = dp.getPlayer();
-												if ((pl.getHealth() + 2.0D) <= 20.0D)
-												{
-													pl.setHealth(player.getHealth() + 2.0D);
+											pl.setHealth(player.getHealth() + 2.0D);
 
-													ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", pl.getName());
-												}
-											}
+											ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", pl.getName());
 										}
 									}
 								}
@@ -267,7 +263,7 @@ public class EntityListener implements Listener
 			if (plugin.isInArena(pdied))
 			{
 				ArenaPlayer dp = plugin.getArenaPlayer(pdied);
-				if (dp != null && !dp.isOut())
+				if (dp.isValid())
 				{
 					if (dp.isDead())
 						return;
@@ -275,7 +271,6 @@ public class EntityListener implements Listener
 					dp.onDeath();
 
 					Arena ar = plugin.getArena(pdied);
-					ar.onPlayerDeath(dp);
 
 					if (pdied.getKiller() instanceof Player)
 					{
@@ -319,7 +314,7 @@ public class EntityListener implements Listener
 
 							// Handle killer
 							ArenaPlayer kp = plugin.getArenaPlayer(killer);
-							if (kp != null && !kp.isOut())
+							if (kp.isValid())
 							{
 								kp.setKills(kp.getKills() + 1);
 								kp.setKillStreak(kp.getKillStreak() + 1);
@@ -339,14 +334,13 @@ public class EntityListener implements Listener
 									killer.sendMessage(killerline);
 								}
 
-								UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, kp, ar);
-								plugin.getServer().getPluginManager().callEvent(killEvent);
+//								Disable the Event API for the time being, see if it fixes lag
+//								UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, kp, ar);
+//								plugin.getServer().getPluginManager().callEvent(killEvent);
 							}
 						}
 					}
-					else
-					// From this point on, we will return when there is a valid
-					// match
+					else // From this point on, we will return when there is a valid match
 					{
 						if (pdied.getKiller() instanceof LivingEntity)
 						{
@@ -479,28 +473,31 @@ public class EntityListener implements Listener
 						plugin.debug("{0} has been killed by {1}", FormatUtil.getFriendlyName(lentity.getType()), killer.getName());
 
 						ArenaPlayer ak = plugin.getArenaPlayer(killer);
-						if (ak != null && !ak.isOut())
+						if (ak.isValid())
 						{
-							ak.addXP(25);
-							ak.setKills(ak.getKills() + 1);
-							ak.setKillStreak(ak.getKillStreak() + 1);
-							ak.getArena().doKillStreak(ak);
-
-							List<String> lines = new ArrayList<String>();
-
-							String name = FormatUtil.getFriendlyName(lentity.getType());
-							lines.add(plugin.getPrefix()
-									+ FormatUtil.format("&e{0} &3killed {1} &e{2}", killer.getName(), FormatUtil.getArticle(name), name));
-							lines.add(FormatUtil.format("&3----------------------------"));
-							lines.add(FormatUtil.format("&3Kills: &e{0}", ak.getKills()));
-							lines.add(FormatUtil.format("&3Deaths: &e{0}", ak.getDeaths()));
-							lines.add(FormatUtil.format("&3Streak: &e{0}", ak.getKillStreak()));
-							lines.add(FormatUtil.format("&3GameXP: &e{0}", ak.getGameXP()));
-							lines.add(FormatUtil.format("&3----------------------------"));
-
-							for (String line : lines)
+							if (ak.getArena().isCountMobKills()) // Selectively count mob kills
 							{
-								killer.sendMessage(line);
+								ak.addXP(25);
+								ak.setKills(ak.getKills() + 1);
+								ak.setKillStreak(ak.getKillStreak() + 1);
+								ak.getArena().doKillStreak(ak);
+	
+								List<String> lines = new ArrayList<String>();
+	
+								String name = FormatUtil.getFriendlyName(lentity.getType());
+								lines.add(plugin.getPrefix()
+										+ FormatUtil.format("&e{0} &3killed {1} &e{2}", killer.getName(), FormatUtil.getArticle(name), name));
+								lines.add(FormatUtil.format("&3----------------------------"));
+								lines.add(FormatUtil.format("&3Kills: &e{0}", ak.getKills()));
+								lines.add(FormatUtil.format("&3Deaths: &e{0}", ak.getDeaths()));
+								lines.add(FormatUtil.format("&3Streak: &e{0}", ak.getKillStreak()));
+								lines.add(FormatUtil.format("&3GameXP: &e{0}", ak.getGameXP()));
+								lines.add(FormatUtil.format("&3----------------------------"));
+	
+								for (String line : lines)
+								{
+									killer.sendMessage(line);
+								}
 							}
 						}
 					}

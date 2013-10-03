@@ -97,11 +97,12 @@ public class MOBArena extends Arena
 	public void endPlayer(ArenaPlayer ap, boolean end)
 	{
 		super.endPlayer(ap, end);
-		this.reward(ap, false);
+
+		reward(ap);
 	}
 
 	@Override
-	public void reward(ArenaPlayer p, boolean half)
+	public void reward(ArenaPlayer p)
 	{
 		int amtGold = (int) Math.floor(p.getGameXP() / 500.0);
 		int amtSlime = (int) Math.floor(p.getGameXP() / 550.0);
@@ -140,7 +141,7 @@ public class MOBArena extends Arena
 	public void onOutOfTime()
 	{
 		setWinningTeam(-1);
-		rewardTeam(winningTeam, false);
+		rewardTeam(winningTeam);
 	}
 
 	@Override
@@ -245,7 +246,7 @@ public class MOBArena extends Arena
 
 				stop();
 
-				rewardTeam(-1, false);
+				rewardTeam(-1);
 			}
 		}
 	}

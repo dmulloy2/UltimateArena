@@ -117,7 +117,7 @@ public class FFAArena extends Arena
 
 				if (startingAmount > 1)
 				{
-					rewardTeam(winningTeam, false);
+					rewardTeam(winningTeam);
 				}
 				else
 				{

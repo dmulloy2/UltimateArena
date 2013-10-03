@@ -8,10 +8,11 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
+import net.dmulloy2.ultimatearena.util.Util;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
@@ -30,17 +31,17 @@ import org.bukkit.inventory.ItemStack;
 public class ArenaZone
 {
 	private int amtLobbys = 2;
+	private int maxPlayers = 24;
 	private int amtSpawnpoints = 2;
-//	private int specialType = 20;
-	private int timesPlayed = 0;
+	
 	private int liked;
 	private int disliked;
-	private int maxPlayers = 24;
-	
+	private int timesPlayed;
+
 	private Material specialType;
 
-	private boolean loaded = false;
-	private boolean disabled = false;
+	private boolean loaded;
+	private boolean disabled;
 
 	private String step;
 	private String player;
@@ -48,15 +49,15 @@ public class ArenaZone
 	private String arenaName = "";
 	private FieldType type;
 
-	private Location lobby1 = null;
-	private Location lobby2 = null;
-	private Location arena1 = null;
-	private Location arena2 = null;
-	private Location team1spawn = null;
-	private Location team2spawn = null;
-	private Location lobbyREDspawn = null;
-	private Location lobbyBLUspawn = null;
-	
+	private Location lobby1;
+	private Location lobby2;
+	private Location arena1;
+	private Location arena2;
+	private Location team1spawn;
+	private Location team2spawn;
+	private Location lobbyREDspawn;
+	private Location lobbyBLUspawn;
+
 	private File file;
 
 	private Field lobby;
@@ -79,7 +80,7 @@ public class ArenaZone
 	 *            - {@link File} to load
 	 * @return new {@link ArenaZone}
 	 */
-	public ArenaZone(final UltimateArena plugin, File file)
+	public ArenaZone(UltimateArena plugin, File file)
 	{
 		this.arenaName = getName(file);
 		this.plugin = plugin;
@@ -95,7 +96,7 @@ public class ArenaZone
 	 *            - {@link ArenaCreator} to create arena from
 	 * @return new {@link ArenaZone}
 	 */
-	public ArenaZone(final UltimateArena plugin, ArenaCreator ac)
+	public ArenaZone(UltimateArena plugin, ArenaCreator ac)
 	{
 		this.plugin = plugin;
 		this.arenaName = ac.arenaName;
@@ -211,7 +212,7 @@ public class ArenaZone
 	// ---- Configuration ---- //
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
-	private boolean allowTeamKilling;
+	private boolean allowTeamKilling, countMobKills;
 	
 	private List<ItemStack> rewards = new ArrayList<ItemStack>();
 	
@@ -237,6 +238,7 @@ public class ArenaZone
 			this.maxDeaths = fc.getInt("maxDeaths", conf.getMaxDeaths());
 			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", conf.isAllowTeamKilling());
 			this.cashReward = fc.getInt("cashReward", conf.getCashReward());
+			this.countMobKills = fc.getBoolean("countMobKills", conf.isCountMobKills());
 			
 			if (fc.isSet("rewards"))
 			{
@@ -254,42 +256,60 @@ public class ArenaZone
 		}
 		catch (Exception e)
 		{
-			//
+			plugin.debug(Util.getUsefulStack(e));
 		}
 	}
 	
-	public void giveRewards(Player player, boolean half)
+	public void giveRewards(ArenaPlayer ap)
 	{
-		plugin.debug("Rewarding player {0}. Half: {1}", player.getName(), half);
+		Player player = ap.getPlayer();
 		
-		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
-		if (event.isCancelled())
-			return;
-
-		List<ItemStack> rewards = event.getRewards();
+		plugin.debug("Rewarding player {0}", player.getName());
+		
+//		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
+//		plugin.getServer().getPluginManager().callEvent(event);
+//		if (event.isCancelled())
+//			return;
 
 		for (ItemStack stack : rewards)
 		{
 			if (stack == null)
 				continue;
+			
+			// Make it gradient based now. >:3
+			int amt = (int) Math.floor(200.0D / ap.getGameXP());
+			if (amt > 0)
+			{
+				stack.setAmount(amt);
+				
+				InventoryHelper.addItem(player, stack);
+			}
 
-			if (half)
-				stack.setAmount((int) Math.floor(stack.getAmount() / 2));
-
-			InventoryHelper.addItem(player, stack);
+//			if (half)
+//				stack.setAmount((int) Math.floor(stack.getAmount() / 2));
+//
+//			InventoryHelper.addItem(player, stack);
 		}
 
-		// dmulloy2 new method
-		if (plugin.getConfig().getBoolean("moneyrewards"))
+		// Mun neh >:3
+		if (plugin.getConfig().getBoolean("moneyrewards", true))
 		{
 			if (plugin.getEconomy() != null)
 			{
 				if (cashReward > 0)
 				{
-					plugin.getEconomy().depositPlayer(player.getName(), cashReward);
-					String format = plugin.getEconomy().format(cashReward);
-					player.sendMessage(plugin.getPrefix() + 
-							FormatUtil.format("&a{0} has been added to your account!", format));
+					EconomyResponse er = plugin.getEconomy().depositPlayer(player.getName(), cashReward);
+					if (er.transactionSuccess())
+					{
+						String format = plugin.getEconomy().format(cashReward);
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&a{0} has been added to your account!", format));
+					}
+					else
+					{
+						player.sendMessage(plugin.getPrefix() +
+								FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
+					}
 				}
 			}
 		}
