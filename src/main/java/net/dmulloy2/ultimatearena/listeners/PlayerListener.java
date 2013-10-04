@@ -73,15 +73,13 @@ public class PlayerListener implements Listener
 
 			plugin.getArenaPlayer(player).leaveArena(LeaveReason.QUIT);
 		}
-
-		for (int i = 0; i < plugin.getWaiting().size(); i++)
+		
+		if (plugin.isPlayerWaiting(player))
 		{
-			ArenaJoinTask task = plugin.getWaiting().get(i);
-			if (task.getPlayer().getName().equals(player.getName()))
-			{
-				task.cancel();
-				plugin.getWaiting().remove(task);
-			}
+			ArenaJoinTask task = plugin.getWaiting().get(player);
+			
+			task.cancel();
+			plugin.getWaiting().remove(player);
 		}
 	}
 
@@ -203,64 +201,64 @@ public class PlayerListener implements Listener
 					Sign s = (Sign) block.getState();
 					if (s.getLine(0).equalsIgnoreCase("[UltimateArena]"))
 					{
-						if (s.getLine(1).equalsIgnoreCase("Click to join"))
+						String name = s.getLine(1);
+						if (plugin.getArenaZone(name) != null)
 						{
-							if (s.getLine(2).equalsIgnoreCase("Auto assign"))
+							boolean found = false;
+							for (Arena a : plugin.getActiveArenas())
 							{
-								boolean found = false;
-								if (plugin.getActiveArenas().size() > 0)
+								if (a.getName().equalsIgnoreCase(name))
 								{
-									for (Arena a : plugin.getActiveArenas())
+									if (a.isInLobby())
 									{
-										if (a.isInLobby())
-										{
-											plugin.join(player, a.getName());
-											found = true;
-										}
-									}
-								}
-								if (! found)
-								{
-									if (plugin.getLoadedArenas().size() > 0)
-									{
-										ArenaZone az = plugin.getLoadedArenas().get(0);
-										if (az != null)
-										{
-											plugin.join(player, az.getArenaName());
-											found = true;
-										}
+										plugin.join(player, a.getName());
+										found = true;
 									}
 								}
 							}
-							else
+							if (! found)
 							{
-								String name = s.getLine(2);
-								boolean found = false;
-								for (Arena a : plugin.getActiveArenas())
+								for (ArenaZone az : plugin.getLoadedArenas())
 								{
-									if (a.getName().equalsIgnoreCase(name))
+									if (az != null && az.getArenaName().equalsIgnoreCase(name))
 									{
-										if (a.isInLobby())
-										{
-											plugin.join(player, a.getName());
-											found = true;
-										}
+										plugin.join(player, az.getArenaName());
+										found = true;
 									}
 								}
 								if (! found)
 								{
-									for (ArenaZone az : plugin.getLoadedArenas())
+									player.sendMessage(plugin.getPrefix() + 
+											FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
+								}
+							}
+						}
+					}
+					else
+					{
+						if (s.getLine(2).equalsIgnoreCase("Auto assign"))
+						{
+							boolean found = false;
+							if (! plugin.getActiveArenas().isEmpty())
+							{
+								for (Arena a : plugin.getActiveArenas())
+								{
+									if (a.isInLobby())
 									{
-										if (az != null && az.getArenaName().equalsIgnoreCase(name))
-										{
-											plugin.join(player, az.getArenaName());
-											found = true;
-										}
+										plugin.join(player, a.getName());
+										found = true;
 									}
-									if (! found)
+								}
+							}
+							if (! found)
+							{
+								if (! plugin.getLoadedArenas().isEmpty())
+								{
+									ArenaZone az = plugin.getLoadedArenas().get(0);
+									if (az != null)
 									{
-										player.sendMessage(plugin.getPrefix()
-												+ FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
+										plugin.join(player, az.getArenaName());
+										found = true;
 									}
 								}
 							}
@@ -304,17 +302,15 @@ public class PlayerListener implements Listener
 				return;
 
 			Player player = event.getPlayer();
-			
-			for (int i = 0; i < plugin.getWaiting().size(); i++)
+			if (plugin.isPlayerWaiting(player))
 			{
-				ArenaJoinTask task = plugin.getWaiting().get(i);
-				if (task.getPlayer().getName().equals(player.getName()))
-				{
-					task.cancel();
-					plugin.getWaiting().remove(task);
-
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCancelled!"));
-				}
+				ArenaJoinTask task = plugin.getWaiting().get(player);
+				
+				task.cancel();
+				plugin.getWaiting().remove(player);
+				
+				player.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&cCancelled!"));
 			}
 		}
 	}
@@ -389,14 +385,19 @@ public class PlayerListener implements Listener
 		if (! event.isCancelled())
 		{
 			Player player = event.getPlayer();
-			if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
+			if (plugin.isInArena(player))
 			{
-				String cmd = event.getMessage().toLowerCase();
-				if (! cmd.contains("/ua") && plugin.isInArena(player) && ! plugin.isWhitelistedCommand(cmd))
+				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
-					event.setCancelled(true);
+					String cmd = event.getMessage().toLowerCase();
+					if (! cmd.contains("/ua") && ! plugin.isWhitelistedCommand(cmd))
+					{
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
+						event.setCancelled(true);
+					}
 				}
 			}
 		}

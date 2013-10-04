@@ -13,15 +13,12 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.MaterialUtil;
 import net.dmulloy2.ultimatearena.util.Util;
-import net.ess3.api.IEssentials;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -43,11 +40,11 @@ public class ArenaClass
 
 	// Essentials Integration
 	private String essKitName;
-	private boolean usesEssentials = false;
+	private boolean usesEssentials;
 	private Map<String, Object> essentialsKit;
 
 	// Potion Effects
-	private boolean hasPotionEffects = false;
+	private boolean hasPotionEffects;
 	private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 
 	private File file;
@@ -170,12 +167,9 @@ public class ArenaClass
 					String line = fc.getString("essentialsKit", "");
 
 					// Initialize Essentials Hook
-					PluginManager pm = plugin.getServer().getPluginManager();
-					if (pm.isPluginEnabled("Essentials"))
+					if (plugin.isUseEssentials())
 					{
-						Plugin essPlugin = pm.getPlugin("Essentials");
-						IEssentials ess = (IEssentials) essPlugin;
-						Map<String, Object> kit = ess.getSettings().getKit(line);
+						Map<String, Object> kit = plugin.getEssentials().getSettings().getKit(line);
 						if (kit != null)
 						{
 							essentialsKit = kit;

@@ -8,7 +8,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
-import net.ess3.api.IEssentials;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -17,8 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 
 import com.earth2me.essentials.Kit;
@@ -241,18 +238,15 @@ public class ArenaPlayer
 			return;
 		}
 
-		if (arenaClass.isUsesEssentials())
+		if (arenaClass.isUsesEssentials() && plugin.isUseEssentials())
 		{
 			try
 			{
-				PluginManager pm = plugin.getServer().getPluginManager();
-				Plugin essPlugin = pm.getPlugin("Essentials");
-				IEssentials ess = (IEssentials) essPlugin;
-				User user = ess.getUser(player);
+				User user = plugin.getEssentials().getUser(player);
 
-				List<String> items = Kit.getItems(ess, user, arenaClass.getEssKitName(), arenaClass.getEssentialsKit());
+				List<String> items = Kit.getItems(plugin.getEssentials(), user, arenaClass.getEssKitName(), arenaClass.getEssentialsKit());
 
-				Kit.expandItems(ess, user, items);
+				Kit.expandItems(plugin.getEssentials(), user, items);
 			}
 			catch (Throwable e)
 			{

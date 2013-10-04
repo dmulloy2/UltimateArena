@@ -18,6 +18,7 @@ package net.dmulloy2.ultimatearena;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -95,6 +96,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.earth2me.essentials.Essentials;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 /**
@@ -118,8 +120,12 @@ public class UltimateArena extends JavaPlugin
 	private @Getter WorldEditPlugin worldEdit;
 	private @Getter WorldEditHandler worldEditHandler;
 	
+	// Essentials
+	private @Getter Essentials essentials;
+	private @Getter boolean useEssentials;
+	
 	// Lists
-	private @Getter List<ArenaJoinTask> waiting = new ArrayList<ArenaJoinTask>();
+	private @Getter HashMap<Player, ArenaJoinTask> waiting = new HashMap<Player, ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	private @Getter List<JavaPlugin> pluginsUsingAPI = new ArrayList<JavaPlugin>();
@@ -327,6 +333,9 @@ public class UltimateArena extends JavaPlugin
 		return true;
 	}
 	
+	/**
+	 * Sets up integration with WorldEdit
+	 */
 	public void setupWorldEditIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
@@ -344,6 +353,21 @@ public class UltimateArena extends JavaPlugin
 		}
 		
 		outConsole(Level.WARNING, "Could not hook into WorldEdit!");
+	}
+	
+	/**
+	 * Sets up integration with Essentials
+	 */
+	public void setupEssentialsIntegration()
+	{
+		PluginManager pm = getServer().getPluginManager();
+		
+		if (pm.isPluginEnabled("Essentials"))
+		{
+			Plugin plugin = pm.getPlugin("Essentials");
+			essentials = (Essentials) plugin;
+			useEssentials = true;
+		}
 	}
 
 	// Create Directories
@@ -543,13 +567,10 @@ public class UltimateArena extends JavaPlugin
 
 			file.delete();
 
-			for (int i = 0; i < arenaSigns.size(); i++)
+			for (ArenaSign sign : arenaSigns)
 			{
-				ArenaSign as = arenaSigns.get(i);
-				if (as.getArena().getArenaName().equalsIgnoreCase(str))
-				{
-					signHandler.deleteSign(as);
-				}
+				if (sign.getName().equalsIgnoreCase(str))
+					signHandler.deleteSign(sign);
 			}
 
 			player.sendMessage(prefix + FormatUtil.format("&3Successfully deleted arena: &e{0}", str));
@@ -704,7 +725,7 @@ public class UltimateArena extends JavaPlugin
 			int wait = seconds * 20;
 
 			join.runTaskLater(this, wait);
-			waiting.add(join);
+			waiting.put(player, join);
 
 			player.sendMessage(prefix + FormatUtil.format("&3Please stand still for &e{0} &3seconds!", seconds));
 		}
@@ -1133,6 +1154,11 @@ public class UltimateArena extends JavaPlugin
 		}
 
 		return false;
+	}
+	
+	public boolean isPlayerWaiting(Player player)
+	{
+		return waiting.containsKey(player);
 	}
 	
 	/**

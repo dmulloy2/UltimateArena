@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.events.UltimateArenaJoinEvent;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.tasks.ArenaFinalizeTask;
 import net.dmulloy2.ultimatearena.tasks.EntityClearTask;
@@ -33,12 +32,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
-import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 /**
@@ -176,13 +172,10 @@ public abstract class Arena
 		player.setFlying(false);
 
 		// If essentials is found, remove god mode.
-		PluginManager pm = plugin.getServer().getPluginManager();
-		if (pm.isPluginEnabled("Essentials"))
+		if (plugin.isUseEssentials())
 		{
-			Plugin plugin = pm.getPlugin("Essentials");
-			IEssentials ess = (IEssentials)plugin;
-			User user = ess.getUser(player);
-
+			User user = plugin.getEssentials().getUser(player);
+			
 			// Disable GodMode in the arena
 			user.setGodModeEnabled(false);
 		}
@@ -199,9 +192,9 @@ public abstract class Arena
 		// Update Signs
 		updateSigns();
 
-		// Call ArenaJoinEvent
-		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
-		plugin.getServer().getPluginManager().callEvent(joinEvent);
+//		Temporarily disable the event API, see if it helps fix some lag
+//		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
+//		plugin.getServer().getPluginManager().callEvent(joinEvent);
 
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), getActivePlayers(), az.getMaxPlayers());
 	}

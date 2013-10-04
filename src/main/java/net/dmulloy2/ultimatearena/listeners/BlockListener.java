@@ -124,7 +124,8 @@ public class BlockListener implements Listener
 							}
 						}.runTaskLater(plugin, 60L);
 
-						event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
+						event.getPlayer().sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&aCreated new Join Sign!"));
 					}
 					else
 					{
@@ -168,12 +169,14 @@ public class BlockListener implements Listener
 					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 					{
 						plugin.getSignHandler().deleteSign(sign);
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cDeleted Join sign!"));
+						player.sendMessage(plugin.getPrefix() +
+								FormatUtil.format("&cDeleted Join sign!"));
 					}
 					else
 					{
 						event.setCancelled(true);
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cPermission denied!"));
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&cPermission denied!"));
 					}
 				}
 			}

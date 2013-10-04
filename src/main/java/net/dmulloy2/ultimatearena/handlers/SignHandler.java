@@ -13,6 +13,7 @@ import net.dmulloy2.ultimatearena.util.Util;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Manager for Signs
@@ -84,6 +85,16 @@ public class SignHandler
 				}
 			}
 		}
+		
+		// Update signs
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				updateSigns();
+			}
+		}.runTaskLater(plugin, 120L);
 	}
 
 	public void refreshSave()
@@ -111,7 +122,7 @@ public class SignHandler
 
 			String path = "signs." + sign.getId() + ".";
 
-			fc.set(path + "name", sign.getArena().getArenaName());
+			fc.set(path + "name", sign.getName());
 
 			Location location = sign.getLocation();
 			String locPath = path + "location.";
@@ -131,6 +142,8 @@ public class SignHandler
 		}
 		catch (IOException e)
 		{
+			plugin.debug("Could not refresh sign save: {0}", e);
+			return;
 		}
 	}
 
@@ -159,7 +172,7 @@ public class SignHandler
 		
 		for (ArenaSign sign : plugin.getArenaSigns())
 		{
-			if (sign.getArena().getArenaName().equals(az.getArenaName()))
+			if (sign.getName().equals(az.getArenaName()))
 				ret.add(sign);
 		}
 		
@@ -173,5 +186,6 @@ public class SignHandler
 		plugin.getArenaSigns().remove(sign);
 
 		refreshSave();
+		updateSigns();
 	}
 }

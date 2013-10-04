@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.types;
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
@@ -74,44 +75,107 @@ public class ArenaSign
 		}
 
 		plugin.debug("Updating sign: {0}", id);
-
+		
 		sign.setLine(0, "[UltimateArena]");
-		sign.setLine(1, "Click to Join");
-		sign.setLine(2, arena.getArenaName());
-		sign.setLine(3, getStatus());
-
-		sign.update(true);
-	}
-
-	/**
-	 * Gets the status of the {@link Arena}
-	 * 
-	 * @return Status of the {@link Arena}
-	 */
-	public String getStatus()
-	{
+		sign.setLine(1, arena.getArenaName());
+		
+		// Line 2
 		StringBuilder line = new StringBuilder();
-		if (plugin.getArena(arena.getArenaName()) != null)
+		if (isActive())
 		{
-			Arena a = plugin.getArena(arena.getArenaName());
-			line.append(a.getGameMode().toString() + " (");
-			line.append(a.getActivePlayers() + "/" + arena.getMaxPlayers() + ")");
+			Arena ar = getArena();
+			if (ar.isInLobby())
+			{
+				line.append(FormatUtil.format("&aJoin ({0} sec)", ar.getStartTimer()));
+			}
+			else
+			{
+				line.append(FormatUtil.format("&cIn-Game"));
+			}
+		}
+		else
+		{
+			line.append(FormatUtil.format("&aJoin"));
+		}
+		
+		sign.setLine(2, line.toString());
+		
+		// Line 3
+		line = new StringBuilder();
+		if (isActive())
+		{
+			Arena ar = getArena();
+
+			switch (ar.getGameMode())
+			{
+				case DISABLED:
+					line.append("STOPPING (0/");
+					line.append(arena.getMaxPlayers());
+					line.append(")");
+					break;
+				case IDLE:
+					line.append("IDLE (0/");
+					line.append(arena.getMaxPlayers());
+					line.append(")");
+					break;
+				case INGAME:
+					line.append("INGAME (");
+					line.append(ar.getActivePlayers());
+					line.append("/");
+					line.append(arena.getMaxPlayers());
+					line.append(")");
+					break;
+				case LOBBY:
+					line.append("LOBBY (");
+					line.append(ar.getActivePlayers());
+					line.append("/");
+					line.append(arena.getMaxPlayers());
+					line.append(")");
+					break;
+				case STOPPING:
+					line.append("STOPPING (0/");
+					line.append(arena.getMaxPlayers());
+					line.append(")");
+					break;
+				default:
+					break;
+				
+			}
 		}
 		else
 		{
 			if (arena.isDisabled())
 			{
-				line.append("DISABLED (0/0)");
+				line.append("DISABLED");
 			}
 			else
 			{
-				line.append("IDLE (0/");
-				line.append(arena.getMaxPlayers());
-				line.append(")");
+				line.append("IDLE");
 			}
+			
+			line.append("(0/");
+			line.append(arena.getMaxPlayers());
+			line.append(")");
 		}
 
-		return line.toString();
+		sign.setLine(3, line.toString());
+
+		sign.update();
+	}
+	
+	private final boolean isActive()
+	{
+		return plugin.getArena(arena.getArenaName()) != null;
+	}
+	
+	private final Arena getArena()
+	{
+		return plugin.getArena(arena.getArenaName());
+	}
+	
+	public final String getName()
+	{
+		return arena.getArenaName();
 	}
 
 	@Override
