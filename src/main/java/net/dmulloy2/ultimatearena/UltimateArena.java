@@ -707,15 +707,11 @@ public class UltimateArena extends JavaPlugin
 			player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin an arena!"));
 			return;
 		}
-
-		for (int i = 0; i < waiting.size(); i++)
+		
+		if (isPlayerWaiting(player))
 		{
-			ArenaJoinTask task = waiting.get(i);
-			if (task.getPlayer().getName().equals(player.getName()))
-			{
-				player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));
-				return;
-			}
+			player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));
+			return;
 		}
 
 		ArenaJoinTask join = new ArenaJoinTask(this, player, arena);

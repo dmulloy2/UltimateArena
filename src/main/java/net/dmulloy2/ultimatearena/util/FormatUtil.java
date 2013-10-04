@@ -27,22 +27,7 @@ public class FormatUtil
 	public static String format(String format, Object... objects)
 	{
 		String ret = MessageFormat.format(format, objects);
-		// ret = WordUtils.capitalize(ret, new char[]{'.'});
 		return ChatColor.translateAlternateColorCodes('&', ret);
-	}
-
-	/**
-	 * Formats a given string and its objects for logging
-	 * 
-	 * @param string
-	 *            - Base string
-	 * @param objects
-	 *            - Objects to format in
-	 * @return Formatted string for logging
-	 */
-	public static String formatLog(String string, Object... objects)
-	{
-		return MessageFormat.format(string, objects);
 	}
 
 	/**
