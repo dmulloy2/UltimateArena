@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.events.UltimateArenaKillEvent;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -408,8 +407,8 @@ public class EntityListener implements Listener
 										kp.sendMessage(killerline);
 									}
 
-									UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, kp, ar);
-									plugin.getServer().getPluginManager().callEvent(killEvent);
+//									UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, kp, ar);
+//									plugin.getServer().getPluginManager().callEvent(killEvent);
 								}
 
 								return;

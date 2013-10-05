@@ -7,7 +7,6 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.events.UltimateArenaRewardEvent;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
@@ -92,11 +91,11 @@ public class ArenaConfig
 	{
 		plugin.debug("Rewarding player {0}. Half: {1}", player.getName(), half);
 		
-		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
-		if (event.isCancelled())
-			return;
-
-		List<ItemStack> rewards = event.getRewards();
+//		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
+//		if (event.isCancelled())
+//			return;
+//
+//		List<ItemStack> rewards = event.getRewards();
 
 		for (ItemStack stack : rewards)
 		{
