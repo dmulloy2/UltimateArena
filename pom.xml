@@ -24,10 +24,6 @@
       <url>http://ci.drtshock.com/plugin/repository/everything/</url>
     </repository>
     <repository>
-      <id>shadowvolt-repo</id>
-      <url>http://ci.shadowvolt.com/plugin/repository/everything</url>
-    </repository>
-    <repository>
       <id>sk89q-repo</id>
       <url>http://maven.sk89q.com/repo</url>
     </repository>
@@ -96,11 +92,6 @@
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
       <version>1.6.4-R0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>net.dmulloy2</groupId>
-      <artifactId>swornguns</artifactId>
-      <version>1.0</version>
     </dependency>
     <dependency>
  	  <groupId>org.projectlombok</groupId>

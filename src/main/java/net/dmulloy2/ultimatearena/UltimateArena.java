@@ -68,7 +68,6 @@ import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
-import net.dmulloy2.ultimatearena.listeners.SwornGunsListener;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
@@ -156,7 +155,10 @@ public class UltimateArena extends JavaPlugin
 		if (! checkDependencies())
 			return;
 		
+		// Integration
+		setupVaultIntegration();
 		setupWorldEditIntegration();
+		setupEssentialsIntegration();
 		
 		worldEditHandler = new WorldEditHandler(this);
 		
@@ -191,21 +193,11 @@ public class UltimateArena extends JavaPlugin
 		commandHandler.registerCommand(new CmdStop(this));
 		commandHandler.registerCommand(new CmdVersion(this));
 
-		// SwornGuns
+		// Register Listeners
 		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("SwornGuns"))
-		{
-			pm.registerEvents(new SwornGunsListener(this), this);
-			debug("Enabling SwornGuns integration!");
-		}
-
-		// Register Other Listeners
 		pm.registerEvents(new EntityListener(this), this);
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
-
-		// Vault
-		setupVaultIntegration();
 
 		// Load Files
 		loadFiles();
