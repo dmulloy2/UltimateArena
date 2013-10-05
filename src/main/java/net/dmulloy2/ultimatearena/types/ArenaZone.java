@@ -256,7 +256,7 @@ public class ArenaZone
 		}
 		catch (Exception e)
 		{
-			plugin.debug(Util.getUsefulStack(e));
+			plugin.debug(Util.getUsefulStack(e, "loading config for \"" + arenaName + "\""));
 		}
 	}
 	

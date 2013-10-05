@@ -443,8 +443,9 @@ public class UltimateArena extends JavaPlugin
 		File file = new File(getDataFolder(), "whiteListedCommands.yml");
 		if (! file.exists())
 		{
-			outConsole("Generating Whitelisted Commands file!");
-			fileHandler.generateWhitelistedCmds();
+			generateWhitelistedCommands();
+			
+			debug("Generating Whitelisted Commands file!");
 		}
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
@@ -463,8 +464,9 @@ public class UltimateArena extends JavaPlugin
 		File file = new File(folder, str + "Config.yml");
 		if (! file.exists())
 		{
-			outConsole("Generating config for: {0}", str);
-			fileHandler.generateArenaConfig(str);
+			generateArenaConfig(str);
+
+			debug("Generating config for: {0}", str);
 		}
 
 		ArenaConfig a = new ArenaConfig(this, str, file);
@@ -483,8 +485,7 @@ public class UltimateArena extends JavaPlugin
 		File[] children = folder.listFiles();
 		if (children.length == 0)
 		{
-			fileHandler.generateStockClasses();
-			outConsole("Generating stock classes!");
+			generateStockClasses();
 		}
 
 		children = folder.listFiles();
@@ -501,6 +502,37 @@ public class UltimateArena extends JavaPlugin
 		}
 
 		outConsole("Loaded {0} Arena Classes!", total);
+	}
+	
+	/**
+	 * Generates the WhiteListedCommands file
+	 */
+	public void generateWhitelistedCommands()
+	{
+		saveResource("whiteListedCommands.yml", false);
+	}
+	
+	/**
+	 * Generates an arena config for a particular field
+	 * 
+	 * @param field - Field to generate config for
+	 */
+	public void generateArenaConfig(String field)
+	{
+		saveResource("configs" + File.separator + field + "Config.yml", false);
+	}
+	
+	/**
+	 * Generates stock classes
+	 */
+	public void generateStockClasses()
+	{
+		String[] stockClasses = new String[] { "archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef" };
+		
+		for (String stockClass : stockClasses)
+		{
+			saveResource("classes" + File.separator + stockClass + ".yml", false);
+		}
 	}
 
 	public void loadSigns()
@@ -937,9 +969,12 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Attempts to create a new {@link Arena}
 	 * 
-	 * @param player - {@link Player} who is creating the arena
-	 * @param name - Name of the new arena
-	 * @param type - Type of the new arena
+	 * @param player 
+	 *            - {@link Player} who is creating the arena
+	 * @param name 
+	 *            - Name of the new arena
+	 * @param type 
+	 *            - Type of the new arena
 	 */
 	public void createArena(Player player, String name, String type)
 	{
@@ -977,7 +1012,8 @@ public class UltimateArena extends JavaPlugin
 	 * <p>
 	 * Will return <code>null</code> if the player is not creating an arena.
 	 * 
-	 * @param player - {@link Player} to get {@link ArenaCreator} instance for.
+	 * @param player 
+	 *            - {@link Player} to get {@link ArenaCreator} instance for.
 	 * 
 	 * @return The player's {@link ArenaCreator} instance
 	 */
@@ -995,7 +1031,8 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Returns whether or not a {@link Player} is creating an arena.
 	 * 
-	 * @param player - {@link Player} to check
+	 * @param player 
+	 *            - {@link Player} to check
 	 * @return Whether or not a {@link Player} is creating an arena.
 	 */
 	public boolean isCreatingArena(Player player)
@@ -1006,7 +1043,8 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Sets a point in the arena creation process
 	 * 
-	 * @param player - {@link Player} setting the point
+	 * @param player 
+	 *            - {@link Player} setting the point
 	 */
 	public void setPoint(Player player)
 	{
@@ -1029,7 +1067,8 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Finalizes a step in the arena creation process.
 	 * 
-	 * @param player - {@link Player} who is finalizing
+	 * @param player 
+	 *            - {@link Player} who is finalizing
 	 */
 	public void setDone(Player player)
 	{
@@ -1046,7 +1085,8 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Stops the creation of an arena
 	 * 
-	 * @param player - {@link Player} who is stopping
+	 * @param player 
+	 *            - {@link Player} who is stopping
 	 */
 	public void stopCreatingArena(Player player)
 	{
@@ -1102,7 +1142,8 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Accepts registration from a {@link JavaPlugin}
 	 * 
-	 * @param plugin - {@link JavaPlugin} to accept the registration from
+	 * @param plugin 
+	 *            - {@link JavaPlugin} to accept the registration from
 	 */
 	public void acceptRegistration(JavaPlugin plugin)
 	{
@@ -1138,7 +1179,8 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Returns whether or not a command is whitelisted
 	 * 
-	 * @param command - Command to check
+	 * @param command 
+	 *            - Command to check
 	 * @return Whether or not a command is whitelisted
 	 */
 	public boolean isWhitelistedCommand(String command)

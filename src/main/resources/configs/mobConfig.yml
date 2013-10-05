@@ -1,0 +1,9 @@
+gameTime: 1800
+lobbyTime: 90
+maxDeaths: 0
+allowTeamKilling: false
+maxWave: 15
+cashReward: 1000
+rewards:
+- 264,3
+- 46,3

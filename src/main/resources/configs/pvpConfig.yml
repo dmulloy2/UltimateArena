@@ -1,0 +1,8 @@
+gameTime: 600
+lobbyTime: 90
+maxDeaths: 3
+allowTeamKilling: false
+cashReward: 100
+rewards:
+- 266,3
+- 46,1

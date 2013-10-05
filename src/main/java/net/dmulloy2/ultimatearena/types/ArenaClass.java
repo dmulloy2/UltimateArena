@@ -93,7 +93,7 @@ public class ArenaClass
 						{
 							line.append(split[i] + " ");
 						}
-						
+
 						line.delete(line.length() - 1, line.length());
 						
 						enchants = readArmorEnchantments(line.toString());
@@ -132,10 +132,10 @@ public class ArenaClass
 							if (stack != null)
 							{
 								plugin.debug("Detected deprecated potion entry. Converting!");
-	
+
 								fc.set(path, stack.getType().toString() + ":" + stack.getDurability() + "," + stack.getAmount());
 								save = true;
-	
+
 								weapons.add(stack);
 							}
 						}
@@ -150,10 +150,7 @@ public class ArenaClass
 					}
 					catch (Exception e)
 					{
-						plugin.outConsole(Level.SEVERE, "Exception occured while loading class {0}", name);
-						plugin.outConsole(Level.SEVERE, "Could not parse item \"{0}\": {1}", fc.getString(path), e);
-						
-						plugin.debug(Util.getUsefulStack(e));
+						plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "parsing item \"" + fc.getString(path) + "\""));
 					}
 				}
 			}
@@ -179,11 +176,13 @@ public class ArenaClass
 					essKitName = line;
 				}
 				catch (Throwable e)
-				{
-					plugin.outConsole(Level.WARNING, "Could not load Essentials kit for class {0}: {1}", name, 
-							e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e.getMessage());
-					
-					plugin.debug(Util.getUsefulStack(e));
+				{					
+					plugin.outConsole(Level.WARNING, Util.getUsefulStack(e, "loading Essentials kit for \"" + name + "\""));
+
+					if (e instanceof ClassNotFoundException || e instanceof NoSuchMethodError)
+					{
+						plugin.outConsole(Level.WARNING, "This is probably caused by an outdated Essentials build.");
+					}
 				}
 			}
 
@@ -203,9 +202,7 @@ public class ArenaClass
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Error loading class \"{0}\": {1}", name, e.getMessage());
-			
-			plugin.debug(Util.getUsefulStack(e));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading class: \"" + name + "\""));
 			return false;
 		}
 

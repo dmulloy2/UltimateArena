@@ -179,10 +179,10 @@ public class Util
 		return ret.toString();
 	}
 
-	public static String getUsefulStack(Throwable e)
+	public static String getUsefulStack(Throwable e, String circumstance)
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("Encountered an exception!" + '\n');
+		ret.append("Encountered an exception while " + circumstance + ":" + '\n');
 		ret.append(e.getClass().getName() + ":" + e.getMessage() + '\n');
 		ret.append("Affected classes: " + '\n');
 

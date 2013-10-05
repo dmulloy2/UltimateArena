@@ -1,0 +1,20 @@
+armor:
+  chestplate: 307,prot:1
+  leggings: 308,prot:1
+  boots: 309,prot:1
+tools:
+  '1': 292,1
+  '2': 318,1
+  '3': 341,5
+  '4': 322,2
+  '5': 267,1,sharp:2
+  '6': POTION:3,1
+  '7': POTION:9,1
+  '8': POTION:16396,1
+  '9': 'potion: weak, 1, 1, true'
+useEssentials: false
+essentialsKit: ''
+useHelmet: true
+permissionNode: ''
+hasPotionEffects: false
+potionEffects: ''

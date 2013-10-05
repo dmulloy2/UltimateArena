@@ -80,9 +80,7 @@ public class ArenaConfig
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Failed to load config for \"{0}\": {1}", arenaName, e.getMessage());
-			
-			plugin.debug(Util.getUsefulStack(e));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading config for \"" + arenaName + "\""));
 			return false;
 		}
 

@@ -44,7 +44,7 @@ public class ItemUtil
 			{
 				mat = MaterialUtil.getMaterial(s.substring(0, s.indexOf(":")));
 				
-				dat = Short.parseShort(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
+				dat = Short.parseShort(s.substring(s.indexOf(":") + 1));
 			}
 			else
 			{
@@ -58,7 +58,7 @@ public class ItemUtil
 
 				s = s.substring(s.indexOf(",") + 1);
 
-				if (!s.isEmpty())
+				if (! s.isEmpty())
 				{
 					if (s.contains(","))
 					{
@@ -98,14 +98,15 @@ public class ItemUtil
 			}
 		}
 
-		ItemStack ret = new ItemStack(mat, amt, dat);
-
-		if (! enchantments.isEmpty())
+		ItemStack ret = null;
+		if (mat != null && amt > 0)
 		{
-			for (Entry<Enchantment, Integer> entry : enchantments.entrySet())
-			{
-				ret.addUnsafeEnchantment(entry.getKey(), entry.getValue());
-			}
+			ret = new ItemStack(mat, amt, dat);
+		}
+
+		if (ret != null && ! enchantments.isEmpty())
+		{
+			ret.addUnsafeEnchantments(enchantments);
 		}
 
 		return ret;

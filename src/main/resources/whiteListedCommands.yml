@@ -1,0 +1,11 @@
+whiteListedCmds:
+- /f c
+- /msg
+- /r
+- /who
+- /gms
+- /god
+- /list
+- /t
+- /msg
+- /tell

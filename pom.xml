@@ -62,8 +62,23 @@
         <directory>${basedir}/src/main/resources/</directory>
         <filtering>true</filtering>
         <includes>
-          <include>config.yml</include>
-          <include>plugin.yml</include>
+          <include>*.yml</include>
+        </includes>
+      </resource>
+      <resource>
+  	    <targetPath>classes/</targetPath>
+        <directory>${basedir}/src/main/resources/classes/</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>*.yml</include>
+        </includes>
+      </resource>
+      <resource>
+  	    <targetPath>configs/</targetPath>
+        <directory>${basedir}/src/main/resources/configs/</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>*.yml</include>
         </includes>
       </resource>
       <resource>
