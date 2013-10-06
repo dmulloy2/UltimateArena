@@ -27,6 +27,8 @@ public class ArenaConfig
 
 	private boolean allowTeamKilling, countMobKills;
 	private boolean loaded;
+	
+	private List<String> blacklistedClasses, whitelistedClasses;
 
 	private List<ItemStack> rewards = new ArrayList<ItemStack>();
 
@@ -75,6 +77,20 @@ public class ArenaConfig
 				ItemStack stack = ItemUtil.readItem(reward);
 				if (stack != null)
 					rewards.add(stack);
+			}
+			
+			this.blacklistedClasses = new ArrayList<String>();
+			
+			if (fc.isSet("blacklistedClasses"))
+			{
+				blacklistedClasses.addAll(fc.getStringList("blacklistedClasses"));
+			}
+			
+			this.whitelistedClasses = new ArrayList<String>();
+			
+			if (fc.isSet("whitelistedClasses"))
+			{
+				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
 			}
 		}
 		catch (Exception e)

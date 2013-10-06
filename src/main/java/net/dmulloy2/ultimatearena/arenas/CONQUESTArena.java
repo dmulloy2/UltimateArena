@@ -39,7 +39,7 @@ public class CONQUESTArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.redTeamPower = getActivePlayers() * 4;
+		this.redTeamPower = getValidPlayerCount() * 4;
 		this.blueTeamPower = redTeamPower;
 		if (redTeamPower < 4)
 		{

@@ -6,9 +6,11 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.ultimatearena.util.MaterialUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -33,6 +35,8 @@ public class ArenaCreator
 	protected Location team2spawn = null;
 	protected Location lobbyREDspawn = null;
 	protected Location lobbyBLUspawn = null;
+	
+	protected Material specialType = null;
 
 	protected int amtLobbys = 2;
 	protected int amtSpawnpoints = 2;
@@ -95,6 +99,7 @@ public class ArenaCreator
 			amtLobbys = 1;
 			this.steps.add("spleefzone");
 			this.steps.add("outzone");
+			this.steps.add("specialType");
 		}
 		if (arenaType.equalsIgnoreCase("bomb"))
 		{
@@ -293,6 +298,18 @@ public class ArenaCreator
 					sendMessage("&3You need &e2 &3points set for the out-zone!");
 				}
 			}
+			if (step.equalsIgnoreCase("specialType"))
+			{
+				if (specialType != null)
+				{
+					stepUp();
+					sendMessage("&3Done setting special type!");
+				}
+				else
+				{
+					sendMessage("&3You need to set the &eSpecial Type&e3!");
+				}
+			}
 			if (step.equalsIgnoreCase("kothflag"))
 			{
 				if (flags.size() > 0)
@@ -374,7 +391,7 @@ public class ArenaCreator
 		step = steps.get(stepnum);
 	}
 
-	public void setPoint(Player player)
+	public void setPoint(Player player, String[] args)
 	{
 		this.msg = "";
 
@@ -511,6 +528,20 @@ public class ArenaCreator
 			this.flags.add(player.getLocation());
 			sendMessage("&3Added an outzone location!");
 			return;
+		}
+		if (step.equalsIgnoreCase("specialType"))
+		{
+			Material mat = MaterialUtil.getMaterial(args[0]);
+			if (mat != null)
+			{
+				this.specialType = mat;
+				
+				sendMessage("&3Set special type to: &e{0}", FormatUtil.getFriendlyName(mat));
+			}
+			else
+			{
+				sendMessage("&3You must supply a valid material.");
+			}
 		}
 		if (step.equalsIgnoreCase("kothflag"))
 		{

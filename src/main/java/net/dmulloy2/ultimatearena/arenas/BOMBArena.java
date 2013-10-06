@@ -37,7 +37,7 @@ public class BOMBArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.redTeamPower = getActivePlayers() * 3;
+		this.redTeamPower = getValidPlayerCount() * 3;
 		if (redTeamPower < 10)
 		{
 			this.redTeamPower = 10;

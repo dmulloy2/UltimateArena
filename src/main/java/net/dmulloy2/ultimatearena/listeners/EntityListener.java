@@ -21,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -128,12 +129,12 @@ public class EntityListener implements Listener
 			if (plugin.isInArena(att))
 			{
 				ArenaPlayer ap = plugin.getArenaPlayer(att);
-				if (ap != null && !ap.isOut())
+				if (ap.isValid())
 				{
 					if (plugin.isInArena(def))
 					{
 						ArenaPlayer dp = plugin.getArenaPlayer(def);
-						if (dp != null && !dp.isOut())
+						if (dp.isValid())
 						{
 							Arena arena = ap.getArena();
 							if (arena.isInLobby())
@@ -143,7 +144,7 @@ public class EntityListener implements Listener
 								return;
 							}
 
-							if (!arena.isAllowTeamKilling())
+							if (! arena.isAllowTeamKilling())
 							{
 								if (dp.getTeam() == ap.getTeam())
 								{
@@ -166,9 +167,8 @@ public class EntityListener implements Listener
 			{
 				if (plugin.isInArena(def))
 				{
-					Arena ar = plugin.getArena(def);
 					ArenaPlayer dp = plugin.getArenaPlayer(def);
-					if (ar.checkValid(dp))
+					if (dp.isValid())
 					{
 						att.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
@@ -235,6 +235,26 @@ public class EntityListener implements Listener
 								}
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityDamage(EntityDamageEvent event)
+	{
+		if (! event.isCancelled())
+		{
+			if (event.getEntity() instanceof Player)
+			{
+				Player player = (Player) event.getEntity();
+				if (plugin.isInArena(player))
+				{
+					Arena arena = plugin.getArena(player);
+					if (arena.isInLobby())
+					{
+						event.setCancelled(true);
 					}
 				}
 			}

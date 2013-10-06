@@ -25,7 +25,7 @@ public class ArenaJoinTask extends BukkitRunnable
 	@Override
 	public void run()
 	{
-		plugin.getWaiting().remove(this);
+		plugin.getWaiting().remove(player);
 
 		plugin.fight(player, name);
 	}

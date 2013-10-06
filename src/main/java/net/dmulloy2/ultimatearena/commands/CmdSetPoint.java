@@ -14,6 +14,7 @@ public class CmdSetPoint extends UltimateArenaCommand
 		super(plugin);
 		this.name = "setpoint";
 		this.aliases.add("sp");
+		this.optionalArgs.add("args");
 		this.description = "set a point of your field";
 		this.permission = Permission.SETPOINT;
 
@@ -23,6 +24,6 @@ public class CmdSetPoint extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		plugin.setPoint(player);
+		plugin.setPoint(player, args);
 	}
 }

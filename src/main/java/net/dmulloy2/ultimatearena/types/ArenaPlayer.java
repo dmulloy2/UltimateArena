@@ -209,14 +209,22 @@ public class ArenaPlayer
 	 * 
 	 * @param ac
 	 *            - {@link ArenaClass} to set the player's class to
+	 * 
+	 * @return Whether or not the operation was successful
 	 */
-	public void setClass(ArenaClass ac)
+	public boolean setClass(ArenaClass ac)
 	{
-		this.arenaClass = ac;
-
-		this.changeClassOnRespawn = true;
+		if (arena.isValidClass(ac))
+		{
+			this.arenaClass = ac;
+	
+			this.changeClassOnRespawn = true;
+			
+			clearPotionEffects();
+			return true;
+		}
 		
-		clearPotionEffects();
+		return false;
 	}
 
 	/**

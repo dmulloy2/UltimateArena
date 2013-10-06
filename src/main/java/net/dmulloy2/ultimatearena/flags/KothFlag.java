@@ -35,6 +35,9 @@ public class KothFlag extends ArenaFlag
 	@Override
 	public void checkNear(List<ArenaPlayer> arenaplayers)
 	{
+		if (marena.isInLobby())
+			return;
+		
 		int amt = 0;
 		ArenaPlayer capturer = null;
 		List<Player> players = new ArrayList<Player>();

@@ -86,25 +86,25 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void check()
 	{
-		if (getActivePlayers() == 1)
+		if (getValidPlayerCount() == 1)
 		{
 			if (getStartingAmount() > 1)
 			{
-				this.setWinningTeam(-1);
+				setWinningTeam(-1);
 			}
 		}
-		if (!checkEmpty())
+
+		if (! checkEmpty())
 		{
-			for (int i = 0; i < arenaPlayers.size(); i++)
+			for (ArenaPlayer ap : getValidPlayers())
 			{
-				ArenaPlayer apl = arenaPlayers.get(i);
-				Player pl = apl.getPlayer();
-				Location ploc = pl.getLocation();
-				if (pl.getHealth() > 0)
+				Player pl = ap.getPlayer();
+				Location loc = pl.getLocation();
+				if (pl.getHealth() < 0)
 				{
-					if (outZone.isUnder(ploc))
+					if (outZone.isUnder(loc))
 					{
-						pl.setHealth(0);
+						pl.setHealth(0.0D);
 					}
 				}
 			}

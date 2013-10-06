@@ -143,12 +143,17 @@ public class PlayerListener implements Listener
 								{
 									if (ac.checkPermission(player))
 									{
-										ap.setClass(ac);
-
-										String name = ac.getName();
-										String article = FormatUtil.getArticle(name);
-
-										ap.sendMessage("&3You will spawn as {0}: &e{1}", article, name);
+										if (ap.setClass(ac))
+										{
+											String name = ac.getName();
+											String article = FormatUtil.getArticle(name);
+	
+											ap.sendMessage("&3You will spawn as {0}: &e{1}", article, name);
+										}
+										else
+										{
+											ap.sendMessage("&cYou cannot use this class in this arena.");
+										}
 									}
 									else
 									{

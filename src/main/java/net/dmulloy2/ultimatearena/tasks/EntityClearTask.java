@@ -5,6 +5,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -30,14 +31,22 @@ public final class EntityClearTask extends BukkitRunnable
 	{
 		for (Entity entity : world.getEntities())
 		{
-			if (entity instanceof Player)
-				continue;
-			
-			if (plugin.isInArena(entity))
+			if (entity != null)
 			{
-				if (plugin.getArenaInside(entity) == arena)
+				if (entity instanceof Player)
+					continue;
+
+				if (plugin.isInArena(entity))
 				{
-					entity.remove();
+					if (plugin.getArenaInside(entity) == arena)
+					{
+						if (entity instanceof LivingEntity)
+						{
+							((LivingEntity) entity).setHealth(0.0D);
+						}
+
+						entity.remove();
+					}
 				}
 			}
 		}

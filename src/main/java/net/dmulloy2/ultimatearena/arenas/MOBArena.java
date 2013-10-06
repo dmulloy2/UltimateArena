@@ -60,7 +60,7 @@ public class MOBArena extends Arena
 		}
 
 		wave++;
-		this.mobPerWave = 4 + ((int) (getWave() * 1.5)) + (getActivePlayers() * 3);
+		this.mobPerWave = 4 + ((int) (getWave() * 1.5)) + (getValidPlayerCount() * 3);
 		this.mobtimer = (wave * 4) + 20;
 
 		if (getWave() <= 1)
@@ -235,7 +235,7 @@ public class MOBArena extends Arena
 				}
 			}
 
-			if (getActivePlayers() == 0)
+			if (getValidPlayerCount() == 0)
 			{
 				stop();
 			}

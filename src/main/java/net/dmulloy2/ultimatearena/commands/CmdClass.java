@@ -54,7 +54,11 @@ public class CmdClass extends UltimateArenaCommand
 				return;
 			}
 
-			ap.setClass(cl);
+			if (! ap.setClass(cl))
+			{
+				err("You cannot use this class in this arena.");
+				return;
+			}
 	
 			String name = cl.getName();
 			String article = FormatUtil.getArticle(name);

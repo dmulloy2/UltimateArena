@@ -120,14 +120,14 @@ public class ArenaSign
 					break;
 				case INGAME:
 					line.append("INGAME (");
-					line.append(ar.getActivePlayers());
+					line.append(ar.getValidPlayerCount());
 					line.append("/");
 					line.append(arena.getMaxPlayers());
 					line.append(")");
 					break;
 				case LOBBY:
 					line.append("LOBBY (");
-					line.append(ar.getActivePlayers());
+					line.append(ar.getValidPlayerCount());
 					line.append("/");
 					line.append(arena.getMaxPlayers());
 					line.append(")");

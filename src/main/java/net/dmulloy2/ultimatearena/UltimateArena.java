@@ -18,6 +18,7 @@ package net.dmulloy2.ultimatearena;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -291,10 +292,10 @@ public class UltimateArena extends JavaPlugin
 		loadConfigs();
 		loadArenas();
 		
-//		for (Arena a : Collections.unmodifiableList(activeArenas))
-//   	{
-//			a.reloadConfig();
-//		}
+		for (Arena a : Collections.unmodifiableList(activeArenas))
+		{
+			a.reloadConfig();
+		}
 	}
 
 	/**
@@ -712,8 +713,13 @@ public class UltimateArena extends JavaPlugin
 				}
 
 				matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(" "), "?");
+				
+				if (matchString.lastIndexOf(",") >= 0)
+				{
+					matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(","), "or");
+				}
 
-				player.sendMessage(prefix + FormatUtil.format("&3Did you mean: &e{0}", matchString.toString()));
+				player.sendMessage(prefix + FormatUtil.format("&3Did you mean {0}", matchString.toString()));
 			}
 
 			return;
@@ -765,7 +771,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			if (a.isInLobby())
 			{
-				if (a.getActivePlayers() + 1 <= az.getMaxPlayers())
+				if (a.getValidPlayerCount() + 1 <= az.getMaxPlayers())
 				{
 					a.addPlayer(player);
 				}
@@ -1038,7 +1044,7 @@ public class UltimateArena extends JavaPlugin
 	 * @param player 
 	 *            - {@link Player} setting the point
 	 */
-	public void setPoint(Player player)
+	public void setPoint(Player player, String[] args)
 	{
 		if (! isCreatingArena(player))
 		{
@@ -1048,7 +1054,7 @@ public class UltimateArena extends JavaPlugin
 		
 		ArenaCreator ac = getArenaCreator(player);
 		
-		ac.setPoint(player);
+		ac.setPoint(player, args);
 		
 		if (! ac.getMsg().isEmpty())
 		{
