@@ -131,7 +131,7 @@ public class FFAArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellAllPlayers("&e{0} &3won the match at &e{0}", winner.getName(), name);
+			tellAllPlayers("&e{0} &3won the match at &e{1}", winner.getName(), name);
 	}
 
 	@Override

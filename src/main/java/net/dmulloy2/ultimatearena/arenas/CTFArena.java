@@ -146,14 +146,7 @@ public class CTFArena extends Arena
 	@Override
 	public void announceWinner()
 	{
-		if (winningTeam == -1)
-		{
-			tellPlayers("&3Game ended in a tie! Half prize to everyone!");
-		}
-		else
-		{
-			if (lastcap != null)
-				tellPlayers("&e{0} &3team won the game!", lastcap);
-		}
+		if (lastcap != null)
+			tellPlayers("&e{0} &3team won the game!", lastcap);
 	}
 }
