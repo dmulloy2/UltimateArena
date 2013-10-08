@@ -3,7 +3,11 @@ package net.dmulloy2.ultimatearena.handlers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
@@ -11,7 +15,6 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -32,11 +35,9 @@ public class SignHandler
 
 		load();
 	}
-
+	
 	public void load()
 	{
-		plugin.debug("Loading all signs!");
-
 		this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
 		if (! signsSave.exists())
 		{
@@ -52,37 +53,15 @@ public class SignHandler
 		}
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
-		if (fc.isSet("total"))
+		for (Entry<String, Object> value : fc.getValues(false).entrySet())
 		{
-			int total = fc.getInt("total");
-			for (int i = 0; i < total; i++)
+			@SuppressWarnings("unchecked")
+			Map<String, Object> value1 = (Map<String, Object>) value.getValue();
+			
+			ArenaSign sign = new ArenaSign(plugin, value1);
+			if (sign != null)
 			{
-				plugin.debug("Attempting to load sign: {0}", i);
-
-				String path = "signs." + i + ".";
-				if (! fc.isSet(path))
-					continue;
-
-				String arenaName = fc.getString(path + "name");
-
-				String locPath = path + "location.";
-				String worldName = fc.getString(locPath + "world");
-				World world = plugin.getServer().getWorld(worldName);
-				if (world != null)
-				{
-					Location loc = new Location(world, fc.getInt(locPath + "x"), fc.getInt(locPath + "y"), fc.getInt(locPath + "z"));
-					if (loc != null)
-					{
-						ArenaZone az = plugin.getArenaZone(arenaName);
-						if (az != null)
-						{
-							ArenaSign as = new ArenaSign(plugin, loc, az, i);
-							plugin.getArenaSigns().add(as);
-
-							plugin.debug("Successfully loaded sign: {0}", as);
-						}
-					}
-				}
+				plugin.getArenaSigns().add(sign);
 			}
 		}
 		
@@ -96,96 +75,87 @@ public class SignHandler
 			}
 		}.runTaskLater(plugin, 120L);
 	}
-
-	public void refreshSave()
+	
+	public void save()
 	{
-		plugin.debug("Refreshing signs save!");
-
-		signsSave.delete();
-
 		try
 		{
+			if (signsSave.exists())
+			{
+				signsSave.delete();
+			}
+			
 			signsSave.createNewFile();
-		}
-		catch (IOException e)
-		{
-			plugin.debug("Could not refresh sign save: {0}", e);
-			return;
-		}
-
-		int total = 0;
-
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
-		for (ArenaSign sign : plugin.getArenaSigns())
-		{
-			plugin.debug("Attempting to save sign: {0}", sign);
-
-			String path = "signs." + sign.getId() + ".";
-
-			fc.set(path + "name", sign.getName());
-
-			Location location = sign.getLocation();
-			String locPath = path + "location.";
-			fc.set(locPath + "world", location.getWorld().getName());
-			fc.set(locPath + "x", location.getBlockX());
-			fc.set(locPath + "y", location.getBlockX());
-			fc.set(locPath + "z", location.getBlockX());
-
-			total = sign.getId();
-		}
-
-		fc.set("total", total + 1);
-
-		try
-		{
+			
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
+			
+			for (int i = 0; i < plugin.getArenaSigns().size(); i++)
+			{
+				ArenaSign sign = plugin.getArenaSigns().get(i);
+				
+				Map<String, Object> values = sign.serialize();
+				fc.set("" + sign.getId(), values);
+			}
+			
 			fc.save(signsSave);
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
-			plugin.debug("Could not refresh sign save: {0}", e);
-			return;
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving signs"));
 		}
 	}
 
-	public void updateSigns()
+	public final void updateSigns()
 	{
-		for (ArenaSign sign : plugin.getArenaSigns())
+		for (ArenaSign sign : getSigns())
 		{
 			sign.update();
 		}
 	}
-	
-	public ArenaSign getSign(Location loc)
+
+	public final ArenaSign getSign(Location loc)
 	{
-		for (ArenaSign sign : plugin.getArenaSigns())
+		for (ArenaSign sign : getSigns())
 		{
-			if (Util.checkLocation(sign.getLocation(), loc))
+			if (Util.checkLocation(sign.getLoc(), loc))
 				return sign;
 		}
 
 		return null;
 	}
-	
-	public List<ArenaSign> getSigns(ArenaZone az)
-	{
-		List<ArenaSign> ret = new ArrayList<ArenaSign>();
-		
-		for (ArenaSign sign : plugin.getArenaSigns())
-		{
-			if (sign.getName().equals(az.getArenaName()))
-				ret.add(sign);
-		}
-		
-		return ret;
-	}
-	
-	public void deleteSign(ArenaSign sign)
+
+	public final void deleteSign(ArenaSign sign)
 	{
 		plugin.debug("Deleting sign {0}!", sign.getId());
 
 		plugin.getArenaSigns().remove(sign);
 
-		refreshSave();
 		updateSigns();
+	}
+	
+	public final void updateSigns(ArenaZone az)
+	{
+		for (ArenaSign sign : getSigns(az))
+		{
+			sign.update();
+		}
+	}
+
+	public final List<ArenaSign> getSigns(ArenaZone az)
+	{
+		List<ArenaSign> ret = new ArrayList<ArenaSign>();
+
+		for (ArenaSign sign : getSigns())
+		{
+			if (sign.getArenaName().equals(az.getArenaName()))
+				ret.add(sign);
+		}
+
+		return ret;
+	}
+	
+	public final List<ArenaSign> getSigns()
+	{
+		return Collections.unmodifiableList(plugin.getArenaSigns());
 	}
 }

@@ -1293,7 +1293,7 @@ public abstract class Arena
 	 */
 	protected final void updateSigns()
 	{
-		plugin.getSignHandler().updateSigns();
+		plugin.getSignHandler().updateSigns(az);
 	}
 
 	/**

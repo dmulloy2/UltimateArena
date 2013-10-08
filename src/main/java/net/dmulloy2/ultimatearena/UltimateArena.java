@@ -79,6 +79,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
+import net.dmulloy2.ultimatearena.types.SimpleVector;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -88,6 +89,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -199,6 +201,10 @@ public class UltimateArena extends JavaPlugin
 		pm.registerEvents(new EntityListener(this), this);
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
+		
+		// Register serializables
+		ConfigurationSerialization.registerClass(SimpleVector.class);
+		ConfigurationSerialization.registerClass(ArenaSign.class);
 
 		// Load Files
 		loadFiles();
@@ -226,7 +232,7 @@ public class UltimateArena extends JavaPlugin
 		stopAll();
 
 		// Save Signs
-		signHandler.refreshSave();
+		signHandler.save();
 
 		// Refresh arena saves
 		for (ArenaZone az : loadedArenas)
@@ -587,15 +593,16 @@ public class UltimateArena extends JavaPlugin
 					a.stop();
 				}
 			}
+			
+			ArenaZone az = getArenaZone(str);
 
-			loadedArenas.remove(getArenaZone(str));
+			loadedArenas.remove(az);
 
 			file.delete();
 
-			for (ArenaSign sign : arenaSigns)
+			for (ArenaSign sign : signHandler.getSigns(az))
 			{
-				if (sign.getName().equalsIgnoreCase(str))
-					signHandler.deleteSign(sign);
+				signHandler.deleteSign(sign);
 			}
 
 			player.sendMessage(prefix + FormatUtil.format("&3Successfully deleted arena: &e{0}", str));
