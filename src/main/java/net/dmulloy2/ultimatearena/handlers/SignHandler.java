@@ -1,7 +1,6 @@
 package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,42 +37,49 @@ public class SignHandler
 	
 	public void load()
 	{
-		this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
-		if (! signsSave.exists())
+		try
 		{
-			try
+			this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
+			if (! signsSave.exists())
 			{
 				signsSave.createNewFile();
 			}
-			catch (IOException e)
+	
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
+			if (fc.isSet("total"))
 			{
-				plugin.debug("Could not create new signs save: {0}", e);
-				return;
+				signsSave.delete();
+				signsSave.createNewFile();
+				
+				fc = YamlConfiguration.loadConfiguration(signsSave);
 			}
-		}
-
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
-		for (Entry<String, Object> value : fc.getValues(false).entrySet())
-		{
-			@SuppressWarnings("unchecked")
-			Map<String, Object> value1 = (Map<String, Object>) value.getValue();
 			
-			ArenaSign sign = new ArenaSign(plugin, value1);
-			if (sign != null)
+			for (Entry<String, Object> value : fc.getValues(false).entrySet())
 			{
-				plugin.getArenaSigns().add(sign);
+				@SuppressWarnings("unchecked")
+				Map<String, Object> value1 = (Map<String, Object>) value.getValue();
+				
+				ArenaSign sign = new ArenaSign(plugin, value1);
+				if (sign != null)
+				{
+					plugin.getArenaSigns().add(sign);
+				}
 			}
+			
+			// Update signs
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					updateSigns();
+				}
+			}.runTaskLater(plugin, 120L);
 		}
-		
-		// Update signs
-		new BukkitRunnable()
+		catch (Exception ex)
 		{
-			@Override
-			public void run()
-			{
-				updateSigns();
-			}
-		}.runTaskLater(plugin, 120L);
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading signs"));
+		}
 	}
 	
 	public void save()
