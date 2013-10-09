@@ -675,7 +675,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			Arena a = activeArenas.get(i);
 			ArenaPlayer ap = a.getArenaPlayer(player);
-			if (a != null)
+			if (ap != null)
 				return ap;
 		}
 
