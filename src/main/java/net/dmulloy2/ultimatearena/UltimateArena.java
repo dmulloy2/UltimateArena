@@ -673,9 +673,8 @@ public class UltimateArena extends JavaPlugin
 		for (int i = 0; i < activeArenas.size(); i++)
 		{
 			Arena a = activeArenas.get(i);
-
 			ArenaPlayer ap = a.getArenaPlayer(player);
-			if (ap != null)
+			if (a.checkValid(ap))
 				return ap;
 		}
 
