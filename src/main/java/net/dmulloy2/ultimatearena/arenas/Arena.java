@@ -737,7 +737,7 @@ public abstract class Arena
 		{
 			if (! type.getName().equalsIgnoreCase("cq"))
 			{
-				ap.sendMessage(plugin.getPrefix() + "&e5 &3kills! Unlocked Zombies!");
+				ap.sendMessage("&e5 &3kills! Unlocked Zombies!");
 				for (int i = 0; i < 4; i++)
 					pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.ZOMBIE);
 			}

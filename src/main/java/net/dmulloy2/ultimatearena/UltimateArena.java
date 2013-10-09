@@ -641,7 +641,8 @@ public class UltimateArena extends JavaPlugin
 	// Special case for player
 	public boolean isInArena(Player player)
 	{
-		return (getArenaPlayer(player) != null);
+		ArenaPlayer ap = getArenaPlayer(player);
+		return ap != null && ! ap.isOut();
 	}
 
 	public Arena getArenaInside(Block block)
@@ -674,7 +675,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			Arena a = activeArenas.get(i);
 			ArenaPlayer ap = a.getArenaPlayer(player);
-			if (a.checkValid(ap))
+			if (a != null)
 				return ap;
 		}
 
