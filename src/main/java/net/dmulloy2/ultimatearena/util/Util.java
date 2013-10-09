@@ -183,13 +183,18 @@ public class Util
 	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("Encountered an exception while " + circumstance + ":" + '\n');
-		ret.append(e.getClass().getName() + ":" + e.getMessage() + '\n');
+		ret.append(e.getClass().getName() + ": " + e.getMessage() + '\n');
 		ret.append("Affected classes: " + '\n');
 
 		for (StackTraceElement ste : e.getStackTrace())
 		{
 			if (ste.getClassName().contains("net.dmulloy2.ultimatearena"))
 				ret.append('\t' + ste.toString() + '\n');
+		}
+		
+		if (ret.lastIndexOf("\n") >= 0)
+		{
+			ret.replace(ret.lastIndexOf("\n"), ret.length(), "");
 		}
 
 		return ret.toString();

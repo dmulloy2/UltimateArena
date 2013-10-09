@@ -14,6 +14,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -56,10 +57,9 @@ public class SignHandler
 			
 			for (Entry<String, Object> value : fc.getValues(false).entrySet())
 			{
-				@SuppressWarnings("unchecked")
-				Map<String, Object> value1 = (Map<String, Object>) value.getValue();
-				
-				ArenaSign sign = new ArenaSign(plugin, value1);
+				MemorySection mem = (MemorySection) value.getValue();
+
+				ArenaSign sign = new ArenaSign(plugin, mem.getValues(true));
 				if (sign != null)
 				{
 					plugin.getArenaSigns().add(sign);
