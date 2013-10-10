@@ -62,7 +62,7 @@ public class Field3D extends Field
 	{
 		if (super.isInside(loc))
 		{
-			return (loc.getBlockY() < miny);
+			return loc.getBlockY() < miny;
 		}
 
 		return false;
@@ -70,13 +70,13 @@ public class Field3D extends Field
 
 	public void setType(final Material mat)
 	{
-		for (int i = minx; i <= maxx; i++)
+		for (int x = minx; x <= maxx; x++)
 		{
-			for (int ii = miny; ii <= maxy; ii++)
+			for (int y = miny; y <= maxy; y++)
 			{
-				for (int iii = minz; iii <= maxz; iii++)
+				for (int z = minz; z <= maxz; z++)
 				{
-					Block b = world.getBlockAt(i, ii, iii);
+					Block b = world.getBlockAt(x, y, z);
 					b.setType(mat);
 				}
 			}

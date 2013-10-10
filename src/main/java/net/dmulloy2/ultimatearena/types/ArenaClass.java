@@ -181,7 +181,7 @@ public class ArenaClass
 
 					if (e instanceof ClassNotFoundException || e instanceof NoSuchMethodError)
 					{
-						plugin.outConsole(Level.WARNING, "This is probably caused by an outdated Essentials build.");
+						plugin.outConsole(Level.WARNING, "This is usually caused by an outdated Essentials build.");
 					}
 				}
 			}
@@ -213,29 +213,39 @@ public class ArenaClass
 	public List<PotionEffect> readPotionEffects(String str)
 	{
 		List<PotionEffect> ret = new ArrayList<PotionEffect>();
-
-		str = str.replaceAll(" ", "");
-		if (str.contains(","))
+		
+		try
 		{
-			String[] split = str.split(",");
-			for (String s : split)
+			str = str.replaceAll(" ", "");
+			if (str.contains(","))
 			{
-				if (s.contains(":"))
+				String[] split = str.split(",");
+				for (String s : split)
 				{
-					String[] split1 = s.split(":");
+					if (s.contains(":"))
+					{
+						String[] split1 = s.split(":");
+	
+						PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
+	
+						int strength = Integer.parseInt(split1[1]);
 
-					PotionEffectType type = PotionEffectType.getByName(split1[0]);
-
-					int strength = 0;
+						if (type != null)
+						{
+							ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
+						}
+					}
+				}
+			}
+			else
+			{
+				if (str.contains(":"))
+				{
+					String[] split1 = str.split(":");
 					
-					try
-					{
-						strength = Integer.parseInt(split1[1]);
-					}
-					catch (Exception e)
-					{
-						//
-					}
+					PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
+	
+					int strength = Integer.parseInt(split1[1]);
 
 					if (type != null)
 					{
@@ -244,30 +254,9 @@ public class ArenaClass
 				}
 			}
 		}
-		else
+		catch (Exception e)
 		{
-			if (str.contains(":"))
-			{
-				String[] split1 = str.split(":");
-				
-				PotionEffectType type = PotionEffectType.getByName(split1[0]);
-
-				int strength = 0;
-				
-				try
-				{
-					strength = Integer.parseInt(split1[1]);
-				}
-				catch (Exception e)
-				{
-					//
-				}
-
-				if (type != null)
-				{
-					ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
-				}
-			}
+			//
 		}
 
 		return ret;
@@ -276,33 +265,26 @@ public class ArenaClass
 	public Map<Enchantment, Integer> readArmorEnchantments(String string)
 	{
 		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
-		if (string.contains(":"))
+		
+		try
 		{
-			String[] split2 = string.split(":");
+			if (string.contains(":"))
+			{
+				String[] split2 = string.split(":");
+	
+				Enchantment enchantment = EnchantmentType.toEnchantment(split2[0]);
 
-			Enchantment enchantment = null;
-			try
-			{
-				enchantment = EnchantmentType.toEnchantment(split2[0]);
-			}
-			catch (Exception e)
-			{
-				enchantment = Enchantment.getByName(split2[0].toUpperCase());
-			}
+				int level = Integer.parseInt(split2[1]);
 
-			int level = 0;
-			try
-			{
-				level = Integer.parseInt(split2[1]);
+				if (enchantment != null && level > 0)
+				{
+					enchants.put(enchantment, level);
+				}
 			}
-			catch (Exception e)
-			{
-			}
-
-			if (enchantment != null && level > 0)
-			{
-				enchants.put(enchantment, level);
-			}
+		}
+		catch (Exception e)
+		{
+			//
 		}
 
 		return enchants;

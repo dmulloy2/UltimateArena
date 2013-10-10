@@ -99,41 +99,4 @@ public class ArenaConfig
 		plugin.debug("Loaded ArenaConfig for type: {0}!", arenaName);
 		return true;
 	}
-
-//	public void giveRewards(Player player, boolean half)
-//	{
-//		plugin.debug("Rewarding player {0}. Half: {1}", player.getName(), half);
-//		
-//		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
-//		if (event.isCancelled())
-//			return;
-//
-//		List<ItemStack> rewards = event.getRewards();
-//
-//		for (ItemStack stack : rewards)
-//		{
-//			if (stack == null)
-//				continue;
-//
-//			if (half)
-//				stack.setAmount((int) Math.floor(stack.getAmount() / 2));
-//
-//			InventoryHelper.addItem(player, stack);
-//		}
-//
-//		// dmulloy2 new method
-//		if (plugin.getConfig().getBoolean("moneyrewards"))
-//		{
-//			if (plugin.getEconomy() != null)
-//			{
-//				if (cashReward > 0)
-//				{
-//					plugin.getEconomy().depositPlayer(player.getName(), cashReward);
-//					String format = plugin.getEconomy().format(cashReward);
-//					player.sendMessage(plugin.getPrefix() + 
-//							FormatUtil.format("&a{0} has been added to your account!", format));
-//				}
-//			}
-//		}
-//	}
 }

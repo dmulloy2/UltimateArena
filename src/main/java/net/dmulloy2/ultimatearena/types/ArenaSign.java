@@ -205,7 +205,7 @@ public class ArenaSign implements ConfigurationSerializable
 				line.append("IDLE");
 			}
 			
-			line.append("(0/");
+			line.append(" (0/");
 			line.append(az.getMaxPlayers());
 			line.append(")");
 		}

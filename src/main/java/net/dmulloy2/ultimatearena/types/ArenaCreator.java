@@ -303,11 +303,11 @@ public class ArenaCreator
 				if (specialType != null)
 				{
 					stepUp();
-					sendMessage("&3Done setting special type!");
+					sendMessage("&3Done setting the ground type!");
 				}
 				else
 				{
-					sendMessage("&3You need to set the &eSpecial Type&e3!");
+					sendMessage("&3You need to set the &eGround Type&3!");
 				}
 			}
 			if (step.equalsIgnoreCase("kothflag"))
@@ -536,7 +536,7 @@ public class ArenaCreator
 			{
 				this.specialType = mat;
 				
-				sendMessage("&3Set special type to: &e{0}", FormatUtil.getFriendlyName(mat));
+				sendMessage("&3Set ground type to: &e{0}", FormatUtil.getFriendlyName(mat));
 			}
 			else
 			{
