@@ -7,13 +7,10 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -103,40 +100,40 @@ public class ArenaConfig
 		return true;
 	}
 
-	public void giveRewards(Player player, boolean half)
-	{
-		plugin.debug("Rewarding player {0}. Half: {1}", player.getName(), half);
-		
+//	public void giveRewards(Player player, boolean half)
+//	{
+//		plugin.debug("Rewarding player {0}. Half: {1}", player.getName(), half);
+//		
 //		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
 //		if (event.isCancelled())
 //			return;
 //
 //		List<ItemStack> rewards = event.getRewards();
-
-		for (ItemStack stack : rewards)
-		{
-			if (stack == null)
-				continue;
-
-			if (half)
-				stack.setAmount((int) Math.floor(stack.getAmount() / 2));
-
-			InventoryHelper.addItem(player, stack);
-		}
-
-		// dmulloy2 new method
-		if (plugin.getConfig().getBoolean("moneyrewards"))
-		{
-			if (plugin.getEconomy() != null)
-			{
-				if (cashReward > 0)
-				{
-					plugin.getEconomy().depositPlayer(player.getName(), cashReward);
-					String format = plugin.getEconomy().format(cashReward);
-					player.sendMessage(plugin.getPrefix() + 
-							FormatUtil.format("&a{0} has been added to your account!", format));
-				}
-			}
-		}
-	}
+//
+//		for (ItemStack stack : rewards)
+//		{
+//			if (stack == null)
+//				continue;
+//
+//			if (half)
+//				stack.setAmount((int) Math.floor(stack.getAmount() / 2));
+//
+//			InventoryHelper.addItem(player, stack);
+//		}
+//
+//		// dmulloy2 new method
+//		if (plugin.getConfig().getBoolean("moneyrewards"))
+//		{
+//			if (plugin.getEconomy() != null)
+//			{
+//				if (cashReward > 0)
+//				{
+//					plugin.getEconomy().depositPlayer(player.getName(), cashReward);
+//					String format = plugin.getEconomy().format(cashReward);
+//					player.sendMessage(plugin.getPrefix() + 
+//							FormatUtil.format("&a{0} has been added to your account!", format));
+//				}
+//			}
+//		}
+//	}
 }

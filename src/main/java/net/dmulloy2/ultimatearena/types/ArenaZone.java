@@ -293,7 +293,7 @@ public class ArenaZone
 				continue;
 			
 			// Make it gradient based now. >:3
-			int amt = (int) Math.floor(200.0D / ap.getGameXP());
+			int amt = (int) Math.floor(ap.getGameXP() / 200.0D);
 			if (amt > 0)
 			{
 				stack.setAmount(amt);
