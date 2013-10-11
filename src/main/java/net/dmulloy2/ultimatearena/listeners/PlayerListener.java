@@ -284,14 +284,7 @@ public class PlayerListener implements Listener
 			ArenaPlayer apl = plugin.getArenaPlayer(pl);
 			if (apl.getDeaths() < a.getMaxDeaths())
 			{
-				if (a.isInGame() && ! a.isStopped())
-				{
-					if (a.getSpawn(apl) != null)
-					{
-						event.setRespawnLocation(a.getSpawn(apl));
-						a.spawn(pl);
-					}
-				}
+				a.spawn(pl);
 			}
 		}
 	}
