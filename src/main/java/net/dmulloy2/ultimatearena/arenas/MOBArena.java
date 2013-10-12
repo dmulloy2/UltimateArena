@@ -104,11 +104,11 @@ public class MOBArena extends Arena
 	@Override
 	public void reward(ArenaPlayer p)
 	{
-		int amtGold = (int) Math.floor(p.getGameXP() / 500.0);
-		int amtSlime = (int) Math.floor(p.getGameXP() / 550.0);
-		int amtGlowStone = (int) Math.floor(p.getGameXP() / 450.0);
-		int amtGunPowder = (int) Math.floor(p.getGameXP() / 425.0);
-		int amtCash = (int) Math.floor(p.getGameXP() / 10.0);
+		int amtGold = (int) Math.round(p.getGameXP() / 500.0);
+		int amtSlime = (int) Math.round(p.getGameXP() / 550.0);
+		int amtGlowStone = (int) Math.round(p.getGameXP() / 450.0);
+		int amtGunPowder = (int) Math.round(p.getGameXP() / 425.0);
+		int amtCash = (int) Math.round(p.getGameXP() / 10.0);
 
 		Player pl = p.getPlayer();
 

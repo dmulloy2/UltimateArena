@@ -741,10 +741,13 @@ public class UltimateArena extends JavaPlugin
 		ArenaPlayer ap = getArenaPlayer(player);
 		if (ap != null)
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin an arena!"));
-			return;
+			if (ap.getArena() != null && ap.getArena().getName().equalsIgnoreCase(arena))
+			{
+				player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin this arena!"));
+				return;
+			}
 		}
-		
+
 		if (isPlayerWaiting(player))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));

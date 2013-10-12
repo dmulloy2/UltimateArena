@@ -41,10 +41,10 @@ public class BlockListener implements Listener
 		if (plugin.isInArena(block))
 		{
 			/** The player is in an arena **/
-			if (plugin.isInArena(player) && plugin.getArena(player) != null)
+			if (plugin.isInArena(player))
 			{
 				Arena arena = plugin.getArena(player);
-				if (!arena.getType().getName().equalsIgnoreCase("Hunger"))
+				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
 					event.setCancelled(true);
@@ -73,7 +73,7 @@ public class BlockListener implements Listener
 		if (plugin.isInArena(block))
 		{
 			/** The player is in an arena **/
-			if (plugin.isInArena(player) && plugin.getArena(player) != null)
+			if (plugin.isInArena(player))
 			{
 				Arena arena = plugin.getArena(player);
 				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))

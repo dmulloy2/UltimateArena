@@ -114,7 +114,7 @@ public class KOTHArena extends Arena
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
 			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && !ap.isOut())
+			if (checkValid(ap))
 			{
 				pointsMap.put(ap.getName(), ap.getPoints());
 			}

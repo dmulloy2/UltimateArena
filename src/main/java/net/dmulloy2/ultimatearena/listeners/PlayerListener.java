@@ -152,7 +152,7 @@ public class PlayerListener implements Listener
 										}
 										else
 										{
-											ap.sendMessage("&cYou cannot use this class in this arena.");
+											ap.sendMessage("&cYou cannot use this class in this arena");
 										}
 									}
 									else
@@ -296,7 +296,7 @@ public class PlayerListener implements Listener
 		{
 			// If they didnt move, don't do anything.
 			if (event.getFrom().getBlockX() == event.getTo().getBlockX() &&
-					event.getFrom().getBlockZ() == event.getTo().getBlockY())
+					event.getFrom().getBlockZ() == event.getTo().getBlockZ())
 				return;
 
 			Player player = event.getPlayer();

@@ -960,7 +960,7 @@ public abstract class Arena
 	{
 		if (! start)
 		{
-			plugin.outConsole("Starting arena: {0} Players: {1}", getName(), getValidPlayerCount());
+			plugin.outConsole("Starting arena {0} with {1} players", name, getValidPlayerCount());
 
 			this.start = true;
 			this.gameMode = Mode.INGAME;
@@ -1125,7 +1125,7 @@ public abstract class Arena
 	{
 		if (checkValid(ap))
 		{
-			if (plugin.getConfig().getBoolean("timerXPBar", false))
+			if (plugin.getConfig().getBoolean("timerXPBar", true))
 			{
 				if (isInGame())
 				{
@@ -1150,10 +1150,10 @@ public abstract class Arena
 	{
 		if (ap != null)
 		{
-			plugin.debug("Returning XP for player: {0}. Levels: {1}", ap.getName(), ap.getBaseLevel());
+			plugin.debug("Returning {0} levels of xp for {1}", ap.getBaseLevel(), ap.getName());
 
 			// Clear XP
-			ap.getPlayer().setExp(0);
+			ap.getPlayer().setExp(0.0F);
 			ap.getPlayer().setLevel(0);
 
 			// Give Base XP
@@ -1176,7 +1176,7 @@ public abstract class Arena
 			return;
 		}
 
-		plugin.outConsole("Forcefully starting arena: {0}!", name);
+		plugin.outConsole("Forcefully starting arena {0}", name);
 
 		start();
 
@@ -1188,6 +1188,8 @@ public abstract class Arena
 	
 	public final void clearEntities()
 	{
+		plugin.debug("Clearing entities in arena {0}", name);
+		
 		if (plugin.isStopping())
 		{
 			new EntityClearTask(this).run();
@@ -1209,18 +1211,18 @@ public abstract class Arena
 	}
 	
 	// ---- Leaderboard ---- //
-	
+
 	protected boolean updateLeaderboard = true;
 
 	protected List<String> leaderboard;
-	
+
 	public List<String> getLeaderboard(Player player)
 	{
 		if (updateLeaderboard)
 		{
 			leaderboard = buildLeaderboard(player);
 		}
-		
+
 		return leaderboard;
 	}
 

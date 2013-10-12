@@ -56,7 +56,8 @@ public class INFECTArena extends PVPArena
 		}
 		else
 		{
-			tellPlayers("&cError starting!");
+			// Shouldn't happen...
+			tellPlayers("&cCould not choose a zombie! Aborting...");
 
 			stop();
 		}
@@ -96,6 +97,14 @@ public class INFECTArena extends PVPArena
 					stop();
 
 					rewardTeam(2);
+				}
+				else if (team2size == 0)
+				{
+					setWinningTeam(1);
+					
+					stop();
+					
+					rewardTeam(1);
 				}
 				else
 				{

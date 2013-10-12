@@ -43,7 +43,7 @@ public class EntityListener implements Listener
 	{
 		// This will disable block damage via explosions
 		// if it occurs in an arena
-		if (!event.isCancelled())
+		if (! event.isCancelled())
 		{
 			if (plugin.isInArena(event.getLocation()))
 			{
@@ -78,7 +78,7 @@ public class EntityListener implements Listener
 	{
 		// This will disable PvP in certain circumstances, like lobby PvP,
 		// team killing, etc.
-		if (!event.isCancelled() && event.getDamage() > 0.0D)
+		if (! event.isCancelled() && event.getDamage() > 0.0D)
 		{
 			Entity attacker = event.getDamager();
 			Entity defender = event.getEntity();

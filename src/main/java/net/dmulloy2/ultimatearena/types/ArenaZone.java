@@ -112,7 +112,7 @@ public class ArenaZone
 		this.spawns = ac.spawns;
 		this.flags = ac.flags;
 		this.maxPlayers = 24;
-		this.specialType = Material.SNOW_BLOCK;
+		this.specialType = ac.specialType;
 		this.defaultClass = plugin.getClasses().get(0).getName();
 		this.world = lobby1.getWorld();
 
@@ -300,7 +300,7 @@ public class ArenaZone
 				continue;
 			
 			// Make it gradient based now. >:3
-			int amt = (int) Math.floor(ap.getGameXP() / 200.0D);
+			int amt = (int) Math.round(ap.getGameXP() / 200.0D);
 			if (amt > 0)
 			{
 				stack.setAmount(amt);
