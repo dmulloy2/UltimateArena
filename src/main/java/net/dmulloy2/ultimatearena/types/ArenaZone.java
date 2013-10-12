@@ -196,14 +196,21 @@ public class ArenaZone
 		double percentage = ((double) plays / (double) total) * 100;
 		
 		line = new StringBuilder();
-		line.append(FormatUtil.format("&3Plays: &e{0}&3/&e{1} &3(&e{2}&3)", plays, total, percentage));
+		line.append(FormatUtil.format("&3Plays: &e{0}&3/&e{1} &3(&e{2}%&3)", plays, total, percentage));
 		lines.add(line.toString());
 		
 		// Calculate popularity
-		percentage = ((double) liked / (double) voted.size()) * 100;
+		if (voted.size() == 0)
+		{
+			percentage = 0.0D;
+		}
+		else
+		{
+			percentage = ((double) liked / (double) voted.size()) * 100;
+		}
 		
 		line = new StringBuilder();
-		line.append(FormatUtil.format("&3Popularity: &e{0}&3/&e{1} &3(&e{2}&3)", liked, disliked, percentage));
+		line.append(FormatUtil.format("&3Popularity: &e{0}&3/&e{1} &3(&e{2}%&3)", liked, disliked, percentage));
 		lines.add(line.toString());
 		
 		return lines;
