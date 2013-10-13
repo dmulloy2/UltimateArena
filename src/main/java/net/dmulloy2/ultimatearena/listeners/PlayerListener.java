@@ -239,8 +239,8 @@ public class PlayerListener implements Listener
 								}
 								if (! found)
 								{
-									player.sendMessage(plugin.getPrefix()
-											+ FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
+									player.sendMessage(plugin.getPrefix() + 
+											FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
 								}
 							}
 						}
@@ -263,7 +263,7 @@ public class PlayerListener implements Listener
 							}
 							if (! found)
 							{
-								if (!plugin.getLoadedArenas().isEmpty())
+								if (! plugin.getLoadedArenas().isEmpty())
 								{
 									ArenaZone az = plugin.getLoadedArenas().get(0);
 									if (az != null)
@@ -301,7 +301,8 @@ public class PlayerListener implements Listener
 		if (! event.isCancelled())
 		{
 			// If they didnt move, don't do anything.
-			if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockZ() == event.getTo().getBlockZ())
+			if (event.getFrom().getBlockX() == event.getTo().getBlockX() &&
+					event.getFrom().getBlockZ() == event.getTo().getBlockZ())
 				return;
 
 			Player player = event.getPlayer();
@@ -312,7 +313,8 @@ public class PlayerListener implements Listener
 				task.cancel();
 				plugin.getWaiting().remove(player);
 
-				player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCancelled!"));
+				player.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&cCancelled!"));
 			}
 		}
 	}
@@ -328,7 +330,7 @@ public class PlayerListener implements Listener
 
 			if (! plugin.isInArena(event.getFrom()))
 			{
-				if (!plugin.isInArena(event.getTo()))
+				if (! plugin.isInArena(event.getTo()))
 				{
 					plugin.getArena(player).spawn(player);
 				}
@@ -389,13 +391,15 @@ public class PlayerListener implements Listener
 			Player player = event.getPlayer();
 			if (plugin.isInArena(player))
 			{
-				if (!plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
+				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 				{
 					String cmd = event.getMessage().toLowerCase();
 					if (! cmd.contains("/ua") && ! plugin.isWhitelistedCommand(cmd))
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
+						player.sendMessage(plugin.getPrefix() +
+								FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
 						event.setCancelled(true);
 					}
 				}

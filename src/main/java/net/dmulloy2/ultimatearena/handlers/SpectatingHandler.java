@@ -299,12 +299,12 @@ public class SpectatingHandler implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerMoveLowest(PlayerMoveEvent event)
 	{
-		if ( !event.isCancelled())
+		if (! event.isCancelled())
 		{
 			Player player = event.getPlayer();
 			if (isSpectating(player))
 			{
-				if (!plugin.isInArena(event.getFrom()))
+				if (! plugin.isInArena(event.getFrom()))
 				{
 					event.setCancelled(true);
 				}
