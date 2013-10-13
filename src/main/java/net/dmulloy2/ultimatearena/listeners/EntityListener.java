@@ -10,12 +10,10 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -92,15 +90,9 @@ public class EntityListener implements Listener
 			{
 				att = (Player) attacker;
 			}
-			else if (attacker instanceof Arrow)
+			else if (attacker instanceof Projectile)
 			{
-				Entity shooter = ((Arrow) attacker).getShooter();
-				if (shooter instanceof Player)
-					att = (Player) shooter;
-			}
-			else if (attacker instanceof Snowball)
-			{
-				Entity shooter = ((Snowball) attacker).getShooter();
+				Entity shooter = ((Projectile) attacker).getShooter();
 				if (shooter instanceof Player)
 					att = (Player) shooter;
 			}
@@ -110,15 +102,9 @@ public class EntityListener implements Listener
 			{
 				def = (Player) defender;
 			}
-			else if (defender instanceof Arrow)
+			else if (defender instanceof Projectile)
 			{
-				Entity shooter = ((Arrow) defender).getShooter();
-				if (shooter instanceof Player)
-					def = (Player) shooter;
-			}
-			else if (defender instanceof Snowball)
-			{
-				Entity shooter = ((Snowball) defender).getShooter();
+				Entity shooter = ((Projectile) defender).getShooter();
 				if (shooter instanceof Player)
 					def = (Player) shooter;
 			}
@@ -170,7 +156,8 @@ public class EntityListener implements Listener
 					ArenaPlayer dp = plugin.getArenaPlayer(def);
 					if (dp.isValid())
 					{
-						att.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
+						att.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
 						event.setCancelled(true);
 						return;
 					}
@@ -246,6 +233,7 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
+		// Cancels all forms of damage in the lobby
 		if (! event.isCancelled())
 		{
 			if (event.getEntity() instanceof Player)
