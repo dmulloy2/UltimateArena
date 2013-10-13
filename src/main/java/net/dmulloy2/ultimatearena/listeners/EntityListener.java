@@ -207,28 +207,31 @@ public class EntityListener implements Listener
 				}
 
 				// Healer
-				Entity damaged = event.getEntity();
-				if (damaged instanceof Player)
+				if (event.getEntity() instanceof Player)
 				{
-					ArenaPlayer dp = plugin.getArenaPlayer((Player) damaged);
-					if (dp.isValid())
+					Player damaged = (Player) event.getEntity();
+					if (plugin.isInArena(damaged))
 					{
-						ArenaPlayer ap = plugin.getArenaPlayer(player);
-						if (ap.isValid())
+						ArenaPlayer dp = plugin.getArenaPlayer(damaged);
+						if (dp.isValid())
 						{
-							if (ap.getTeam() == dp.getTeam())
+							ArenaPlayer ap = plugin.getArenaPlayer(player);
+							if (ap.isValid())
 							{
-								ArenaClass ac = ap.getArenaClass();
-								if (ac != null && ac.getName().equalsIgnoreCase("healer"))
+								if (ap.getTeam() == dp.getTeam())
 								{
-									if (inHand != null && inHand.getType() == Material.GOLD_AXE)
+									ArenaClass ac = ap.getArenaClass();
+									if (ac != null && ac.getName().equalsIgnoreCase("healer"))
 									{
-										Player pl = dp.getPlayer();
-										if ((pl.getHealth() + 2.0D) <= 20.0D)
+										if (inHand != null && inHand.getType() == Material.GOLD_AXE)
 										{
-											pl.setHealth(player.getHealth() + 2.0D);
-
-											ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", pl.getName());
+											Player pl = dp.getPlayer();
+											if ((pl.getHealth() + 2.0D) <= 20.0D)
+											{
+												pl.setHealth(player.getHealth() + 2.0D);
+	
+												ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", pl.getName());
+											}
 										}
 									}
 								}
