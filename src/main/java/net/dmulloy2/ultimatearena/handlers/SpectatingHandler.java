@@ -40,7 +40,7 @@ public class SpectatingHandler implements Listener
 {
 	private List<String> browsingInventory = new ArrayList<String>();
 	private HashMap<Arena, List<ArenaSpectator>> spectating = new HashMap<Arena, List<ArenaSpectator>>();
-	
+
 	private final UltimateArena plugin;
 	public SpectatingHandler(UltimateArena plugin)
 	{
@@ -48,7 +48,7 @@ public class SpectatingHandler implements Listener
 
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-	
+
 	// ---- Arena Management ---- //
 
 	public void registerArena(Arena arena)
@@ -62,11 +62,11 @@ public class SpectatingHandler implements Listener
 		{
 			spectator.endPlayer();
 		}
-		
+
 		spectating.get(arena).clear();
 		spectating.remove(arena);
 	}
-	
+
 	public Arena getArena(ArenaSpectator spectator)
 	{
 		for (Entry<Arena, List<ArenaSpectator>> entry : spectating.entrySet())
@@ -77,7 +77,7 @@ public class SpectatingHandler implements Listener
 
 		return null;
 	}
-	
+
 	// ---- Spectator Management ---- //
 
 	public ArenaSpectator addSpectator(Arena arena, Player player)
@@ -85,7 +85,7 @@ public class SpectatingHandler implements Listener
 		ArenaSpectator spectator = new ArenaSpectator(player, arena, plugin);
 
 		spectator.spawn();
-		
+
 		spectating.get(arena).add(spectator);
 
 		return spectator;
@@ -94,7 +94,7 @@ public class SpectatingHandler implements Listener
 	public void removeSpectator(ArenaSpectator spectator)
 	{
 		spectator.endPlayer();
-		
+
 		spectating.values().remove(spectator);
 
 		closeInventory(spectator.getPlayer());
@@ -118,7 +118,7 @@ public class SpectatingHandler implements Listener
 
 		return null;
 	}
-	
+
 	// ---- Inventory ---- //
 
 	public void openInventory(Player p, Arena a)
@@ -152,7 +152,7 @@ public class SpectatingHandler implements Listener
 	{
 		return browsingInventory.contains(p.getName());
 	}
-	
+
 	// ---- Events ---- //
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -259,7 +259,7 @@ public class SpectatingHandler implements Listener
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onItemDrop(PlayerDropItemEvent event)
 	{
@@ -295,16 +295,16 @@ public class SpectatingHandler implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerMoveLowest(PlayerMoveEvent event)
 	{
-		if (! event.isCancelled())
+		if ( !event.isCancelled())
 		{
 			Player player = event.getPlayer();
 			if (isSpectating(player))
 			{
-				if (! plugin.isInArena(event.getFrom()))
+				if (!plugin.isInArena(event.getFrom()))
 				{
 					event.setCancelled(true);
 				}

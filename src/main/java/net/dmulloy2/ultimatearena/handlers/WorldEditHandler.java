@@ -20,22 +20,22 @@ public class WorldEditHandler
 	{
 		this.plugin = plugin;
 	}
-	
+
 	public boolean useWorldEdit()
 	{
 		return plugin.getWorldEdit() != null;
 	}
-	
+
 	public boolean hasSelection(Player player)
 	{
 		return getSelection(player) != null;
 	}
-	
+
 	public Selection getSelection(Player player)
 	{
 		return plugin.getWorldEdit().getSelection(player);
 	}
-	
+
 	public boolean isCuboidSelection(Selection sel)
 	{
 		return sel.getRegionSelector() instanceof CuboidRegionSelector;

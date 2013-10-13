@@ -146,10 +146,43 @@ public class BlockListener implements Listener
 				}
 				else
 				{
-					event.setLine(0, FormatUtil.format("[UltimateArena]"));
-					event.setLine(1, FormatUtil.format("&4Invalid Type"));
-					event.setLine(2, "");
-					event.setLine(3, "");
+					ArenaZone az = plugin.getArenaZone(event.getLine(1));
+					if (az != null)
+					{
+						int id = 0;
+						
+						// Make sure we get the highest id
+						for (ArenaSign sign : plugin.getSignHandler().getSigns())
+						{
+							if (sign.getId() > id)
+								id = sign.getId();
+						}
+						
+						final ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
+						
+						plugin.getArenaSigns().add(sign);
+
+						plugin.debug("Added new sign: {0}", sign);
+						
+						new BukkitRunnable()
+						{
+							@Override
+							public void run()
+							{
+								sign.update();
+							}
+						}.runTaskLater(plugin, 60L);
+
+						event.getPlayer().sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&aCreated new Join Sign!"));
+					}
+					else
+					{
+						event.setLine(0, FormatUtil.format("[UltimateArena]"));
+						event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+						event.setLine(2, "");
+						event.setLine(3, "");
+					}
 				}
 			}
 			else

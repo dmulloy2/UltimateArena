@@ -24,10 +24,10 @@ import com.earth2me.essentials.User;
 /**
  * Represents a player inside an {@link Arena}.
  * <p>
- * Every player who has joined this arena will have an ArenaPlayer instance.
- * It is important to note, however, that players who are out will still have
- * arena player instances until the arena concludes.
- * Use {@link Arena#checkValid(ArenaPlayer)} to make sure the player is actually in
+ * Every player who has joined this arena will have an ArenaPlayer instance. It
+ * is important to note, however, that players who are out will still have arena
+ * player instances until the arena concludes. Use
+ * {@link Arena#checkValid(ArenaPlayer)} to make sure the player is actually in
  * the arena.
  * 
  * @author dmulloy2
@@ -108,7 +108,7 @@ public class ArenaPlayer
 			player.getInventory().setHelmet(itemStack);
 		}
 	}
-	
+
 	/**
 	 * Gives the player an item
 	 * 
@@ -165,7 +165,7 @@ public class ArenaPlayer
 	public void clearInventory()
 	{
 		PlayerInventory inv = player.getInventory();
-		
+
 		player.closeInventory();
 
 		inv.setHelmet(null);
@@ -217,13 +217,13 @@ public class ArenaPlayer
 		if (arena.isValidClass(ac))
 		{
 			this.arenaClass = ac;
-	
+
 			this.changeClassOnRespawn = true;
-			
+
 			clearPotionEffects();
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -232,9 +232,9 @@ public class ArenaPlayer
 	 */
 	public void giveClassItems()
 	{
-		if (! arena.isInGame()) 
+		if (! arena.isInGame())
 			return;
-		
+
 		decideHat();
 
 		if (arenaClass == null)
@@ -262,14 +262,14 @@ public class ArenaPlayer
 						e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e.getMessage());
 			}
 		}
-		
+
 		for (int i = 0; i < arenaClass.getArmor().size(); i++)
 		{
 			ItemStack stack = arenaClass.getArmor(i);
 			if (stack != null)
 				giveArmor(i, stack);
 		}
-		
+
 		for (ItemStack weapon : arenaClass.getWeapons())
 		{
 			if (weapon != null)
@@ -293,7 +293,7 @@ public class ArenaPlayer
 	/**
 	 * Sends the player a message
 	 * 
-	 * @param string 
+	 * @param string
 	 *            - Base message
 	 * @param objects
 	 *            - Objects to format in
@@ -360,7 +360,7 @@ public class ArenaPlayer
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
 		this.deaths++;
-		
+
 		arena.onPlayerDeath(this);
 	}
 
@@ -372,41 +372,36 @@ public class ArenaPlayer
 	 */
 	public void leaveArena(LeaveReason reason)
 	{
-		if (reason == LeaveReason.COMMAND)
+		switch (reason)
 		{
-			arena.endPlayer(this, false);
+			case COMMAND:
+				arena.endPlayer(this, false);
 
-			sendMessage("&3You have left the arena!");
+				sendMessage("&3You have left the arena!");
 
-			arena.tellPlayers("&e{0} &3has left the arena!", getName());
-		}
+				arena.tellPlayers("&e{0} &3has left the arena!", name);
+				break;
+			case DEATHS:
+				arena.endPlayer(this, true);
+				break;
+			case KICK:
+				arena.endPlayer(this, false);
 
-		if (reason == LeaveReason.KICK)
-		{
-			arena.endPlayer(this, false);
+				sendMessage("&cYou have been kicked from the arena!");
 
-			sendMessage("&cYou have been kicked from the arena!");
+				arena.tellPlayers("&e{0} &3has been kicked from the arena!", name);
+				break;
+			case QUIT:
+				arena.endPlayer(this, false);
 
-			arena.tellPlayers("&e{0} &3has been kicked from the arena!", getName());
-		}
-
-		if (reason == LeaveReason.QUIT)
-		{
-			arena.endPlayer(this, false);
-
-			arena.tellPlayers("&e{0} &3has left the arena!", getName());
-		}
-
-		if (reason == LeaveReason.DEATHS)
-		{
-			arena.endPlayer(this, false);
-
-			sendMessage("&3You have been eliminated!");
-
-			arena.tellPlayers("&e{0} &3has been eliminated!", getName());
+				arena.tellPlayers("&e{0} &3has left the arena!", name);
+				break;
+			default:
+				arena.endPlayer(this, false);
+				break;
 		}
 	}
-	
+
 	public boolean isValid()
 	{
 		return arena.checkValid(this);

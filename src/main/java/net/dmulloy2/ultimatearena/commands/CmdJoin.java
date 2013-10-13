@@ -22,6 +22,6 @@ public class CmdJoin extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		plugin.join(player, args[0]);
+		plugin.attemptJoin(player, args[0]);
 	}
 }

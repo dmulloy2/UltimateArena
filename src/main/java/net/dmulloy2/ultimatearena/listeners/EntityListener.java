@@ -54,14 +54,14 @@ public class EntityListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityCombust(EntityCombustEvent event)
 	{
 		Entity combusted = event.getEntity();
 		if (combusted instanceof Player)
 		{
-			Player combustedPlayer = (Player)combusted;
+			Player combustedPlayer = (Player) combusted;
 			if (plugin.isInArena(combustedPlayer))
 			{
 				Arena a = plugin.getArena(combustedPlayer);
@@ -170,8 +170,7 @@ public class EntityListener implements Listener
 					ArenaPlayer dp = plugin.getArenaPlayer(def);
 					if (dp.isValid())
 					{
-						att.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
+						att.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
 						event.setCancelled(true);
 						return;
 					}
@@ -240,7 +239,7 @@ public class EntityListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
@@ -353,9 +352,11 @@ public class EntityListener implements Listener
 									killer.sendMessage(killerline);
 								}
 
-//								Disable the Event API for the time being, see if it fixes lag
-//								UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, kp, ar);
-//								plugin.getServer().getPluginManager().callEvent(killEvent);
+								// Disable the Event API for the time being, see
+								// if it fixes lag
+								// UltimateArenaKillEvent killEvent = new
+								// UltimateArenaKillEvent(dp, kp, ar);
+								// plugin.getServer().getPluginManager().callEvent(killEvent);
 							}
 						}
 					}
@@ -427,8 +428,9 @@ public class EntityListener implements Listener
 										kp.sendMessage(killerline);
 									}
 
-//									UltimateArenaKillEvent killEvent = new UltimateArenaKillEvent(dp, kp, ar);
-//									plugin.getServer().getPluginManager().callEvent(killEvent);
+									// UltimateArenaKillEvent killEvent = new
+									// UltimateArenaKillEvent(dp, kp, ar);
+									// plugin.getServer().getPluginManager().callEvent(killEvent);
 								}
 
 								return;
@@ -500,19 +502,19 @@ public class EntityListener implements Listener
 								ak.setKills(ak.getKills() + 1);
 								ak.setKillStreak(ak.getKillStreak() + 1);
 								ak.getArena().doKillStreak(ak);
-	
+
 								List<String> lines = new ArrayList<String>();
-	
+
 								String name = FormatUtil.getFriendlyName(lentity.getType());
-								lines.add(plugin.getPrefix()
-										+ FormatUtil.format("&e{0} &3killed {1} &e{2}", killer.getName(), FormatUtil.getArticle(name), name));
+								lines.add(plugin.getPrefix() + 
+										FormatUtil.format("&e{0} &3killed {1} &e{2}", killer.getName(), FormatUtil.getArticle(name), name));
 								lines.add(FormatUtil.format("&3----------------------------"));
 								lines.add(FormatUtil.format("&3Kills: &e{0}", ak.getKills()));
 								lines.add(FormatUtil.format("&3Deaths: &e{0}", ak.getDeaths()));
 								lines.add(FormatUtil.format("&3Streak: &e{0}", ak.getKillStreak()));
 								lines.add(FormatUtil.format("&3GameXP: &e{0}", ak.getGameXP()));
 								lines.add(FormatUtil.format("&3----------------------------"));
-	
+
 								for (String line : lines)
 								{
 									killer.sendMessage(line);

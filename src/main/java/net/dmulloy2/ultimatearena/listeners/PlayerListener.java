@@ -5,6 +5,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
@@ -63,21 +64,26 @@ public class PlayerListener implements Listener
 	{
 		if (plugin.isCreatingArena(player))
 		{
-			plugin.debug("Player {0} left the game, stopping the creation of an arena", player.getName());
+			ArenaCreator ac = plugin.getArenaCreator(player);
+
+			plugin.outConsole("{0} stopping the creation of {1} from quit", player.getName(), ac.getArenaName());
+
 			plugin.getMakingArena().remove(plugin.getArenaCreator(player));
 		}
 
 		if (plugin.isInArena(player))
 		{
-			plugin.debug("Player {0} leaving arena from quit", player.getName());
+			ArenaPlayer ap = plugin.getArenaPlayer(player);
 
-			plugin.getArenaPlayer(player).leaveArena(LeaveReason.QUIT);
+			plugin.outConsole("{0} leaving arena {1} from quit", ap.getName(), ap.getArena().getName());
+
+			ap.leaveArena(LeaveReason.QUIT);
 		}
-		
+
 		if (plugin.isPlayerWaiting(player))
 		{
 			ArenaJoinTask task = plugin.getWaiting().get(player);
-			
+
 			task.cancel();
 			plugin.getWaiting().remove(player);
 		}
@@ -109,7 +115,7 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl))
 			{
 				Arena arena = plugin.getArena(pl);
-				if (!arena.getType().getName().equalsIgnoreCase("Hunger"))
+				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
 				{
 					event.setCancelled(true);
 				}
@@ -147,7 +153,7 @@ public class PlayerListener implements Listener
 										{
 											String name = ac.getName();
 											String article = FormatUtil.getArticle(name);
-	
+
 											ap.sendMessage("&3You will spawn as {0}: &e{1}", article, name);
 										}
 										else
@@ -216,7 +222,7 @@ public class PlayerListener implements Listener
 								{
 									if (a.isInLobby())
 									{
-										plugin.join(player, a.getName());
+										plugin.attemptJoin(player, a.getName());
 										found = true;
 									}
 								}
@@ -227,14 +233,14 @@ public class PlayerListener implements Listener
 								{
 									if (az != null && az.getArenaName().equalsIgnoreCase(name))
 									{
-										plugin.join(player, az.getArenaName());
+										plugin.attemptJoin(player, az.getArenaName());
 										found = true;
 									}
 								}
 								if (! found)
 								{
-									player.sendMessage(plugin.getPrefix() + 
-											FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
+									player.sendMessage(plugin.getPrefix()
+											+ FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
 								}
 							}
 						}
@@ -250,19 +256,19 @@ public class PlayerListener implements Listener
 								{
 									if (a.isInLobby())
 									{
-										plugin.join(player, a.getName());
+										plugin.attemptJoin(player, a.getName());
 										found = true;
 									}
 								}
 							}
 							if (! found)
 							{
-								if (! plugin.getLoadedArenas().isEmpty())
+								if (!plugin.getLoadedArenas().isEmpty())
 								{
 									ArenaZone az = plugin.getLoadedArenas().get(0);
 									if (az != null)
 									{
-										plugin.join(player, az.getArenaName());
+										plugin.attemptJoin(player, az.getArenaName());
 										found = true;
 									}
 								}
@@ -295,24 +301,22 @@ public class PlayerListener implements Listener
 		if (! event.isCancelled())
 		{
 			// If they didnt move, don't do anything.
-			if (event.getFrom().getBlockX() == event.getTo().getBlockX() &&
-					event.getFrom().getBlockZ() == event.getTo().getBlockZ())
+			if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockZ() == event.getTo().getBlockZ())
 				return;
 
 			Player player = event.getPlayer();
 			if (plugin.isPlayerWaiting(player))
 			{
 				ArenaJoinTask task = plugin.getWaiting().get(player);
-				
+
 				task.cancel();
 				plugin.getWaiting().remove(player);
-				
-				player.sendMessage(plugin.getPrefix() + 
-						FormatUtil.format("&cCancelled!"));
+
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCancelled!"));
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerMoveLowest(PlayerMoveEvent event)
 	{
@@ -321,10 +325,10 @@ public class PlayerListener implements Listener
 			Player player = event.getPlayer();
 			if (! plugin.isInArena(player))
 				return;
-			
+
 			if (! plugin.isInArena(event.getFrom()))
 			{
-				if (! plugin.isInArena(event.getTo()))
+				if (!plugin.isInArena(event.getTo()))
 				{
 					plugin.getArena(player).spawn(player);
 				}
@@ -335,7 +339,7 @@ public class PlayerListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
@@ -370,7 +374,7 @@ public class PlayerListener implements Listener
 				{
 					ArenaPlayer ap = plugin.getArenaPlayer(player);
 					ap.sendMessage("&cYou cannot teleport while ingame!");
-					
+
 					event.setCancelled(true);
 				}
 			}
@@ -385,15 +389,13 @@ public class PlayerListener implements Listener
 			Player player = event.getPlayer();
 			if (plugin.isInArena(player))
 			{
-				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
+				if (!plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 				{
 					String cmd = event.getMessage().toLowerCase();
 					if (! cmd.contains("/ua") && ! plugin.isWhitelistedCommand(cmd))
 					{
-						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
-						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
 						event.setCancelled(true);
 					}
 				}

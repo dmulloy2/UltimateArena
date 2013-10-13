@@ -19,7 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
- * Manager for Signs
+ * Handles sign functions
  * 
  * @author dmulloy2
  */
@@ -35,7 +35,7 @@ public class SignHandler
 
 		load();
 	}
-	
+
 	public void load()
 	{
 		try
@@ -45,16 +45,16 @@ public class SignHandler
 			{
 				signsSave.createNewFile();
 			}
-	
+
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
 			if (fc.isSet("total"))
 			{
 				signsSave.delete();
 				signsSave.createNewFile();
-				
+
 				fc = YamlConfiguration.loadConfiguration(signsSave);
 			}
-			
+
 			for (Entry<String, Object> value : fc.getValues(false).entrySet())
 			{
 				MemorySection mem = (MemorySection) value.getValue();
@@ -65,7 +65,7 @@ public class SignHandler
 					plugin.getArenaSigns().add(sign);
 				}
 			}
-			
+
 			// Update signs
 			new BukkitRunnable()
 			{
@@ -81,7 +81,7 @@ public class SignHandler
 			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading signs"));
 		}
 	}
-	
+
 	public void save()
 	{
 		try
@@ -90,19 +90,19 @@ public class SignHandler
 			{
 				signsSave.delete();
 			}
-			
+
 			signsSave.createNewFile();
-			
+
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
-			
+
 			for (int i = 0; i < plugin.getArenaSigns().size(); i++)
 			{
 				ArenaSign sign = plugin.getArenaSigns().get(i);
-				
+
 				Map<String, Object> values = sign.serialize();
 				fc.set("" + sign.getId(), values);
 			}
-			
+
 			fc.save(signsSave);
 		}
 		catch (Exception e)
@@ -138,7 +138,7 @@ public class SignHandler
 
 		updateSigns();
 	}
-	
+
 	public final void updateSigns(ArenaZone az)
 	{
 		for (ArenaSign sign : getSigns(az))
@@ -159,7 +159,7 @@ public class SignHandler
 
 		return ret;
 	}
-	
+
 	public final List<ArenaSign> getSigns()
 	{
 		return Collections.unmodifiableList(plugin.getArenaSigns());

@@ -682,7 +682,7 @@ public class UltimateArena extends JavaPlugin
 		return null;
 	}
 
-	public void join(Player player, String arena)
+	public void attemptJoin(Player player, String arena)
 	{
 		if (! permissionHandler.hasPermission(player, Permission.JOIN))
 		{
@@ -741,10 +741,17 @@ public class UltimateArena extends JavaPlugin
 		ArenaPlayer ap = getArenaPlayer(player);
 		if (ap != null)
 		{
-			if (ap.getArena() != null && ap.getArena().getName().equalsIgnoreCase(arena))
+			Arena ar = ap.getArena();
+			if (ar != null)
 			{
-				player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin this arena!"));
-				return;
+				if (ar.getName().equalsIgnoreCase(arena))
+				{
+					if (ar.isInGame())
+					{
+						player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin this arena!"));
+						return;
+					}
+				}
 			}
 		}
 
@@ -771,7 +778,7 @@ public class UltimateArena extends JavaPlugin
 		}
 	}
 
-	public void fight(Player player, String name)
+	public void join(Player player, String name)
 	{
 		boolean forced = permissionHandler.hasPermission(player, Permission.JOIN_FORCE);
 

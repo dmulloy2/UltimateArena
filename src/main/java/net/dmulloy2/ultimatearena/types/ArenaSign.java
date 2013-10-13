@@ -56,6 +56,7 @@ public class ArenaSign implements ConfigurationSerializable
 		this.plugin = plugin;
 		this.loc = loc;
 		this.world = loc.getWorld();
+		this.worldName = world.getName();
 		this.az = az;
 		this.sign = getSign();
 		

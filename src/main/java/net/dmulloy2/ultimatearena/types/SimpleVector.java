@@ -13,63 +13,65 @@ import org.bukkit.util.Vector;
  */
 
 @SerializableAs("net.dmulloy2.SimpleVector")
-public class SimpleVector implements ConfigurationSerializable 
+public class SimpleVector implements ConfigurationSerializable
 {
 	private int x, y, z;
-	
-	public SimpleVector() 
+
+	public SimpleVector()
 	{
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
 	}
-	
-	public SimpleVector(String s) 
+
+	public SimpleVector(String s)
 	{
 		String[] ss = s.split(",");
-		
+
 		this.x = Integer.parseInt(ss[0]);
 		this.y = Integer.parseInt(ss[1]);
 		this.z = Integer.parseInt(ss[2]);
 	}
-	
-	public SimpleVector(int x, int y, int z) 
+
+	public SimpleVector(int x, int y, int z)
 	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	
-	public SimpleVector(Vector v) 
+
+	public SimpleVector(Vector v)
 	{
 		this(v.getBlockX(), v.getBlockY(), v.getBlockZ());
 	}
-	
-	public SimpleVector(Location l) 
+
+	public SimpleVector(Location l)
 	{
 		this(l.toVector());
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		return (x + "," + y + "," + z);
 	}
-	
-	public Vector toVector() 
+
+	public Vector toVector()
 	{
 		return new Vector(x, y, z);
 	}
-	
-	public boolean equals(Object o) 
+
+	@Override
+	public boolean equals(Object o)
 	{
 		if (o == null)
 			return false;
-		
+
 		if (getClass() != o.getClass())
 			return false;
-		
+
 		final SimpleVector that = (SimpleVector) o;
-		
+
 		if (this.x != that.x)
 			return false;
 		if (this.y != that.y)
@@ -78,33 +80,33 @@ public class SimpleVector implements ConfigurationSerializable
 			return false;
 		return true;
 	}
-	
+
 	@Override
-	public Map<String, Object> serialize() 
+	public Map<String, Object> serialize()
 	{
 		Map<String, Object> result = new LinkedHashMap<String, Object>();
-		
+
 		result.put("c", toString());
-		
+
 		return result;
 	}
-	
+
 	public static SimpleVector deserialize(Map<String, Object> args)
 	{
 		return new SimpleVector((String) args.get("c"));
 	}
-	
+
 	public int getX()
 	{
 		return x;
 	}
-	
-	public int getY() 
+
+	public int getY()
 	{
 		return y;
 	}
-	
-	public int getZ() 
+
+	public int getZ()
 	{
 		return z;
 	}

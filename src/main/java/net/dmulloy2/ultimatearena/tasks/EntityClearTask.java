@@ -23,9 +23,8 @@ public final class EntityClearTask extends BukkitRunnable
 		this.arena = arena;
 		this.world = arena.getWorld();
 		this.plugin = arena.getPlugin();
-		
 	}
-	
+
 	@Override
 	public void run()
 	{

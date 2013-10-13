@@ -12,7 +12,7 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 public class LogHandler
 {
 	private final UltimateArena plugin;
-	public LogHandler(UltimateArena plugin) 
+	public LogHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -26,7 +26,7 @@ public class LogHandler
 	{
 		plugin.getLogger().info(FormatUtil.format(msg, objects));
 	}
-	
+
 	public final void debug(String msg, Object... objects)
 	{
 		if (plugin.getConfig().getBoolean("debug", false))
