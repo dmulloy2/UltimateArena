@@ -127,7 +127,7 @@ public class ArenaSign implements ConfigurationSerializable
 			return;
 		}
 
-		plugin.debug("Updating sign: {0}", id);
+//		plugin.debug("Updating sign: {0}", id);
 		
 		sign.setLine(0, "[UltimateArena]");
 		sign.setLine(1, az.getArenaName());

@@ -268,7 +268,7 @@ public class EntityListener implements Listener
 					Player killer = pdied.getKiller();
 					if (killer.getName().equals(pdied.getName())) // Suicide
 					{
-						plugin.debug("Player {0} has committed suicide!", pdied.getName());
+//						plugin.debug("Player {0} has committed suicide!", pdied.getName());
 						ar.tellPlayers("&e{0} &3commited &esuicide&3!", pdied.getName());
 
 						List<String> lines = new ArrayList<String>();
@@ -286,7 +286,7 @@ public class EntityListener implements Listener
 					}
 					else // PvP
 					{
-						plugin.debug("PvP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
+//						plugin.debug("PvP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
 
 						ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(), getWeapon(killer));
 
@@ -324,9 +324,7 @@ public class EntityListener implements Listener
 						}
 					}
 				}
-				else
-				// From this point on, we will return when there is a valid
-				// match
+				else // From this point on, we will return when there is a valid match
 				{
 					if (pdied.getKiller() instanceof LivingEntity)
 					{
@@ -399,7 +397,7 @@ public class EntityListener implements Listener
 							LivingEntity lentity = pdied.getKiller();
 							String name = FormatUtil.getFriendlyName(lentity.getType());
 
-							plugin.debug("Player {0} was killed by {1}", pdied.getName(), name);
+//							plugin.debug("Player {0} was killed by {1}", pdied.getName(), name);
 							ar.tellPlayers("&e{0} &3was killed by {1} &e{2}", pdied.getName(), FormatUtil.getArticle(name), name);
 
 							List<String> deadlines = new ArrayList<String>();
@@ -449,7 +447,7 @@ public class EntityListener implements Listener
 					Player killer = lentity.getKiller();
 					if (plugin.isInArena(killer))
 					{
-						plugin.debug("{0} has been killed by {1}", FormatUtil.getFriendlyName(lentity.getType()), killer.getName());
+//						plugin.debug("{0} has been killed by {1}", FormatUtil.getFriendlyName(lentity.getType()), killer.getName());
 
 						ArenaPlayer ak = plugin.getArenaPlayer(killer);
 						if (ak.getArena().isCountMobKills()) // Selectively count mob kills
