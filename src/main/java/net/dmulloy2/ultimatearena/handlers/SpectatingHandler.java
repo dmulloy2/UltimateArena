@@ -126,7 +126,7 @@ public class SpectatingHandler implements Listener
 		String name = FormatUtil.format("&4&lActive Players");
 		Inventory inventory = plugin.getServer().createInventory(p, 27, name);
 
-		for (ArenaPlayer pl : a.getValidPlayers())
+		for (ArenaPlayer pl : a.getActivePlayers())
 		{
 			ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 			SkullMeta meta = (SkullMeta) skull.getItemMeta();

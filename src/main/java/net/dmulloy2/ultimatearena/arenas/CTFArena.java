@@ -1,8 +1,12 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import java.util.Collections;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.flags.CTFFlagBase;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
@@ -131,10 +135,12 @@ public class CTFArena extends Arena
 		@Override
 		public void run()
 		{
-			if (!isStopped())
+			if (! isStopped())
 			{
-				redFlag.checkNear(arenaPlayers);
-				blueFlag.checkNear(arenaPlayers);
+				List<ArenaPlayer> check = Collections.unmodifiableList(activePlayers);
+
+				redFlag.checkNear(check);
+				blueFlag.checkNear(check);
 			}
 			else
 			{

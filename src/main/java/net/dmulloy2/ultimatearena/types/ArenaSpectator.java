@@ -63,7 +63,7 @@ public class ArenaSpectator
 	 */
 	public void spawn()
 	{
-		arena.teleport(player, arena.getSpawn(arena.getValidPlayers().get(0)));
+		arena.teleport(player, arena.getSpawn(arena.getActivePlayers().get(0)));
 		
 		saveInventory();
 		clearInventory();
@@ -82,7 +82,7 @@ public class ArenaSpectator
 		
 		player.getInventory().addItem(new ItemStack(Material.COMPASS));
 		
-		for (ArenaPlayer ap : arena.getValidPlayers())
+		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
 			ap.getPlayer().hidePlayer(player);
 		}
@@ -103,9 +103,17 @@ public class ArenaSpectator
 
 		clearPotionEffects();
 
-		for (ArenaPlayer ap : arena.getArenaPlayers())
+		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
 			ap.getPlayer().showPlayer(player);
+		}
+
+		for (ArenaPlayer ap : arena.getInactivePlayers())
+		{
+			if (ap != null && ap.getPlayer().isOnline())
+			{
+				ap.getPlayer().showPlayer(player);
+			}
 		}
 
 		arena.teleport(player, spawnBack);

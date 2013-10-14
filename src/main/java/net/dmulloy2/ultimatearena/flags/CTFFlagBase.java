@@ -50,9 +50,9 @@ public class CTFFlagBase extends FlagBase
 	}
 
 	@Override
-	public void checkNear(List<ArenaPlayer> arenaplayers)
+	public void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
-		flag.checkNear(arenaplayers);
+		flag.checkNear(arenaPlayers);
 
 		if (!enemyflag.isPickedUp())
 			return;
@@ -60,10 +60,9 @@ public class CTFFlagBase extends FlagBase
 		if (enemyflag.getRiding() == null)
 			return;
 
-		for (int i = 0; i < arenaplayers.size(); i++)
+		for (ArenaPlayer a : arenaPlayers)
 		{
-			ArenaPlayer a = arenaplayers.get(i);
-			if (arena.checkValid(a) && a.getPlayer().isOnline() && ! a.getPlayer().isDead())
+			if (a.getPlayer().isOnline() && ! a.getPlayer().isDead())
 			{
 				if (a.getTeam() == team)
 				{
@@ -81,17 +80,13 @@ public class CTFFlagBase extends FlagBase
 							p.removePotionEffect(PotionEffectType.SLOW);
 							p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 
-							for (int ii = 0; ii < arenaplayers.size(); ii++)
+							for (ArenaPlayer ap : arenaPlayers)
 							{
-								ArenaPlayer ap = arenaplayers.get(ii);
-								if (arena.checkValid(ap))
+								if (ap.getTeam() == a.getTeam())
 								{
-									if (ap.getTeam() == a.getTeam())
-									{
-										ap.sendMessage("&aUnlocked 10 seconds of crits!");
-										ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
-										ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
-									}
+									ap.sendMessage("&aUnlocked 10 seconds of crits!");
+									ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
+									ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
 								}
 							}
 

@@ -45,13 +45,13 @@ public class PlayerListener implements Listener
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		onPlayerDisconnect(event.getPlayer());
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent event)
 	{
 		if (! event.isCancelled())

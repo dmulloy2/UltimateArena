@@ -94,10 +94,10 @@ public class KOTHArena extends Arena
 	@Override
 	public void check()
 	{
-		for (ArenaFlag flag : getFlags())
+		for (ArenaFlag flag : flags)
 		{
 			flag.step();
-			flag.checkNear(arenaPlayers);
+			flag.checkNear(Collections.unmodifiableList(activePlayers));
 		}
 
 		checkPlayerPoints(maxPower);
@@ -111,13 +111,9 @@ public class KOTHArena extends Arena
 
 		// Build kills map
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : activePlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
-			if (checkValid(ap))
-			{
-				pointsMap.put(ap.getName(), ap.getPoints());
-			}
+			pointsMap.put(ap.getName(), ap.getPoints());
 		}
 
 		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(pointsMap.entrySet());

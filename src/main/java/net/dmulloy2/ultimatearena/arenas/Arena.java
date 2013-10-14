@@ -55,7 +55,9 @@ public abstract class Arena
 		LOBBY, INGAME, STOPPING, IDLE, DISABLED;
 	}
 
-	protected List<ArenaPlayer> arenaPlayers = new ArrayList<ArenaPlayer>();
+	protected List<ArenaPlayer> activePlayers = new ArrayList<ArenaPlayer>();
+	protected List<ArenaPlayer> inactivePlayers = new ArrayList<ArenaPlayer>();
+
 	protected List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
 	protected List<Location> spawns = new ArrayList<Location>();
 	
@@ -203,16 +205,9 @@ public abstract class Arena
 		pl.decideHat();
 
 		// Finally add the player
-		arenaPlayers.add(pl);
+		activePlayers.add(pl);
 
-		// Update Signs
-		updateSigns();
-
-//		Temporarily disable the event API, see if it helps fix some lag
-//		UltimateArenaJoinEvent joinEvent = new UltimateArenaJoinEvent(pl, this);
-//		plugin.getServer().getPluginManager().callEvent(joinEvent);
-
-		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), getValidPlayerCount(), az.getMaxPlayers());
+		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), activePlayers.size(), az.getMaxPlayers());
 	}
 
 	/**
@@ -266,18 +261,14 @@ public abstract class Arena
 		int amt1 = 0;
 		int amt2 = 0;
 
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : activePlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
-			if (checkValid(ap))
-			{
-				if (ap.getTeam() == 1)
-					amt1++;
-				else
-					amt2++;
-			}
+			if (ap.getTeam() == 1)
+				amt1++;
+			else
+				amt2++;
 		}
-		
+
 		return amt1 > amt2 ? 2 : 1;
 	}
 
@@ -308,22 +299,44 @@ public abstract class Arena
 	 * Every player who has joined this arena will have an ArenaPlayer instance.
 	 * It is important to note, however, that players who are out will still have
 	 * arena player instances until the arena concludes.
-	 * Use {@link #checkValid(ArenaPlayer)} to make sure the player is actually in
-	 * the arena.
 	 * 
 	 * @param p
 	 *            - Player instance
+	 * @param inactive
+	 *            - Whether or not to check the inactive list as well
 	 * @return The player's ArenaPlayer instance
 	 */
-	public final ArenaPlayer getArenaPlayer(Player p)
+	public final ArenaPlayer getArenaPlayer(Player p, boolean inactive)
 	{
-		for (ArenaPlayer ap : arenaPlayers)
+		for (ArenaPlayer ap : activePlayers)
 		{
 			if (ap.getName().equals(p.getName()))
 				return ap;
 		}
+		
+		if (inactive)
+		{
+			for (ArenaPlayer ap : inactivePlayers)
+			{
+				if (ap.getName().equals(p.getName()))
+					return ap;
+			}
+		}
 
 		return null;
+	}
+	
+	/**
+	 * Alias for {@link #getArenaPlayer(Player, boolean)}
+	 * <p>
+	 * Has the same effect as <code>getArenaPlayer(p, true)</code>
+	 * 
+	 * @param p
+	 *            - Player instance
+	 */
+	public final ArenaPlayer getArenaPlayer(Player p)
+	{
+		return getArenaPlayer(p, false);
 	}
 
 	/**
@@ -331,9 +344,9 @@ public abstract class Arena
 	 */
 	public final void spawnAll()
 	{
-		plugin.debug("Spawning players for Arena: {0}", name);
+		plugin.debug("Spawning players for Arena {0}", name);
 		
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : activePlayers)
 		{
 			spawn(ap.getPlayer());
 		}
@@ -384,28 +397,21 @@ public abstract class Arena
 		if (! stopped)
 		{
 			ArenaPlayer ap = getArenaPlayer(player);
-			if (checkValid(ap))
+			if (ap.getDeaths() < getMaxDeaths())
 			{
-				if (ap.getDeaths() < getMaxDeaths())
+				plugin.debug("Spawning player: {0}", player.getName());
+
+				Location loc = getSpawn(ap);
+				if (loc != null)
 				{
-					plugin.debug("Spawning player: {0}", player.getName());
+					teleport(player, loc);
+				}
 
-					Location loc = getSpawn(ap);
-					if (loc != null)
-					{
-						teleport(player, loc);
+				ap.spawn();
 
-//						Temporarily disable the event API, see if it helps fix some lag
-//						UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, false);
-//						plugin.getServer().getPluginManager().callEvent(spawnEvent);
-					}
-
-					ap.spawn();
-					
-					if (! alreadySpawned)
-					{
-						onSpawn(ap);
-					}
+				if (!alreadySpawned)
+				{
+					onSpawn(ap);
 				}
 			}
 		}
@@ -436,12 +442,8 @@ public abstract class Arena
 		if (loc != null)
 		{
 			plugin.debug("Spawning player {0} in the lobby", ap.getName());
-			
-			teleport(ap.getPlayer(), loc);
 
-//			Temporarily disable the event API, see if it helps fix some lag
-//			UltimateArenaSpawnEvent spawnEvent = new UltimateArenaSpawnEvent(ap, this, loc, true);
-//			plugin.getServer().getPluginManager().callEvent(spawnEvent);
+			teleport(ap.getPlayer(), loc);
 		}
 	}
 
@@ -464,12 +466,8 @@ public abstract class Arena
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		pl.setAmtKicked(0);
-		
-		this.updateLeaderboard = true;
 
-//		Temporarily disable the event API, see if it helps fix some lag
-//		UltimateArenaDeathEvent deathEvent = new UltimateArenaDeathEvent(pl, this);
-//		plugin.getServer().getPluginManager().callEvent(deathEvent);
+		this.updateLeaderboard = true;
 	}
 
 	/**
@@ -491,15 +489,14 @@ public abstract class Arena
 	 */
 	public final void rewardTeam(int team)
 	{
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : activePlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
-			if (ap != null && ap.isCanReward())
+			if (ap.isCanReward())
 			{
 				if (ap.getTeam() == team || team == -1)
 				{
 					reward(ap);
-				}
+				}	
 			}
 		}
 	}
@@ -512,7 +509,7 @@ public abstract class Arena
 	 */
 	public final void setWinningTeam(int team)
 	{
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : activePlayers)
 		{
 			ap.setCanReward(false);
 			if (ap.getTeam() == team || team == -1)
@@ -532,7 +529,7 @@ public abstract class Arena
 	 */
 	public final void checkPlayerPoints(int max)
 	{
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : activePlayers)
 		{
 			if (ap.getPoints() >= max)
 			{
@@ -566,7 +563,7 @@ public abstract class Arena
 	 */
 	public final boolean isEmpty()
 	{
-		return isInGame() && getValidPlayerCount() <= 1;
+		return isInGame() && activePlayers.size() <= 1;
 	}
 
 	/**
@@ -579,7 +576,7 @@ public abstract class Arena
 	 */
 	public final void tellPlayers(String string, Object... objects)
 	{
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : activePlayers)
 		{
 			ap.sendMessage(string, objects);
 		}
@@ -587,6 +584,8 @@ public abstract class Arena
 	
 	/**
 	 * Tells all players a message.
+	 * <p>
+	 * Includes offline players
 	 * 
 	 * @param string
 	 *            - Base message
@@ -595,9 +594,10 @@ public abstract class Arena
 	 */
 	public final void tellAllPlayers(String string, Object... objects)
 	{
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		tellPlayers(string, objects);
+
+		for (ArenaPlayer ap : inactivePlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap != null && ap.getPlayer().isOnline())
 			{
 				ap.sendMessage(string, objects);
@@ -617,7 +617,7 @@ public abstract class Arena
 	{
 		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
 
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : activePlayers)
 		{
 			Location ploc = ap.getPlayer().getLocation();
 			if (Util.pointDistance(loc, ploc) < rad)
@@ -636,13 +636,10 @@ public abstract class Arena
 	{
 		plugin.debug("Getting a random spawn for {0}", ap.getName());
 
-		if (checkValid(ap))
+		if (! spawns.isEmpty())
 		{
-			if (! spawns.isEmpty())
-			{
-				return spawns.get(Util.random(spawns.size()));
-				
-			}
+			return spawns.get(Util.random(spawns.size()));
+
 		}
 
 		return null;
@@ -796,7 +793,7 @@ public abstract class Arena
 
 		announceWinner();
 
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : activePlayers)
 		{
 			if (plugin.isInArena(ap.getPlayer()))
 			{
@@ -866,18 +863,17 @@ public abstract class Arena
 
 		teleport(ap.getPlayer(), ap.getSpawnBack());
 
-//		Temporarily disable the event API, see if it helps fix some lag
-//		UltimateArenaLeaveEvent leaveEvent = new UltimateArenaLeaveEvent(ap, this);
-//		plugin.getServer().getPluginManager().callEvent(leaveEvent);
+		activePlayers.remove(ap);
+		inactivePlayers.add(ap);
 
 		if (dead)
 		{
 			ap.sendMessage("&3You have exceeded the death limit!");
 			tellPlayers("&e{0} &3has been eliminated!", ap.getName());
 
-			if (getValidPlayerCount() > 1)
+			if (activePlayers.size() > 1)
 			{
-				tellPlayers("&3There are &e{0} &3players remaining!", getValidPlayerCount());
+				tellPlayers("&3There are &e{0} &3players remaining!", activePlayers.size());
 			}
 		}
 	}
@@ -912,7 +908,7 @@ public abstract class Arena
 	{
 		if (stopped)
 		{
-			arenaPlayers.clear();
+			activePlayers.clear();
 			return;
 		}
 
@@ -960,12 +956,12 @@ public abstract class Arena
 	{
 		if (! start)
 		{
-			plugin.outConsole("Starting arena {0} with {1} players", name, getValidPlayerCount());
+			plugin.outConsole("Starting arena {0} with {1} players", name, activePlayers.size());
 
 			this.start = true;
 			this.gameMode = Mode.INGAME;
 
-			this.startingAmount = getValidPlayerCount();
+			this.startingAmount = activePlayers.size();
 
 			this.gameTimer = maxGameTime;
 			this.startTimer = -1;
@@ -988,7 +984,7 @@ public abstract class Arena
 		checkTimers();
 
 		// Get how many people are in the arena
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
 		{
 			Player player = Util.matchPlayer(ap.getName());
 			if (player != null)
@@ -1002,13 +998,11 @@ public abstract class Arena
 
 		check();
 
-		for (ArenaPlayer ap : getValidPlayers())
+		for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
 		{
 			// Check players in the Arena
 			if (isInLobby())
 			{
-//				ap.getPlayer().setFireTicks(0);
-//				ap.getPlayer().setFoodLevel(20);
 				ap.decideHat();
 			}
 
@@ -1041,13 +1035,6 @@ public abstract class Arena
 					}
 				}
 			}
-
-//			Removed in favor of active updating (see listener)
-//			if (!plugin.isInArena(ap.getPlayer().getLocation()))
-//			{
-//				spawn(ap.getPlayer(), false);
-//				ap.setAmtKicked(ap.getAmtKicked() + 1);
-//			}
 
 			// Timer Stuff
 			if (! isPauseStartTimer())
@@ -1108,7 +1095,7 @@ public abstract class Arena
 		}
 
 		// Stop the arena if there are no players
-		if (getValidPlayerCount() == 0)
+		if (activePlayers.isEmpty())
 			stop();
 		
 		// Update signs
@@ -1123,19 +1110,16 @@ public abstract class Arena
 	 */
 	public final void decideXPBar(ArenaPlayer ap)
 	{
-		if (checkValid(ap))
+		if (plugin.getConfig().getBoolean("timerXPBar", true))
 		{
-			if (plugin.getConfig().getBoolean("timerXPBar", true))
+			if (isInGame())
 			{
-				if (isInGame())
-				{
-					ap.getPlayer().setLevel(gameTimer);
-				}
+				ap.getPlayer().setLevel(gameTimer);
+			}
 
-				if (isInLobby())
-				{
-					ap.getPlayer().setLevel(startTimer);
-				}
+			if (isInLobby())
+			{
+				ap.getPlayer().setLevel(startTimer);
 			}
 		}
 	}
@@ -1148,17 +1132,14 @@ public abstract class Arena
 	 */
 	public final void returnXP(ArenaPlayer ap)
 	{
-		if (ap != null)
-		{
-			plugin.debug("Returning {0} levels of xp for {1}", ap.getBaseLevel(), ap.getName());
+		plugin.debug("Returning {0} levels of xp for {1}", ap.getBaseLevel(), ap.getName());
 
-			// Clear XP
-			ap.getPlayer().setExp(0.0F);
-			ap.getPlayer().setLevel(0);
+		// Clear XP
+		ap.getPlayer().setExp(0.0F);
+		ap.getPlayer().setLevel(0);
 
-			// Give Base XP
-			ap.getPlayer().setLevel(ap.getBaseLevel());
-		}
+		// Give Base XP
+		ap.getPlayer().setLevel(ap.getBaseLevel());
 	}
 
 	/**
@@ -1232,13 +1213,10 @@ public abstract class Arena
 
 		// Build kills map
 		HashMap<String, Double> kdrMap = new HashMap<String, Double>();
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		
+		for (ArenaPlayer ap : activePlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
-			if (checkValid(ap))
-			{
-				kdrMap.put(ap.getName(), ap.getKDR());
-			}
+			kdrMap.put(ap.getName(), ap.getKDR());
 		}
 
 		final List<Map.Entry<String, Double>> sortedEntries = new ArrayList<Map.Entry<String, Double>>(kdrMap.entrySet());
@@ -1317,47 +1295,6 @@ public abstract class Arena
 		}
 	}
 
-	/**
-	 * Checks if an {@link ArenaPlayer} is active in the arena.
-	 * 
-	 * @param ap 
-	 *            - {@link ArenaPlayer} to check
-	 * @return Whether or not the player is active
-	 */
-	public final boolean checkValid(ArenaPlayer ap)
-	{
-		return ap != null && ! ap.isOut();
-	}
-
-	/**
-	 * Returns a {@link List} of valid {@link ArenaPlayer}s
-	 * 
-	 * @return A {@link List} of valid {@link ArenaPlayer}s
-	 */
-	public final List<ArenaPlayer> getValidPlayers()
-	{
-		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
-
-		for (int i = 0; i < arenaPlayers.size(); i++)
-		{
-			ArenaPlayer ap = arenaPlayers.get(i);
-			if (checkValid(ap))
-				validPlayers.add(ap);
-		}
-
-		return validPlayers;
-	}
-	
-	/**
-	 * Returns the amount of valid {@link ArenaPlayer}s
-	 * 
-	 * @return The amount of valid {@link ArenaPlayer}s
-	 */
-	public final int getValidPlayerCount()
-	{
-		return getValidPlayers().size();
-	}
-	
 	public final boolean isValidClass(ArenaClass ac)
 	{
 		if (! whitelistedClasses.isEmpty())
@@ -1384,5 +1321,10 @@ public abstract class Arena
 		{
 			//
 		}
+	}
+	
+	public final int getPlayerCount()
+	{
+		return activePlayers.size();
 	}
 }

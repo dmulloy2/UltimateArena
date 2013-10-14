@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
@@ -39,7 +40,7 @@ public class CONQUESTArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.redTeamPower = getValidPlayerCount() * 4;
+		this.redTeamPower = getPlayerCount() * 4;
 		this.blueTeamPower = redTeamPower;
 		if (redTeamPower < 4)
 		{
@@ -62,39 +63,36 @@ public class CONQUESTArena extends Arena
 	@Override
 	public Location getSpawn(ArenaPlayer ap)
 	{
-		if (checkValid(ap))
+		if (isInLobby())
 		{
-			if (isInLobby())
-			{
-				return super.getSpawn(ap);
-			}
+			return super.getSpawn(ap);
+		}
 
-			List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
-			for (int i = 0; i < flags.size(); i++)
+		List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
+		for (int i = 0; i < flags.size(); i++)
+		{
+			ArenaFlag flag = flags.get(i);
+			if (flag.getTeam() == ap.getTeam())
 			{
-				ArenaFlag flag = flags.get(i);
-				if (flag.getTeam() == ap.getTeam())
+				if (flag.isCapped())
 				{
-					if (flag.isCapped())
-					{
-						spawnto.add(flag);
-					}
+					spawnto.add(flag);
 				}
 			}
+		}
 
-			if (!spawnto.isEmpty())
+		if (! spawnto.isEmpty())
+		{
+			int rand = Util.random(spawnto.size());
+			ArenaFlag flag = spawnto.get(rand);
+			if (flag != null)
 			{
-				int rand = Util.random(spawnto.size());
-				ArenaFlag flag = spawnto.get(rand);
-				if (flag != null)
-				{
-					return flag.getLoc();
-				}
+				return flag.getLoc();
 			}
-			else
-			{
-				return super.getSpawn(ap);
-			}
+		}
+		else
+		{
+			return super.getSpawn(ap);
 		}
 
 		return null;
@@ -149,38 +147,30 @@ public class CONQUESTArena extends Arena
 		if (pl.getTeam() == 1)
 		{
 			redTeamPower--;
-			for (int i = 0; i < arenaPlayers.size(); i++)
+			for (ArenaPlayer ap : activePlayers)
 			{
-				ArenaPlayer apl = arenaPlayers.get(i);
-				if (checkValid(apl))
+				if (ap.getTeam() == 1)
 				{
-					if (apl.getTeam() == 1)
-					{
-						apl.sendMessage("&cYour power is now: &6" + redTeamPower);
-					}
-					else
-					{
-						apl.sendMessage("&cThe other team's power is now: &6" + redTeamPower);
-					}
+					ap.sendMessage("&cYour power is now: &6" + redTeamPower);
+				}
+				else
+				{
+					ap.sendMessage("&cThe other team's power is now: &6" + redTeamPower);
 				}
 			}
 		}
 		else if (pl.getTeam() == 2)
 		{
 			blueTeamPower--;
-			for (int i = 0; i < arenaPlayers.size(); i++)
+			for (ArenaPlayer ap : activePlayers)
 			{
-				ArenaPlayer apl = arenaPlayers.get(i);
-				if (checkValid(apl))
+				if (ap.getTeam() == 2)
 				{
-					if (apl.getTeam() == 2)
-					{
-						apl.sendMessage("&cYour power is now: &6" + blueTeamPower);
-					}
-					else
-					{
-						apl.sendMessage("&cThe other team's power is now: &6" + blueTeamPower);
-					}
+					ap.sendMessage("&cYour power is now: &6" + blueTeamPower);
+				}
+				else
+				{
+					ap.sendMessage("&cThe other team's power is now: &6" + blueTeamPower);
 				}
 			}
 		}
@@ -195,11 +185,8 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void check()
 	{
-		List<ArenaPlayer> arenaPlayers = getValidPlayers();
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
-
 			if (blueTeamPower <= 0)
 			{
 				if (ap.getTeam() == 2)
@@ -231,7 +218,7 @@ public class CONQUESTArena extends Arena
 			ArenaFlag flag = flags.get(i);
 
 			flag.step();
-			flag.checkNear(arenaPlayers);
+			flag.checkNear(Collections.unmodifiableList(activePlayers));
 		}
 
 		if (startTimer <= 0)

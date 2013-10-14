@@ -641,8 +641,7 @@ public class UltimateArena extends JavaPlugin
 	// Special case for player
 	public boolean isInArena(Player player)
 	{
-		ArenaPlayer ap = getArenaPlayer(player);
-		return ap != null && ! ap.isOut();
+		return getArenaPlayer(player) != null;
 	}
 
 	public Arena getArenaInside(Block block)
@@ -665,21 +664,25 @@ public class UltimateArena extends JavaPlugin
 			if (az.checkLocation(entity.getLocation()))
 				return getArena(az.getArenaName());
 		}
-		
+
 		return null;
 	}
 
-	public ArenaPlayer getArenaPlayer(Player player)
+	public ArenaPlayer getArenaPlayer(Player player, boolean inactive)
 	{
-		for (int i = 0; i < activeArenas.size(); i++)
+		for (Arena a : Collections.unmodifiableList(activeArenas))
 		{
-			Arena a = activeArenas.get(i);
-			ArenaPlayer ap = a.getArenaPlayer(player);
+			ArenaPlayer ap = a.getArenaPlayer(player, inactive);
 			if (ap != null)
 				return ap;
 		}
 
 		return null;
+	}
+
+	public ArenaPlayer getArenaPlayer(Player player)
+	{
+		return getArenaPlayer(player, false);
 	}
 
 	public void attemptJoin(Player player, String arena)
@@ -738,7 +741,7 @@ public class UltimateArena extends JavaPlugin
 			return;
 		}
 
-		ArenaPlayer ap = getArenaPlayer(player);
+		ArenaPlayer ap = getArenaPlayer(player, true);
 		if (ap != null)
 		{
 			Arena ar = ap.getArena();
@@ -788,7 +791,7 @@ public class UltimateArena extends JavaPlugin
 		{
 			if (a.isInLobby())
 			{
-				if (a.getValidPlayerCount() + 1 <= az.getMaxPlayers())
+				if (a.getPlayerCount() + 1 <= az.getMaxPlayers())
 				{
 					a.addPlayer(player);
 				}
@@ -902,7 +905,7 @@ public class UltimateArena extends JavaPlugin
 	public boolean kickRandomPlayer(Arena arena)
 	{
 		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
-		List<ArenaPlayer> totalPlayers = arena.getArenaPlayers();
+		List<ArenaPlayer> totalPlayers = arena.getActivePlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
 			if (! permissionHandler.hasPermission(ap.getPlayer(), Permission.JOIN_FORCE))

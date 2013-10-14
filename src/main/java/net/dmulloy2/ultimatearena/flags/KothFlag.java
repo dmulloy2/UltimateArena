@@ -33,7 +33,7 @@ public class KothFlag extends ArenaFlag
 	}
 
 	@Override
-	public void checkNear(List<ArenaPlayer> arenaplayers)
+	public void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
 		if (marena.isInLobby())
 			return;
@@ -41,17 +41,16 @@ public class KothFlag extends ArenaFlag
 		int amt = 0;
 		ArenaPlayer capturer = null;
 		List<Player> players = new ArrayList<Player>();
-		for (int i = 0; i < arenaplayers.size(); i++)
+		for (ArenaPlayer ap : arenaPlayers)
 		{
-			ArenaPlayer apl = arenaplayers.get(i);
-			Player pl = apl.getPlayer();
+			Player pl = ap.getPlayer();
 			if (pl != null)
 			{
 				if (Util.pointDistance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0)
 				{
 					players.add(pl);
 					amt++;
-					capturer = apl;
+					capturer = ap;
 				}
 			}
 		}
@@ -75,13 +74,9 @@ public class KothFlag extends ArenaFlag
 	private void leadChange()
 	{
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
-		for (int i = 0; i < marena.getArenaPlayers().size(); i++)
+		for (ArenaPlayer ap : Collections.unmodifiableList(marena.getActivePlayers()))
 		{
-			ArenaPlayer ap = marena.getArenaPlayers().get(i);
-			if (marena.checkValid(ap))
-			{
-				pointsMap.put(ap.getName(), ap.getPoints());
-			}
+			pointsMap.put(ap.getName(), ap.getPoints());
 		}
 
 		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(pointsMap.entrySet());

@@ -151,42 +151,37 @@ public class CTFFlag
 
 		if (! isPickedUp())
 		{
-			for (int i = 0; i < arenaPlayers.size(); i++)
+			for (ArenaPlayer pl : arenaPlayers)
 			{
-				ArenaPlayer pl = arenaPlayers.get(i);
-				if (arena.checkValid(pl))
+				if (Util.pointDistance(pl.getPlayer().getLocation(), myloc) < 1.75 && pl.getPlayer().getHealth() > 0.0D)
 				{
-					if (Util.pointDistance(pl.getPlayer().getLocation(), myloc) < 1.75 && pl.getPlayer().getHealth() > 0.0D)
+					if (pl.getTeam() != getTeam())
 					{
-						if (pl.getTeam() != getTeam())
-						{
-							// If the guy is on the other team
-							this.pickedUp = true;
-							this.riding = pl.getPlayer();
+						// If the guy is on the other team
+						this.pickedUp = true;
+						this.riding = pl.getPlayer();
 
-							pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
-							pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-							arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", pl.getName(), flagType);
-							return;
-						}
-						else
+						pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
+						pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
+						arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", pl.getName(), flagType);
+						return;
+					}
+					else
+					{
+						if (!myloc.equals(getReturnto()))
 						{
-							if (!myloc.equals(getReturnto()))
-							{
-								// If the flag is not at its flagstand
-								pl.sendMessage("&aFlag Returned! &c+50 XP");
-								pl.setGameXP(pl.getGameXP() + 50);
-								arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), flagType);
-								respawn();
-								return;
-							}
+							// If the flag is not at its flagstand
+							pl.sendMessage("&aFlag Returned! &c+50 XP");
+							pl.setGameXP(pl.getGameXP() + 50);
+							arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), flagType);
+							respawn();
+							return;
 						}
 					}
 				}
 			}
 		}
-
-		if (isPickedUp())
+		else
 		{
 			if (riding.isOnline() && !riding.isDead())
 			{

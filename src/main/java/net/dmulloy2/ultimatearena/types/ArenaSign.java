@@ -173,14 +173,14 @@ public class ArenaSign implements ConfigurationSerializable
 					break;
 				case INGAME:
 					line.append("INGAME (");
-					line.append(ar.getValidPlayerCount());
+					line.append(ar.getPlayerCount());
 					line.append("/");
 					line.append(az.getMaxPlayers());
 					line.append(")");
 					break;
 				case LOBBY:
 					line.append("LOBBY (");
-					line.append(ar.getValidPlayerCount());
+					line.append(ar.getPlayerCount());
 					line.append("/");
 					line.append(az.getMaxPlayers());
 					line.append(")");

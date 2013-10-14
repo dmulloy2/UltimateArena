@@ -1,6 +1,6 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Random;
 
 import lombok.Getter;
@@ -86,7 +86,7 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void check()
 	{
-		if (getValidPlayerCount() == 1)
+		if (getPlayerCount() == 1)
 		{
 			if (getStartingAmount() > 1)
 			{
@@ -96,7 +96,7 @@ public class SPLEEFArena extends FFAArena
 
 		if (! checkEmpty())
 		{
-			for (ArenaPlayer ap : getValidPlayers())
+			for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
 			{
 				Player pl = ap.getPlayer();
 				Location loc = pl.getLocation();
@@ -117,10 +117,9 @@ public class SPLEEFArena extends FFAArena
 			
 			if (getStartingAmount() > 1)
 			{
-				List<ArenaPlayer> validPlayers = getValidPlayers();
-				if (! validPlayers.isEmpty())
+				if (! activePlayers.isEmpty())
 				{
-					this.winner = validPlayers.get(0);
+					this.winner = activePlayers.get(0);
 				}
 			}
 			

@@ -41,13 +41,13 @@ public class INFECTArena extends PVPArena
 	{
 		if (tries < 16)
 		{
-			ArenaPlayer apl = arenaPlayers.get(Util.random(arenaPlayers.size()));
-			if (apl != null && apl.getPlayer().isOnline())
+			ArenaPlayer ap = activePlayers.get(Util.random(activePlayers.size()));
+			if (ap != null && ap.getPlayer().isOnline())
 			{
-				apl.setTeam(2);
-				apl.sendMessage("&3You have been chosen for the infected!");
-				onSpawn(apl);
-				tellPlayers("&e{0} &3is the zombie!", apl.getPlayer().getName());
+				ap.setTeam(2);
+				ap.sendMessage("&3You have been chosen for the infected!");
+				onSpawn(ap);
+				tellPlayers("&e{0} &3is the zombie!", ap.getName());
 			}
 			else
 			{
@@ -64,12 +64,12 @@ public class INFECTArena extends PVPArena
 	}
 
 	@Override
-	public void onSpawn(ArenaPlayer apl)
+	public void onSpawn(ArenaPlayer ap)
 	{
-		if (apl.getTeam() == 2)
+		if (ap.getTeam() == 2)
 		{
-			Player pl = apl.getPlayer();
-			apl.clearInventory();
+			Player pl = ap.getPlayer();
+			ap.clearInventory();
 
 			spawn(pl, true);
 			
@@ -78,8 +78,8 @@ public class INFECTArena extends PVPArena
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2400, 1));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2400, 2));
 
-			apl.clearInventory();
-			apl.decideHat();
+			ap.clearInventory();
+			ap.decideHat();
 		}
 	}
 

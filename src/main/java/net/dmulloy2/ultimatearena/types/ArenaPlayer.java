@@ -401,9 +401,4 @@ public class ArenaPlayer
 				break;
 		}
 	}
-
-	public boolean isValid()
-	{
-		return arena.checkValid(this);
-	}
 }
