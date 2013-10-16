@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.arenas;
 
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.ultimatearena.util.TeamHelper;
 
 /**
  * @author dmulloy2
@@ -47,5 +48,25 @@ public class PVPArena extends Arena
 				rewardTeam(-1);
 			}
 		}
+	}
+	
+	public int getWinningTeam()
+	{
+		if (winningTeam == -1)
+		{
+			if (team1size > 0)
+				return 1;
+			
+			if (team2size > 0)
+				return 2;
+		}
+
+		return winningTeam;
+	}
+
+	@Override
+	public void announceWinner()
+	{
+		tellAllPlayers("&e{0} team &3won the match at &e{1}", TeamHelper.getTeam(getWinningTeam()), name);
 	}
 }

@@ -278,16 +278,21 @@ public abstract class Arena
 	 * @param stopifEmpty
 	 *            - Stops the arena if empty
 	 */
-	public final boolean simpleTeamCheck(boolean stopifEmpty)
+	public boolean simpleTeamCheck(boolean stopifEmpty) 
 	{
-		if (team1size == 0 || team2size == 0)
+		if (getTeam1size() == 0 || team2size == 0) 
 		{
 			if (stopifEmpty)
 			{
 				stop();
 			}
-			
-			return startingAmount < 1;
+            
+			if (startingAmount > 1)
+			{
+				return false;
+			}
+                 
+			return true;
 		}
 
 		return true;
