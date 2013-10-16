@@ -1,6 +1,5 @@
 package net.dmulloy2.ultimatearena.arenas;
 
-import java.util.Collections;
 import java.util.Random;
 
 import lombok.Getter;
@@ -96,7 +95,7 @@ public class SPLEEFArena extends FFAArena
 
 		if (! checkEmpty())
 		{
-			for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
+			for (ArenaPlayer ap : getActivePlayers())
 			{
 				Player pl = ap.getPlayer();
 				Location loc = pl.getLocation();

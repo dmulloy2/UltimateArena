@@ -37,7 +37,9 @@ public class CmdSpectate extends UltimateArenaCommand
 		}
 		else
 		{
-			arena = plugin.getArena(args[0]);
+			if (args.length == 1)
+				arena = plugin.getArena(args[0]);
+
 			if (arena == null)
 			{
 				err("Could not find an active arena by the name of {0}", args[0]);

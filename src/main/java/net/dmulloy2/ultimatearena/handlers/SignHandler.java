@@ -2,7 +2,6 @@ package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -160,8 +159,18 @@ public class SignHandler
 		return ret;
 	}
 
+	/**
+	 * Workaround for concurrency issues
+	 */
 	public final List<ArenaSign> getSigns()
 	{
-		return Collections.unmodifiableList(plugin.getArenaSigns());
+		List<ArenaSign> ret = new ArrayList<ArenaSign>();
+		
+		for (int i = 0; i < plugin.getArenaSigns().size(); i++)
+		{
+			ret.add(plugin.getArenaSigns().get(i));
+		}
+		
+		return ret;
 	}
 }

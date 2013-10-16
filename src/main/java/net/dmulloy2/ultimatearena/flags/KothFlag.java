@@ -74,7 +74,7 @@ public class KothFlag extends ArenaFlag
 	private void leadChange()
 	{
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
-		for (ArenaPlayer ap : Collections.unmodifiableList(marena.getActivePlayers()))
+		for (ArenaPlayer ap : marena.getActivePlayers())
 		{
 			pointsMap.put(ap.getName(), ap.getPoints());
 		}

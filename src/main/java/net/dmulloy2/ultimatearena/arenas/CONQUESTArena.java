@@ -1,7 +1,6 @@
 package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
@@ -185,7 +184,7 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void check()
 	{
-		for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
+		for (ArenaPlayer ap : getActivePlayers())
 		{
 			if (blueTeamPower <= 0)
 			{
@@ -218,7 +217,7 @@ public class CONQUESTArena extends Arena
 			ArenaFlag flag = flags.get(i);
 
 			flag.step();
-			flag.checkNear(Collections.unmodifiableList(activePlayers));
+			flag.checkNear(getActivePlayers());
 		}
 
 		if (startTimer <= 0)

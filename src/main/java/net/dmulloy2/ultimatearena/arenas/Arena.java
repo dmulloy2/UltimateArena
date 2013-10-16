@@ -466,8 +466,6 @@ public abstract class Arena
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
 		pl.setAmtKicked(0);
-
-		this.updateLeaderboard = true;
 	}
 
 	/**
@@ -795,11 +793,10 @@ public abstract class Arena
 
 		for (ArenaPlayer ap : activePlayers)
 		{
-			if (plugin.isInArena(ap.getPlayer()))
-			{
-				endPlayer(ap, false);
-			}
+			endPlayer(ap, false);
 		}
+
+		activePlayers.clear();
 		
 		plugin.getSpectatingHandler().unregisterArena(this);
 
@@ -852,7 +849,6 @@ public abstract class Arena
 		ap.setOut(true);
 
 		this.updatedTeams = true;
-		this.updateLeaderboard = true;
 
 		returnXP(ap);
 
@@ -908,7 +904,7 @@ public abstract class Arena
 	{
 		if (stopped)
 		{
-			activePlayers.clear();
+//			activePlayers.clear();
 			return;
 		}
 
@@ -983,22 +979,25 @@ public abstract class Arena
 
 		checkTimers();
 
+		List<ArenaPlayer> players = getActivePlayers();
+
 		// Get how many people are in the arena
-		for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
+		for (ArenaPlayer ap : players)
 		{
-			Player player = Util.matchPlayer(ap.getName());
-			if (player != null)
+			switch (ap.getTeam())
 			{
-				if (ap.getTeam() == 1)
+				case 1:
 					team1size++;
-				else
+				case 2:
 					team2size++;
+				default:
+					break;
 			}
 		}
 
 		check();
 
-		for (ArenaPlayer ap : Collections.unmodifiableList(activePlayers))
+		for (ArenaPlayer ap : players)
 		{
 			// Check players in the Arena
 			if (isInLobby())
@@ -1192,22 +1191,7 @@ public abstract class Arena
 	}
 	
 	// ---- Leaderboard ---- //
-
-	protected boolean updateLeaderboard = true;
-
-	protected List<String> leaderboard;
-
 	public List<String> getLeaderboard(Player player)
-	{
-		if (updateLeaderboard)
-		{
-			leaderboard = buildLeaderboard(player);
-		}
-
-		return leaderboard;
-	}
-
-	protected List<String> buildLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
 
@@ -1326,5 +1310,22 @@ public abstract class Arena
 	public final int getPlayerCount()
 	{
 		return activePlayers.size();
+	}
+
+	/**
+	 * Workaround for concurrency issues
+	 * <p>
+	 * Should not be used for removing or adding
+	 */
+	public final List<ArenaPlayer> getActivePlayers()
+	{
+		List<ArenaPlayer> ret = new ArrayList<ArenaPlayer>();
+		
+		for (int i = 0; i < activePlayers.size(); i++)
+		{
+			ret.add(activePlayers.get(i));
+		}
+
+		return ret;
 	}
 }

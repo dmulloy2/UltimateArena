@@ -97,7 +97,7 @@ public class KOTHArena extends Arena
 		for (ArenaFlag flag : flags)
 		{
 			flag.step();
-			flag.checkNear(Collections.unmodifiableList(activePlayers));
+			flag.checkNear(getActivePlayers());
 		}
 
 		checkPlayerPoints(maxPower);
@@ -105,7 +105,7 @@ public class KOTHArena extends Arena
 	}
 
 	@Override
-	public List<String> buildLeaderboard(Player player)
+	public List<String> getLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
 
