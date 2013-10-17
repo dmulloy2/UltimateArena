@@ -135,7 +135,8 @@ public class UltimateArena extends JavaPlugin
 	private @Getter List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
 	private @Getter List<String> whitelistedCommands = new ArrayList<String>();
-	private @Getter List<Arena> activeArenas = new ArrayList<Arena>();
+
+	private List<Arena> activeArenas = new ArrayList<Arena>();
 	
 	private @Getter boolean stopping;
 
@@ -1236,6 +1237,18 @@ public class UltimateArena extends JavaPlugin
 		return ret > 0 ? ret : 1;
 	}
 
+	public List<Arena> getActiveArenas()
+	{
+		List<Arena> ret = new ArrayList<Arena>();
+
+		for (int i = 0; i < activeArenas.size(); i++)
+		{
+			ret.add(activeArenas.get(i));
+		}
+
+		return ret;
+	}
+
 	/**
 	 * Arena Update Task
 	 * <p>
@@ -1246,9 +1259,8 @@ public class UltimateArena extends JavaPlugin
 		@Override
 		public void run()
 		{
-			for (int i = 0; i < activeArenas.size(); i++)
+			for (Arena arena : getActiveArenas())
 			{
-				Arena arena = activeArenas.get(i);
 				arena.update();
 			}
 		}
