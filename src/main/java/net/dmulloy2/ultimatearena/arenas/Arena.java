@@ -207,7 +207,7 @@ public abstract class Arena
 		// Finally add the player
 		activePlayers.add(pl);
 
-		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), activePlayers.size(), az.getMaxPlayers());
+		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), getPlayerCount(), az.getMaxPlayers());
 	}
 
 	/**
@@ -315,7 +315,7 @@ public abstract class Arena
 	{
 		for (ArenaPlayer ap : activePlayers)
 		{
-			if (ap.getName().equals(p.getName()))
+			if (ap.getName().equalsIgnoreCase(p.getName()))
 				return ap;
 		}
 		
@@ -323,7 +323,7 @@ public abstract class Arena
 		{
 			for (ArenaPlayer ap : inactivePlayers)
 			{
-				if (ap.getName().equals(p.getName()))
+				if (ap.getName().equalsIgnoreCase(p.getName()))
 					return ap;
 			}
 		}
@@ -785,7 +785,7 @@ public abstract class Arena
 		if (stopped)
 			return; // No need to stop multiple times
 
-		plugin.outConsole("Stopping arena: {0}!", name);
+		plugin.outConsole("Stopping arena {0}!", name);
 
 		this.gameMode = Mode.STOPPING;
 		this.stopped = true;
@@ -802,6 +802,7 @@ public abstract class Arena
 		}
 
 		activePlayers.clear();
+		inactivePlayers.clear();
 		
 		plugin.getSpectatingHandler().unregisterArena(this);
 
@@ -874,7 +875,7 @@ public abstract class Arena
 
 			if (activePlayers.size() > 1)
 			{
-				tellPlayers("&3There are &e{0} &3players remaining!", activePlayers.size());
+				tellPlayers("&3There are &e{0} &3players remaining!", getPlayerCount());
 			}
 		}
 	}
@@ -957,17 +958,15 @@ public abstract class Arena
 	{
 		if (! start)
 		{
-			plugin.outConsole("Starting arena {0} with {1} players", name, activePlayers.size());
+			plugin.outConsole("Starting arena {0} with {1} players", name, getPlayerCount());
 
 			this.start = true;
 			this.gameMode = Mode.INGAME;
 
-			this.startingAmount = activePlayers.size();
+			this.startingAmount = getPlayerCount();
 
 			this.gameTimer = maxGameTime;
 			this.startTimer = -1;
-
-			updateSigns();
 
 			onStart();
 			spawnAll();
@@ -979,30 +978,11 @@ public abstract class Arena
 	 */
 	public final void update()
 	{
-		this.team1size = 0;
-		this.team2size = 0;
-
 		checkTimers();
-
-		List<ArenaPlayer> players = getActivePlayers();
-
-		// Get how many people are in the arena
-		for (ArenaPlayer ap : players)
-		{
-			switch (ap.getTeam())
-			{
-				case 1:
-					team1size++;
-				case 2:
-					team2size++;
-				default:
-					break;
-			}
-		}
-
+		updateTeams();
 		check();
 
-		for (ArenaPlayer ap : players)
+		for (ArenaPlayer ap : getActivePlayers())
 		{
 			// Check players in the Arena
 			if (isInLobby())
@@ -1332,5 +1312,19 @@ public abstract class Arena
 		}
 
 		return ret;
+	}
+
+	private final void updateTeams()
+	{
+		this.team1size = 0;
+		this.team2size = 0;
+
+		for (ArenaPlayer ap : getActivePlayers())
+		{
+			if (ap.getTeam() == 1)
+				team1size++;
+			else
+				team2size++;
+		}
 	}
 }
