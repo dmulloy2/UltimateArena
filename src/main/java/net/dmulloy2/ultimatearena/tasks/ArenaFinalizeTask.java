@@ -19,7 +19,7 @@ public final class ArenaFinalizeTask extends BukkitRunnable
 	@Override
 	public void run()
 	{
-		plugin.getActiveArenas().remove(arena);
+		plugin.removeActiveArena(arena);
 
 		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(arena.getName()));
 

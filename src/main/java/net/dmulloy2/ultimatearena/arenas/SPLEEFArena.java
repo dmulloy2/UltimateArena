@@ -85,9 +85,9 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void check()
 	{
-		if (getPlayerCount() == 1)
+		if (active.size() == 1)
 		{
-			if (getStartingAmount() > 1)
+			if (startingAmount > 1)
 			{
 				setWinningTeam(-1);
 			}
@@ -116,9 +116,9 @@ public class SPLEEFArena extends FFAArena
 			
 			if (getStartingAmount() > 1)
 			{
-				if (! activePlayers.isEmpty())
+				if (active.size() > 0)
 				{
-					this.winner = activePlayers.get(0);
+					this.winner = active.get(0);
 				}
 			}
 			

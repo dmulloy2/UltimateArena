@@ -1,7 +1,10 @@
 package net.dmulloy2.ultimatearena.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import net.dmulloy2.ultimatearena.UltimateArena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -188,7 +191,7 @@ public class Util
 
 		for (StackTraceElement ste : e.getStackTrace())
 		{
-			if (ste.getClassName().contains("net.dmulloy2.ultimatearena"))
+			if (ste.getClassName().contains(UltimateArena.class.getPackage().getName()))
 				ret.append('\t' + ste.toString() + '\n');
 		}
 		
@@ -198,5 +201,26 @@ public class Util
 		}
 
 		return ret.toString();
+	}
+
+	/**
+	 * Constructs a new list from an existing list
+	 * <p>
+	 * This fixes concurrency for some reason
+	 * 
+	 * @param list 
+	 *            - Base {@link List}
+	 * @return a new list from the given list
+	 */
+	public static <T> List<T> newList(List<T> list)
+	{
+		List<T> ret = new ArrayList<T>();
+
+		for (int i = 0; i < list.size(); i++)
+		{
+			ret.add(list.get(i));
+		}
+
+		return ret;
 	}
 }

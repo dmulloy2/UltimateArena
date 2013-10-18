@@ -111,7 +111,7 @@ public class KOTHArena extends Arena
 
 		// Build kills map
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			pointsMap.put(ap.getName(), ap.getPoints());
 		}

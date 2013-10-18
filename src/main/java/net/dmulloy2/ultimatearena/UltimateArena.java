@@ -299,7 +299,7 @@ public class UltimateArena extends JavaPlugin
 		loadConfigs();
 		loadArenas();
 		
-		for (Arena a : Collections.unmodifiableList(activeArenas))
+		for (Arena a : getActiveArenas())
 		{
 			a.reloadConfig();
 		}
@@ -1202,7 +1202,7 @@ public class UltimateArena extends JavaPlugin
 	 *            - Command to check
 	 * @return Whether or not a command is whitelisted
 	 */
-	public boolean isWhitelistedCommand(String command)
+	public final boolean isWhitelistedCommand(String command)
 	{
 		for (String cmd : whitelistedCommands)
 		{
@@ -1213,7 +1213,7 @@ public class UltimateArena extends JavaPlugin
 		return false;
 	}
 	
-	public boolean isPlayerWaiting(Player player)
+	public final boolean isPlayerWaiting(Player player)
 	{
 		return waiting.containsKey(player);
 	}
@@ -1225,7 +1225,7 @@ public class UltimateArena extends JavaPlugin
 	 * 
 	 * @return How many arenas have been played
 	 */
-	public int getTotalArenasPlayed()
+	public final int getTotalArenasPlayed()
 	{
 		int ret = 0;
 		
@@ -1237,16 +1237,24 @@ public class UltimateArena extends JavaPlugin
 		return ret > 0 ? ret : 1;
 	}
 
-	public List<Arena> getActiveArenas()
+	/**
+	 * Returns a list of active arenas
+	 * <p>
+	 * Should not be used to add or remove
+	 */
+	public final List<Arena> getActiveArenas()
 	{
-		List<Arena> ret = new ArrayList<Arena>();
+		return Util.newList(activeArenas);
+	}
 
-		for (int i = 0; i < activeArenas.size(); i++)
-		{
-			ret.add(activeArenas.get(i));
-		}
-
-		return ret;
+	/**
+	 * Removes an active {@link Arena}
+	 * 
+	 * @param a - Arena to remove
+	 */
+	public final void removeActiveArena(Arena a)
+	{
+		activeArenas.remove(a);
 	}
 
 	/**

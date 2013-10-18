@@ -55,12 +55,12 @@ public abstract class Arena
 		LOBBY, INGAME, STOPPING, IDLE, DISABLED;
 	}
 
-	protected List<ArenaPlayer> activePlayers = new ArrayList<ArenaPlayer>();
-	protected List<ArenaPlayer> inactivePlayers = new ArrayList<ArenaPlayer>();
+	protected List<ArenaPlayer> active;
+	protected List<ArenaPlayer> inactive;
 
-	protected List<ArenaFlag> flags = new ArrayList<ArenaFlag>();
-	protected List<Location> spawns = new ArrayList<Location>();
-	
+	protected List<ArenaFlag> flags;
+	protected List<Location> spawns;
+
 	private List<String> blacklistedClasses;
 	private List<String> whitelistedClasses;
 	
@@ -114,6 +114,12 @@ public abstract class Arena
 		this.type = az.getType();
 		this.world = az.getWorld();
 		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
+
+		this.active = new ArrayList<ArenaPlayer>();
+		this.inactive = new ArrayList<ArenaPlayer>();
+
+		this.flags = new ArrayList<ArenaFlag>();
+		this.spawns = new ArrayList<Location>();
 
 		this.gameMode = Mode.LOBBY;
 		
@@ -205,9 +211,9 @@ public abstract class Arena
 		pl.decideHat();
 
 		// Finally add the player
-		activePlayers.add(pl);
+		active.add(pl);
 
-		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), getPlayerCount(), az.getMaxPlayers());
+		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), az.getMaxPlayers());
 	}
 
 	/**
@@ -258,18 +264,10 @@ public abstract class Arena
 	 */
 	public final int getBalancedTeam()
 	{
-		int amt1 = 0;
-		int amt2 = 0;
+		// Update teams
+		updateTeams();
 
-		for (ArenaPlayer ap : activePlayers)
-		{
-			if (ap.getTeam() == 1)
-				amt1++;
-			else
-				amt2++;
-		}
-
-		return amt1 > amt2 ? 2 : 1;
+		return team1size > team2size ? 2 : 1;
 	}
 
 	/**
@@ -280,7 +278,7 @@ public abstract class Arena
 	 */
 	public boolean simpleTeamCheck(boolean stopifEmpty) 
 	{
-		if (getTeam1size() == 0 || team2size == 0) 
+		if (team1size == 0 || team2size == 0) 
 		{
 			if (stopifEmpty)
 			{
@@ -307,21 +305,21 @@ public abstract class Arena
 	 * 
 	 * @param p
 	 *            - Player instance
-	 * @param inactive
+	 * @param checkInactive
 	 *            - Whether or not to check the inactive list as well
 	 * @return The player's ArenaPlayer instance
 	 */
-	public final ArenaPlayer getArenaPlayer(Player p, boolean inactive)
+	public final ArenaPlayer getArenaPlayer(Player p, boolean checkInactive)
 	{
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			if (ap.getName().equalsIgnoreCase(p.getName()))
 				return ap;
 		}
 		
-		if (inactive)
+		if (checkInactive)
 		{
-			for (ArenaPlayer ap : inactivePlayers)
+			for (ArenaPlayer ap : inactive)
 			{
 				if (ap.getName().equalsIgnoreCase(p.getName()))
 					return ap;
@@ -351,7 +349,7 @@ public abstract class Arena
 	{
 		plugin.debug("Spawning players for Arena {0}", name);
 		
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			spawn(ap.getPlayer());
 		}
@@ -492,7 +490,7 @@ public abstract class Arena
 	 */
 	public final void rewardTeam(int team)
 	{
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			if (ap.isCanReward())
 			{
@@ -512,7 +510,7 @@ public abstract class Arena
 	 */
 	public final void setWinningTeam(int team)
 	{
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			ap.setCanReward(false);
 			if (ap.getTeam() == team || team == -1)
@@ -532,7 +530,7 @@ public abstract class Arena
 	 */
 	public final void checkPlayerPoints(int max)
 	{
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			if (ap.getPoints() >= max)
 			{
@@ -566,7 +564,7 @@ public abstract class Arena
 	 */
 	public final boolean isEmpty()
 	{
-		return isInGame() && activePlayers.size() <= 1;
+		return isInGame() && active.size() <= 1;
 	}
 
 	/**
@@ -579,7 +577,7 @@ public abstract class Arena
 	 */
 	public final void tellPlayers(String string, Object... objects)
 	{
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			ap.sendMessage(string, objects);
 		}
@@ -599,7 +597,7 @@ public abstract class Arena
 	{
 		tellPlayers(string, objects);
 
-		for (ArenaPlayer ap : inactivePlayers)
+		for (ArenaPlayer ap : inactive)
 		{
 			if (ap != null && ap.getPlayer().isOnline())
 			{
@@ -620,7 +618,7 @@ public abstract class Arena
 	{
 		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
 
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			Location ploc = ap.getPlayer().getLocation();
 			if (Util.pointDistance(loc, ploc) < rad)
@@ -796,13 +794,13 @@ public abstract class Arena
 
 		announceWinner();
 
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			endPlayer(ap, false);
 		}
 
-		activePlayers.clear();
-		inactivePlayers.clear();
+		active.clear();
+		inactive.clear();
 		
 		plugin.getSpectatingHandler().unregisterArena(this);
 
@@ -865,17 +863,17 @@ public abstract class Arena
 
 		teleport(ap.getPlayer(), ap.getSpawnBack());
 
-		activePlayers.remove(ap);
-		inactivePlayers.add(ap);
+		active.remove(ap);
+		inactive.add(ap);
 
 		if (dead)
 		{
 			ap.sendMessage("&3You have exceeded the death limit!");
 			tellPlayers("&e{0} &3has been eliminated!", ap.getName());
 
-			if (activePlayers.size() > 1)
+			if (active.size() > 1)
 			{
-				tellPlayers("&3There are &e{0} &3players remaining!", getPlayerCount());
+				tellPlayers("&3There are &e{0} &3players remaining!", active.size());
 			}
 		}
 	}
@@ -958,12 +956,12 @@ public abstract class Arena
 	{
 		if (! start)
 		{
-			plugin.outConsole("Starting arena {0} with {1} players", name, getPlayerCount());
+			plugin.outConsole("Starting arena {0} with {1} players", name, active.size());
 
 			this.start = true;
 			this.gameMode = Mode.INGAME;
 
-			this.startingAmount = getPlayerCount();
+			this.startingAmount = active.size();
 
 			this.gameTimer = maxGameTime;
 			this.startTimer = -1;
@@ -1078,10 +1076,9 @@ public abstract class Arena
 			}
 		}
 
-		// Stop the arena if there are no players
-		if (activePlayers.isEmpty())
+		if (active.size() <= 0)
 			stop();
-		
+
 		// Update signs
 		updateSigns();
 	}
@@ -1183,7 +1180,7 @@ public abstract class Arena
 		// Build kills map
 		HashMap<String, Double> kdrMap = new HashMap<String, Double>();
 		
-		for (ArenaPlayer ap : activePlayers)
+		for (ArenaPlayer ap : active)
 		{
 			kdrMap.put(ap.getName(), ap.getKDR());
 		}
@@ -1291,11 +1288,6 @@ public abstract class Arena
 			//
 		}
 	}
-	
-	public final int getPlayerCount()
-	{
-		return activePlayers.size();
-	}
 
 	/**
 	 * Workaround for concurrency issues
@@ -1304,14 +1296,22 @@ public abstract class Arena
 	 */
 	public final List<ArenaPlayer> getActivePlayers()
 	{
-		List<ArenaPlayer> ret = new ArrayList<ArenaPlayer>();
-		
-		for (int i = 0; i < activePlayers.size(); i++)
-		{
-			ret.add(activePlayers.get(i));
-		}
+		return Util.newList(active);
+	}
 
-		return ret;
+	/**
+	 * Workaround for concurrency issues
+	 * <p>
+	 * Should not be used for removing or adding
+	 */
+	public final List<ArenaPlayer> getInactivePlayers()
+	{
+		return Util.newList(inactive);
+	}
+
+	public final int getPlayerCount()
+	{
+		return active.size();
 	}
 
 	private final void updateTeams()

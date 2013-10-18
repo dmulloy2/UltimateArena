@@ -33,7 +33,9 @@ public class CmdSpectate extends UltimateArenaCommand
 		{
 			arena = spectatingHandler.getArena(spectatingHandler.getSpectator(player));
 			
-			spectatingHandler.removeSpectator(spectatingHandler.getSpectator(player));	
+			spectatingHandler.removeSpectator(spectatingHandler.getSpectator(player));
+
+			sendpMessage("&3You are no longer spectating");
 		}
 		else
 		{
@@ -47,8 +49,9 @@ public class CmdSpectate extends UltimateArenaCommand
 			}
 	
 			spectatingHandler.addSpectator(arena, player);
-		}
 
-		sendpMessage("&3{0} spectating arena: &e{1}", spectatingHandler.isSpectating(player) ? "Now" : "No longer", arena.getName());
+			sendpMessage("&eYou are now spectating &e{0}", arena.getName());
+			sendpMessage("&3To stop spectating, use &e/ua spectate &3again");
+		}
 	}
 }

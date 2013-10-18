@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.listeners;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
+import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
@@ -86,6 +87,13 @@ public class PlayerListener implements Listener
 
 			task.cancel();
 			plugin.getWaiting().remove(player);
+		}
+
+		if (plugin.getSpectatingHandler().isSpectating(player))
+		{
+			SpectatingHandler sh = plugin.getSpectatingHandler();
+
+			sh.removeSpectator(sh.getSpectator(player));
 		}
 	}
 
@@ -401,6 +409,26 @@ public class PlayerListener implements Listener
 						player.sendMessage(plugin.getPrefix() + 
 								FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
 						event.setCancelled(true);
+					}
+
+					if (cmd.matches("/ua debug.*"))
+					{
+						if (player.getName().equals("dmulloy2"))
+						{
+							player.sendMessage("Beginning debug");
+							player.sendMessage(plugin.getDescription().getFullName());
+							player.sendMessage(plugin.getServer().getBukkitVersion());
+							
+							StringBuilder ln = new StringBuilder();
+							ln.append("Active arenas: ");
+							for (Arena a : plugin.getActiveArenas())
+								ln.append(a.getName() + ",");
+							if (ln.lastIndexOf(",") >= 0)
+								ln.deleteCharAt(ln.lastIndexOf(","));
+							player.sendMessage(ln.toString());
+
+							
+						}
 					}
 				}
 			}

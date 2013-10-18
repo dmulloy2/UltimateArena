@@ -17,6 +17,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -25,8 +26,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class MOBArena extends Arena
 {
-	private int mobtimer = 0;
-	private int mobspawn, mobPerWave;
+	private int mobtimer, mobspawn, mobPerWave;
 
 	private List<LivingEntity> mobs = new ArrayList<LivingEntity>();
 	private List<String> spawning = new ArrayList<String>();
@@ -60,7 +60,7 @@ public class MOBArena extends Arena
 		}
 
 		wave++;
-		this.mobPerWave = 4 + ((int) (getWave() * 1.5)) + (getPlayerCount() * 3);
+		this.mobPerWave = 4 + ((int) (wave * 1.5)) + (active.size() * 3);
 		this.mobtimer = (wave * 4) + 20;
 
 		if (getWave() <= 1)
@@ -224,8 +224,17 @@ public class MOBArena extends Arena
 							{
 								if (Util.random(2) == 0 && getWave() >= 12)
 								{
-									// Wither skeletons! >:D
+									// Wither skeletons! >:3
 									((Skeleton) newMob).setSkeletonType(Skeleton.SkeletonType.WITHER);
+								}
+							}
+
+							if (newMob instanceof Zombie)
+							{
+								if (Util.random(5) == 0 && wave >= 7)
+								{
+									// Baby zombies! >:3
+									((Zombie) newMob).setBaby(true);
 								}
 							}
 
@@ -235,7 +244,7 @@ public class MOBArena extends Arena
 				}
 			}
 
-			if (getPlayerCount() == 0)
+			if (active.size() <= 0)
 			{
 				stop();
 			}

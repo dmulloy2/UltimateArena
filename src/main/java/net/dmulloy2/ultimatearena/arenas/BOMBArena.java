@@ -37,7 +37,7 @@ public class BOMBArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.redTeamPower = getPlayerCount() * 3;
+		this.redTeamPower = active.size() * 3;
 		if (redTeamPower < 10)
 		{
 			this.redTeamPower = 10;
@@ -63,7 +63,7 @@ public class BOMBArena extends Arena
 		if (pl.getTeam() == 1)
 		{
 			redTeamPower--;
-			for (ArenaPlayer ap : activePlayers)
+			for (ArenaPlayer ap : active)
 			{
 				if (ap.getTeam() == 1)
 				{
@@ -91,8 +91,8 @@ public class BOMBArena extends Arena
 			simpleTeamCheck(true);
 		}
 
-		bomb1.checkNear(activePlayers);
-		bomb2.checkNear(activePlayers);
+		bomb1.checkNear(getActivePlayers());
+		bomb2.checkNear(getActivePlayers());
 
 		if (bomb1.isExploded() && bomb2.isExploded())
 		{

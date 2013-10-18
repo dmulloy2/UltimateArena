@@ -41,7 +41,7 @@ public class INFECTArena extends PVPArena
 	{
 		if (tries < 16)
 		{
-			ArenaPlayer ap = activePlayers.get(Util.random(activePlayers.size()));
+			ArenaPlayer ap = active.get(Util.random(active.size()));
 			if (ap != null && ap.getPlayer().isOnline())
 			{
 				ap.setTeam(2);

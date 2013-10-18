@@ -71,9 +71,9 @@ public class FFAArena extends Arena
 
 				if (startingAmount > 1)
 				{
-					if (! activePlayers.isEmpty())
+					if (active.size() > 0)
 					{
-						this.winner = activePlayers.get(0);
+						this.winner = active.get(0);
 					}
 				}
 

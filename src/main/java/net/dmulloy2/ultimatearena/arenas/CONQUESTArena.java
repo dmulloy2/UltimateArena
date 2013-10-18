@@ -39,7 +39,7 @@ public class CONQUESTArena extends Arena
 	public void onStart()
 	{
 		super.onStart();
-		this.redTeamPower = getPlayerCount() * 4;
+		this.redTeamPower = active.size() * 4;
 		this.blueTeamPower = redTeamPower;
 		if (redTeamPower < 4)
 		{
@@ -146,7 +146,7 @@ public class CONQUESTArena extends Arena
 		if (pl.getTeam() == 1)
 		{
 			redTeamPower--;
-			for (ArenaPlayer ap : activePlayers)
+			for (ArenaPlayer ap : active)
 			{
 				if (ap.getTeam() == 1)
 				{
@@ -161,7 +161,7 @@ public class CONQUESTArena extends Arena
 		else if (pl.getTeam() == 2)
 		{
 			blueTeamPower--;
-			for (ArenaPlayer ap : activePlayers)
+			for (ArenaPlayer ap : active)
 			{
 				if (ap.getTeam() == 2)
 				{
@@ -222,7 +222,7 @@ public class CONQUESTArena extends Arena
 
 		if (startTimer <= 0)
 		{
-			if (!simpleTeamCheck(false))
+			if (! simpleTeamCheck(false))
 			{
 				stop();
 
