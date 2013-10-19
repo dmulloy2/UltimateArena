@@ -793,8 +793,8 @@ public abstract class Arena
 		onStop();
 
 		announceWinner();
-
-		for (ArenaPlayer ap : active)
+		
+		for (ArenaPlayer ap : getActivePlayers())
 		{
 			endPlayer(ap, false);
 		}
