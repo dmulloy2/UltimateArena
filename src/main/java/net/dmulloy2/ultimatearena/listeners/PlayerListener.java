@@ -410,26 +410,6 @@ public class PlayerListener implements Listener
 								FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
 						event.setCancelled(true);
 					}
-
-					if (cmd.matches("/ua debug.*"))
-					{
-						if (player.getName().equals("dmulloy2"))
-						{
-							player.sendMessage("Beginning debug");
-							player.sendMessage(plugin.getDescription().getFullName());
-							player.sendMessage(plugin.getServer().getBukkitVersion());
-							
-							StringBuilder ln = new StringBuilder();
-							ln.append("Active arenas: ");
-							for (Arena a : plugin.getActiveArenas())
-								ln.append(a.getName() + ",");
-							if (ln.lastIndexOf(",") >= 0)
-								ln.deleteCharAt(ln.lastIndexOf(","));
-							player.sendMessage(ln.toString());
-
-							
-						}
-					}
 				}
 			}
 		}
