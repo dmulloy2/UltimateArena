@@ -18,8 +18,6 @@ public class CmdForceStop extends UltimateArenaCommand
 		this.optionalArgs.add("arena");
 		this.description = "force stop an arena";
 		this.permission = Permission.FORCESTOP;
-
-		this.mustBePlayer = false;
 	}
 
 	@Override
@@ -34,10 +32,14 @@ public class CmdForceStop extends UltimateArenaCommand
 				return;
 			}
 
+			sendpMessage("&3Stopping arena: &e{0}", a.getName());
+
 			a.stop();
 		}
 		else
 		{
+			sendpMessage("&eStopping all arenas!");
+			
 			plugin.stopAll();
 		}
 	}
