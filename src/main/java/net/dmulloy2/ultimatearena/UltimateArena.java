@@ -790,6 +790,12 @@ public class UltimateArena extends JavaPlugin
 		Arena a = getArena(name);
 		if (a != null)
 		{
+			if (a.getGameMode() == Arena.Mode.STOPPING)
+			{
+				player.sendMessage(prefix + FormatUtil.format("&cThis arena is currently stopping"));
+				return;
+			}
+
 			if (a.isInLobby())
 			{
 				if (a.getPlayerCount() + 1 <= az.getMaxPlayers())
@@ -817,7 +823,6 @@ public class UltimateArena extends JavaPlugin
 			}
 			else
 			{
-				// TODO: Allow joins?
 				player.sendMessage(prefix + FormatUtil.format("&cThis arena has already started!"));
 			}
 		}

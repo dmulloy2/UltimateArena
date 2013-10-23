@@ -282,7 +282,8 @@ public class ArenaZone
 			plugin.debug(Util.getUsefulStack(e, "loading config for \"" + arenaName + "\""));
 		}
 	}
-	
+
+	// TODO: Fix rewarding
 	public void giveRewards(ArenaPlayer ap)
 	{
 		Player player = ap.getPlayer();
@@ -298,13 +299,13 @@ public class ArenaZone
 		{
 			if (stack == null)
 				continue;
-			
+
 			// Make it gradient based now. >:3
 			int amt = (int) Math.round(ap.getGameXP() / 200.0D);
 			if (amt > 0)
 			{
 				stack.setAmount(amt);
-				
+
 				InventoryHelper.addItem(player, stack);
 			}
 
