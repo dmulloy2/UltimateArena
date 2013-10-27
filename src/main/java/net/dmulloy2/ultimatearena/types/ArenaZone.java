@@ -223,7 +223,7 @@ public class ArenaZone
 	
 	private List<String> blacklistedClasses, whitelistedClasses;
 	
-	private List<ItemStack> rewards = new ArrayList<ItemStack>();
+	private List<ItemStack> rewards;
 	
 	public void loadConfiguration()
 	{
@@ -249,7 +249,8 @@ public class ArenaZone
 			this.cashReward = fc.getInt("cashReward", conf.getCashReward());
 			this.countMobKills = fc.getBoolean("countMobKills", conf.isCountMobKills());
 			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", conf.isRewardBasedOnXp());
-			
+
+			this.rewards = new ArrayList<ItemStack>();
 			if (fc.isSet("rewards"))
 			{
 				for (String reward : fc.getStringList("rewards"))
@@ -284,39 +285,33 @@ public class ArenaZone
 		}
 	}
 
-	// TODO: Fix rewarding
 	public void giveRewards(ArenaPlayer ap)
 	{
 		Player player = ap.getPlayer();
 		
 		plugin.debug("Rewarding player {0}", player.getName());
-		
-//		UltimateArenaRewardEvent event = new UltimateArenaRewardEvent(player, rewards);
-//		plugin.getServer().getPluginManager().callEvent(event);
-//		if (event.isCancelled())
-//			return;
 
 		for (ItemStack stack : rewards)
 		{
 			if (stack == null)
 				continue;
 
-			// Make it gradient based now. >:3
-			int amt = (int) Math.round(ap.getGameXP() / 200.0D);
+			int amt = stack.getAmount();
+
+			// Gradient based, if applicable
+			if (rewardBasedOnXp)
+				amt = (int) Math.round(ap.getGameXP() / 200.0D);
+
 			if (amt > 0)
 			{
 				stack.setAmount(amt);
 
+				// Add the item
 				InventoryHelper.addItem(player, stack);
 			}
-
-//			if (half)
-//				stack.setAmount((int) Math.floor(stack.getAmount() / 2));
-//
-//			InventoryHelper.addItem(player, stack);
 		}
 
-		// Mun neh >:3
+		// TODO: Make cash reward gradient based??
 		if (plugin.getConfig().getBoolean("moneyrewards", true))
 		{
 			if (plugin.getEconomy() != null)

@@ -15,7 +15,6 @@ import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.tasks.ArenaFinalizeTask;
 import net.dmulloy2.ultimatearena.tasks.EntityClearTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
-import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
@@ -83,6 +82,7 @@ public abstract class Arena
 	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
 	protected boolean countMobKills;
+	protected boolean configLoaded;
 	protected boolean forceStop;
 	protected boolean stopped;
 	protected boolean start;
@@ -93,8 +93,6 @@ public abstract class Arena
 	protected Mode gameMode = Mode.DISABLED;
 
 	protected final World world;
-
-	protected ArenaConfig config;
 	protected FieldType type;
 	protected String name;
 
@@ -125,8 +123,6 @@ public abstract class Arena
 		this.gameMode = Mode.LOBBY;
 		
 		plugin.getSpectatingHandler().registerArena(this);
-
-//		reloadConfig();
 	}
 	
 	/**
@@ -134,7 +130,7 @@ public abstract class Arena
 	 */
 	public final void reloadConfig()
 	{
-		this.config = plugin.getConfig(type.getName());
+		this.configLoaded = true;
 
 		this.maxGameTime = az.getGameTime();
 		this.gameTimer = az.getGameTime();
@@ -219,9 +215,9 @@ public abstract class Arena
 	}
 
 	/**
-	 * Gets the base team. Can be overriden in certain cases.
-	 * 
-	 * @return Base team
+	 * Returns which team a new player should be on.
+	 * <p>
+	 * Can be overriden in certain cases.
 	 */
 	public int getTeam()
 	{
@@ -260,13 +256,11 @@ public abstract class Arena
 	}
 
 	/**
-	 * Returns the team a player should be on.
-	 * 
-	 * @return The team the player should be on
+	 * Returns the team with the least number of players on it.
 	 */
 	public final int getBalancedTeam()
 	{
-		// Update teams
+		// Refresh team size
 		updateTeams();
 
 		return team1size > team2size ? 2 : 1;
@@ -299,7 +293,7 @@ public abstract class Arena
 	}
 
 	/**
-	 * Gets the player's arena player instance.
+	 * Returns a {@link Player}'s {@link ArenaPlayer} instance.
 	 * <p>
 	 * Every player who has joined this arena will have an ArenaPlayer instance.
 	 * It is important to note, however, that players who are out will still have
@@ -309,7 +303,6 @@ public abstract class Arena
 	 *            - Player instance
 	 * @param checkInactive
 	 *            - Whether or not to check the inactive list as well
-	 * @return The player's ArenaPlayer instance
 	 */
 	public final ArenaPlayer getArenaPlayer(Player p, boolean checkInactive)
 	{
@@ -360,11 +353,10 @@ public abstract class Arena
 	/**
 	 * Gets the spawn for an {@link ArenaPlayer}.
 	 * <p>
-	 * Will return null under certain circumstances.
+	 * Can be overriden under certain circumstances
 	 * 
 	 * @param ap
 	 *            - {@link ArenaPlayer} instance
-	 * @return the {@link ArenaPlayer}'s spawn
 	 */
 	public Location getSpawn(ArenaPlayer ap)
 	{
@@ -548,7 +540,7 @@ public abstract class Arena
 	/**
 	 * Stops the arena if empty.
 	 * 
-	 * @return Arena is empty
+	 * @return Whether or not the arena is empty
 	 */
 	public final boolean checkEmpty()
 	{
@@ -562,7 +554,7 @@ public abstract class Arena
 	/**
 	 * Checks if the arena is empty.
 	 * 
-	 * @return Arena is empty
+	 * @return Whether or not the arena is empty
 	 */
 	public final boolean isEmpty()
 	{
@@ -570,7 +562,7 @@ public abstract class Arena
 	}
 
 	/**
-	 * Tells all players in the arena a message.
+	 * Tells all active players in the arena a message.
 	 * 
 	 * @param string
 	 *            - Base message
@@ -588,7 +580,7 @@ public abstract class Arena
 	/**
 	 * Tells all players a message.
 	 * <p>
-	 * Includes offline players
+	 * Includes inactive players
 	 * 
 	 * @param string
 	 *            - Base message
@@ -629,11 +621,10 @@ public abstract class Arena
 	}
 
 	/**
-	 * Gets a random spawn for an {@link ArenaPlayer}.
+	 * Returns a random spawn for an {@link ArenaPlayer}.
 	 * 
 	 * @param ap
 	 *            - {@link ArenaPlayer} to get spawn for
-	 * @return Spawn for the {@link ArenaPlayer}
 	 */
 	public Location getRandomSpawn(ArenaPlayer ap)
 	{
@@ -711,7 +702,11 @@ public abstract class Arena
 	}
 
 	/**
-	 * Basic killstreak system. Can be overriden.
+	 * Basic killstreak system.
+	 * <p>
+	 * Can be overridden in certain circumstances
+	 * <p>
+	 * TODO: Rewrite this
 	 * 
 	 * @param ap
 	 *            - {@link ArenaPlayer} to do killstreak for
@@ -909,13 +904,10 @@ public abstract class Arena
 	public final void checkTimers()
 	{
 		if (stopped)
-		{
-//			activePlayers.clear();
 			return;
-		}
 
-		// I think this works better somehow
-		if (config == null)
+		// Load config if not already loaded
+		if (! configLoaded)
 		{
 			reloadConfig();
 		}
@@ -1021,7 +1013,7 @@ public abstract class Arena
 			}
 
 			// Timer Stuff
-			if (! isPauseStartTimer())
+			if (! pauseStartTimer)
 			{
 				if (startTimer == 120)
 				{
@@ -1149,7 +1141,10 @@ public abstract class Arena
 		player.sendMessage(plugin.getPrefix() + 
 				FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
-	
+
+	/**
+	 * Clears the entities inside this arena
+	 */
 	public final void clearEntities()
 	{
 		plugin.debug("Clearing entities in arena {0}", name);
@@ -1164,17 +1159,29 @@ public abstract class Arena
 		}
 	}
 
+	/**
+	 * Returns whether or not an arena is ingame
+	 */
 	public final boolean isInGame()
 	{
 		return startTimer < 1 && gameTimer > 0;
 	}
 
+	/**
+	 * Returns whether or not an arena is in the lobby
+	 */
 	public final boolean isInLobby()
 	{
 		return startTimer > 1;
 	}
 	
-	// ---- Leaderboard ---- //
+	/**
+	 * Returns a customized leaderboard for a {@link Player}
+	 * <p>
+	 * TODO: Store leaderboard entries then customize?
+	 * 
+	 * @param player - Player to get leaderboard for
+	 */
 	public List<String> getLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
@@ -1220,6 +1227,11 @@ public abstract class Arena
 		return leaderboard;
 	}
 
+	/**
+	 * Decides a player's team color
+	 * 
+	 * @param pl - Player to decide team color for
+	 */
 	protected String decideColor(ArenaPlayer pl)
 	{
 		if (pl.getTeam() == 1)
@@ -1263,6 +1275,11 @@ public abstract class Arena
 		}
 	}
 
+	/**
+	 * Returns whether or not a class can be used in this arena
+	 * 
+	 * @param ac - Class to check
+	 */
 	public final boolean isValidClass(ArenaClass ac)
 	{
 		if (! whitelistedClasses.isEmpty())
@@ -1311,11 +1328,17 @@ public abstract class Arena
 		return Util.newList(inactive);
 	}
 
+	/**
+	 * Returns the amount of players currently in the arena
+	 */
 	public final int getPlayerCount()
 	{
 		return active.size();
 	}
 
+	/**
+	 * Updates teams
+	 */
 	private final void updateTeams()
 	{
 		this.team1size = 0;

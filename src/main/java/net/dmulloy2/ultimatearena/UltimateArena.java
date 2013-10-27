@@ -130,11 +130,11 @@ public class UltimateArena extends JavaPlugin
 	private @Getter HashMap<Player, ArenaJoinTask> waiting = new HashMap<Player, ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
-	private @Getter List<JavaPlugin> pluginsUsingAPI = new ArrayList<JavaPlugin>();
 	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	private @Getter List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
 	private @Getter List<String> whitelistedCommands = new ArrayList<String>();
+	private @Getter List<String> pluginsUsingAPI = new ArrayList<String>();
 
 	private List<Arena> activeArenas = new ArrayList<Arena>();
 	
@@ -790,8 +790,9 @@ public class UltimateArena extends JavaPlugin
 		Arena a = getArena(name);
 		if (a != null)
 		{
-			if (a.getGameMode() == Arena.Mode.STOPPING)
+			if (a.isStopped())
 			{
+				// Will only occur while the arena is stopping, so this message is valid
 				player.sendMessage(prefix + FormatUtil.format("&cThis arena is currently stopping"));
 				return;
 			}
@@ -1173,7 +1174,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		outConsole("Accepted API registration from {0}", plugin.getName());
 		
-		pluginsUsingAPI.add(plugin);
+		pluginsUsingAPI.add(plugin.getName());
 	}
 	
 	/**
@@ -1190,12 +1191,12 @@ public class UltimateArena extends JavaPlugin
 		StringBuilder line = new StringBuilder();
 		line.append("Plugins currently using the UltimateArena API: ");
 		
-		for (JavaPlugin plugin : pluginsUsingAPI)
+		for (String name : pluginsUsingAPI)
 		{
-			line.append(plugin.getName() + ", ");
+			line.append(name + ", ");
 		}
 		
-		line.replace(line.lastIndexOf(","), line.lastIndexOf(" "), ".");
+		line.replace(line.lastIndexOf(","), line.lastIndexOf(" "), "");
 		
 		outConsole(line.toString());
 	}
