@@ -219,7 +219,7 @@ public class ArenaZone
 	// ---- Configuration ---- //
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
-	private boolean allowTeamKilling, countMobKills;
+	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp;
 	
 	private List<String> blacklistedClasses, whitelistedClasses;
 	
@@ -248,6 +248,7 @@ public class ArenaZone
 			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", conf.isAllowTeamKilling());
 			this.cashReward = fc.getInt("cashReward", conf.getCashReward());
 			this.countMobKills = fc.getBoolean("countMobKills", conf.isCountMobKills());
+			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", conf.isRewardBasedOnXp());
 			
 			if (fc.isSet("rewards"))
 			{

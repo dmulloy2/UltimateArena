@@ -80,6 +80,7 @@ public abstract class Arena
 	protected int wave;
 
 	protected boolean allowTeamKilling;
+	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
 	protected boolean countMobKills;
 	protected boolean forceStop;
@@ -143,6 +144,7 @@ public abstract class Arena
 		this.maxWave = az.getMaxWave();
 		this.maxPoints = az.getMaxPoints();
 		this.countMobKills = az.isCountMobKills();
+		this.rewardBasedOnXp = az.isRewardBasedOnXp();
 		
 		this.blacklistedClasses = az.getBlacklistedClasses();
 		this.whitelistedClasses = az.getWhitelistedClasses();

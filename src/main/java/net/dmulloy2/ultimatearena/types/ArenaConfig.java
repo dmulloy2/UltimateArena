@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -22,12 +23,11 @@ public class ArenaConfig
 {
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
-	private boolean allowTeamKilling, countMobKills;
-	private boolean loaded;
-	
+	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp, loaded;
+
 	private List<String> blacklistedClasses, whitelistedClasses;
 
-	private List<ItemStack> rewards = new ArrayList<ItemStack>();
+	private List<ItemStack> rewards;
 
 	private String arenaName;
 	private File file;
@@ -55,7 +55,7 @@ public class ArenaConfig
 			{
 				this.maxWave = fc.getInt("maxWave");
 			}
-			
+
 			if (arenaName.equalsIgnoreCase("koth"))
 			{
 				this.maxPoints = fc.getInt("maxPoints", 60);
@@ -66,25 +66,29 @@ public class ArenaConfig
 			this.maxDeaths = fc.getInt("maxDeaths");
 			this.allowTeamKilling = fc.getBoolean("allowTeamKilling");
 			this.cashReward = fc.getInt("cashReward");
-			this.countMobKills = fc.getBoolean("countMobKills", 
-					arenaName.equalsIgnoreCase("mob"));
+			this.countMobKills = fc.getBoolean("countMobKills", arenaName.equalsIgnoreCase("mob"));
 
+			this.rewards = new ArrayList<ItemStack>();
 			for (String reward : fc.getStringList("rewards"))
 			{
 				ItemStack stack = ItemUtil.readItem(reward);
 				if (stack != null)
 					rewards.add(stack);
 			}
-			
+
+			List<String> xpBasedTypes = Arrays.asList(new String[] { "KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB" });
+
+			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", xpBasedTypes.contains(arenaName.toUpperCase()));
+
 			this.blacklistedClasses = new ArrayList<String>();
-			
+
 			if (fc.isSet("blacklistedClasses"))
 			{
 				blacklistedClasses.addAll(fc.getStringList("blacklistedClasses"));
 			}
-			
+
 			this.whitelistedClasses = new ArrayList<String>();
-			
+
 			if (fc.isSet("whitelistedClasses"))
 			{
 				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
