@@ -18,21 +18,15 @@ import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.types.PotionType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
 import com.earth2me.essentials.User;
@@ -62,6 +56,8 @@ public abstract class Arena
 
 	private List<String> blacklistedClasses;
 	private List<String> whitelistedClasses;
+
+	private HashMap<Integer, List<KillStreak>> killStreaks;
 	
 	protected int broadcastTimer = 45;
 	protected int winningTeam = 999;
@@ -141,6 +137,7 @@ public abstract class Arena
 		this.maxPoints = az.getMaxPoints();
 		this.countMobKills = az.isCountMobKills();
 		this.rewardBasedOnXp = az.isRewardBasedOnXp();
+		this.killStreaks = az.getKillStreaks();
 		
 		this.blacklistedClasses = az.getBlacklistedClasses();
 		this.whitelistedClasses = az.getWhitelistedClasses();
@@ -638,120 +635,25 @@ public abstract class Arena
 
 		return null;
 	}
-	
-	/**
-	 * Gives a {@link Player} an item
-	 * 
-	 * @param player
-	 *            - {@link Player} to give items to
-	 * @param mat
-	 *            - {@link Material} of the item to give
-	 * @param dat
-	 *            - Data value of the item
-	 * @param amt
-	 *            - Amount of the item to give
-	 * @param message
-	 *            - Message to send the {@link Player}
-	 */
-	public final void giveItem(Player player, Material mat, int amt, short dat, String message)
-	{
-		if (! message.isEmpty())
-		{
-			player.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
-		}
-		
-		ItemStack item = new ItemStack(mat, amt, dat);
-		
-		InventoryHelper.addItem(player, item);
-	}
 
 	/**
-	 * Gives a player a {@link Potion}
+	 * Handles an {@link ArenaPlayer}'s kill streak (if applicable)
 	 * 
-	 * @param pl
-	 *            - {@link Player} to give the {@link Potion}
-	 * @param s
-	 *            - Name of the {@link Potion} to give. Must be a valid
-	 *            {@link PotionType}
-	 * @param amt
-	 *            - Amount of the {@link Potion} to give
-	 * @param level
-	 *            - Level of the {@link Potion} to give
-	 * @param splash
-	 *            - Whether or not it is a splash {@link Potion}
-	 * @param message
-	 *            - Message to send to the {@link Player}
+	 * @param ap - {@link ArenaPlayer} to handle kill streak for
 	 */
-	public void givePotion(Player pl, String s, int amt, int level, boolean splash, String message)
+	public void handleKillStreak(ArenaPlayer ap)
 	{
-		if (! message.isEmpty())
-		{
-			pl.sendMessage(plugin.getPrefix() + FormatUtil.format(message));
-		}
-
-		org.bukkit.potion.PotionType type = PotionType.toType(s);
-		if (type != null)
-		{
-			Potion potion = new Potion(1);
-			potion.setType(type);
-			potion.setLevel(level);
-			potion.setSplash(splash);
-
-			InventoryHelper.addItem(pl, potion.toItemStack(amt));
-		}
-	}
-
-	/**
-	 * Basic killstreak system.
-	 * <p>
-	 * Can be overridden in certain circumstances
-	 * <p>
-	 * TODO: Rewrite this
-	 * 
-	 * @param ap
-	 *            - {@link ArenaPlayer} to do killstreak for
-	 */
-	public void doKillStreak(ArenaPlayer ap)
-	{
-		/** Hunger Arena check **/
-		if (ap.getArena().getType().equals("Hunger"))
+		if (killStreaks.isEmpty())
 			return;
 
-		Player pl = ap.getPlayer();
-
-		if (ap.getKillStreak() == 2)
-			givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
-
-		if (ap.getKillStreak() == 4)
+		if (killStreaks.containsKey(ap.getKillStreak()))
 		{
-			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e4 &3kills! Unlocked Food!");
-		}
-
-		if (ap.getKillStreak() == 5)
-		{
-			if (! type.getName().equalsIgnoreCase("cq"))
+			List<KillStreak> streaks = killStreaks.get(ap.getKillStreak());
+			for (KillStreak streak : streaks)
 			{
-				ap.sendMessage("&e5 &3kills! Unlocked Zombies!");
-				for (int i = 0; i < 4; i++)
-					pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.ZOMBIE);
+				if (streak != null)
+					streak.perform(ap);
 			}
-		}
-
-		if (ap.getKillStreak() == 8)
-		{
-			ap.sendMessage("&e8 &3kills! Unlocked attackdogs!");
-			for (int i = 0; i < 2; i++)
-			{
-				Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
-				wolf.setOwner(pl);
-			}
-		}
-
-		if (ap.getKillStreak() == 12)
-		{
-			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e12 &3kills! Unlocked Food!");
 		}
 	}
 

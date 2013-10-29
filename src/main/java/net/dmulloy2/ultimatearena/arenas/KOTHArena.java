@@ -17,7 +17,6 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**
@@ -46,27 +45,6 @@ public class KOTHArena extends Arena
 		for (int i = 0; i < az.getSpawns().size(); i++)
 		{
 			spawns.add(az.getSpawns().get(i));
-		}
-	}
-
-	@Override
-	public void doKillStreak(ArenaPlayer ap)
-	{
-		Player pl = ap.getPlayer();
-
-		if (ap.getKillStreak() == 2)
-		{
-			givePotion(pl, "strength", 1, 1, false, "&e2 &3kills! Unlocked strength potion!");
-		}
-		if (ap.getKillStreak() == 4)
-		{
-			givePotion(pl, "heal", 1, 1, false, "&e4 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e4 &3kills! Unlocked food!");
-		}
-		if (ap.getKillStreak() == 12)
-		{
-			givePotion(pl, "regen", 1, 1, false, "&e12 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e12 &3kills! Unlocked food!");
 		}
 	}
 

@@ -16,7 +16,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
@@ -142,62 +141,6 @@ public class MOBArena extends Arena
 	{
 		setWinningTeam(-1);
 		rewardTeam(winningTeam);
-	}
-
-	@Override
-	public void onStop()
-	{
-//		synchronized (mobs)
-//		{
-//			for (LivingEntity entity : mobs)
-//			{
-//				if (entity != null)
-//					entity.remove();
-//			}
-//		}
-	}
-
-	@Override
-	public void doKillStreak(ArenaPlayer ap)
-	{
-		Player pl = ap.getPlayer();
-
-		if (ap.getKillStreak() == 8)
-			givePotion(pl, "strength", 1, 1, false, "&e8 &3kills! Unlocked strength potion!");
-
-		if (ap.getKillStreak() == 12)
-			givePotion(pl, "speed", 1, 1, false, "&e12 &3kills! Unlocked swiftness potion!");
-
-		if (ap.getKillStreak() == 16)
-			givePotion(pl, "fireres", 1, 1, false, "&e16 &3kills! Unlocked antifire!");
-
-		if (ap.getKillStreak() == 24)
-		{
-			givePotion(pl, "heal", 1, 1, false, "&e24 &3kills! Unlocked health potion!");
-			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e24 &3kills! Unlocked food!");
-		}
-
-		if (ap.getKillStreak() == 32)
-		{
-			ap.sendMessage("&e32 &3kills! Unlocked attackdogs!");
-			for (int i = 0; i < 3; i++)
-			{
-				Wolf wolf = (Wolf) pl.getLocation().getWorld().spawnEntity(pl.getLocation(), EntityType.WOLF);
-				wolf.setOwner(pl);
-			}
-		}
-
-		if (ap.getKillStreak() == 40)
-		{
-			givePotion(pl, "regen", 1, 1, false, "&e40 &3kills! Unlocked regen potion!");
-			giveItem(pl, Material.GRILLED_PORK, 2, (short) 0, "&e40 kills! Unlocked food!");
-		}
-
-		if (ap.getKillStreak() == 72)
-			giveItem(pl, Material.GOLDEN_APPLE, 2, (short) 0, "&e72 &3kills! Unlocked Golden Apples!");
-
-		if (ap.getKillStreak() == 112)
-			giveItem(pl, Material.GOLDEN_APPLE, 2, (short) 0, "&e112 &3kills! Unlocked Golden Apples!");
 	}
 
 	@Override

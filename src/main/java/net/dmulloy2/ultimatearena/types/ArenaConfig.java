@@ -3,7 +3,10 @@ package net.dmulloy2.ultimatearena.types;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -12,6 +15,7 @@ import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -28,6 +32,8 @@ public class ArenaConfig
 	private List<String> blacklistedClasses, whitelistedClasses;
 
 	private List<ItemStack> rewards;
+
+	private HashMap<Integer, List<KillStreak>> killStreaks;
 
 	private String arenaName;
 	private File file;
@@ -92,6 +98,68 @@ public class ArenaConfig
 			if (fc.isSet("whitelistedClasses"))
 			{
 				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
+			}
+
+			if (fc.isSet("killStreaks"))
+			{
+				this.killStreaks = new HashMap<Integer, List<KillStreak>>();
+
+				Map<String, Object> map = fc.getConfigurationSection("killStreaks").getValues(true);
+
+				for (Entry<String, Object> entry : map.entrySet())
+				{
+					int kills = Util.parseInt(entry.getKey());
+					if (kills < 0)
+						continue;
+					
+					@SuppressWarnings("unchecked") // No way to check this :I
+					List<String> values = (List<String>) entry.getValue();
+
+					List<KillStreak> streaks = new ArrayList<KillStreak>();
+					for (String value : values)
+					{
+						// Determine type
+						String s = value.substring(0, value.indexOf(","));
+
+						KillStreak.Type type = null;
+						if (s.equalsIgnoreCase("mob"))
+							type = KillStreak.Type.MOB;
+						else if (s.equalsIgnoreCase("item"))
+							type = KillStreak.Type.ITEM;
+
+						if (type == KillStreak.Type.MOB)
+						{
+							String[] split = value.split(",");
+							
+							String message = split[1];
+							EntityType entityType = EntityType.valueOf(split[2]);
+							int amount = Integer.parseInt(split[3]);
+
+							streaks.add(new KillStreak(kills, message, entityType, amount));
+							continue;
+						}
+						else if (type == KillStreak.Type.ITEM)
+						{
+							// Yay substring and indexof!
+							s = value.substring(value.indexOf(",") + 1);
+
+							String message = s.substring(0, s.indexOf(","));
+
+							s = s.substring(s.indexOf(",") + 1);
+
+							ItemStack stack = ItemUtil.readItem(s);
+							if (stack != null)
+								streaks.add(new KillStreak(kills, message, stack));
+							continue;
+						}
+					}
+
+					killStreaks.put(kills, streaks);
+				}
+			}
+			else
+			{
+				this.killStreaks = KillStreak.defaultKillStreak(FieldType.valueOf(arenaName.toUpperCase()));
 			}
 		}
 		catch (Exception e)

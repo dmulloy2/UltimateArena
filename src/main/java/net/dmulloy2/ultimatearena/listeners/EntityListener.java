@@ -307,7 +307,7 @@ public class EntityListener implements Listener
 						ArenaPlayer kp = plugin.getArenaPlayer(killer);
 						kp.setKills(kp.getKills() + 1);
 						kp.setKillStreak(kp.getKillStreak() + 1);
-						kp.getArena().doKillStreak(kp);
+						kp.getArena().handleKillStreak(kp);
 						kp.addXP(100);
 
 						List<String> killerlines = new ArrayList<String>();
@@ -374,7 +374,7 @@ public class EntityListener implements Listener
 							ArenaPlayer kp = plugin.getArenaPlayer(killer);
 							kp.setKills(kp.getKills() + 1);
 							kp.setKillStreak(kp.getKillStreak() + 1);
-							kp.getArena().doKillStreak(kp);
+							kp.getArena().handleKillStreak(kp);
 							kp.addXP(100);
 
 							List<String> killerlines = new ArrayList<String>();
@@ -455,7 +455,7 @@ public class EntityListener implements Listener
 							ak.addXP(25);
 							ak.setKills(ak.getKills() + 1);
 							ak.setKillStreak(ak.getKillStreak() + 1);
-							ak.getArena().doKillStreak(ak);
+							ak.getArena().handleKillStreak(ak);
 
 							List<String> lines = new ArrayList<String>();
 

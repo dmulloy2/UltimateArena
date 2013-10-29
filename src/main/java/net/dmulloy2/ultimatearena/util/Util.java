@@ -223,4 +223,20 @@ public class Util
 
 		return ret;
 	}
+
+	public static int parseInt(String s)
+	{
+		int ret = -1;
+
+		try
+		{
+			ret = Integer.parseInt(s);
+		}
+		catch (Exception e)
+		{
+			// Return -1, move on
+		}
+
+		return ret;
+	}
 }
