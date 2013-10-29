@@ -101,7 +101,7 @@ public class CTFFlagBase extends FlagBase
 
 							if (team == 2)
 							{
-								ctf.setBlueCap(ctf.getBlueCap());
+								ctf.setBlueCap(ctf.getBlueCap() + 1);
 								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.getBlueCap());
 							}
 
