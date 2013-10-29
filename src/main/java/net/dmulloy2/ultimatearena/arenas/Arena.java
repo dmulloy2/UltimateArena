@@ -641,7 +641,7 @@ public abstract class Arena
 	 * 
 	 * @param ap - {@link ArenaPlayer} to handle kill streak for
 	 */
-	public void handleKillStreak(ArenaPlayer ap)
+	public final void handleKillStreak(ArenaPlayer ap)
 	{
 		if (killStreaks.isEmpty())
 			return;

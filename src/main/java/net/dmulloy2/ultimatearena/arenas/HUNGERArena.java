@@ -106,10 +106,4 @@ public class HUNGERArena extends Arena
 		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
 		tellPlayers("&3Tribute &e{0} &3has fallen!", pl.getName());
 	}
-
-	@Override
-	public void handleKillStreak(ArenaPlayer ap)
-	{
-		// Do nothing...
-	}
 }
