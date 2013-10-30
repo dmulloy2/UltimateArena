@@ -159,7 +159,7 @@ public class ArenaConfig
 			}
 			else
 			{
-				this.killStreaks = KillStreak.defaultKillStreak(FieldType.valueOf(arenaName.toUpperCase()));
+				this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(arenaName.toUpperCase()));
 			}
 		}
 		catch (Exception e)
