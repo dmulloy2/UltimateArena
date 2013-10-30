@@ -50,7 +50,8 @@ public abstract class Arena
 
 	protected List<ArenaPlayer> active;
 	protected List<ArenaPlayer> inactive;
-
+	protected List<ArenaPlayer> toReward;
+ 
 	protected List<ArenaFlag> flags;
 	protected List<Location> spawns;
 
@@ -481,7 +482,7 @@ public abstract class Arena
 	 */
 	public final void rewardTeam(int team)
 	{
-		for (ArenaPlayer ap : active)
+		for (ArenaPlayer ap : toReward)
 		{
 			if (ap.isCanReward())
 			{
@@ -501,12 +502,16 @@ public abstract class Arena
 	 */
 	public final void setWinningTeam(int team)
 	{
+		this.toReward = new ArrayList<ArenaPlayer>();
+		
 		for (ArenaPlayer ap : active)
 		{
 			ap.setCanReward(false);
 			if (ap.getTeam() == team || team == -1)
 			{
 				ap.setCanReward(true);
+
+				toReward.add(ap);
 			}
 		}
 
