@@ -3,6 +3,8 @@ package net.dmulloy2.ultimatearena.flags;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
@@ -17,11 +19,13 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
+@Getter
+@Setter
 public class BombFlag extends ArenaFlag
 {
-	protected int bnum;
 	protected int fuser;
-	protected int timer = 45;
+	protected int timer;
+	protected int bombNumber;
 
 	protected boolean fused;
 	protected boolean exploded;
@@ -29,26 +33,28 @@ public class BombFlag extends ArenaFlag
 	public BombFlag(Arena arena, Location loc, final UltimateArena plugin)
 	{
 		super(arena, loc, plugin);
+
+		this.timer = 45;
 	}
 
 	@Override
-	public void checkNear(List<ArenaPlayer> arenaplayers)
+	public void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
 		if (fused)
 		{
 			timer--;
-			Util.playEffect(Effect.STEP_SOUND, getLoc(), 4);
+			Util.playEffect(Effect.STEP_SOUND, location, 4);
 
 			if (timer == 30 || timer == 20 || timer == 10 || timer <= 5)
 			{
-				arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{0} &3seconds!", bnum, timer);
+				arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{0} &3seconds!", bombNumber, timer);
 			}
 
 			if (timer < 1)
 			{
-				if (!isExploded())
+				if (! exploded)
 				{
-					Util.playEffect(Effect.EXTINGUISH, getLoc(), 4);
+					Util.playEffect(Effect.EXTINGUISH, location, 4);
 					
 					BOMBArena ba = null;
 					if (arena instanceof BOMBArena)
@@ -65,13 +71,13 @@ public class BombFlag extends ArenaFlag
 							amte++;
 
 						if (amte == 0)
-							arena.killAllNear(loc, 12);
+							arena.killAllNear(location, 12);
 					}
 
 					this.fused = false;
 					this.exploded = true;
 					
-					arena.tellPlayers("&cRED &3team blew up bomb &e{0}&3!", bnum);
+					arena.tellPlayers("&cRED &3team blew up bomb &e{0}&3!", bombNumber);
 				}
 			}
 		}
@@ -80,24 +86,20 @@ public class BombFlag extends ArenaFlag
 		boolean defuse = false;
 		ArenaPlayer capturer = null;
 		List<Player> players = new ArrayList<Player>();
-		for (int i = 0; i < arenaplayers.size(); i++)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
-			ArenaPlayer apl = arenaplayers.get(i);
-			Player pl = apl.getPlayer();
+			ArenaPlayer ap = arenaPlayers.get(i);
+			Player pl = ap.getPlayer();
 			if (pl != null)
 			{
-				if (Util.pointDistance(pl.getLocation(), getLoc()) < 3.0 && pl.getHealth() > 0)
+				if (Util.pointDistance(pl.getLocation(), location) < 3.0 && pl.getHealth() > 0)
 				{
 					players.add(pl);
-					capturer = apl;
-					if (apl.getTeam() == 1)
-					{
+					capturer = ap;
+					if (ap.getTeam() == 1)
 						fuse = true;
-					}
 					else
-					{
 						defuse = true;
-					}
 				}
 			}
 		}
@@ -112,12 +114,12 @@ public class BombFlag extends ArenaFlag
 					{
 						// team 1 is fusing
 						fuser++;
-						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", bnum, fuser);
+						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", bombNumber, fuser);
 						if (fuser > 10)
 						{
 							fuser = 0;
 							fused = true;
-							arena.tellPlayers("&3Bomb &e{0} &3is now &efused&3!", bnum);
+							arena.tellPlayers("&3Bomb &e{0} &3is now &efused&3!", bombNumber);
 						}
 					}
 				}
@@ -127,32 +129,17 @@ public class BombFlag extends ArenaFlag
 					if (fused)
 					{
 						fuser++;
-						capturer.sendMessage("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", bnum, fuser);
+						capturer.sendMessage("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", bombNumber, fuser);
 						if (fuser > 10)
 						{
 							fuser = 0;
 							fused = false;
 							timer = 45;
-							arena.tellPlayers("&3Bomb &e{0} &3is now &edefused&3!", bnum);
+							arena.tellPlayers("&3Bomb &e{0} &3is now &edefused&3!", bombNumber);
 						}
 					}
 				}
 			}
 		}
-	}
-	
-	public void setBombNumber(int bnum)
-	{
-		this.bnum = bnum;
-	}
-
-	public boolean isExploded()
-	{
-		return exploded;
-	}
-
-	public void setExploded(boolean exploded)
-	{
-		this.exploded = exploded;
 	}
 }

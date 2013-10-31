@@ -88,7 +88,13 @@ public class BOMBArena extends Arena
 	{
 		if (startTimer <= 0)
 		{
-			simpleTeamCheck(true);
+			if (! simpleTeamCheck())
+			{
+				tellPlayers("&3One team is empty! Game ended!");
+
+				stop();
+				return;
+			}
 		}
 
 		bomb1.checkNear(getActivePlayers());

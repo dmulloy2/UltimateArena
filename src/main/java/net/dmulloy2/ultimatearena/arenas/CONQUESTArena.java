@@ -86,7 +86,7 @@ public class CONQUESTArena extends Arena
 			ArenaFlag flag = spawnto.get(rand);
 			if (flag != null)
 			{
-				return flag.getLoc();
+				return flag.getLocation();
 			}
 		}
 		else
@@ -222,7 +222,7 @@ public class CONQUESTArena extends Arena
 
 		if (startTimer <= 0)
 		{
-			if (! simpleTeamCheck(false))
+			if (! simpleTeamCheck())
 			{
 				stop();
 

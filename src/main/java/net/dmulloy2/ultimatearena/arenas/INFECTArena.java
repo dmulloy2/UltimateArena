@@ -88,7 +88,7 @@ public class INFECTArena extends PVPArena
 	{
 		if (startTimer <= 0)
 		{
-			if (! simpleTeamCheck(false))
+			if (! simpleTeamCheck())
 			{
 				if (team1size == 0)
 				{

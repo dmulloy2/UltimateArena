@@ -214,7 +214,7 @@ public class ArenaZone
 		}
 		
 		line = new StringBuilder();
-		line.append(FormatUtil.format("&3Popularity: &e{0}&3/&e{1} &3(&e{2}%&3)", liked, disliked, percentage));
+		line.append(FormatUtil.format("&3Popularity: &e{0}&3/&e{1} &3(&e{2}%&3)", liked, voted.size(), percentage));
 		lines.add(line.toString());
 		
 		return lines;

@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.flags;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -20,6 +21,7 @@ import org.bukkit.material.Wool;
  * @author dmulloy2
  */
 
+@Getter
 public class ArenaFlag extends FlagBase
 {
 	protected int team;
@@ -38,7 +40,7 @@ public class ArenaFlag extends FlagBase
 	public synchronized void setup()
 	{
 		super.setup();
-		loc.getBlock().setType(Material.WOOL);
+		location.getBlock().setType(Material.WOOL);
 	}
 
 	public void step()
@@ -70,18 +72,18 @@ public class ArenaFlag extends FlagBase
 
 		if (capped)
 		{
-			MaterialData dat = getNotify().getState().getData();
+			MaterialData dat = notify.getState().getData();
 			if (dat instanceof Wool)
 			{
-				((Wool)dat).setColor(getColor(color));
+				((Wool) dat).setColor(getColor(color));
 			}
 		}
 		else
 		{
-			MaterialData dat = getNotify().getState().getData();
+			MaterialData dat = notify.getState().getData();
 			if (dat instanceof Wool)
 			{
-				((Wool)dat).setColor(getColor(8));
+				((Wool) dat).setColor(getColor(8));
 			}
 		}
 	}
@@ -100,29 +102,27 @@ public class ArenaFlag extends FlagBase
 	}
 
 	@Override
-	public synchronized void checkNear(List<ArenaPlayer> arenaplayers)
+	public synchronized void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
 		int team1 = 0;
 		int team2 = 0;
 		List<Player> players = new ArrayList<Player>();
 		synchronized (players)
 		{
-			for (int i = 0; i < arenaplayers.size(); i++)
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
-				Player pl = arenaplayers.get(i).getPlayer();
-				if (pl != null)
+				ArenaPlayer ap = arenaPlayers.get(i);
+				Player player = ap.getPlayer();
+				if (player != null)
 				{
-					if (Util.pointDistance(pl.getLocation(), getLoc()) < 4.5 && pl.getHealth() > 0)
+					if (Util.pointDistance(player.getLocation(), location) < 4.5 && player.getHealth() > 0)
 					{
-						players.add(pl);
-						if (arenaplayers.get(i).getTeam() == 1)
-						{
+						players.add(player);
+
+						if (ap.getTeam() == 1)
 							team1++;
-						}
-						else
-						{
+						else 
 							team2++;
-						}
 					}
 				}
 			}
@@ -166,35 +166,5 @@ public class ArenaFlag extends FlagBase
 				}
 			}
 		}
-	}
-
-	public int getTeam()
-	{
-		return team;
-	}
-
-	public void setTeam(int team)
-	{
-		this.team = team;
-	}
-
-	public boolean isCapped()
-	{
-		return capped;
-	}
-
-	public void setCapped(boolean capped)
-	{
-		this.capped = capped;
-	}
-
-	public int getColor()
-	{
-		return color;
-	}
-
-	public void setColor(int color)
-	{
-		this.color = color;
 	}
 }

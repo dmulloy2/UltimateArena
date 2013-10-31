@@ -94,10 +94,8 @@ public class SignHandler
 
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
 
-			for (int i = 0; i < plugin.getArenaSigns().size(); i++)
+			for (ArenaSign sign : getSigns())
 			{
-				ArenaSign sign = plugin.getArenaSigns().get(i);
-
 				Map<String, Object> values = sign.serialize();
 				fc.set("" + sign.getId(), values);
 			}
@@ -164,13 +162,6 @@ public class SignHandler
 	 */
 	public final List<ArenaSign> getSigns()
 	{
-		List<ArenaSign> ret = new ArrayList<ArenaSign>();
-		
-		for (int i = 0; i < plugin.getArenaSigns().size(); i++)
-		{
-			ret.add(plugin.getArenaSigns().get(i));
-		}
-		
-		return ret;
+		return Util.newList(plugin.getArenaSigns());
 	}
 }

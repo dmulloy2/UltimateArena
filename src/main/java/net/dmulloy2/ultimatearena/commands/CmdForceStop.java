@@ -38,7 +38,7 @@ public class CmdForceStop extends UltimateArenaCommand
 		}
 		else
 		{
-			sendpMessage("&eStopping all arenas!");
+			sendpMessage("&3Stopping all arenas!");
 			
 			plugin.stopAll();
 		}

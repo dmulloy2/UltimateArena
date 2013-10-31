@@ -44,7 +44,7 @@ public class CmdClass extends UltimateArenaCommand
 			ArenaClass cl = plugin.getArenaClass(args[0]);
 			if (cl == null)
 			{
-				err("You do not have permissions for this class.");
+				err("Could not find a class by the name of \"{0}\"", args[0]);
 				return;
 			}
 			

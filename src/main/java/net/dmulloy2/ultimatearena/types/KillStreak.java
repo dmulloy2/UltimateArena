@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import lombok.Data;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 
@@ -16,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-@Data
 public class KillStreak
 {
 	public static enum Type
@@ -24,8 +22,6 @@ public class KillStreak
 		ITEM, MOB;
 	}
 
-	// General
-	private int kills;
 	private String message;
 	private Type type;
 
@@ -39,7 +35,6 @@ public class KillStreak
 	// Mob Constructor
 	public KillStreak(int kills, String message, EntityType mobType, int mobAmount)
 	{
-		this.kills = kills;
 		this.type = Type.MOB;
 		this.mobType = mobType;
 		this.mobAmount = mobAmount;
@@ -48,7 +43,6 @@ public class KillStreak
 	// Item Constructor
 	public KillStreak(int kills, String message, ItemStack item)
 	{
-		this.kills = kills;
 		this.type = Type.ITEM;
 		this.item = item;
 	}

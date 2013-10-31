@@ -266,25 +266,12 @@ public abstract class Arena
 
 	/**
 	 * A simple team check.
-	 * 
-	 * @param stopifEmpty
-	 *            - Stops the arena if empty
 	 */
-	public boolean simpleTeamCheck(boolean stopifEmpty) 
+	public boolean simpleTeamCheck()
 	{
 		if (team1size == 0 || team2size == 0) 
 		{
-			if (stopifEmpty)
-			{
-				stop();
-			}
-            
-			if (startingAmount > 1)
-			{
-				return false;
-			}
-                 
-			return true;
+			return startingAmount < 1;
 		}
 
 		return true;
@@ -703,9 +690,6 @@ public abstract class Arena
 			endPlayer(ap, false);
 		}
 
-		active.clear();
-		inactive.clear();
-		
 		plugin.getSpectatingHandler().unregisterArena(this);
 
 		this.gameMode = Mode.IDLE;

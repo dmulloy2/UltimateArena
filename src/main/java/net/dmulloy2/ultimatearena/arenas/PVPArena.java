@@ -39,7 +39,7 @@ public class PVPArena extends Arena
 				return;
 			}
 			
-			if (! simpleTeamCheck(false))
+			if (! simpleTeamCheck())
 			{
 				setWinningTeam(-1);
 
@@ -50,6 +50,7 @@ public class PVPArena extends Arena
 		}
 	}
 	
+	@Override
 	public int getWinningTeam()
 	{
 		if (winningTeam == -1)

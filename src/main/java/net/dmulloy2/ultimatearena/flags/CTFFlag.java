@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.flags;
 
 import java.util.List;
 
+import lombok.Data;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -20,6 +21,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author dmulloy2
  */
 
+@Data
 public class CTFFlag
 {
 	protected Player riding;
@@ -46,7 +48,7 @@ public class CTFFlag
 
 	public CTFFlag(Arena a, Location loc, int team)
 	{
-		this.setTeam(team);
+		this.team = team;
 		this.arena = a;
 
 		this.returnto = loc.clone();
@@ -62,9 +64,9 @@ public class CTFFlag
 	public void respawn()
 	{
 		timer = 15;
-		setPickedUp(false);
-		setRiding(null);
-		toloc = getReturnto().clone();
+		pickedUp = false;
+		riding = null;
+		toloc = returnto.clone();
 		myloc = toloc.clone();
 		setFlag();
 	}
@@ -79,7 +81,7 @@ public class CTFFlag
 
 	public void sayTimeLeft()
 	{
-		arena.tellPlayers("&e{0} &3seconds left until &e{1} &3flag returns!", timer, getFlagType());
+		arena.tellPlayers("&e{0} &3seconds left until &e{1} &3flag returns!", timer, flagType);
 	}
 
 	public void setup()
@@ -146,16 +148,16 @@ public class CTFFlag
 
 	public void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
-		if (isStopped())
+		if (stopped)
 			return;
 
-		if (! isPickedUp())
+		if (! pickedUp)
 		{
 			for (ArenaPlayer pl : arenaPlayers)
 			{
 				if (Util.pointDistance(pl.getPlayer().getLocation(), myloc) < 1.75 && pl.getPlayer().getHealth() > 0.0D)
 				{
-					if (pl.getTeam() != getTeam())
+					if (pl.getTeam() != team)
 					{
 						// If the guy is on the other team
 						this.pickedUp = true;
@@ -168,7 +170,7 @@ public class CTFFlag
 					}
 					else
 					{
-						if (!myloc.equals(getReturnto()))
+						if (! myloc.equals(returnto))
 						{
 							// If the flag is not at its flagstand
 							pl.sendMessage("&aFlag Returned! &c+50 XP");
@@ -186,7 +188,7 @@ public class CTFFlag
 			if (riding.isOnline() && !riding.isDead())
 			{
 				// if player is alive
-				toloc = getRiding().getLocation().clone().add(0, 3, 0);
+				toloc = riding.getLocation().clone().add(0, 3, 0);
 			}
 			else
 			{
@@ -211,7 +213,7 @@ public class CTFFlag
 
 	public void tick()
 	{
-		if (isStopped())
+		if (stopped)
 			return;
 
 		if (! pickedUp)
@@ -236,7 +238,8 @@ public class CTFFlag
 
 	public void setFlag()
 	{
-		if (stopped) return;
+		if (stopped) 
+			return;
 
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
@@ -264,65 +267,5 @@ public class CTFFlag
 			c.setType(Material.NETHERRACK);
 		else
 			c.setType(Material.WOOL);
-	}
-
-	public int getTeam()
-	{
-		return team;
-	}
-
-	public void setTeam(int team)
-	{
-		this.team = team;
-	}
-
-	public boolean isPickedUp()
-	{
-		return pickedUp;
-	}
-
-	public void setPickedUp(boolean pickedUp)
-	{
-		this.pickedUp = pickedUp;
-	}
-
-	public Player getRiding()
-	{
-		return riding;
-	}
-
-	public void setRiding(Player riding)
-	{
-		this.riding = riding;
-	}
-
-	public String getFlagType()
-	{
-		return flagType;
-	}
-
-	public void setFlagType(String flagType)
-	{
-		this.flagType = flagType;
-	}
-
-	public boolean isStopped()
-	{
-		return stopped;
-	}
-
-	public void setStopped(boolean stopped)
-	{
-		this.stopped = stopped;
-	}
-
-	public Location getReturnto()
-	{
-		return returnto;
-	}
-
-	public void setReturnto(Location returnto)
-	{
-		this.returnto = returnto;
 	}
 }

@@ -52,7 +52,7 @@ public class CTFArena extends Arena
 	{
 		if (startTimer <= 0)
 		{
-			if (! simpleTeamCheck(false))
+			if (! simpleTeamCheck())
 			{
 				tellPlayers("&3One team is empty! game ended!");
 

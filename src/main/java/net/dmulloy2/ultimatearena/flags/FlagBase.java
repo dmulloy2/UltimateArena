@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.flags;
 
 import java.util.List;
 
+import lombok.Data;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -14,20 +15,20 @@ import org.bukkit.block.Block;
  * @author dmulloy2
  */
 
-public class FlagBase
+@Data
+public abstract class FlagBase
 {
-	protected Location loc;
+	protected Location location;
 	protected Block notify;
 	protected Arena arena;
-	
+
 	protected final UltimateArena plugin;
 
 	public FlagBase(Arena arena, Location loc, UltimateArena plugin)
 	{
 		this.arena = arena;
 
-//		Location safe = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
-		this.loc = loc.clone().subtract(0, 1, 0);
+		this.location = location.clone().subtract(0, 1, 0);
 
 		this.plugin = plugin;
 
@@ -36,49 +37,24 @@ public class FlagBase
 
 	public void setup()
 	{
-		Location flag = loc.clone().add(0, 5, 0);
-		setNotify(flag.getBlock());
-		getNotify().setType(Material.WOOL);
-		((loc.clone()).add(1, 0, 0)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(1, 0, 1)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(-1, 0, -1)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(1, 0, -1)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(-1, 0, 1)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(2, 0, 0)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(-1, 0, 0)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(-2, 0, 0)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(0, 0, 1)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(0, 0, 2)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(0, 0, -1)).getBlock().setType(Material.STONE);
-		((loc.clone()).add(0, 0, -2)).getBlock().setType(Material.STONE);
+		Location flag = location.clone().add(0, 5, 0);
+
+		this.notify = flag.getBlock();
+		this.notify.setType(Material.WOOL);
+
+		(location.clone().add(1, 0, 0)).getBlock().setType(Material.STONE);
+		(location.clone().add(1, 0, 1)).getBlock().setType(Material.STONE);
+		(location.clone().add(-1, 0, -1)).getBlock().setType(Material.STONE);
+		(location.clone().add(1, 0, -1)).getBlock().setType(Material.STONE);
+		(location.clone().add(-1, 0, 1)).getBlock().setType(Material.STONE);
+		(location.clone().add(2, 0, 0)).getBlock().setType(Material.STONE);
+		(location.clone().add(-1, 0, 0)).getBlock().setType(Material.STONE);
+		(location.clone().add(-2, 0, 0)).getBlock().setType(Material.STONE);
+		(location.clone().add(0, 0, 1)).getBlock().setType(Material.STONE);
+		(location.clone().add(0, 0, 2)).getBlock().setType(Material.STONE);
+		(location.clone().add(0, 0, -1)).getBlock().setType(Material.STONE);
+		(location.clone().add(0, 0, -2)).getBlock().setType(Material.STONE);
 	}
 
-	public synchronized void checkNear(List<ArenaPlayer> arenaplayers)
-	{
-	}
-
-	public Location getLoc()
-	{
-		return loc;
-	}
-
-	public void setLoc(Location loc)
-	{
-		this.loc = loc;
-	}
-
-	public Block getNotify()
-	{
-		return notify;
-	}
-
-	public void setNotify(Block notify)
-	{
-		this.notify = notify;
-	}
-
-	public Arena getArena()
-	{
-		return arena;
-	}
+	public abstract void checkNear(List<ArenaPlayer> arenaPlayers);
 }

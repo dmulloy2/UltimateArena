@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.flags;
 
 import java.util.List;
 
+import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.CTFArena;
@@ -19,6 +20,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author dmulloy2
  */
 
+@Getter
 public class CTFFlagBase extends FlagBase
 {
 	protected CTFArena ctf;
@@ -42,9 +44,9 @@ public class CTFFlagBase extends FlagBase
 	public void setup()
 	{
 		super.setup();
-		this.setFlag(new CTFFlag(getArena(), getLoc().clone().add(0, 1, 0), team));
+		this.setFlag(new CTFFlag(getArena(), location.clone().add(0, 1, 0), team));
 
-		Location flag = getLoc().clone().add(0, 5, 0);
+		Location flag = location.clone().add(0, 5, 0);
 		setNotify(flag.getBlock());
 		getNotify().setType(Material.AIR);
 	}
@@ -54,44 +56,46 @@ public class CTFFlagBase extends FlagBase
 	{
 		flag.checkNear(arenaPlayers);
 
-		if (!enemyflag.isPickedUp())
+		if (! enemyflag.isPickedUp())
 			return;
 
 		if (enemyflag.getRiding() == null)
 			return;
 
-		for (ArenaPlayer a : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
-			if (a.getPlayer().isOnline() && ! a.getPlayer().isDead())
+			ArenaPlayer ap = arenaPlayers.get(i);
+			if (ap.getPlayer().isOnline() && ! ap.getPlayer().isDead())
 			{
-				if (a.getTeam() == team)
+				if (ap.getTeam() == team)
 				{
 					// If the arena player is on my team
-					Player p = a.getPlayer();
+					Player p = ap.getPlayer();
 					if (enemyflag.getRiding().getName().equals(p.getName()))
 					{
 						// If the player selected is carrying the enemy flag
-						if (Util.pointDistance(p.getLocation(), getLoc().clone().add(0, 1, 0)) < 2.75)
+						if (Util.pointDistance(p.getLocation(), location.clone().add(0, 1, 0)) < 2.75)
 						{
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
-							a.sendMessage("&aFlag Captured! &c+ 500 XP");
+							ap.sendMessage("&aFlag Captured! &c+ 500 XP");
 
 							p.removePotionEffect(PotionEffectType.SLOW);
 							p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 
-							for (ArenaPlayer ap : arenaPlayers)
+							for (int ii = 0; i < arenaPlayers.size(); ii++)
 							{
-								if (ap.getTeam() == a.getTeam())
+								ArenaPlayer apl = arenaPlayers.get(ii);
+								if (ap.getTeam() == apl.getTeam())
 								{
-									ap.sendMessage("&aUnlocked 10 seconds of crits!");
-									ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
-									ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
+									apl.sendMessage("&aUnlocked 10 seconds of crits!");
+									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
+									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
 								}
 							}
 
-							a.setGameXP(a.getGameXP() + 500);
-							arena.tellPlayers("&e{0} &3captured the &e{1} &3flag!", a.getName(), enemyflag.getFlagType());
+							ap.setGameXP(ap.getGameXP() + 500);
+							arena.tellPlayers("&e{0} &3captured the &e{1} &3flag!", ap.getName(), enemyflag.getFlagType());
 
 							if (team == 1)
 							{
