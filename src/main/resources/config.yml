@@ -12,6 +12,9 @@
 # If you get configuration errors, check here:
 # https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/config.yml
 #
+# Configuration Explanation found here:
+# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+#
 # This configuration follows standard YAML procedure, found here:
 # http://yaml.org/
 
@@ -28,11 +31,7 @@ joinTimer:
   
 # Whether or not the plugin will save inventories
 # Input - boolean
-saveInventories: false
-
-# Whether or not SwornGuns ammo is unlimited
-# Default - true; Input - boolean
-unlimitedAmmo: true
+saveInventories: true
 
 # Extra output to console
 # Default - false; Input - boolean
@@ -40,4 +39,4 @@ debug: false
 
 # Timer XP bar
 # Default - false; Input - boolean
-timerXPBar: false
+timerXPBar: true
