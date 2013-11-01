@@ -1,8 +1,13 @@
+# Main Configuration for the CTF Arena Type
+# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+
 gameTime: 440
 lobbyTime: 80
 maxDeaths: 999
 allowTeamKilling: false
-cashReward: 0
+rewardBasedOnXp: true
+countMobKills: false
+cashReward: 100
 rewards:
 - 266,3
 - 46,1

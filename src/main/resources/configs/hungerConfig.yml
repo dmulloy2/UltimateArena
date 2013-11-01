@@ -1,8 +1,13 @@
+# Main Configuration for the Hunger Arena Type
+# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+
 gameTime: 9000
 lobbyTime: 70
 maxDeaths: 1
 allowTeamKilling: true
-cashReward: 0
+countMobKills: false
+rewardBasedOnXp: false
+cashReward: 1000
 rewards:
 - 266,3
 - 46,1

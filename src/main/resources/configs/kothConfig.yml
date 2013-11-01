@@ -1,8 +1,14 @@
+# Main Configuration for the KOTH Arena Type
+# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+
 gameTime: 1200
 lobbyTime: 80
 maxDeaths: 900
 allowTeamKilling: true
+rewardBasedOnXp: true
+countMobKills: false
 cashReward: 100
+maxPoints: 60
 rewards:
 - 266,3
 - 46,1

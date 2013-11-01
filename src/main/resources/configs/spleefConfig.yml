@@ -1,7 +1,12 @@
+# Main Configuration for the Spleef Arena Type
+# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+
 gameTime: 600
 lobbyTime: 80
 maxDeaths: 2
 allowTeamKilling: true
+countMobKills: false
+rewardBasedOnXp: false
 cashReward: 100
 rewards:
 - 266,3

@@ -1,7 +1,12 @@
+# Main Configuration for the Infect Arena Type
+# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+
 gameTime: 180
 lobbyTime: 90
 maxDeaths: 2
 allowTeamKilling: false
+countMobKills: false
+rewardBasedOnXp: false
 cashReward: 100
 rewards:
 - 266,3
