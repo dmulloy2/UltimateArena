@@ -513,7 +513,7 @@ public abstract class Arena
 	 */
 	public final void checkPlayerPoints(int max)
 	{
-		for (ArenaPlayer ap : active)
+		for (ArenaPlayer ap : getActivePlayers())
 		{
 			if (ap.getPoints() >= max)
 			{

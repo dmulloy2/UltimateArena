@@ -31,19 +31,19 @@ public class ArenaFlag extends FlagBase
 
 	protected boolean capped;
 
-	public ArenaFlag(Arena arena, Location loc, final UltimateArena plugin)
+	public ArenaFlag(Arena arena, Location location, UltimateArena plugin)
 	{
-		super(arena, loc, plugin);
+		super(arena, location, plugin);
 	}
 
 	@Override
-	public synchronized void setup()
+	protected void setup()
 	{
 		super.setup();
 		location.getBlock().setType(Material.WOOL);
 	}
 
-	public void step()
+	public final void step()
 	{
 		this.capped = false;
 		this.color = 8;
@@ -87,8 +87,8 @@ public class ArenaFlag extends FlagBase
 			}
 		}
 	}
-	
-	public DyeColor getColor(int color)
+
+	private final DyeColor getColor(int color)
 	{
 		if (color == 8)
 			return DyeColor.SILVER;
@@ -98,32 +98,30 @@ public class ArenaFlag extends FlagBase
 			return DyeColor.RED;
 		else
 			return DyeColor.WHITE;
-		
+
 	}
 
 	@Override
-	public synchronized void checkNear(List<ArenaPlayer> arenaPlayers)
+	public void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
 		int team1 = 0;
 		int team2 = 0;
 		List<Player> players = new ArrayList<Player>();
-		synchronized (players)
-		{
-			for (int i = 0; i < arenaPlayers.size(); i++)
-			{
-				ArenaPlayer ap = arenaPlayers.get(i);
-				Player player = ap.getPlayer();
-				if (player != null)
-				{
-					if (Util.pointDistance(player.getLocation(), location) < 4.5 && player.getHealth() > 0)
-					{
-						players.add(player);
 
-						if (ap.getTeam() == 1)
-							team1++;
-						else 
-							team2++;
-					}
+		for (int i = 0; i < arenaPlayers.size(); i++)
+		{
+			ArenaPlayer ap = arenaPlayers.get(i);
+			Player player = ap.getPlayer();
+			if (player != null)
+			{
+				if (Util.pointDistance(player.getLocation(), location) < 4.5 && player.getHealth() > 0)
+				{
+					players.add(player);
+
+					if (ap.getTeam() == 1)
+						team1++;
+					else
+						team2++;
 				}
 			}
 		}

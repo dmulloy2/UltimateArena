@@ -30,9 +30,9 @@ public class BombFlag extends ArenaFlag
 	protected boolean fused;
 	protected boolean exploded;
 
-	public BombFlag(Arena arena, Location loc, final UltimateArena plugin)
+	public BombFlag(Arena arena, Location location, final UltimateArena plugin)
 	{
-		super(arena, loc, plugin);
+		super(arena, location, plugin);
 
 		this.timer = 45;
 	}

@@ -24,25 +24,27 @@ import org.bukkit.entity.Player;
 public class KothFlag extends ArenaFlag
 {
 	protected ArenaPlayer leader;
-	protected KOTHArena marena;
+	protected KOTHArena arena;
 
-	public KothFlag(KOTHArena arena, Location loc, final UltimateArena plugin)
+	public KothFlag(KOTHArena arena, Location location, UltimateArena plugin)
 	{
-		super(arena, loc, plugin);
-		this.marena = arena;
+		super(arena, location, plugin);
+
+		this.arena = arena;
 	}
 
 	@Override
 	public void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
-		if (marena.isInLobby())
+		if (! arena.isInGame())
 			return;
-		
+
 		int amt = 0;
 		ArenaPlayer capturer = null;
 		List<Player> players = new ArrayList<Player>();
-		for (ArenaPlayer ap : arenaPlayers)
+		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
+			ArenaPlayer ap = arenaPlayers.get(i);
 			Player pl = ap.getPlayer();
 			if (pl != null)
 			{
@@ -62,9 +64,9 @@ public class KothFlag extends ArenaFlag
 				Player pl = capturer.getPlayer();
 				capturer.setPoints(capturer.getPoints() + 1);
 
-				pl.sendMessage(plugin.getPrefix()
-						+ FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)",
-								capturer.getPoints(), marena.getMaxPoints()));
+				pl.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", 
+								capturer.getPoints(), arena.getMaxPoints()));
 
 				leadChange();
 			}
@@ -74,7 +76,7 @@ public class KothFlag extends ArenaFlag
 	private void leadChange()
 	{
 		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
-		for (ArenaPlayer ap : marena.getActivePlayers())
+		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
 			pointsMap.put(ap.getName(), ap.getPoints());
 		}
@@ -99,9 +101,10 @@ public class KothFlag extends ArenaFlag
 			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
 			if (apl != null)
 			{
-				if (leader == null || !apl.getName().equals(leader.getName()))
+				if (leader == null || ! apl.getName().equals(leader.getName()))
 				{
-					marena.tellPlayers("&e{0} &3has taken the lead!", apl.getName());
+					arena.tellPlayers("&e{0} &3has taken the lead!", apl.getName());
+
 					this.leader = apl;
 				}
 				pos++;

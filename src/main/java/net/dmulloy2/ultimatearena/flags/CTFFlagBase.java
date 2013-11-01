@@ -29,9 +29,9 @@ public class CTFFlagBase extends FlagBase
 
 	protected int team;
 
-	public CTFFlagBase(Arena arena, Location loc, int team, final UltimateArena plugin)
+	public CTFFlagBase(Arena arena, Location location, int team, UltimateArena plugin)
 	{
-		super(arena, loc, plugin);
+		super(arena, location, plugin);
 		this.arena = arena;
 		this.team = team;
 		this.ctf = (CTFArena) arena;
@@ -44,11 +44,12 @@ public class CTFFlagBase extends FlagBase
 	public void setup()
 	{
 		super.setup();
-		this.setFlag(new CTFFlag(getArena(), location.clone().add(0, 1, 0), team));
+		this.flag = new CTFFlag(arena, location.clone().add(0, 1, 0), team);
 
 		Location flag = location.clone().add(0, 5, 0);
-		setNotify(flag.getBlock());
-		getNotify().setType(Material.AIR);
+
+		this.notify = flag.getBlock();
+		this.notify.setType(Material.AIR);
 	}
 
 	@Override
@@ -123,15 +124,5 @@ public class CTFFlagBase extends FlagBase
 			this.enemyflag = ctf.getBlueFlag().getFlag();
 		if (team == 2)
 			this.enemyflag = ctf.getRedFlag().getFlag();
-	}
-
-	public CTFFlag getFlag()
-	{
-		return flag;
-	}
-
-	public void setFlag(CTFFlag flag)
-	{
-		this.flag = flag;
 	}
 }

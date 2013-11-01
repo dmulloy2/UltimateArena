@@ -40,28 +40,28 @@ public class CTFFlag
 
 	protected boolean pickedUp;
 	protected boolean stopped;
-	
+
 	protected Material lastBlockType;
-	
+
 	protected DyeColor color;
 	protected MaterialData lastBlockDat;
 
-	public CTFFlag(Arena a, Location loc, int team)
+	public CTFFlag(Arena arena, Location location, int team)
 	{
 		this.team = team;
-		this.arena = a;
+		this.arena = arena;
 
-		this.returnto = loc.clone();
-		this.myloc = loc.clone();
-		this.lastloc = loc.clone();
-		this.toloc = loc.clone();
+		this.returnto = location.clone();
+		this.myloc = location.clone();
+		this.lastloc = location.clone();
+		this.toloc = location.clone();
 
-		loc.getBlock().setType(Material.AIR);
+		location.getBlock().setType(Material.AIR);
 
 		setup();
 	}
 
-	public void respawn()
+	public final void respawn()
 	{
 		timer = 15;
 		pickedUp = false;
@@ -71,7 +71,7 @@ public class CTFFlag
 		setFlag();
 	}
 
-	public void notifyTime()
+	private final void notifyTime()
 	{
 		if (timer % 5 == 0 || timer < 10)
 		{
@@ -79,12 +79,12 @@ public class CTFFlag
 		}
 	}
 
-	public void sayTimeLeft()
+	private final void sayTimeLeft()
 	{
 		arena.tellPlayers("&e{0} &3seconds left until &e{1} &3flag returns!", timer, flagType);
 	}
 
-	public void setup()
+	private final void setup()
 	{
 		Block current = myloc.getBlock();
 		lastBlockDat = current.getState().getData();
@@ -93,7 +93,7 @@ public class CTFFlag
 		colorize();
 	}
 
-	public void colorize()
+	public final void colorize()
 	{
 		Block current = myloc.getBlock();
 		if (team == 1)
@@ -110,7 +110,7 @@ public class CTFFlag
 		setFlagBlock(current);
 	}
 
-	public void fall()
+	private final void fall()
 	{
 		arena.tellPlayers("&e{0} &3has dropped the &e{1} &3flag!", riding.getName(), flagType);
 
@@ -146,36 +146,37 @@ public class CTFFlag
 		setFlag();
 	}
 
-	public void checkNear(List<ArenaPlayer> arenaPlayers)
+	public final void checkNear(List<ArenaPlayer> arenaPlayers)
 	{
 		if (stopped)
 			return;
 
 		if (! pickedUp)
 		{
-			for (ArenaPlayer pl : arenaPlayers)
+			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
-				if (Util.pointDistance(pl.getPlayer().getLocation(), myloc) < 1.75 && pl.getPlayer().getHealth() > 0.0D)
+				ArenaPlayer ap = arenaPlayers.get(i);
+				if (Util.pointDistance(ap.getPlayer().getLocation(), myloc) < 1.75 && ap.getPlayer().getHealth() > 0.0D)
 				{
-					if (pl.getTeam() != team)
+					if (ap.getTeam() != team)
 					{
 						// If the guy is on the other team
 						this.pickedUp = true;
-						this.riding = pl.getPlayer();
+						this.riding = ap.getPlayer();
 
-						pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
-						pl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
-						arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", pl.getName(), flagType);
+						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
+						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
+						arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", ap.getName(), flagType);
 						return;
 					}
 					else
 					{
-						if (! myloc.equals(returnto))
+						if (!myloc.equals(returnto))
 						{
 							// If the flag is not at its flagstand
-							pl.sendMessage("&aFlag Returned! &c+50 XP");
-							pl.setGameXP(pl.getGameXP() + 50);
-							arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", pl.getName(), flagType);
+							ap.sendMessage("&aFlag Returned! &c+50 XP");
+							ap.setGameXP(ap.getGameXP() + 50);
+							arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", ap.getName(), flagType);
 							respawn();
 							return;
 						}
@@ -201,7 +202,7 @@ public class CTFFlag
 		}
 	}
 
-	public void despawn()
+	public final void despawn()
 	{
 		this.stopped = true;
 
@@ -211,14 +212,14 @@ public class CTFFlag
 		last.getState().update();
 	}
 
-	public void tick()
+	public final void tick()
 	{
 		if (stopped)
 			return;
 
-		if (! pickedUp)
+		if (!pickedUp)
 		{
-			if (! myloc.equals(returnto))
+			if (!myloc.equals(returnto))
 			{
 				// if the flag is not at its flagstand
 				timer--;
@@ -236,30 +237,30 @@ public class CTFFlag
 		}
 	}
 
-	public void setFlag()
+	private final void setFlag()
 	{
-		if (stopped) 
+		if (stopped)
 			return;
 
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
 
-		if (! Util.checkLocation(lastloc, myloc))
+		if (!Util.checkLocation(lastloc, myloc))
 		{
 			last.setType(lastBlockType);
 			last.getState().setData(lastBlockDat);
 			last.getState().update();
-			
+
 			this.lastBlockType = current.getType();
 			this.lastBlockDat = current.getState().getData();
-			
+
 			this.lastloc = myloc.clone();
 
 			setFlagBlock(current);
 		}
 	}
 
-	private void setFlagBlock(Block c)
+	private final void setFlagBlock(Block c)
 	{
 		if (color == DyeColor.BLUE)
 			c.setType(Material.LAPIS_BLOCK);

@@ -24,7 +24,7 @@ public abstract class FlagBase
 
 	protected final UltimateArena plugin;
 
-	public FlagBase(Arena arena, Location loc, UltimateArena plugin)
+	public FlagBase(Arena arena, Location location, UltimateArena plugin)
 	{
 		this.arena = arena;
 
@@ -35,7 +35,7 @@ public abstract class FlagBase
 		setup();
 	}
 
-	public void setup()
+	protected void setup()
 	{
 		Location flag = location.clone().add(0, 5, 0);
 
