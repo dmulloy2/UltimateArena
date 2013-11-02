@@ -38,6 +38,7 @@ public class KillStreak
 		this.type = Type.MOB;
 		this.mobType = mobType;
 		this.mobAmount = mobAmount;
+		this.message = message;
 	}
 
 	// Item Constructor
@@ -45,6 +46,7 @@ public class KillStreak
 	{
 		this.type = Type.ITEM;
 		this.item = item;
+		this.message = message;
 	}
 
 	/**

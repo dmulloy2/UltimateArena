@@ -479,6 +479,8 @@ public abstract class Arena
 				}	
 			}
 		}
+
+		toReward.clear();
 	}
 
 	/**

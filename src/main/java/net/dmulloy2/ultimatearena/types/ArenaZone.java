@@ -37,7 +37,7 @@ public class ArenaZone
 	private int amtLobbys = 2;
 	private int maxPlayers = 24;
 	private int amtSpawnpoints = 2;
-	
+
 	private int liked;
 	private int disliked;
 	private int timesPlayed;
@@ -171,7 +171,7 @@ public class ArenaZone
 	public void load()
 	{
 		plugin.getFileHandler().load(this);
-		
+
 		loadConfiguration();
 	}
 
@@ -184,25 +184,25 @@ public class ArenaZone
 	{
 		return file.getName().replaceAll(".dat", "");
 	}
-	
+
 	public List<String> getStats()
 	{
 		List<String> lines = new ArrayList<String>();
-		
+
 		StringBuilder line = new StringBuilder();
 		line.append(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(arenaName)));
 		lines.add(line.toString());
-		
+
 		// Calculate percentage
 		int total = plugin.getTotalArenasPlayed();
 		int plays = timesPlayed;
-		
+
 		double percentage = ((double) plays / (double) total) * 100;
-		
+
 		line = new StringBuilder();
 		line.append(FormatUtil.format("&3Plays: &e{0}&3/&e{1} &3(&e{2}%&3)", plays, total, percentage));
 		lines.add(line.toString());
-		
+
 		// Calculate popularity
 		if (voted.size() == 0)
 		{
@@ -212,31 +212,31 @@ public class ArenaZone
 		{
 			percentage = ((double) liked / (double) voted.size()) * 100;
 		}
-		
+
 		line = new StringBuilder();
 		line.append(FormatUtil.format("&3Popularity: &e{0}&3/&e{1} &3(&e{2}%&3)", liked, voted.size(), percentage));
 		lines.add(line.toString());
-		
+
 		return lines;
 	}
-	
+
 	// ---- Configuration ---- //
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
 	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp;
-	
+
 	private List<String> blacklistedClasses, whitelistedClasses;
-	
+
 	private List<ItemStack> rewards;
 
 	private HashMap<Integer, List<KillStreak>> killStreaks;
-	
+
 	public void loadConfiguration()
 	{
 		try
 		{
 			ArenaConfig conf = plugin.getConfig(type.getName());
-			
+
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			if (type.getName().equalsIgnoreCase("mob"))
 			{
@@ -268,18 +268,18 @@ public class ArenaZone
 			}
 			else
 			{
-				rewards.addAll(conf.getRewards());
+				this.rewards = conf.getRewards();
 			}
-			
+
 			this.blacklistedClasses = new ArrayList<String>();
-			
+
 			if (fc.isSet("blacklistedClasses"))
 			{
 				blacklistedClasses.addAll(fc.getStringList("blacklistedClasses"));
 			}
-			
+
 			this.whitelistedClasses = new ArrayList<String>();
-			
+
 			if (fc.isSet("whitelistedClasses"))
 			{
 				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
@@ -296,8 +296,9 @@ public class ArenaZone
 					int kills = Util.parseInt(entry.getKey());
 					if (kills < 0)
 						continue;
-					
-					@SuppressWarnings("unchecked") // No way to check this :I
+
+					@SuppressWarnings("unchecked")
+					// No way to check this :I
 					List<String> values = (List<String>) entry.getValue();
 
 					List<KillStreak> streaks = new ArrayList<KillStreak>();
@@ -315,7 +316,7 @@ public class ArenaZone
 						if (type == KillStreak.Type.MOB)
 						{
 							String[] split = value.split(",");
-							
+
 							String message = split[1];
 							EntityType entityType = EntityType.valueOf(split[2]);
 							int amount = Integer.parseInt(split[3]);
@@ -356,7 +357,7 @@ public class ArenaZone
 	public void giveRewards(ArenaPlayer ap)
 	{
 		Player player = ap.getPlayer();
-		
+
 		plugin.debug("Rewarding player {0}", player.getName());
 
 		for (ItemStack stack : rewards)
@@ -395,7 +396,7 @@ public class ArenaZone
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() +
+						player.sendMessage(plugin.getPrefix() + 
 								FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
 					}
 				}
