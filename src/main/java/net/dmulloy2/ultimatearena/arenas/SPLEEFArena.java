@@ -111,11 +111,11 @@ public class SPLEEFArena extends FFAArena
 		else
 		{
 			spleefGround.setType(az.getSpecialType()); // Refresh the ground
-
-			rewardTeam(-1);
 			
-			if (getStartingAmount() > 1)
+			if (startingAmount > 1)
 			{
+				rewardTeam(-1);
+
 				if (active.size() > 0)
 				{
 					this.winner = active.get(0);

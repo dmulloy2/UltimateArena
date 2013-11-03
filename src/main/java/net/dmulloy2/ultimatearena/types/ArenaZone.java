@@ -384,7 +384,10 @@ public class ArenaZone
 		{
 			if (plugin.getEconomy() != null)
 			{
-				double money = cashReward * (ap.getGameXP() / 100.0D);
+				double money = (double) cashReward;
+				if (rewardBasedOnXp)
+					money = ((double) cashReward) * (ap.getGameXP() / 10.0D);
+
 				if (money > 0.0D)
 				{
 					EconomyResponse er = plugin.getEconomy().depositPlayer(player.getName(), money);
