@@ -80,15 +80,13 @@ public class ArenaZone
 	 * 
 	 * @param plugin
 	 *            - {@link UltimateArena} plugin instance
-	 * @param file
-	 *            - {@link File} to load
 	 * @return new {@link ArenaZone}
 	 */
 	public ArenaZone(UltimateArena plugin, File file)
 	{
-		this.arenaName = getName(file);
 		this.plugin = plugin;
 		this.file = file;
+		this.arenaName = getName(file);
 
 		initialize();
 	}
@@ -142,6 +140,9 @@ public class ArenaZone
 		ArenaClass ac = plugin.getClasses().get(0);
 		if (ac != null)
 			this.defaultClass = ac.getName();
+
+		if (file == null)
+			this.file = new File(new File(plugin.getDataFolder(), "arenas"), arenaName + ".dat");
 
 		load();
 
@@ -297,8 +298,7 @@ public class ArenaZone
 					if (kills < 0)
 						continue;
 
-					@SuppressWarnings("unchecked")
-					// No way to check this :I
+					@SuppressWarnings("unchecked") // No way to check this :I
 					List<String> values = (List<String>) entry.getValue();
 
 					List<KillStreak> streaks = new ArrayList<KillStreak>();

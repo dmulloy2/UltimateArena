@@ -6,8 +6,8 @@ import java.util.logging.Level;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.ultimatearena.types.Material;
 import net.dmulloy2.ultimatearena.util.MaterialUtil;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,7 +25,11 @@ public class FileHandler
 		this.plugin = plugin;
 	}
 
-	// TODO: Serialize ArenaZones
+	/**
+	 * Saves an ArenaZone
+	 * 
+	 * @param az - {@link ArenaZone} to save
+	 */
 	public void save(ArenaZone az)
 	{
 		try
@@ -33,9 +37,7 @@ public class FileHandler
 			File folder = new File(plugin.getDataFolder(), "arenas");
 			File file = new File(folder, az.getArenaName() + ".dat");
 			if (file.exists())
-			{
 				file.delete();
-			}
 
 			file.createNewFile();
 
@@ -187,7 +189,7 @@ public class FileHandler
 				fc.set("lobbyRed.y", lobbyRed.getBlockY());
 				fc.set("lobbyRed.z", lobbyRed.getBlockZ());
 
-				fc.set("specialType", Material.getTypeId(az.getSpecialType()));
+				fc.set("specialType", az.getSpecialType().toString());
 
 				for (int i = 0; i < 4; i++)
 				{
@@ -292,67 +294,70 @@ public class FileHandler
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Could not save arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving Arena: " + az.getArenaName()));
 		}
 	}
 
-	/** Load an ArenaZone **/
+	/**
+	 * Loads an ArenaZone
+	 * 
+	 * @param az - {@link ArenaZone} to load
+	 */
 	public void load(ArenaZone az)
 	{
 		plugin.debug("Loading Arena: {0}", az.getArenaName());
 
-		File folder = new File(plugin.getDataFolder(), "arenas");
-		File file = new File(folder, az.getArenaName() + ".dat");
-
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-
-		String arenaType = fc.getString("type");
-		if (!FieldType.contains(arenaType))
-		{
-			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: {1} is not a valid FieldType!", az.getArenaName(), arenaType);
-			az.setLoaded(false);
-			return;
-		}
-
-		az.setType(FieldType.getByName(fc.getString("type")));
-
-		World world = plugin.getServer().getWorld(fc.getString("world"));
-		if (world == null)
-		{
-			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
-			az.setLoaded(false);
-			return;
-		}
-
-		az.setWorld(world);
-
-		Location lobby1 = new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z"));
-		Location lobby2 = new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z"));
-		if (lobby1 == null || lobby2 == null)
-		{
-			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Lobby locations cannot be null!", az.getArenaName());
-			az.setLoaded(false);
-			return;
-		}
-
-		az.setLobby1(lobby1);
-		az.setLobby2(lobby2);
-
-		Location arena1 = new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z"));
-		Location arena2 = new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z"));
-		if (arena1 == null || arena2 == null)
-		{
-			plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Arena locations cannot be null!", az.getArenaName());
-			az.setLoaded(false);
-			return;
-		}
-
-		az.setArena1(arena1);
-		az.setArena2(arena2);
-
-		// TODO: Finish this...
 		try
 		{
+			File folder = new File(plugin.getDataFolder(), "arenas");
+			File file = new File(folder, az.getArenaName() + ".dat");
+	
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+	
+			String arenaType = fc.getString("type");
+			if (! FieldType.contains(arenaType))
+			{
+				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: {1} is not a valid FieldType!", az.getArenaName(), arenaType);
+				az.setLoaded(false);
+				return;
+			}
+	
+			az.setType(FieldType.getByName(arenaType));
+	
+			World world = plugin.getServer().getWorld(fc.getString("world"));
+			if (world == null)
+			{
+				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
+				az.setLoaded(false);
+				return;
+			}
+	
+			az.setWorld(world);
+	
+			Location lobby1 = new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z"));
+			Location lobby2 = new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z"));
+			if (lobby1 == null || lobby2 == null)
+			{
+				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Lobby locations cannot be null!", az.getArenaName());
+				az.setLoaded(false);
+				return;
+			}
+	
+			az.setLobby1(lobby1);
+			az.setLobby2(lobby2);
+	
+			Location arena1 = new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z"));
+			Location arena2 = new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z"));
+			if (arena1 == null || arena2 == null)
+			{
+				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Arena locations cannot be null!", az.getArenaName());
+				az.setLoaded(false);
+				return;
+			}
+	
+			az.setArena1(arena1);
+			az.setArena2(arena2);
+
 			if (arenaType.equals("pvp"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
@@ -496,7 +501,7 @@ public class FileHandler
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Could not load arena \"{0}\": {1}", az.getArenaName(), e.getMessage());
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading Arena: " + az.getArenaName()));
 			az.setLoaded(false);
 		}
 	}
