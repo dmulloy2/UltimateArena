@@ -386,7 +386,7 @@ public class ArenaZone
 			{
 				double money = (double) cashReward;
 				if (rewardBasedOnXp)
-					money = ((double) cashReward) * (ap.getGameXP() / 10.0D);
+					money = ((double) cashReward) * (ap.getGameXP() / 250.0D);
 
 				if (money > 0.0D)
 				{
