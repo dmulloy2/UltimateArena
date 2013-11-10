@@ -32,7 +32,7 @@ public class ArenaSign implements ConfigurationSerializable
 	private String worldName;
 	private String arenaName;
 	private SimpleVector vec;
-	
+
 	private transient final Sign sign;
 	private transient final World world;
 	private transient final Location loc;
@@ -59,40 +59,40 @@ public class ArenaSign implements ConfigurationSerializable
 		this.worldName = world.getName();
 		this.az = az;
 		this.sign = getSign();
-		
+
 		this.id = id;
 		this.arenaName = az.getArenaName();
 		this.vec = new SimpleVector(loc.toVector());
 	}
-	
+
 	/**
 	 * Constructs an ArenaSign from configuration
 	 */
 	public ArenaSign(UltimateArena plugin, Map<String, Object> args)
 	{
-		for (Entry<String, Object> entry : args.entrySet()) 
+		for (Entry<String, Object> entry : args.entrySet())
 		{
-			try 
+			try
 			{
-				for (Field field : getClass().getDeclaredFields()) 
+				for (Field field : getClass().getDeclaredFields())
 				{
-					if (field.getName().equals(entry.getKey())) 
+					if (field.getName().equals(entry.getKey()))
 					{
 						boolean accessible = field.isAccessible();
 
 						field.setAccessible(true);
-				
+
 						field.set(this, entry.getValue());
 
 						field.setAccessible(accessible);
 					}
 				}
-			} 
-			catch (IllegalArgumentException | IllegalAccessException ex) 
+			}
+			catch (IllegalArgumentException | IllegalAccessException ex)
 			{
 			}
 		}
-		
+
 		this.plugin = plugin;
 		this.world = plugin.getServer().getWorld(worldName);
 		this.loc = vec.toVector().toLocation(world);
@@ -127,32 +127,43 @@ public class ArenaSign implements ConfigurationSerializable
 			return;
 		}
 
-//		plugin.debug("Updating sign: {0}", id);
-		
+		// plugin.debug("Updating sign: {0}", id);
+
 		sign.setLine(0, "[UltimateArena]");
 		sign.setLine(1, az.getArenaName());
-		
+
 		// Line 2
 		StringBuilder line = new StringBuilder();
 		if (isActive())
 		{
 			Arena ar = getArena();
-			if (ar.isInLobby())
+			switch (ar.getGameMode())
 			{
-				line.append(FormatUtil.format("&aJoin ({0} sec)", ar.getStartTimer()));
-			}
-			else
-			{
-				line.append(FormatUtil.format("&cIn-Game"));
+				case LOBBY:
+					line.append(FormatUtil.format("&aJoin ({0} sec)", ar.getStartTimer()));
+					break;
+				case INGAME:
+					line.append(FormatUtil.format("&cIn-Game"));
+				case DISABLED:
+					line.append(FormatUtil.format("&cDisabled"));
+					break;
+				case IDLE:
+					line.append(FormatUtil.format("&aJoin"));
+					break;
+				case STOPPING:
+					line.append(FormatUtil.format("&cStopping"));
+					break;
+				default:
+					break;
 			}
 		}
 		else
 		{
 			line.append(FormatUtil.format("&aJoin"));
 		}
-		
+
 		sign.setLine(2, line.toString());
-		
+
 		// Line 3
 		line = new StringBuilder();
 		if (isActive())
@@ -192,7 +203,7 @@ public class ArenaSign implements ConfigurationSerializable
 					break;
 				default:
 					break;
-				
+
 			}
 		}
 		else
@@ -205,7 +216,7 @@ public class ArenaSign implements ConfigurationSerializable
 			{
 				line.append("IDLE");
 			}
-			
+
 			line.append(" (0/");
 			line.append(az.getMaxPlayers());
 			line.append(")");
@@ -215,17 +226,16 @@ public class ArenaSign implements ConfigurationSerializable
 
 		sign.update();
 	}
-	
+
 	private final boolean isActive()
 	{
 		return getArena() != null;
 	}
-	
+
 	private final Arena getArena()
 	{
 		return plugin.getArena(az.getArenaName());
 	}
-
 
 	@Override
 	public String toString()
@@ -243,55 +253,55 @@ public class ArenaSign implements ConfigurationSerializable
 	public Map<String, Object> serialize()
 	{
 		Map<String, Object> data = new HashMap<String, Object>();
-		
-		for (Field field : getClass().getDeclaredFields()) 
+
+		for (Field field : getClass().getDeclaredFields())
 		{
 			if (Modifier.isTransient(field.getModifiers()))
 				continue;
-			
-			try 
+
+			try
 			{
 				boolean accessible = field.isAccessible();
 
 				field.setAccessible(true);
-				
-				if (field.getType().equals(Integer.TYPE)) 
+
+				if (field.getType().equals(Integer.TYPE))
 				{
 					data.put(field.getName(), field.getInt(this));
-				} 
-				else if (field.getType().equals(Long.TYPE)) 
+				}
+				else if (field.getType().equals(Long.TYPE))
 				{
 					data.put(field.getName(), field.getLong(this));
-				} 
-				else if (field.getType().equals(Boolean.TYPE)) 
+				}
+				else if (field.getType().equals(Boolean.TYPE))
 				{
 					data.put(field.getName(), field.getBoolean(this));
-				} 
-				else if (field.getType().isAssignableFrom(Collection.class)) 
+				}
+				else if (field.getType().isAssignableFrom(Collection.class))
 				{
 					data.put(field.getName(), field.get(this));
-				} 
-				else if (field.getType().isAssignableFrom(String.class)) 
+				}
+				else if (field.getType().isAssignableFrom(String.class))
 				{
 					data.put(field.getName(), field.get(this));
-				} 
+				}
 				else if (field.getType().isAssignableFrom(Map.class))
 				{
-						data.put(field.getName(), field.get(this));
-				} 
-				else 
+					data.put(field.getName(), field.get(this));
+				}
+				else
 				{
 					data.put(field.getName(), field.get(this));
 				}
 
 				field.setAccessible(accessible);
-				
-			} 
-			catch (IllegalArgumentException | IllegalAccessException ex) 
+
+			}
+			catch (IllegalArgumentException | IllegalAccessException ex)
 			{
 			}
 		}
-		
+
 		return data;
 	}
 }
