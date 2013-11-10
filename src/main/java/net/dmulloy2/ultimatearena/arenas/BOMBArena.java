@@ -110,7 +110,7 @@ public class BOMBArena extends Arena
 			return;
 		}
 
-		if (redTeamPower <= 0)
+		if (redTeamPower <= 0 && isInGame())
 		{
 			setWinningTeam(2);
 
