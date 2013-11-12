@@ -29,6 +29,9 @@ public class CONQUESTArena extends Arena
 		this.maxGameTime = 60 * 20;
 		this.maxDeaths = 900;
 
+		this.redTeamPower = 1;
+		this.blueTeamPower = 1;
+
 		for (int i = 0; i < az.getFlags().size(); i++)
 		{
 			flags.add(new ArenaFlag(this, az.getFlags().get(i), plugin));
@@ -38,7 +41,6 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void onStart()
 	{
-		super.onStart();
 		this.redTeamPower = active.size() * 4;
 		this.blueTeamPower = redTeamPower;
 		if (redTeamPower < 4)

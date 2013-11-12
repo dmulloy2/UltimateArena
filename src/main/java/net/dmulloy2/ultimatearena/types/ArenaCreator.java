@@ -308,6 +308,7 @@ public class ArenaCreator
 				else
 				{
 					sendMessage("&3You need to set the &eGround Type&3!");
+					sendMessage("&3The ground type is a Material, like &eSnow_Block");
 				}
 			}
 			if (step.equalsIgnoreCase("kothflag"))
@@ -615,4 +616,23 @@ public class ArenaCreator
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 		}
 	}
+
+//  TODO: Complete and test this
+//	private boolean reasonableDistance(Location loc1, Location loc2)
+//	{
+//		try
+//		{
+//			double distance = loc1.distance(loc2);
+//
+//			if (distance == Double.NaN)
+//				return false;
+//
+//			return distance < 40.0D;
+//		}
+//		catch (IllegalStateException ex)
+//		{
+//			// Different worlds
+//			return false;
+//		}
+//	}
 }

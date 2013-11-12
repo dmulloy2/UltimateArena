@@ -58,28 +58,39 @@ public class SPLEEFArena extends FFAArena
 
 	public Location getBlockInSpleefArena(int repeat)
 	{
-		Random rand = new Random();
-		Location ret = null;
-
-		int checkx = rand.nextInt(getSpleefGround().getWidth() - 1);
-		int checkz = rand.nextInt(getSpleefGround().getLength() - 1);
-
-		Block b = getSpleefGround().getBlockAt(checkx + 1, 0, checkz + 1);
-
-		Material mat = b.getType();
-		if (mat == az.getSpecialType())
+		if (repeat < 256)
 		{
-			ret = b.getLocation();
+			Random rand = new Random();
+			Location ret = null;
+
+			int checkx = rand.nextInt(getSpleefGround().getWidth() - 1);
+			int checkz = rand.nextInt(getSpleefGround().getLength() - 1);
+
+			Block b = getSpleefGround().getBlockAt(checkx + 1, 0, checkz + 1);
+
+			Material mat = b.getType();
+			if (mat == az.getSpecialType())
+			{
+				ret = b.getLocation();
+			}
+			else
+			{
+				if (repeat < (spleefGround.getWidth() * spleefGround.getHeight()) / 2)
+				{
+					ret = getBlockInSpleefArena(repeat + 1);
+				}
+			}
+
+			return ret;
 		}
 		else
 		{
-			if (repeat < (getSpleefGround().getWidth() * getSpleefGround().getHeight()) / 2)
-			{
-				ret = getBlockInSpleefArena(repeat + 1);
-			}
+			tellPlayers("&cCould not select spawn points. Stopping...");
+
+			stop();
 		}
 
-		return ret;
+		return null;
 	}
 
 	@Override
@@ -111,7 +122,7 @@ public class SPLEEFArena extends FFAArena
 		else
 		{
 			spleefGround.setType(az.getSpecialType()); // Refresh the ground
-			
+
 			if (startingAmount > 1)
 			{
 				rewardTeam(-1);
@@ -121,7 +132,7 @@ public class SPLEEFArena extends FFAArena
 					this.winner = active.get(0);
 				}
 			}
-			
+
 			stop();
 		}
 	}

@@ -27,8 +27,11 @@ public class BOMBArena extends Arena
 		this.maxGameTime = 60 * 15;
 		this.maxDeaths = 990;
 
-		bomb1 = new BombFlag(this, az.getFlags().get(0), plugin);
-		bomb2 = new BombFlag(this, az.getFlags().get(1), plugin);
+		this.redTeamPower = 1;
+
+		this.bomb1 = new BombFlag(this, az.getFlags().get(0), plugin);
+		this.bomb2 = new BombFlag(this, az.getFlags().get(1), plugin);
+
 		bomb1.setBombNumber(1);
 		bomb2.setBombNumber(2);
 	}
@@ -36,7 +39,6 @@ public class BOMBArena extends Arena
 	@Override
 	public void onStart()
 	{
-		super.onStart();
 		this.redTeamPower = active.size() * 3;
 		if (redTeamPower < 10)
 		{
@@ -110,7 +112,7 @@ public class BOMBArena extends Arena
 			return;
 		}
 
-		if (redTeamPower <= 0 && isInGame())
+		if (redTeamPower <= 0)
 		{
 			setWinningTeam(2);
 

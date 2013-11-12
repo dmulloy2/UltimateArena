@@ -62,31 +62,32 @@ public class MOBArena extends Arena
 		this.mobPerWave = 4 + ((int) (wave * 1.5)) + (active.size() * 3);
 		this.mobtimer = (wave * 4) + 20;
 
-		if (getWave() <= 1)
+		// TODO: Make this configurable?
+		if (wave <= 1)
 		{
 			mobtimer = 1;
 		}
-		if (getWave() > 1)
+		if (wave > 1)
 		{
 			spawning.add("ZOMBIE");
 			spawning.add("ZOMBIE");
 			spawning.add("SKELETON");
 		}
-		if (getWave() > 3)
+		if (wave > 3)
 		{
 			spawning.add("SPIDER");
 		}
-		if (getWave() > 6)
+		if (wave > 6)
 		{
 			spawning.add("BLAZE");
 			spawning.add("BLAZE");
 		}
-		if (getWave() > 9)
+		if (wave > 9)
 		{
 			spawning.add("PIG_ZOMBIE");
 			spawning.add("ENDERMAN");
 		}
-		if (getWave() > 12)
+		if (wave > 12)
 		{
 			spawning.add("GHAST");
 		}
@@ -104,6 +105,7 @@ public class MOBArena extends Arena
 	public void reward(ArenaPlayer p)
 	{
 		// Mob Arena is always gradient based... Deal with it.
+		// TODO: Maybe some configuration...?
 		int amtGold = (int) Math.round(p.getGameXP() / 500.0);
 		int amtSlime = (int) Math.round(p.getGameXP() / 550.0);
 		int amtGlowStone = (int) Math.round(p.getGameXP() / 450.0);

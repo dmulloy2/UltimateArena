@@ -141,7 +141,6 @@ public class Util
 	 * @param i
 	 *            - Data
 	 */
-
 	@SuppressWarnings("deprecation") // TODO: Is there a replacement for this?
 	public static void playEffect(Effect effect, Location loc, int data)
 	{
@@ -182,6 +181,12 @@ public class Util
 		return ret.toString();
 	}
 
+	/**
+	 * Returns a useful Stack Trace for debugging purpouses
+	 * 
+	 * @param e - Underlying {@link Throwable}
+	 * @param circumstance - Circumstance in which the Exception occured
+	 */
 	public static String getUsefulStack(Throwable e, String circumstance)
 	{
 		StringBuilder ret = new StringBuilder();
@@ -204,9 +209,11 @@ public class Util
 	}
 
 	/**
-	 * Constructs a new list from an existing list
+	 * Constructs a new list from an existing {@link List}
 	 * <p>
 	 * This fixes concurrency for some reason
+	 * <p>
+	 * Should not be used to edit the base List
 	 * 
 	 * @param list 
 	 *            - Base {@link List}
@@ -224,6 +231,13 @@ public class Util
 		return ret;
 	}
 
+	/**
+	 * Basically just a wrapper for {@link Integer#parseInt(String)}
+	 * <p>
+	 * Catches the {@link NumberFormatException} and returns -1
+	 * 
+	 * @param s - String to attempt to parse into an Integer
+	 */
 	public static int parseInt(String s)
 	{
 		int ret = -1;

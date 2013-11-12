@@ -10,6 +10,7 @@ import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
+import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -106,7 +107,7 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl))
 			{
 				Arena arena = plugin.getArena(pl);
-				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
+				if (arena.getType() != FieldType.HUNGER)
 				{
 					event.setCancelled(true);
 				}
@@ -123,7 +124,7 @@ public class PlayerListener implements Listener
 			if (plugin.isInArena(pl))
 			{
 				Arena arena = plugin.getArena(pl);
-				if (! arena.getType().getName().equalsIgnoreCase("Hunger"))
+				if (arena.getType() != FieldType.HUNGER)
 				{
 					event.setCancelled(true);
 				}
@@ -140,7 +141,7 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.isInArena(player.getLocation()))
 			{
-				if (action.equals(Action.RIGHT_CLICK_BLOCK))
+				if (action == Action.RIGHT_CLICK_BLOCK)
 				{
 					if (event.hasBlock())
 					{
@@ -178,7 +179,7 @@ public class PlayerListener implements Listener
 						}
 					}
 				}
-				else if (action.equals(Action.LEFT_CLICK_BLOCK))
+				else if (action == Action.LEFT_CLICK_BLOCK)
 				{
 					if (event.hasBlock())
 					{
