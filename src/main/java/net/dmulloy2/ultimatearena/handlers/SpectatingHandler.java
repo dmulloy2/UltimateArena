@@ -67,7 +67,18 @@ public class SpectatingHandler implements Listener
 		spectating.remove(arena);
 	}
 
-	public Arena getArena(ArenaSpectator spectator)
+	public Arena getArena(Player player)
+	{
+		ArenaSpectator spectator = getSpectator(player);
+		if (spectator != null)
+		{
+			return getArena(spectator);	
+		}
+
+		return null;
+	}
+
+	private Arena getArena(ArenaSpectator spectator)
 	{
 		for (Entry<Arena, List<ArenaSpectator>> entry : spectating.entrySet())
 		{
@@ -91,7 +102,16 @@ public class SpectatingHandler implements Listener
 		return spectator;
 	}
 
-	public void removeSpectator(ArenaSpectator spectator)
+	public void removeSpectator(Player player)
+	{
+		ArenaSpectator spectator = getSpectator(player);
+		if (spectator != null)
+		{
+			removeSpectator(spectator);
+		}
+	}
+
+	private void removeSpectator(ArenaSpectator spectator)
 	{
 		spectator.endPlayer();
 

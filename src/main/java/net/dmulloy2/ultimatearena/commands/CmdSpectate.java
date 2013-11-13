@@ -31,9 +31,9 @@ public class CmdSpectate extends UltimateArenaCommand
 
 		if (spectatingHandler.isSpectating(player))
 		{
-			arena = spectatingHandler.getArena(spectatingHandler.getSpectator(player));
+			arena = spectatingHandler.getArena(player);
 			
-			spectatingHandler.removeSpectator(spectatingHandler.getSpectator(player));
+			spectatingHandler.removeSpectator(player);
 
 			sendpMessage("&3You are no longer spectating");
 		}

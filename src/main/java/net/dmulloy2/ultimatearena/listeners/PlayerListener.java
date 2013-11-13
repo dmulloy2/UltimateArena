@@ -3,7 +3,6 @@ package net.dmulloy2.ultimatearena.listeners;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
-import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
@@ -62,7 +61,7 @@ public class PlayerListener implements Listener
 		}
 	}
 
-	public void onPlayerDisconnect(Player player)
+	private void onPlayerDisconnect(Player player)
 	{
 		if (plugin.isCreatingArena(player))
 		{
@@ -92,9 +91,7 @@ public class PlayerListener implements Listener
 
 		if (plugin.getSpectatingHandler().isSpectating(player))
 		{
-			SpectatingHandler sh = plugin.getSpectatingHandler();
-
-			sh.removeSpectator(sh.getSpectator(player));
+			plugin.getSpectatingHandler().removeSpectator(player);
 		}
 	}
 
@@ -191,7 +188,7 @@ public class PlayerListener implements Listener
 							{
 								if (a instanceof SPLEEFArena)
 								{
-									SPLEEFArena spa = ((SPLEEFArena) a);
+									SPLEEFArena spa = (SPLEEFArena) a;
 									Field3D splf = spa.getSpleefGround();
 									if (splf.isInside(block.getLocation()))
 									{
