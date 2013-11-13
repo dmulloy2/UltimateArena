@@ -45,7 +45,7 @@ public class CmdList extends UltimateArenaCommand
 			playMap.put(az, az.getTimesPlayed());
 		}
 
-		List<Entry<ArenaZone, Integer>> sortedEntries = new ArrayList<Entry<ArenaZone, Integer>>();
+		List<Entry<ArenaZone, Integer>> sortedEntries = new ArrayList<Entry<ArenaZone, Integer>>(playMap.entrySet());
 		Collections.sort(sortedEntries, new Comparator<Entry<ArenaZone, Integer>>()
 		{
 			@Override

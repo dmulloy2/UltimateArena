@@ -253,4 +253,16 @@ public class Util
 
 		return ret;
 	}
+
+	/**
+	 * Returns whether or not a String can be parsed as an Integer
+	 * 
+	 * @param string
+	 *            - String to check
+	 * @return Whether or not a String can be parsed as an Integer
+	 */
+	public static boolean isInteger(String s)
+	{
+		return parseInt(s) != -1;
+	}
 }

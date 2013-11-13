@@ -312,7 +312,7 @@ public class UltimateArena extends JavaPlugin
 	 * 
 	 * @return Whether or not the Bukkit version is up-to-date
 	 */
-	public boolean checkDependencies()
+	private boolean checkDependencies()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		
@@ -336,7 +336,7 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Sets up integration with WorldEdit
 	 */
-	public void setupWorldEditIntegration()
+	private void setupWorldEditIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		
@@ -350,15 +350,15 @@ public class UltimateArena extends JavaPlugin
 				outConsole("Integration with WorldEdit successful!");
 				return;
 			}
+
+			outConsole(Level.WARNING, "Could not hook into WorldEdit!");
 		}
-		
-		outConsole(Level.WARNING, "Could not hook into WorldEdit!");
 	}
 	
 	/**
 	 * Sets up integration with Essentials
 	 */
-	public void setupEssentialsIntegration()
+	private void setupEssentialsIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		
@@ -371,7 +371,7 @@ public class UltimateArena extends JavaPlugin
 	}
 
 	// Create Directories
-	public void checkDirectories()
+	private void checkDirectories()
 	{
 		debug("Checking directories!");
 
@@ -405,7 +405,7 @@ public class UltimateArena extends JavaPlugin
 	}
 
 	// Load Stuff
-	public void loadArenas()
+	private void loadArenas()
 	{
 		File folder = new File(getDataFolder(), "arenas");
 		File[] children = folder.listFiles();
@@ -424,7 +424,7 @@ public class UltimateArena extends JavaPlugin
 		outConsole("Loaded {0} arena files!", total);
 	}
 
-	public void loadConfigs()
+	private void loadConfigs()
 	{
 		int total = 0;
 		for (FieldType type : FieldType.values())
@@ -438,7 +438,7 @@ public class UltimateArena extends JavaPlugin
 		loadWhiteListedCommands();
 	}
 
-	public void loadWhiteListedCommands()
+	private void loadWhiteListedCommands()
 	{
 		File file = new File(getDataFolder(), "whiteListedCommands.yml");
 		if (! file.exists())
@@ -458,7 +458,7 @@ public class UltimateArena extends JavaPlugin
 		debug("Loaded {0} whitelisted commands!", fc.getStringList("whiteListedCmds").size());
 	}
 
-	public boolean loadConfig(String str)
+	private boolean loadConfig(String str)
 	{
 		File folder = new File(getDataFolder(), "configs");
 		File file = new File(folder, str + "Config.yml");
@@ -479,7 +479,7 @@ public class UltimateArena extends JavaPlugin
 		return false;
 	}
 
-	public void loadClasses()
+	private void loadClasses()
 	{
 		File folder = new File(getDataFolder(), "classes");
 		File[] children = folder.listFiles();
