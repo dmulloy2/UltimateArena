@@ -35,9 +35,9 @@ public class MOBArena extends Arena
 		super(az);
 
 		this.type = FieldType.MOB;
-		this.startTimer = 80;
-		this.maxGameTime = 60 * 10;
-		this.maxDeaths = 1;
+//		this.startTimer = 80;
+//		this.maxGameTime = 60 * 10;
+//		this.maxDeaths = 1;
 		this.mobspawn = 0;
 		this.mobtimer = 0;
 		this.wave = 0;

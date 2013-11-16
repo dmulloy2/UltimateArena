@@ -28,7 +28,9 @@ public class SPLEEFArena extends FFAArena
 		super(az);
 
 		this.type = FieldType.SPLEEF;
-		this.maxDeaths = 2;
+//		this.maxGameTime = 600;
+//		this.startTimer = 80;
+//		this.maxDeaths = 2;
 
 		this.spleefGround = new Field3D();
 		Location pos1 = az.getFlags().get(0);
@@ -58,39 +60,28 @@ public class SPLEEFArena extends FFAArena
 
 	public Location getBlockInSpleefArena(int repeat)
 	{
-		if (repeat < 256)
+		Random rand = new Random();
+		Location ret = null;
+
+		int checkx = rand.nextInt(spleefGround.getWidth() - 1);
+		int checkz = rand.nextInt(spleefGround.getLength() - 1);
+
+		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
+
+		Material mat = b.getType();
+		if (mat == az.getSpecialType())
 		{
-			Random rand = new Random();
-			Location ret = null;
-
-			int checkx = rand.nextInt(getSpleefGround().getWidth() - 1);
-			int checkz = rand.nextInt(getSpleefGround().getLength() - 1);
-
-			Block b = getSpleefGround().getBlockAt(checkx + 1, 0, checkz + 1);
-
-			Material mat = b.getType();
-			if (mat == az.getSpecialType())
-			{
-				ret = b.getLocation();
-			}
-			else
-			{
-				if (repeat < (spleefGround.getWidth() * spleefGround.getHeight()) / 2)
-				{
-					ret = getBlockInSpleefArena(repeat + 1);
-				}
-			}
-
-			return ret;
+			ret = b.getLocation();
 		}
 		else
 		{
-			tellPlayers("&cCould not select spawn points. Stopping...");
-
-			stop();
+			if (repeat < (spleefGround.getWidth() * spleefGround.getHeight()) / 2)
+			{
+				ret = getBlockInSpleefArena(repeat + 1);
+			}
 		}
 
-		return null;
+		return ret;
 	}
 
 	@Override
@@ -141,6 +132,6 @@ public class SPLEEFArena extends FFAArena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellAllPlayers("&e{0} &3has won the Spleef tourney at &e{1}", winner.getName(), name);
+			tellAllPlayers("&e{0} &3has won the Spleef match at &e{1}", winner.getName(), name);
 	}
 }

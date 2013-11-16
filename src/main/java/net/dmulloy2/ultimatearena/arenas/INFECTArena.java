@@ -20,9 +20,9 @@ public class INFECTArena extends PVPArena
 		super(az);
 
 		this.type = FieldType.INFECT;
-		this.startTimer = 80;
-		this.maxGameTime = (60 * 2) + 10;
-		this.maxDeaths = 99;
+//		this.startTimer = 80;
+//		this.maxGameTime = (60 * 2) + 10;
+//		this.maxDeaths = 99;
 	}
 
 	@Override

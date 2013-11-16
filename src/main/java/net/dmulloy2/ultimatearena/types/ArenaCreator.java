@@ -414,21 +414,30 @@ public class ArenaCreator
 				return;
 			}
 
-			if (lobby1 == null || lobby2 == null)
-			{
-				lobby1 = sel.getMaximumPoint();
-				lobby2 = sel.getMinimumPoint();
-
-				sendMessage("&3Lobby points set! Use &e/ua done");
-				return;
-			}
-
 			if (arena1 == null || arena2 == null)
 			{
 				arena1 = sel.getMaximumPoint();
 				arena2 = sel.getMinimumPoint();
 
 				sendMessage("&3Arena points set! Use &e/ua done");
+				return;
+			}
+
+			if (lobby1 == null || lobby2 == null)
+			{
+				Location lobby1 = sel.getMaximumPoint();
+				Location lobby2 = sel.getMinimumPoint();
+
+				if (lobby1.getWorld().getUID() != arena1.getWorld().getUID())
+				{
+					sendMessage("&cThe lobby and the arena must be in the same world!");
+					return;
+				}
+
+				this.lobby1 = lobby1;
+				this.lobby2 = lobby2;
+
+				sendMessage("&3Lobby points set! Use &e/ua done");
 				return;
 			}
 		}
@@ -541,7 +550,7 @@ public class ArenaCreator
 			}
 			else
 			{
-				sendMessage("&3You must supply a valid material.");
+				sendMessage("&3You must supply a valid &eMaterial&3.");
 			}
 		}
 		if (step.equalsIgnoreCase("kothflag"))
@@ -593,9 +602,9 @@ public class ArenaCreator
 		this.msg = msg;
 	}
 
-	public String getPlayer()
+	public Player getPlayer()
 	{
-		return player;
+		return Util.matchPlayer(player);
 	}
 
 	public String getArenaName()
@@ -616,23 +625,4 @@ public class ArenaCreator
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 		}
 	}
-
-//  TODO: Complete and test this
-//	private boolean reasonableDistance(Location loc1, Location loc2)
-//	{
-//		try
-//		{
-//			double distance = loc1.distance(loc2);
-//
-//			if (distance == Double.NaN)
-//				return false;
-//
-//			return distance < 40.0D;
-//		}
-//		catch (IllegalStateException ex)
-//		{
-//			// Different worlds
-//			return false;
-//		}
-//	}
 }

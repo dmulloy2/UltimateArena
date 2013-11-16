@@ -19,6 +19,7 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.KillStreak;
+import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -79,7 +80,6 @@ public abstract class Arena
 	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
 	protected boolean countMobKills;
-	protected boolean configLoaded;
 	protected boolean forceStop;
 	protected boolean stopped;
 	protected boolean start;
@@ -118,6 +118,8 @@ public abstract class Arena
 		this.spawns = new ArrayList<Location>();
 
 		this.gameMode = Mode.LOBBY;
+
+		reloadConfig();
 		
 		plugin.getSpectatingHandler().registerArena(this);
 	}
@@ -127,8 +129,6 @@ public abstract class Arena
 	 */
 	public final void reloadConfig()
 	{
-		this.configLoaded = true;
-
 		this.maxGameTime = az.getGameTime();
 		this.gameTimer = az.getGameTime();
 		this.startTimer = az.getLobbyTime();
@@ -391,7 +391,7 @@ public abstract class Arena
 
 				ap.spawn();
 
-				if (!alreadySpawned)
+				if (! alreadySpawned)
 				{
 					onSpawn(ap);
 				}
@@ -426,6 +426,11 @@ public abstract class Arena
 			plugin.debug("Spawning player {0} in the lobby", ap.getName());
 
 			teleport(ap.getPlayer(), loc);
+		}
+		else
+		{
+			ap.sendMessage("&cError spawning: Null spawnpoint!");
+			ap.leaveArena(LeaveReason.ERROR);
 		}
 	}
 
@@ -799,11 +804,12 @@ public abstract class Arena
 		if (stopped)
 			return;
 
-		// Load config if not already loaded
-		if (! configLoaded)
-		{
-			reloadConfig();
-		}
+//      Moved to the constructor
+//		Load config if not already loaded
+//		if (! configLoaded)
+//		{
+//			reloadConfig();
+//		}
 
 		if (! pauseStartTimer)
 		{

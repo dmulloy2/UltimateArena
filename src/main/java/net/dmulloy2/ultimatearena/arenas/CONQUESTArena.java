@@ -25,9 +25,9 @@ public class CONQUESTArena extends Arena
 		super(az);
 
 		this.type = FieldType.CONQUEST;
-		this.startTimer = 180;
-		this.maxGameTime = 60 * 20;
-		this.maxDeaths = 900;
+//		this.startTimer = 180;
+//		this.maxGameTime = 60 * 20;
+//		this.maxDeaths = 900;
 
 		this.redTeamPower = 1;
 		this.blueTeamPower = 1;

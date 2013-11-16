@@ -23,9 +23,9 @@ public class BOMBArena extends Arena
 		super(az);
 
 		this.type = FieldType.BOMB;
-		this.startTimer = 120;
-		this.maxGameTime = 60 * 15;
-		this.maxDeaths = 990;
+//		this.startTimer = 120;
+//		this.maxGameTime = 60 * 15;
+//		this.maxDeaths = 990;
 
 		this.redTeamPower = 1;
 

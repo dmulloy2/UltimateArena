@@ -181,7 +181,7 @@ public class ArenaClass
 
 					if (e instanceof ClassNotFoundException || e instanceof NoSuchMethodError)
 					{
-						plugin.outConsole(Level.WARNING, "This is usually caused by an outdated Essentials build.");
+						plugin.outConsole(Level.WARNING, "This is usually caused by an Essentials version mismatch.");
 					}
 				}
 			}

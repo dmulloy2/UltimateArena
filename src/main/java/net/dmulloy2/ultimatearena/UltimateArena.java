@@ -1,18 +1,19 @@
 /**
- * UltimateArena (C) 2013 MineSworn / dmulloy2
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * UltimateArena - a bukkit plugin 
+ * Copyright (C) 2013 dmulloy2
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package net.dmulloy2.ultimatearena;
 
@@ -1046,7 +1047,7 @@ public class UltimateArena extends JavaPlugin
 	{
 		for (ArenaCreator ac : makingArena)
 		{
-			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
+			if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
 				return ac;
 		}
 
@@ -1118,7 +1119,7 @@ public class UltimateArena extends JavaPlugin
 		for (int i = 0; i < makingArena.size(); i++)
 		{
 			ArenaCreator ac = makingArena.get(i);
-			if (ac.getPlayer().equalsIgnoreCase(player.getName()))
+			if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
 			{
 				makingArena.remove(ac);
 				player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
