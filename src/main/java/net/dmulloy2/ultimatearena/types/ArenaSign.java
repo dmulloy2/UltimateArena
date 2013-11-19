@@ -121,13 +121,22 @@ public class ArenaSign implements ConfigurationSerializable
 	 */
 	public void update()
 	{
+		// Abort if the sign is null
 		if (getSign() == null)
 		{
 			plugin.getSignHandler().deleteSign(this);
 			return;
 		}
 
-		// plugin.debug("Updating sign: {0}", id);
+		// Abort if the ArenaZone is null
+		if (az == null)
+		{
+			sign.setLine(0, "[UltimateArena]");
+			sign.setLine(1, FormatUtil.format("&4Null Arena"));
+			
+			plugin.getSignHandler().deleteSign(this);
+			return;
+		}
 
 		sign.setLine(0, "[UltimateArena]");
 		sign.setLine(1, az.getArenaName());
@@ -303,5 +312,10 @@ public class ArenaSign implements ConfigurationSerializable
 		}
 
 		return data;
+	}
+
+	public final void setId(int id)
+	{
+		this.id = id;
 	}
 }

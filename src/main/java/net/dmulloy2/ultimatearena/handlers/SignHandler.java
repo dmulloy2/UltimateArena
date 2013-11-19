@@ -54,6 +54,9 @@ public class SignHandler
 				fc = YamlConfiguration.loadConfiguration(signsSave);
 			}
 
+			// Dynamic ID's
+			int nextId = 1;
+
 			for (Entry<String, Object> value : fc.getValues(false).entrySet())
 			{
 				MemorySection mem = (MemorySection) value.getValue();
@@ -61,6 +64,9 @@ public class SignHandler
 				ArenaSign sign = new ArenaSign(plugin, mem.getValues(true));
 				if (sign != null)
 				{
+					sign.setId(nextId);
+					nextId++;
+
 					plugin.getArenaSigns().add(sign);
 				}
 			}
