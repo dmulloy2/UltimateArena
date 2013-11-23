@@ -472,7 +472,8 @@ public abstract class Arena
 	 */
 	public void reward(ArenaPlayer ap)
 	{
-		az.giveRewards(ap);
+		if (ap != null)
+			az.giveRewards(ap);
 	}
 
 	/**
