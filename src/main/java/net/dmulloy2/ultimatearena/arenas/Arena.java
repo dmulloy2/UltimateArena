@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -191,13 +192,21 @@ public abstract class Arena
 		player.setFlySpeed(0.1F);
 		player.setFlying(false);
 
-		// If essentials is found, remove god mode.
-		if (plugin.isUseEssentials())
+		// Wrap this in a try catch for outdated Essentials
+		try
 		{
-			User user = plugin.getEssentials().getUser(player);
-			
-			// Disable GodMode in the arena
-			user.setGodModeEnabled(false);
+			if (plugin.isUseEssentials())
+			{
+				User user = plugin.getEssentials().getUser(player);
+				
+				// Disable GodMode in the arena
+				user.setGodModeEnabled(false);
+			}
+		}
+		catch (Throwable e)
+		{
+			plugin.outConsole(Level.WARNING, "Encountered an exception adding {0} to {1}: {2}",
+					player.getName(), name, e instanceof ClassNotFoundException  ? "outdated Essentials!" : e.getMessage());
 		}
 
 		// Clear potion effects
