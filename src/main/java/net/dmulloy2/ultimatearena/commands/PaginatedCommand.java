@@ -11,20 +11,19 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 
 public abstract class PaginatedCommand extends UltimateArenaCommand
 {
+	protected int linesPerPage = 10;
+	protected int pageArgIndex = 0;
+
 	public PaginatedCommand(UltimateArena plugin)
 	{
 		super(plugin);
 	}
 
-	protected int linesPerPage = 10;
-
-	int pageArgIndex = 0;
-
 	@Override
 	public void perform()
 	{
 		int index = 1;
-		if (this.args.length > pageArgIndex)
+		if (args.length > pageArgIndex)
 		{
 			try
 			{
