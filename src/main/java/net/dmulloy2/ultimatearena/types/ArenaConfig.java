@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
  */
 
 @Getter
-public class ArenaConfig
+public class ArenaConfig implements Reloadable
 {
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
@@ -170,5 +170,18 @@ public class ArenaConfig
 
 		plugin.debug("Loaded ArenaConfig for type: {0}!", arenaName);
 		return true;
+	}
+
+	@Override
+	public void reload()
+	{
+		// Clear lists and maps
+		this.blacklistedClasses.clear();
+		this.whitelistedClasses.clear();
+		this.killStreaks.clear();
+		this.rewards.clear();
+
+		// Load again
+		load();
 	}
 }

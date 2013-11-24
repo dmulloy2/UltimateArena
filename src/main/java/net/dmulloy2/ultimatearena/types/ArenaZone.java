@@ -32,7 +32,7 @@ import org.bukkit.inventory.ItemStack;
 
 @Getter
 @Setter
-public class ArenaZone
+public class ArenaZone implements Reloadable
 {
 	private int amtLobbys = 2;
 	private int maxPlayers = 24;
@@ -405,5 +405,19 @@ public class ArenaZone
 				}
 			}
 		}
+	}
+
+	@Override
+	public void reload()
+	{
+		// Clear lists and maps
+		this.blacklistedClasses.clear();
+		this.whitelistedClasses.clear();
+		this.killStreaks.clear();
+		this.rewards.clear();
+		this.spawns.clear();
+
+		// Re-initialize
+		initialize();
 	}
 }

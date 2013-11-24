@@ -80,6 +80,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
+import net.dmulloy2.ultimatearena.types.Reloadable;
 import net.dmulloy2.ultimatearena.types.SimpleVector;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
@@ -106,7 +107,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
  * @author dmulloy2
  */
 
-public class UltimateArena extends JavaPlugin
+public class UltimateArena extends JavaPlugin implements Reloadable
 {
 	// Economy
 	private @Getter Economy economy;
@@ -288,21 +289,34 @@ public class UltimateArena extends JavaPlugin
 	/**
 	 * Basic reload method.
 	 */
+	@Override
 	public void reload()
 	{
-		loadedArenas.clear();
-		configs.clear();
-		classes.clear();
-		
+		// Reload config
 		reloadConfig();
-		
-		loadClasses();
-		loadConfigs();
-		loadArenas();
-		
+
+		// Reload configs
+		for (ArenaConfig conf : configs)
+		{
+			conf.reload();
+		}
+
+		// Reload ArenaZones
+		for (ArenaZone az : loadedArenas)
+		{
+			az.reload();
+		}
+
+		// Reload active arenas
 		for (Arena a : getActiveArenas())
 		{
-			a.reloadConfig();
+			a.reload();
+		}
+
+		// Reload classes
+		for (ArenaClass ac : classes)
+		{
+			ac.reload();
 		}
 	}
 

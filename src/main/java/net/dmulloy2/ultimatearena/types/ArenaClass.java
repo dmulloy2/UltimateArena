@@ -27,7 +27,7 @@ import org.bukkit.potion.PotionEffectType;
  */
 
 @Getter
-public class ArenaClass
+public class ArenaClass implements Reloadable
 {
 	private String name;
 	private String permissionNode;
@@ -321,5 +321,27 @@ public class ArenaClass
 		}
 
 		return null;
+	}
+
+	@Override
+	public void reload()
+	{
+		// Boolean defaults
+		this.hasPotionEffects = false;
+		this.usesEssentials = false;
+		this.usesHelmet = true;
+
+		// Clear lists and maps
+		this.essentialsKit.clear();
+		this.potionEffects.clear();
+		this.weapons.clear();
+		this.armor.clear();
+
+		// Empty strings
+		this.permissionNode = "";
+		this.essKitName = "";
+
+		// Load the class again
+		load();
 	}
 }

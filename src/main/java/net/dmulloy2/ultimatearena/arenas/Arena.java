@@ -22,6 +22,7 @@ import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
+import net.dmulloy2.ultimatearena.types.Reloadable;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
@@ -43,7 +44,7 @@ import com.earth2me.essentials.User;
 
 @Getter
 @Setter
-public abstract class Arena
+public abstract class Arena implements Reloadable
 {
 	public static enum Mode
 	{
@@ -120,15 +121,16 @@ public abstract class Arena
 
 		this.gameMode = Mode.LOBBY;
 
-		reloadConfig();
+		this.reload();
 		
 		plugin.getSpectatingHandler().registerArena(this);
 	}
-	
+
 	/**
-	 * Loads / reloads the config
+	 * Reloads the Arena's configuration
 	 */
-	public final void reloadConfig()
+	@Override
+	public void reload()
 	{
 		this.maxGameTime = az.getGameTime();
 		this.gameTimer = az.getGameTime();
