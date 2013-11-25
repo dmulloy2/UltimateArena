@@ -305,22 +305,25 @@ public class EntityListener implements Listener
 
 						// Handle killer
 						ArenaPlayer kp = plugin.getArenaPlayer(killer);
-						kp.setKills(kp.getKills() + 1);
-						kp.setKillStreak(kp.getKillStreak() + 1);
-						kp.getArena().handleKillStreak(kp);
-						kp.addXP(100);
-
-						List<String> killerlines = new ArrayList<String>();
-						killerlines.add(FormatUtil.format("&3----------------------------"));
-						killerlines.add(FormatUtil.format("&3Kills: &e{0}", kp.getKills()));
-						killerlines.add(FormatUtil.format("&3Deaths: &e{0}", kp.getDeaths()));
-						killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillStreak()));
-						killerlines.add(FormatUtil.format("&3GameXP: &e{0}", kp.getGameXP()));
-						killerlines.add(FormatUtil.format("&3----------------------------"));
-
-						for (String killerline : killerlines)
+						if (kp != null)
 						{
-							killer.sendMessage(killerline);
+							kp.setKills(kp.getKills() + 1);
+							kp.setKillStreak(kp.getKillStreak() + 1);
+							kp.getArena().handleKillStreak(kp);
+							kp.addXP(100);
+	
+							List<String> killerlines = new ArrayList<String>();
+							killerlines.add(FormatUtil.format("&3----------------------------"));
+							killerlines.add(FormatUtil.format("&3Kills: &e{0}", kp.getKills()));
+							killerlines.add(FormatUtil.format("&3Deaths: &e{0}", kp.getDeaths()));
+							killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillStreak()));
+							killerlines.add(FormatUtil.format("&3GameXP: &e{0}", kp.getGameXP()));
+							killerlines.add(FormatUtil.format("&3----------------------------"));
+	
+							for (String killerline : killerlines)
+							{
+								killer.sendMessage(killerline);
+							}
 						}
 					}
 				}
