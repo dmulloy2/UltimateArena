@@ -73,10 +73,10 @@ public class INFECTArena extends PVPArena
 
 			spawn(pl, true);
 			
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2400, 10));
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2400, 3));
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2400, 1));
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2400, 2));
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 3));
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));
+			pl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
 
 			ap.clearInventory();
 			ap.decideHat();

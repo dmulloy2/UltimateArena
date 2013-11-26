@@ -16,8 +16,8 @@
 	  <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
     </repository>
     <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public</url>
+      <id>md_5-releases</id>
+      <url>http://repo.md-5.net/content/repositories/snapshots/</url>
     </repository>
     <repository>
       <id>drtshock-repo</id>
@@ -89,8 +89,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
       <version>1.6.4-R2.1-SNAPSHOT</version>
     </dependency>
     <dependency>

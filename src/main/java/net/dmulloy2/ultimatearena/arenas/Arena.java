@@ -816,13 +816,6 @@ public abstract class Arena implements Reloadable
 		if (stopped)
 			return;
 
-//      Moved to the constructor
-//		Load config if not already loaded
-//		if (! configLoaded)
-//		{
-//			reloadConfig();
-//		}
-
 		if (! pauseStartTimer)
 		{
 			startTimer--;

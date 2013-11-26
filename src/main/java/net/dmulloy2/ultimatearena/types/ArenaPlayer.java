@@ -8,6 +8,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -399,6 +400,19 @@ public class ArenaPlayer
 			default:
 				arena.endPlayer(this, false);
 				break;
+		}
+	}
+
+	public void respawn()
+	{
+		try
+		{
+			player.spigot().respawn();
+		}
+		catch (Throwable e)
+		{
+			// They probably don't have spigot
+			plugin.debug(Util.getUsefulStack(e, "respawning player " + name));
 		}
 	}
 }

@@ -260,6 +260,7 @@ public class EntityListener implements Listener
 					return;
 
 				dp.onDeath();
+				dp.respawn(); // Attempt to force respawn them
 
 				Arena ar = plugin.getArena(pdied);
 

@@ -115,7 +115,7 @@ public class SpectatingHandler implements Listener
 	{
 		spectator.endPlayer();
 
-		spectating.values().remove(spectator);
+		spectating.get(spectator.getArena()).remove(spectator);
 
 		closeInventory(spectator.getPlayer());
 	}
@@ -324,7 +324,7 @@ public class SpectatingHandler implements Listener
 			Player player = event.getPlayer();
 			if (isSpectating(player))
 			{
-				if (! plugin.isInArena(event.getFrom()))
+				if (! plugin.isInArena(event.getTo()))
 				{
 					event.setCancelled(true);
 				}
