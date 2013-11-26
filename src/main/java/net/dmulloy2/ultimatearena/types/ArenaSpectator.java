@@ -38,6 +38,8 @@ public class ArenaSpectator
 	private ItemStack[] inventoryContents;
 	private ItemStack[] armorContents;
 
+	private boolean active;
+
 	/**
 	 * Creates a new ArenaSpectator instance
 	 * 
@@ -88,6 +90,8 @@ public class ArenaSpectator
 		}
 
 		clearPotionEffects();
+
+		this.active = true;
 	}
 
 	public void endPlayer()
@@ -117,6 +121,8 @@ public class ArenaSpectator
 		}
 
 		arena.teleport(player, spawnBack);
+
+		this.active = false;
 	}
 
 	/**

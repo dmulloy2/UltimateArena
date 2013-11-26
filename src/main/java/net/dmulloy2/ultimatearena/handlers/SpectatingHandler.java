@@ -122,7 +122,13 @@ public class SpectatingHandler implements Listener
 
 	public boolean isSpectating(Player player)
 	{
-		return getSpectator(player) != null;
+		ArenaSpectator spectator = getSpectator(player);
+		if (spectator != null)
+		{
+			return spectator.isActive();
+		}
+
+		return false;
 	}
 
 	public ArenaSpectator getSpectator(Player player)
