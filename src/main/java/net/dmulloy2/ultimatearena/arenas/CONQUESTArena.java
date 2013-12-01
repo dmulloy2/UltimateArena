@@ -226,6 +226,8 @@ public class CONQUESTArena extends Arena
 		{
 			if (! simpleTeamCheck())
 			{
+				setWinningTeam(-1);
+
 				stop();
 
 				rewardTeam(-1);
