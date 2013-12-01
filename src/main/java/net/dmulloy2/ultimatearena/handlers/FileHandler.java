@@ -440,7 +440,7 @@ public class FileHandler
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
-				az.setSpecialType(MaterialUtil.getMaterial(fc.getInt("specialType")));
+				az.setSpecialType(MaterialUtil.getMaterial(fc.getString("specialType")));
 
 				for (int i = 0; i < 4; i++)
 				{
