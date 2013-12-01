@@ -14,7 +14,7 @@ public class MaterialUtil
 	 * Returns the {@link org.bukkit.Material} from a given string
 	 * 
 	 * @param string
-	 *            - String to get the Material from
+	 *        - String to get the Material from
 	 * @return The {@link org.bukkit.Material} from a given string
 	 */
 	public static org.bukkit.Material getMaterial(String string)
@@ -33,7 +33,7 @@ public class MaterialUtil
 	 * Returns the {@link org.bukkit.Material} from a given integer
 	 * 
 	 * @param id
-	 *            - Integer to get the Material from
+	 *        - Integer to get the Material from
 	 * @return The {@link org.bukkit.Material} from a given integer
 	 */
 	public static org.bukkit.Material getMaterial(int id)
@@ -41,7 +41,7 @@ public class MaterialUtil
 		Material mat = Material.getMaterial(id);
 		if (mat != null)
 		{
-			return mat.getMaterial();
+			return mat.getBukkitMaterial();
 		}
 
 		return null;
@@ -50,20 +50,26 @@ public class MaterialUtil
 	/**
 	 * Gets the type id for a Bukkit Material
 	 * 
-	 * @param mat 
-	 *            - Bukkit material
+	 * @param mat
+	 *        - Bukkit material
 	 * @return Item ID (if applicable)
 	 */
-	public static int getItemId(org.bukkit.Material mat)
+	public static int getItemId(org.bukkit.Material bukkitMaterial)
 	{
-		return Material.getTypeId(mat);
+		Material mat = Material.getByBukkitMaterial(bukkitMaterial);
+		if (mat != null)
+		{
+			return mat.getId();
+		}
+
+		return 1; // Stone
 	}
 
 	/**
 	 * Gets the friendly name of a material
 	 * 
-	 * @param s 
-	 *            - Material name
+	 * @param s
+	 *        - Material name
 	 * @return Friendly name
 	 */
 	public static String getMaterialName(String s)
@@ -80,8 +86,8 @@ public class MaterialUtil
 	/**
 	 * Gets the friendly name of a material
 	 * 
-	 * @param id 
-	 *            - Item ID
+	 * @param id
+	 *        - Item ID
 	 * @return Friendly name
 	 */
 	public static String getMaterialName(int id)
