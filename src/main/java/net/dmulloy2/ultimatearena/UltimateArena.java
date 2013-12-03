@@ -1,6 +1,6 @@
 /**
  * UltimateArena - a bukkit plugin 
- * Copyright (C) 2013 dmulloy2
+ * Copyright (C) 2013 MineSworn and Affiliates
  * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
