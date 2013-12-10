@@ -80,6 +80,7 @@ import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
+import net.dmulloy2.ultimatearena.listeners.ServerListener;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
@@ -93,6 +94,7 @@ import net.dmulloy2.ultimatearena.types.Reloadable;
 import net.dmulloy2.ultimatearena.types.SimpleVector;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.TimeUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
@@ -150,6 +152,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private List<Arena> activeArenas = new ArrayList<Arena>();
 	
 	private @Getter boolean stopping;
+	private @Getter boolean delayedStartup;
 
 	// Global prefix
 	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
@@ -160,11 +163,11 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		long start = System.currentTimeMillis();
 
 		// Register Handlers
+		logHandler = new LogHandler(this);
 		permissionHandler = new PermissionHandler(this);
 		spectatingHandler = new SpectatingHandler(this);
 		commandHandler = new CommandHandler(this);
 		fileHandler = new FileHandler(this);
-		logHandler = new LogHandler(this);
 
 		// Dependencies
 		if (! checkDependencies())
@@ -217,15 +220,24 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		ConfigurationSerialization.registerClass(SimpleVector.class);
 		ConfigurationSerialization.registerClass(ArenaSign.class);
 
-		// Load Files
-		loadFiles();
+		// Determines whether or not we need to delay loading to account for Multiverse
+		// If the plugin is found, but not enabled, we will delay the startup so worlds wont be null
+		// If the plugin is found and enabled, we will enable as normal
+		if (pm.getPlugin("Multiverse-Core") != null && ! pm.isPluginEnabled("Multiverse-Core"))
+		{
+			outConsole("Delaying the loading of Arenas until after Multiverse loads!");
+			pm.registerEvents(new ServerListener(this), this);
+			delayedStartup = true;
+		}
 
-		// Arena Updater
-		new ArenaUpdateTask().runTaskTimer(this, 2L, 20L);
+		// If we aren't delaying the startup, load files as normal
+		if (! delayedStartup)
+			loadFiles();
 
-		long finish = System.currentTimeMillis();
+		// Arena Updater, runs every second
+		new ArenaUpdateTask().runTaskTimer(this, 2L, TimeUtil.toTicks(1));
 
-		outConsole("{0} has been enabled ({1}ms)", getDescription().getFullName(), finish - start);
+		outConsole("{0} has been enabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	@Override
@@ -254,9 +266,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		// Clear Memory
 		clearMemory();
 
-		long finish = System.currentTimeMillis();
-
-		outConsole("{0} has been disabled ({1}ms)", getDescription().getFullName(), finish - start);
+		outConsole("{0} has been disabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	// Console logging
