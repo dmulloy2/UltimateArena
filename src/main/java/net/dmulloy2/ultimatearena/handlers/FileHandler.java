@@ -44,6 +44,12 @@ public class FileHandler
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
 			fc.set("type", az.getType().getName());
+
+			if (az.getWorld() == null)
+			{
+				az.setWorld(az.getLobby1().getWorld());
+			}
+
 			fc.set("world", az.getWorld().getName());
 
 			Location lobby1 = az.getLobby1();
