@@ -104,7 +104,7 @@ public class ArenaZone implements Reloadable
 			loadConfiguration();
 
 			// Default class
-			if (defaultClass == null)
+			if (defaultClass == null || defaultClass.isEmpty())
 			{
 				if (! plugin.getClasses().isEmpty())
 				{

@@ -28,7 +28,8 @@ public class FileHandler
 	/**
 	 * Saves an ArenaZone
 	 * 
-	 * @param az - {@link ArenaZone} to save
+	 * @param az
+	 *        - {@link ArenaZone} to save
 	 */
 	// TODO: Serialize ArenaZones
 	public void save(ArenaZone az)
@@ -68,8 +69,8 @@ public class FileHandler
 			fc.set("arena2.x", arena2.getBlockX());
 			fc.set("arena2.z", arena2.getBlockZ());
 
-			String arenaType = az.getType().getName().toLowerCase();
-			if (arenaType.equals("pvp"))
+			String arenaType = az.getType().getName();
+			if (arenaType.equalsIgnoreCase("pvp"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -91,7 +92,7 @@ public class FileHandler
 				fc.set("team2.y", team2.getBlockY());
 				fc.set("team2.z", team2.getBlockZ());
 			}
-			if (arenaType.equals("mob"))
+			else if (arenaType.equalsIgnoreCase("mob"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -114,7 +115,7 @@ public class FileHandler
 					fc.set(path + "z", loc.getBlockZ());
 				}
 			}
-			if (arenaType.equals("cq"))
+			else if (arenaType.equalsIgnoreCase("cq"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -147,7 +148,7 @@ public class FileHandler
 					fc.set(path + "z", loc.getBlockZ());
 				}
 			}
-			if (arenaType.equals("koth"))
+			else if (arenaType.equalsIgnoreCase("koth"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -169,7 +170,7 @@ public class FileHandler
 				fc.set("flag.y", az.getFlags().get(0).getBlockY());
 				fc.set("flag.z", az.getFlags().get(0).getBlockZ());
 			}
-			if (arenaType.equals("ffa") || arenaType.equals("hunger"))
+			else if (arenaType.equalsIgnoreCase("ffa") || arenaType.equals("hunger"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -188,7 +189,7 @@ public class FileHandler
 				}
 
 			}
-			if (arenaType.equals("spleef"))
+			else if (arenaType.equalsIgnoreCase("spleef"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -207,7 +208,7 @@ public class FileHandler
 					fc.set(path + "z", loc.getBlockZ());
 				}
 			}
-			if (arenaType.equals("bomb"))
+			else if (arenaType.equalsIgnoreCase("bomb"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -237,7 +238,7 @@ public class FileHandler
 				fc.set("flag1.y", az.getFlags().get(1).getBlockY());
 				fc.set("flag1.z", az.getFlags().get(1).getBlockZ());
 			}
-			if (arenaType.equals("ctf"))
+			else if (arenaType.equalsIgnoreCase("ctf"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -267,7 +268,7 @@ public class FileHandler
 				fc.set("flag1.y", az.getFlags().get(1).getBlockY());
 				fc.set("flag1.z", az.getFlags().get(1).getBlockZ());
 			}
-			if (arenaType.equals("infect"))
+			else if (arenaType.equalsIgnoreCase("infect"))
 			{
 				Location lobbyRed = az.getLobbyREDspawn();
 				fc.set("lobbyRed.x", lobbyRed.getBlockX());
@@ -307,7 +308,8 @@ public class FileHandler
 	/**
 	 * Loads an ArenaZone
 	 * 
-	 * @param az - {@link ArenaZone} to load
+	 * @param az
+	 *        - {@link ArenaZone} to load
 	 */
 	public void load(ArenaZone az)
 	{
@@ -317,19 +319,13 @@ public class FileHandler
 		{
 			File folder = new File(plugin.getDataFolder(), "arenas");
 			File file = new File(folder, az.getArenaName() + ".dat");
-	
+
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-	
+
 			String arenaType = fc.getString("type");
-			if (! FieldType.contains(arenaType))
-			{
-				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: {1} is not a valid FieldType!", az.getArenaName(), arenaType);
-				az.setLoaded(false);
-				return;
-			}
-	
 			az.setType(FieldType.getByName(arenaType));
-	
+
+			// FIXME: Possible issue: Multiverse loading after this plugin, causing the worlds to be null
 			World world = plugin.getServer().getWorld(fc.getString("world"));
 			if (world == null)
 			{
@@ -337,34 +333,16 @@ public class FileHandler
 				az.setLoaded(false);
 				return;
 			}
-	
-			az.setWorld(world);
-	
-			Location lobby1 = new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z"));
-			Location lobby2 = new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z"));
-			if (lobby1 == null || lobby2 == null)
-			{
-				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Lobby locations cannot be null!", az.getArenaName());
-				az.setLoaded(false);
-				return;
-			}
-	
-			az.setLobby1(lobby1);
-			az.setLobby2(lobby2);
-	
-			Location arena1 = new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z"));
-			Location arena2 = new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z"));
-			if (arena1 == null || arena2 == null)
-			{
-				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: Arena locations cannot be null!", az.getArenaName());
-				az.setLoaded(false);
-				return;
-			}
-	
-			az.setArena1(arena1);
-			az.setArena2(arena2);
 
-			if (arenaType.equals("pvp"))
+			az.setWorld(world);
+
+			az.setLobby1(new Location(world, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z")));
+			az.setLobby2(new Location(world, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z")));
+
+			az.setArena1(new Location(world, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z")));
+			az.setArena2(new Location(world, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z")));
+
+			if (arenaType.equalsIgnoreCase("pvp"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -374,7 +352,7 @@ public class FileHandler
 
 				az.setTeam2spawn(new Location(world, fc.getInt("team2.x"), fc.getInt("team2.y"), fc.getInt("team2.z")));
 			}
-			if (arenaType.equals("mob"))
+			else if (arenaType.equalsIgnoreCase("mob"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -390,7 +368,7 @@ public class FileHandler
 					az.getSpawns().add(loc);
 				}
 			}
-			if (arenaType.equals("cq"))
+			else if (arenaType.equalsIgnoreCase("cq"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -410,7 +388,7 @@ public class FileHandler
 					az.getFlags().add(loc);
 				}
 			}
-			if (arenaType.equals("koth"))
+			else if (arenaType.equalsIgnoreCase("koth"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -427,7 +405,7 @@ public class FileHandler
 				Location loc = new Location(world, fc.getInt("flag.x"), fc.getInt("flag.y"), fc.getInt("flag.z"));
 				az.getFlags().add(loc);
 			}
-			if (arenaType.equals("ffa") || arenaType.equals("hunger"))
+			else if (arenaType.equalsIgnoreCase("ffa") || arenaType.equalsIgnoreCase("hunger"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -440,9 +418,8 @@ public class FileHandler
 
 					az.getSpawns().add(loc);
 				}
-
 			}
-			if (arenaType.equals("spleef"))
+			else if (arenaType.equalsIgnoreCase("spleef"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -457,7 +434,7 @@ public class FileHandler
 					az.getFlags().add(loc);
 				}
 			}
-			if (arenaType.equals("bomb"))
+			else if (arenaType.equalsIgnoreCase("bomb"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -470,7 +447,7 @@ public class FileHandler
 				az.getFlags().add(new Location(world, fc.getInt("flag0.x"), fc.getInt("flag0.y"), fc.getInt("flag0.z")));
 				az.getFlags().add(new Location(world, fc.getInt("flag1.x"), fc.getInt("flag1.y"), fc.getInt("flag1.z")));
 			}
-			if (arenaType.equals("ctf"))
+			else if (arenaType.equalsIgnoreCase("ctf"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
@@ -483,7 +460,7 @@ public class FileHandler
 				az.getFlags().add(new Location(world, fc.getInt("flag0.x"), fc.getInt("flag0.y"), fc.getInt("flag0.z")));
 				az.getFlags().add(new Location(world, fc.getInt("flag1.x"), fc.getInt("flag1.y"), fc.getInt("flag1.z")));
 			}
-			if (arenaType.equals("infect"))
+			else if (arenaType.equalsIgnoreCase("infect"))
 			{
 				az.setLobbyREDspawn(new Location(world, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
