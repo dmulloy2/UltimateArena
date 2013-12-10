@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.Vector;
@@ -59,6 +60,11 @@ public class SimpleVector implements ConfigurationSerializable
 	public Vector toVector()
 	{
 		return new Vector(x, y, z);
+	}
+
+	public Location toLocation(World w)
+	{
+		return toVector().toLocation(w);
 	}
 
 	@Override

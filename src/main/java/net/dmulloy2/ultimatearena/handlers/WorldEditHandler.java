@@ -23,7 +23,7 @@ public class WorldEditHandler
 
 	public boolean useWorldEdit()
 	{
-		return plugin.getWorldEdit() != null;
+		return plugin.getWorldEdit() != null && plugin.getConfig().getBoolean("useWorldEdit", true);
 	}
 
 	public boolean hasSelection(Player player)

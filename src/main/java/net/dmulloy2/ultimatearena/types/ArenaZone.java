@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,15 +43,16 @@ public class ArenaZone implements Reloadable
 
 	private Material specialType;
 
-	private boolean loaded;
 	private boolean disabled;
+	private transient boolean loaded;
 
-	private String step;
-	private String player;
-	private String defaultClass;
+	private String worldName;
 	private String arenaName = "";
+	private String defaultClass;
+
 	private FieldType type;
 
+	// TODO: Use SimpleVector
 	private Location lobby1;
 	private Location lobby2;
 	private Location arena1;
@@ -62,131 +62,104 @@ public class ArenaZone implements Reloadable
 	private Location lobbyREDspawn;
 	private Location lobbyBLUspawn;
 
-	private File file;
+	private transient File file;
 
-	private Field lobby;
-	private Field arena;
+	private transient Field lobby;
+	private transient Field arena;
 
 	private List<String> voted = new ArrayList<String>();
+	// TODO: Use SimpleVector
 	private List<Location> spawns = new ArrayList<Location>();
 	private List<Location> flags = new ArrayList<Location>();
 
-	private World world;
+	private transient World world;
 
-	private final UltimateArena plugin;
+	private transient final UltimateArena plugin;
 
-	/**
-	 * Represents an ArenaZone to be loaded from configuration
-	 * 
-	 * @param plugin
-	 *            - {@link UltimateArena} plugin instance
-	 * @return new {@link ArenaZone}
-	 */
+	public ArenaZone(UltimateArena plugin)
+	{
+		this.plugin = plugin;
+	}
+
 	public ArenaZone(UltimateArena plugin, File file)
 	{
 		this.plugin = plugin;
 		this.file = file;
-		this.arenaName = getName(file);
-
-		initialize();
+		this.arenaName = Util.trimFileExtension(file, ".dat");
+		this.initialize();
 	}
 
-	/**
-	 * Represents an ArenaZone to be created from an {@link ArenaCreator}
-	 * 
-	 * @param ac
-	 *            - {@link ArenaCreator} to create arena from
-	 * @return new {@link ArenaZone}
-	 */
-	public ArenaZone(UltimateArena plugin, ArenaCreator ac)
+	public final boolean initialize()
 	{
-		this.plugin = plugin;
-		this.arenaName = ac.arenaName;
-		this.type = ac.arenaType;
-		this.lobbyBLUspawn = ac.lobbyBLUspawn;
-		this.lobbyREDspawn = ac.lobbyREDspawn;
-		this.team1spawn = ac.team1spawn;
-		this.team2spawn = ac.team2spawn;
-		this.lobby1 = ac.lobby1;
-		this.lobby2 = ac.lobby2;
-		this.arena1 = ac.arena1;
-		this.arena2 = ac.arena2;
-		this.spawns = ac.spawns;
-		this.flags = ac.flags;
-		this.maxPlayers = 24;
-		this.specialType = ac.specialType;
-		this.defaultClass = plugin.getClasses().get(0).getName();
-		this.world = lobby1.getWorld();
+		// Fields
+		this.arena = new Field();
+		this.lobby = new Field();
 
-		save();
-
-		initialize();
+		// Load the arena
+		load();
 
 		if (loaded)
 		{
-			plugin.outConsole("Creation of Arena {0} successful!", arenaName);
-		}
-		else
-		{
-			plugin.outConsole(Level.WARNING, "Creation of Arena {0} has failed!", arenaName);
-		}
-	}
+			// Load configuration settings
+			loadConfiguration();
 
-	public void initialize()
-	{
-		this.lobby = new Field();
-		this.arena = new Field();
+			// Default class
+			if (defaultClass == null)
+			{
+				if (! plugin.getClasses().isEmpty())
+				{
+					ArenaClass ac = plugin.getClasses().get(0);
+					if (ac != null)
+					{
+						this.defaultClass = ac.getName();
+					}
+				}
+			}
 
-		ArenaClass ac = plugin.getClasses().get(0);
-		if (ac != null)
-			this.defaultClass = ac.getName();
-
-		if (file == null)
-			this.file = new File(new File(plugin.getDataFolder(), "arenas"), arenaName + ".dat");
-
-		load();
-
-		if (isLoaded())
-		{
+			// Set lobby parameters
 			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
 			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
 
+			// Add to the loaded arenas list
 			plugin.getLoadedArenas().add(this);
 		}
-		else
-		{
-			plugin.outConsole(Level.WARNING, "Arena {0} has failed to load!", arenaName);
-		}
+
+		return loaded;
 	}
 
-	public boolean checkLocation(Location loc)
+	public final void save()
 	{
-		return lobby.isInside(loc) || arena.isInside(loc);
-	}
+		// Make sure we have a valid file
+		checkFile();
 
-	public void save()
-	{
+		// Actually save
 		plugin.getFileHandler().save(this);
 	}
 
-	public void load()
+	public final void load()
 	{
+		// Make sure we have a valid file
+		checkFile();
+
+		// Load the core settings
 		plugin.getFileHandler().load(this);
-
-		loadConfiguration();
 	}
 
-	public boolean canLike(Player player)
+	private final void checkFile()
 	{
-		return ! voted.contains(player.getName());
+		if (file == null)
+		{
+			File folder = new File(plugin.getDataFolder(), "arenas");
+			if (! folder.exists())
+			{
+				folder.mkdirs();
+			}
+
+			file = new File(folder, arenaName + ".dat");
+		}
 	}
 
-	public String getName(File file)
-	{
-		return file.getName().replaceAll(".dat", "");
-	}
-
-	public List<String> getStats()
+	public final List<String> getStats()
 	{
 		List<String> lines = new ArrayList<String>();
 
@@ -221,17 +194,30 @@ public class ArenaZone implements Reloadable
 		return lines;
 	}
 
+	public final boolean checkLocation(Location loc)
+	{
+		return lobby.isInside(loc) || arena.isInside(loc);
+	}
+
+	public final boolean canLike(Player player)
+	{
+		return ! voted.contains(player.getName());
+	}
+
 	// ---- Configuration ---- //
+
+	// Serializable variables
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
 	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp;
 
 	private List<String> blacklistedClasses, whitelistedClasses;
 
-	private List<ItemStack> rewards;
+	// These have to be manually loaded, since they are not serializable
+	private transient List<ItemStack> rewards;
+	private transient HashMap<Integer, List<KillStreak>> killStreaks;
 
-	private HashMap<Integer, List<KillStreak>> killStreaks;
-
+	// TODO: Rewrite this to account for missing variables when we switch to ConfigurationSerialization
 	public void loadConfiguration()
 	{
 		try
@@ -406,6 +392,71 @@ public class ArenaZone implements Reloadable
 			}
 		}
 	}
+
+//  TODO: Use this when we convert to ConfigurationSerialization
+//	@Override
+//	@SuppressWarnings("rawtypes")
+//	public Map<String, Object> serialize()
+//	{
+//		Map<String, Object> data = new HashMap<String, Object>();
+//
+//		for (Field field : getClass().getDeclaredFields())
+//		{
+//			if (Modifier.isTransient(field.getModifiers()))
+//				continue;
+//
+//			try
+//			{
+//				boolean accessible = field.isAccessible();
+//
+//				field.setAccessible(true);
+//
+//				if (field.getType().equals(Integer.TYPE))
+//				{
+//					if (field.getInt(this) != 0)
+//						data.put(field.getName(), field.getInt(this));
+//				}
+//				else if (field.getType().equals(Long.TYPE))
+//				{
+//					if (field.getLong(this) != 0)
+//						data.put(field.getName(), field.getLong(this));
+//				}
+//				else if (field.getType().equals(Boolean.TYPE))
+//				{
+//					if (field.getBoolean(this))
+//						data.put(field.getName(), field.getBoolean(this));
+//				}
+//				else if (field.getType().isAssignableFrom(Collection.class))
+//				{
+//					if (! ((Collection) field.get(this)).isEmpty())
+//						data.put(field.getName(), field.get(this));
+//				}
+//				else if (field.getType().isAssignableFrom(String.class))
+//				{
+//					if (((String) field.get(this)) != null)
+//						data.put(field.getName(), field.get(this));
+//				}
+//				else if (field.getType().isAssignableFrom(Map.class))
+//				{
+//					if (! ((Map) field.get(this)).isEmpty())
+//						data.put(field.getName(), field.get(this));
+//				}
+//				else
+//				{
+//					if (field.get(this) != null)
+//						data.put(field.getName(), field.get(this));
+//				}
+//
+//				field.setAccessible(accessible);
+//
+//			}
+//			catch (Exception e)
+//			{
+//			}
+//		}
+//
+//		return data;
+//	}
 
 	@Override
 	public void reload()

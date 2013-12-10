@@ -30,12 +30,12 @@ public class FileHandler
 	 * 
 	 * @param az - {@link ArenaZone} to save
 	 */
+	// TODO: Serialize ArenaZones
 	public void save(ArenaZone az)
 	{
 		try
 		{
-			File folder = new File(plugin.getDataFolder(), "arenas");
-			File file = new File(folder, az.getArenaName() + ".dat");
+			File file = az.getFile();
 			if (file.exists())
 				file.delete();
 

@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -288,5 +289,11 @@ public class Util
 		{
 			player.playEffect(loc, effect, data);
 		}
+	}
+
+	public static String trimFileExtension(final File file, final String extension)
+	{
+		int index = file.getName().lastIndexOf(extension);
+		return index > 0 ? file.getName().substring(0, index) : file.getName();
 	}
 }

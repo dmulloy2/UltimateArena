@@ -18,8 +18,8 @@
 package net.dmulloy2.ultimatearena;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,13 +53,23 @@ import net.dmulloy2.ultimatearena.commands.CmdLike;
 import net.dmulloy2.ultimatearena.commands.CmdList;
 import net.dmulloy2.ultimatearena.commands.CmdPause;
 import net.dmulloy2.ultimatearena.commands.CmdReload;
-import net.dmulloy2.ultimatearena.commands.CmdSetDone;
 import net.dmulloy2.ultimatearena.commands.CmdSetPoint;
 import net.dmulloy2.ultimatearena.commands.CmdSpectate;
 import net.dmulloy2.ultimatearena.commands.CmdStart;
 import net.dmulloy2.ultimatearena.commands.CmdStats;
 import net.dmulloy2.ultimatearena.commands.CmdStop;
 import net.dmulloy2.ultimatearena.commands.CmdVersion;
+import net.dmulloy2.ultimatearena.creation.ArenaCreator;
+import net.dmulloy2.ultimatearena.creation.BombCreator;
+import net.dmulloy2.ultimatearena.creation.CTFCreator;
+import net.dmulloy2.ultimatearena.creation.ConquestCreator;
+import net.dmulloy2.ultimatearena.creation.FFACreator;
+import net.dmulloy2.ultimatearena.creation.HungerCreator;
+import net.dmulloy2.ultimatearena.creation.InfectCreator;
+import net.dmulloy2.ultimatearena.creation.KOTHCreator;
+import net.dmulloy2.ultimatearena.creation.MobCreator;
+import net.dmulloy2.ultimatearena.creation.PvPCreator;
+import net.dmulloy2.ultimatearena.creation.SpleefCreator;
 import net.dmulloy2.ultimatearena.handlers.CommandHandler;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.LogHandler;
@@ -73,7 +83,6 @@ import net.dmulloy2.ultimatearena.listeners.PlayerListener;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
-import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -149,7 +158,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
-		
+
 		// Register Handlers
 		permissionHandler = new PermissionHandler(this);
 		spectatingHandler = new SpectatingHandler(this);
@@ -160,14 +169,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		// Dependencies
 		if (! checkDependencies())
 			return;
-		
+
 		// Integration
 		setupVaultIntegration();
 		setupWorldEditIntegration();
 		setupEssentialsIntegration();
-		
+
 		worldEditHandler = new WorldEditHandler(this);
-		
+
 		// IO Stuff
 		checkDirectories();
 		saveDefaultConfig();
@@ -191,7 +200,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		commandHandler.registerCommand(new CmdList(this));
 		commandHandler.registerCommand(new CmdPause(this));
 		commandHandler.registerCommand(new CmdReload(this));
-		commandHandler.registerCommand(new CmdSetDone(this));
 		commandHandler.registerCommand(new CmdSetPoint(this));
 		commandHandler.registerCommand(new CmdSpectate(this));
 		commandHandler.registerCommand(new CmdStart(this));
@@ -204,7 +212,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		pm.registerEvents(new EntityListener(this), this);
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
-		
+
 		// Register serializables
 		ConfigurationSerialization.registerClass(SimpleVector.class);
 		ConfigurationSerialization.registerClass(ArenaSign.class);
@@ -228,7 +236,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		// Unregister
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
-		
+
 		stopping = true;
 
 		// Stop all arenas
@@ -274,8 +282,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		debug("Broadcasted message: {0}", broadcast);
 	}
-	
-	/** 
+
+	/**
 	 * Loads all files.
 	 */
 	public void loadFiles()
@@ -327,18 +335,19 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 * 
 	 * @return Whether or not the Bukkit version is up-to-date
 	 */
+	// TODO: This isn't really needed anymore... remove?
 	private boolean checkDependencies()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		
-		try 
+
+		try
 		{
 			Class.forName("org.bukkit.entity.Horse");
 		}
 		catch (ClassNotFoundException e)
 		{
 			outConsole(Level.WARNING, "UltimateArena has detected that you are using an outdated {0} build!", getServer().getName());
-			outConsole(Level.WARNING, "Using older builds has been known to cause game-ending errors!");
+			outConsole(Level.WARNING, "Builds below 1.6 have been known to cause game ending errors!");
 			outConsole(Level.WARNING, "Consider updating to the latest build!");
 
 			pm.disablePlugin(this);
@@ -347,21 +356,21 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		return true;
 	}
-	
+
 	/**
 	 * Sets up integration with WorldEdit
 	 */
 	private void setupWorldEditIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		
+
 		if (pm.isPluginEnabled("WorldEdit"))
 		{
 			Plugin plugin = pm.getPlugin("WorldEdit");
 			if (plugin instanceof WorldEditPlugin)
 			{
 				worldEdit = (WorldEditPlugin) plugin;
-				
+
 				outConsole("Integration with WorldEdit successful!");
 				return;
 			}
@@ -369,14 +378,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			outConsole(Level.WARNING, "Could not hook into WorldEdit!");
 		}
 	}
-	
+
 	/**
 	 * Sets up integration with Essentials
 	 */
 	private void setupEssentialsIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
-		
+
 		if (pm.isPluginEnabled("Essentials"))
 		{
 			Plugin plugin = pm.getPlugin("Essentials");
@@ -459,12 +468,12 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		if (! file.exists())
 		{
 			generateWhitelistedCommands();
-			
+
 			debug("Generating Whitelisted Commands file!");
 		}
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		
+
 		for (String cmd : fc.getStringList("whiteListedCmds"))
 		{
 			whitelistedCommands.add(cmd);
@@ -479,9 +488,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		File file = new File(folder, str + "Config.yml");
 		if (! file.exists())
 		{
-			generateArenaConfig(str);
-
 			debug("Generating config for: {0}", str);
+			generateArenaConfig(str);
 		}
 
 		ArenaConfig a = new ArenaConfig(this, str, file);
@@ -497,7 +505,15 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private void loadClasses()
 	{
 		File folder = new File(getDataFolder(), "classes");
-		File[] children = folder.listFiles();
+		File[] children = folder.listFiles(new FileFilter()
+		{
+			@Override
+			public boolean accept(File file)
+			{
+				return file.getName().contains(".yml");
+			}
+		});
+
 		if (children.length == 0)
 		{
 			generateStockClasses();
@@ -518,7 +534,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		outConsole("Loaded {0} Arena Classes!", total);
 	}
-	
+
 	/**
 	 * Generates the WhiteListedCommands file
 	 */
@@ -526,24 +542,25 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	{
 		saveResource("whiteListedCommands.yml", false);
 	}
-	
+
 	/**
 	 * Generates an arena config for a particular field
 	 * 
-	 * @param field - Field to generate config for
+	 * @param field
+	 *        - Field to generate config for
 	 */
 	public void generateArenaConfig(String field)
 	{
 		saveResource("configs" + File.separator + field + "Config.yml", false);
 	}
-	
+
 	/**
 	 * Generates stock classes
 	 */
 	public void generateStockClasses()
 	{
 		String[] stockClasses = new String[] { "archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef" };
-		
+
 		for (String stockClass : stockClasses)
 		{
 			saveResource("classes" + File.separator + stockClass + ".yml", false);
@@ -558,9 +575,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	public ArenaConfig getConfig(String type)
 	{
-		for (int i = 0; i < configs.size(); i++)
+		for (ArenaConfig ac : Util.newList(configs))
 		{
-			ArenaConfig ac = configs.get(i);
 			if (ac.getArenaName().equalsIgnoreCase(type))
 				return ac;
 		}
@@ -570,13 +586,9 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	public void stopAll()
 	{
-		for (int i = 0; i < activeArenas.size(); i++)
+		for (Arena a : Util.newList(activeArenas))
 		{
-			Arena arena = activeArenas.get(i);
-			if (arena != null)
-			{
-				arena.stop();
-			}
+			a.stop();
 		}
 
 		activeArenas.clear();
@@ -584,9 +596,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	public ArenaClass getArenaClass(String line)
 	{
-		for (int i = 0; i < classes.size(); i++)
+		for (ArenaClass ac : Util.newList(classes))
 		{
-			ArenaClass ac = classes.get(i);
 			if (ac.getName().equalsIgnoreCase(line))
 				return ac;
 		}
@@ -601,15 +612,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		File file = new File(folder, str + ".dat");
 		if (file.exists())
 		{
-			for (int i = 0; i < activeArenas.size(); i++)
+			for (Arena a : Util.newList(activeArenas))
 			{
-				Arena a = activeArenas.get(i);
 				if (a.getName().equalsIgnoreCase(str))
 				{
 					a.stop();
 				}
 			}
-			
+
 			ArenaZone az = getArenaZone(str);
 
 			loadedArenas.remove(az);
@@ -634,9 +644,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	// Checks for whether or not something is in an arena
 	public boolean isInArena(Location loc)
 	{
-		for (int i = 0; i < loadedArenas.size(); i++)
+		for (ArenaZone az : Util.newList(loadedArenas))
 		{
-			ArenaZone az = loadedArenas.get(i);
 			if (az.checkLocation(loc))
 				return true;
 		}
@@ -662,21 +671,19 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	public Arena getArenaInside(Block block)
 	{
-		for (int i = 0; i < loadedArenas.size(); i++)
+		for (ArenaZone az : Util.newList(loadedArenas))
 		{
-			ArenaZone az = loadedArenas.get(i);
 			if (az.checkLocation(block.getLocation()))
 				return getArena(az.getArenaName());
 		}
 
 		return null;
 	}
-	
+
 	public Arena getArenaInside(Entity entity)
 	{
-		for (int i = 0; i < loadedArenas.size(); i++)
+		for (ArenaZone az : Util.newList(loadedArenas))
 		{
-			ArenaZone az = loadedArenas.get(i);
 			if (az.checkLocation(entity.getLocation()))
 				return getArena(az.getArenaName());
 		}
@@ -686,7 +693,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	public ArenaPlayer getArenaPlayer(Player player, boolean inactive)
 	{
-		for (Arena a : Collections.unmodifiableList(activeArenas))
+		for (Arena a : Util.newList(activeArenas))
 		{
 			ArenaPlayer ap = a.getArenaPlayer(player, inactive);
 			if (ap != null)
@@ -717,7 +724,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		if (! InventoryHelper.isEmpty(player.getInventory()))
 		{
-			if (!getConfig().getBoolean("saveInventories"))
+			if (! getConfig().getBoolean("saveInventories"))
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cPlease clear your inventory!"));
 				return;
@@ -739,7 +746,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				}
 
 				matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(" "), "?");
-				
+
 				if (matchString.lastIndexOf(",") >= 0)
 				{
 					matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(","), "or");
@@ -907,7 +914,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				{
 					ar = new CTFArena(az);
 				}
-				
+
 				if (ar != null)
 				{
 					activeArenas.add(ar);
@@ -1003,18 +1010,18 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		return null;
 	}
-	
-	//---- Arena Creation ----//
-	
+
+	// ---- Arena Creation ----//
+
 	/**
 	 * Attempts to create a new {@link Arena}
 	 * 
-	 * @param player 
-	 *            - {@link Player} who is creating the arena
-	 * @param name 
-	 *            - Name of the new arena
-	 * @param type 
-	 *            - Type of the new arena
+	 * @param player
+	 *        - {@link Player} who is creating the arena
+	 * @param name
+	 *        - Name of the new arena
+	 * @param type
+	 *        - Type of the new arena
 	 */
 	public void createArena(Player player, String name, String type)
 	{
@@ -1026,13 +1033,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		if (! FieldType.contains(type.toLowerCase()))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cThis is not a valid field type!"));
+			player.sendMessage(prefix + FormatUtil.format("\"{0}\" is not a valid field type!", type));
 			return;
 		}
 
-		for (int i = 0; i < loadedArenas.size(); i++)
+		FieldType fieldType = FieldType.getByName(type);
+
+		for (ArenaZone az : Util.newList(loadedArenas))
 		{
-			ArenaZone az = loadedArenas.get(i);
 			if (az.getArenaName().equalsIgnoreCase(name))
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cAn arena by this name already exists!"));
@@ -1040,26 +1048,66 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			}
 		}
 
-		outConsole("Player {0} has started the creation of {1}. Type: {2}", player.getName(), name, type);
+		ArenaCreator ac = null;
 
-		ArenaCreator ac = new ArenaCreator(this, player);
-		ac.setArena(name, type);
+		switch (fieldType)
+		{
+			case BOMB:
+				ac = new BombCreator(player, name, this);
+				break;
+			case CONQUEST:
+				ac = new ConquestCreator(player, name, this);
+				break;
+			case CTF:
+				ac = new CTFCreator(player, name, this);
+				break;
+			case FFA:
+				ac = new FFACreator(player, name, this);
+				break;
+			case HUNGER:
+				ac = new HungerCreator(player, name, this);
+				break;
+			case INFECT:
+				ac = new InfectCreator(player, name, this);
+				break;
+			case KOTH:
+				ac = new KOTHCreator(player, name, this);
+				break;
+			case MOB:
+				ac = new MobCreator(player, name, this);
+				break;
+			case PVP:
+				ac = new PvPCreator(player, name, this);
+				break;
+			case SPLEEF:
+				ac = new SpleefCreator(player, name, this);
+				break;
+		}
+
+		// It won't ever be null, but just in case...
+		if (ac == null)
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cCould not find an applicable ArenaCreator for \"{0}\"", type));
+			return;
+		}
+
+		outConsole("{0} has started the creation of Arena: {1}. Type: {2}", player.getName(), name, type);
 		makingArena.add(ac);
 	}
-	
+
 	/**
 	 * Returns a player's {@link ArenaCreator} instance
 	 * <p>
 	 * Will return <code>null</code> if the player is not creating an arena.
 	 * 
-	 * @param player 
-	 *            - {@link Player} to get {@link ArenaCreator} instance for.
+	 * @param player
+	 *        - {@link Player} to get {@link ArenaCreator} instance for.
 	 * 
 	 * @return The player's {@link ArenaCreator} instance
 	 */
 	public ArenaCreator getArenaCreator(Player player)
 	{
-		for (ArenaCreator ac : makingArena)
+		for (ArenaCreator ac : Util.newList(makingArena))
 		{
 			if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
 				return ac;
@@ -1067,77 +1115,50 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		return null;
 	}
-	
+
 	/**
 	 * Returns whether or not a {@link Player} is creating an arena.
 	 * 
-	 * @param player 
-	 *            - {@link Player} to check
+	 * @param player
+	 *        - {@link Player} to check
 	 * @return Whether or not a {@link Player} is creating an arena.
 	 */
 	public boolean isCreatingArena(Player player)
 	{
 		return getArenaCreator(player) != null;
 	}
-	
+
 	/**
 	 * Sets a point in the arena creation process
 	 * 
-	 * @param player 
-	 *            - {@link Player} setting the point
+	 * @param player
+	 *        - {@link Player} setting the point
 	 */
 	public void setPoint(Player player, String[] args)
 	{
-		if (! isCreatingArena(player))
+		if (!isCreatingArena(player))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
+			player.sendMessage(prefix + FormatUtil.format("&cYou are not creating an arena!"));
 			return;
 		}
-		
-		ArenaCreator ac = getArenaCreator(player);
-		
-		ac.setPoint(player, args);
-		
-		if (! ac.getMsg().isEmpty())
-		{
-			player.sendMessage(prefix + FormatUtil.format("&3" + ac.getMsg()));
-		}
-	}
 
-	/**
-	 * Finalizes a step in the arena creation process.
-	 * 
-	 * @param player 
-	 *            - {@link Player} who is finalizing
-	 */
-	public void setDone(Player player)
-	{
-		if (! isCreatingArena(player))
-		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are not editing a field!"));
-			return;
-		}
-		
 		ArenaCreator ac = getArenaCreator(player);
-		ac.setDone(player);
+		ac.setPoint(args);
 	}
 
 	/**
 	 * Stops the creation of an arena
 	 * 
-	 * @param player 
-	 *            - {@link Player} who is stopping
+	 * @param player
+	 *        - {@link Player} who is stopping
 	 */
 	public void stopCreatingArena(Player player)
 	{
-		for (int i = 0; i < makingArena.size(); i++)
+		ArenaCreator ac = getArenaCreator(player);
+		if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
 		{
-			ArenaCreator ac = makingArena.get(i);
-			if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
-			{
-				makingArena.remove(ac);
-				player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
-			}
+			makingArena.remove(ac);
+			player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
 		}
 	}
 
@@ -1156,7 +1177,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		classes.clear();
 		configs.clear();
 	}
-	
+
 	/**
 	 * Vault {@link Economy} integration
 	 */
@@ -1169,7 +1190,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			if (economyProvider != null)
 			{
 				economy = economyProvider.getProvider();
-				
+
 				outConsole("Enabled economy through {0}!", economy.getName());
 			}
 			else
@@ -1182,16 +1203,16 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	/**
 	 * Accepts registration from a {@link JavaPlugin}
 	 * 
-	 * @param plugin 
-	 *            - {@link JavaPlugin} to accept the registration from
+	 * @param plugin
+	 *        - {@link JavaPlugin} to accept the registration from
 	 */
 	public void acceptRegistration(JavaPlugin plugin)
 	{
 		outConsole("Accepted API registration from {0}", plugin.getName());
-		
+
 		pluginsUsingAPI.add(plugin.getName());
 	}
-	
+
 	/**
 	 * Dumps plugins currently using the UltimateArena API
 	 */
@@ -1202,25 +1223,25 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			outConsole("No plugins currently using the UltimateArena API");
 			return;
 		}
-		
+
 		StringBuilder line = new StringBuilder();
 		line.append("Plugins currently using the UltimateArena API: ");
-		
+
 		for (String name : pluginsUsingAPI)
 		{
 			line.append(name + ", ");
 		}
-		
+
 		line.replace(line.lastIndexOf(","), line.lastIndexOf(" "), "");
-		
+
 		outConsole(line.toString());
 	}
-	
+
 	/**
 	 * Returns whether or not a command is whitelisted
 	 * 
-	 * @param command 
-	 *            - Command to check
+	 * @param command
+	 *        - Command to check
 	 * @return Whether or not a command is whitelisted
 	 */
 	public final boolean isWhitelistedCommand(String command)
@@ -1233,12 +1254,12 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		return false;
 	}
-	
+
 	public final boolean isPlayerWaiting(Player player)
 	{
 		return waiting.containsKey(player);
 	}
-	
+
 	/**
 	 * Returns how many arenas have been played
 	 * <p>
@@ -1249,12 +1270,12 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	public final int getTotalArenasPlayed()
 	{
 		int ret = 0;
-		
+
 		for (ArenaZone az : loadedArenas)
 		{
 			ret += az.getTimesPlayed();
 		}
-		
+
 		return ret > 0 ? ret : 1;
 	}
 
@@ -1271,7 +1292,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	/**
 	 * Removes an active {@link Arena}
 	 * 
-	 * @param a - Arena to remove
+	 * @param a
+	 *        - Arena to remove
 	 */
 	public final void removeActiveArena(Arena a)
 	{
