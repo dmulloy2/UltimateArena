@@ -27,9 +27,25 @@ public abstract class ArenaCreator
 		this.name = name;
 		this.plugin = plugin;
 		this.stepNumber = 1;
-		this.target = new ArenaZone(plugin);
-		this.target.setType(getType());
+		this.initializeArena();
 		this.setSteps();
+	}
+
+	/**
+	 * Initializes the arena
+	 * 
+	 * @throws IllegalStateException If the arena is already initialized
+	 */
+	public final void initializeArena()
+	{
+		if (target != null)
+		{
+			throw new IllegalStateException("Arena already initialized");
+		}
+
+		target = new ArenaZone(plugin);
+		target.setType(getType());
+		target.setArenaName(name);
 	}
 
 	/**
