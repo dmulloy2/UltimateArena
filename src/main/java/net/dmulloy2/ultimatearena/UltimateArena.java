@@ -1136,7 +1136,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 */
 	public void setPoint(Player player, String[] args)
 	{
-		if (!isCreatingArena(player))
+		if (! isCreatingArena(player))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou are not creating an arena!"));
 			return;
