@@ -193,11 +193,11 @@ public class CTFCreator extends ArenaCreator
 					sendMessage("&e1&3/&e2 &3flag spawnpoints set.");
 					return;
 				}
-				else if (target.getFlags().size() == 2)
+				else
 				{
 					target.getFlags().add(player.getLocation());
 					sendMessage("&e2&3/&e2 &3flag spawnpoints set.");
-					return;
+					break; // Step complete
 				}
 			}
 		}
