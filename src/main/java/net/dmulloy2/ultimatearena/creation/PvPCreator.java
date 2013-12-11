@@ -236,7 +236,7 @@ public class PvPCreator extends ArenaCreator
 	@Override
 	public FieldType getType()
 	{
-		return FieldType.BOMB;
+		return FieldType.PVP;
 	}
 
 	/**
