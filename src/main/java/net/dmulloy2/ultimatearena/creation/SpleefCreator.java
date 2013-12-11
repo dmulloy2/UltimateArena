@@ -164,7 +164,13 @@ public class SpleefCreator extends ArenaCreator
 					}
 				}
 			}
-			case 3:
+			case 3: // Lobby spawn
+			{
+				target.setLobbyREDspawn(player.getLocation());
+				sendMessage("&eLobby &3spawnpoint set.");
+				break; // Step completed
+			}
+			case 4:
 			{
 				if (target.getFlags().isEmpty())
 				{
@@ -179,7 +185,7 @@ public class SpleefCreator extends ArenaCreator
 					break; // Step completed
 				}
 			}
-			case 4:
+			case 5:
 			{
 				if (target.getFlags().size() == 2)
 				{
@@ -194,7 +200,7 @@ public class SpleefCreator extends ArenaCreator
 					break; // Step completed
 				}
 			}
-			case 5:
+			case 6:
 			{
 				Material mat = Material.SNOW_BLOCK;
 				if (args.length > 0)
@@ -228,14 +234,18 @@ public class SpleefCreator extends ArenaCreator
 				sendMessage("&3Please set &e2 &3points for the lobby.");
 				break;
 			case 3:
-				sendMessage("&3Please set the &eSpleef zone&3.");
+				sendMessage("&3Please set the &eLobby &3spawnpoint.");
 				break;
 			case 4:
-				sendMessage("&3Please set the &eOut zone&3.");
+				sendMessage("&3Please set the &eSpleef zone&3.");
 				break;
 			case 5:
+				sendMessage("&3Please set the &eOut zone&3.");
+				break;
+			case 6:
 				sendMessage("&3Please set the &eSpleef Ground Type&3.");
 				sendMessage("&3Use &e/ua sp <Material/ID>");
+				break;
 		}
 	}
 
