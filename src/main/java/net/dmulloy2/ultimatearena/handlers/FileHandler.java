@@ -45,13 +45,7 @@ public class FileHandler
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
 			fc.set("type", az.getType().getName());
-
-			if (az.getWorld() == null)
-			{
-				az.setWorld(az.getLobby1().getWorld());
-			}
-
-			fc.set("world", az.getWorld().getName());
+			fc.set("world", az.getWorldName());
 
 			Location lobby1 = az.getLobby1();
 			fc.set("lobby1.x", lobby1.getBlockX());
@@ -325,8 +319,17 @@ public class FileHandler
 			String arenaType = fc.getString("type");
 			az.setType(FieldType.getByName(arenaType));
 
-			// FIXME: Possible issue: Multiverse loading after this plugin, causing the worlds to be null
-			World world = plugin.getServer().getWorld(fc.getString("world"));
+			String worldName = fc.getString("world");
+			if (worldName == null || worldName.isEmpty())
+			{
+				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
+				az.setLoaded(false);
+				return;
+			}
+
+			az.setWorldName(worldName);
+
+			World world = plugin.getServer().getWorld(worldName);
 			if (world == null)
 			{
 				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());

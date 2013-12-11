@@ -204,6 +204,12 @@ public class ArenaZone implements Reloadable
 		return ! voted.contains(player.getName());
 	}
 
+	public final void setWorld(World world)
+	{
+		this.world = world;
+		this.worldName = world.getName();
+	}
+
 	// ---- Configuration ---- //
 
 	// Serializable variables

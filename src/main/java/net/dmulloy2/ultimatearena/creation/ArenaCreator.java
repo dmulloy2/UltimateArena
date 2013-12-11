@@ -91,11 +91,13 @@ public abstract class ArenaCreator
 	 */
 	public final void complete()
 	{
-		// By this point, we should have a ready-to-play arena
-		// And all we have to do is save, initialize, then add
+		// Set the world
+		target.setWorld(target.getArena1().getWorld());
 
+		// Save the arena
 		target.save();
 
+		// Attempt to initialize
 		if (target.initialize())
 		{
 			// Yay, it worked!
