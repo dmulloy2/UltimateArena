@@ -15,6 +15,9 @@ import com.earth2me.essentials.Kit;
 import com.earth2me.essentials.User;
 
 /**
+ * Handles integration with Essentials.
+ * <p>
+ * All Essentials integration should go through this handler.
  * Everything is wrapped in a catch-all, since Essentials integration is
  * somewhat buggy and isn't necessary for functioning
  * 
@@ -58,7 +61,10 @@ public class EssentialsHandler
 			if (useEssentials())
 			{
 				User user = getEssentialsUser(player);
-				user.setGodModeEnabled(false);
+				if (user != null)
+				{
+					user.setGodModeEnabled(false);
+				}
 			}
 		}
 		catch (Throwable ex)
