@@ -16,11 +16,11 @@ public class TeamHelper
 	public static String getTeam(int team)
 	{
 		if (team == 1)
-			return ChatColor.RED + "RED";
+			return ChatColor.RED + "Red";
 
 		if (team == 2)
-			return ChatColor.BLUE + "BLUE";
+			return ChatColor.BLUE + "Blue";
 
-		return ChatColor.DARK_GRAY + "NOTEAM";
+		return ChatColor.GRAY + "No";
 	}
 }
