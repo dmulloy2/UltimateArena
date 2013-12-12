@@ -27,8 +27,19 @@ public abstract class ArenaCreator
 		this.name = name;
 		this.plugin = plugin;
 		this.stepNumber = 1;
+		this.start();
+	}
+
+	/**
+	 * Starts the creation of the arena
+	 */
+	public final void start()
+	{
 		this.initializeArena();
+
 		this.setSteps();
+		this.stepNumber = 1;
+		this.stepInfo();
 	}
 
 	/**
