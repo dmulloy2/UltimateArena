@@ -159,15 +159,14 @@ public class ArenaClass implements Reloadable
 
 			if (usesEssentials)
 			{
-				String line = fc.getString("essentialsKit", "");
-				if (line != null && ! line.isEmpty())
+				essKitName = fc.getString("essentialsKit", "");
+				if (! essKitName.isEmpty())
 				{
-					essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(line);
-					essKitName = line;
+					essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(essKitName);
 				}
 			}
 
-			if (essentialsKit.isEmpty() || essKitName == null)
+			if (essentialsKit.isEmpty() || essKitName.isEmpty())
 			{
 				usesEssentials = false;
 			}

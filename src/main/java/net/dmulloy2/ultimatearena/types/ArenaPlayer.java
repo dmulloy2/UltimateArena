@@ -160,9 +160,11 @@ public class ArenaPlayer
 	 */
 	public void clearInventory()
 	{
-		PlayerInventory inv = player.getInventory();
-
+		// Close any open inventories
 		player.closeInventory();
+
+		// Clear their inventory
+		PlayerInventory inv = player.getInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);

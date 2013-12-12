@@ -374,16 +374,22 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private void setupWorldEditIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
-
 		if (pm.isPluginEnabled("WorldEdit"))
 		{
-			Plugin plugin = pm.getPlugin("WorldEdit");
-			if (plugin instanceof WorldEditPlugin)
+			try
 			{
-				worldEdit = (WorldEditPlugin) plugin;
+				Plugin plugin = pm.getPlugin("WorldEdit");
+				if (plugin instanceof WorldEditPlugin)
+				{
+					worldEdit = (WorldEditPlugin) plugin;
 
-				outConsole("Integration with WorldEdit successful!");
-				return;
+					outConsole("Integration with WorldEdit successful!");
+					return;
+				}
+			}
+			catch (Throwable ex)
+			{
+				//
 			}
 
 			outConsole(Level.WARNING, "Could not hook into WorldEdit!");
@@ -398,8 +404,23 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		PluginManager pm = getServer().getPluginManager();
 		if (pm.isPluginEnabled("Essentials"))
 		{
-			Plugin plugin = pm.getPlugin("Essentials");
-			essentials = (Essentials) plugin;
+			try
+			{
+				Plugin plugin = pm.getPlugin("Essentials");
+				if (plugin instanceof Essentials)
+				{
+					essentials = (Essentials) plugin;
+
+					outConsole("Integration with Essentials successful!");
+					return;
+				}
+			}
+			catch (Throwable ex)
+			{
+				//
+			}
+
+			outConsole(Level.WARNING, "Could not hook into Essentials!");
 		}
 	}
 

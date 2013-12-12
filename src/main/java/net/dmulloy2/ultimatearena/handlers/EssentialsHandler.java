@@ -125,6 +125,12 @@ public class EssentialsHandler
 		}
 	}
 
+	/**
+	 * Attempts to read an Essentials kit from configuration
+	 * 
+	 * @param name
+	 *        - Name of the Essentials kit
+	 */
 	public final Map<String, Object> readEssentialsKit(String name)
 	{
 		Map<String, Object> kit = new HashMap<String, Object>();
