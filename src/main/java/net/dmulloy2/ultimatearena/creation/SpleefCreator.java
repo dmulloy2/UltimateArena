@@ -202,16 +202,16 @@ public class SpleefCreator extends ArenaCreator
 			}
 			case 6:
 			{
-				Material mat = Material.SNOW_BLOCK;
+				Material specialType = Material.QUARTZ_BLOCK;
 				if (args.length > 0)
 				{
-					Material m = MaterialUtil.getMaterial(args[0]);
-					if (m != null)
-						mat = m;
+					Material material = MaterialUtil.getMaterial(args[0]);
+					if (material != null)
+						specialType = material;
 				}
 
-				target.setSpecialType(mat);
-				sendMessage("&3Set &eSpleef Ground Type &3to: &e{0}", FormatUtil.getFriendlyName(mat));
+				target.setSpecialType(specialType);
+				sendMessage("&3Set &eSpleef Ground Type &3to: &e{0}", FormatUtil.getFriendlyName(specialType));
 				break; // Step completed
 			}
 		}
@@ -275,6 +275,6 @@ public class SpleefCreator extends ArenaCreator
 	@Override
 	public void setSteps()
 	{
-		this.steps = 5;
+		this.steps = 6;
 	}
 }
