@@ -214,22 +214,22 @@ public class BombCreator extends ArenaCreator
 		switch (stepNumber)
 		{
 			case 1:
-				sendMessage("&3Please set &e2 &3points for the arena");
+				sendMessage("&3Please set &e2 &3points for the &earena&3.");
 				break;
 			case 2:
-				sendMessage("&3Please set &e2 &3points for the lobby.");
+				sendMessage("&3Please set &e2 &3points for the &elobby&3.");
 				break;
 			case 3:
-				sendMessage("&3Please set the &eRed &3team lobby spawn.");
+				sendMessage("&3Please set the &eRed &3team &elobby &3spawn.");
 				break;
 			case 4:
-				sendMessage("&3Please set the &eBlue &3team lobby spawn.");
+				sendMessage("&3Please set the &eBlue &3team &elobby &3spawn.");
 				break;
 			case 5:
-				sendMessage("&3Please set the &eRed &3team arena spawn.");
+				sendMessage("&3Please set the &eRed &3team &earena &3spawn.");
 				break;
 			case 6:
-				sendMessage("&3Please set the &eBlue &3team arena spawn.");
+				sendMessage("&3Please set the &eBlue &3team &earena &3spawn.");
 				break;
 			case 7:
 				sendMessage("&3Please set &e2 &3bomb spawnpoints.");
