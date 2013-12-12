@@ -71,6 +71,7 @@ import net.dmulloy2.ultimatearena.creation.MobCreator;
 import net.dmulloy2.ultimatearena.creation.PvPCreator;
 import net.dmulloy2.ultimatearena.creation.SpleefCreator;
 import net.dmulloy2.ultimatearena.handlers.CommandHandler;
+import net.dmulloy2.ultimatearena.handlers.EssentialsHandler;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.LogHandler;
 import net.dmulloy2.ultimatearena.handlers.PermissionHandler;
@@ -134,11 +135,11 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	// WorldEdit
 	private @Getter WorldEditPlugin worldEdit;
 	private @Getter WorldEditHandler worldEditHandler;
-	
+
 	// Essentials
 	private @Getter Essentials essentials;
-	private @Getter boolean useEssentials;
-	
+	private @Getter EssentialsHandler essentialsHandler;
+
 	// Lists
 	private @Getter HashMap<Player, ArenaJoinTask> waiting = new HashMap<Player, ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
@@ -150,7 +151,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private @Getter List<String> pluginsUsingAPI = new ArrayList<String>();
 
 	private List<Arena> activeArenas = new ArrayList<Arena>();
-	
+
 	private @Getter boolean stopping;
 	private @Getter boolean delayedStartup;
 
@@ -395,12 +396,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private void setupEssentialsIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
-
 		if (pm.isPluginEnabled("Essentials"))
 		{
 			Plugin plugin = pm.getPlugin("Essentials");
 			essentials = (Essentials) plugin;
-			useEssentials = true;
 		}
 	}
 

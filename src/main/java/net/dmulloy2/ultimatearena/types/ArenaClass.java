@@ -159,31 +159,17 @@ public class ArenaClass implements Reloadable
 
 			if (usesEssentials)
 			{
-				try
+				String line = fc.getString("essentialsKit", "");
+				if (line != null && ! line.isEmpty())
 				{
-					String line = fc.getString("essentialsKit", "");
-
-					// Initialize Essentials Hook
-					if (plugin.isUseEssentials())
-					{
-						Map<String, Object> kit = plugin.getEssentials().getSettings().getKit(line);
-						if (kit != null)
-						{
-							essentialsKit = kit;
-						}
-					}
-
+					essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(line);
 					essKitName = line;
 				}
-				catch (Throwable e)
-				{					
-					plugin.outConsole(Level.WARNING, Util.getUsefulStack(e, "loading Essentials kit for \"" + name + "\""));
+			}
 
-					if (e instanceof ClassNotFoundException || e instanceof NoSuchMethodError)
-					{
-						plugin.outConsole(Level.WARNING, "This is usually caused by an Essentials version mismatch.");
-					}
-				}
+			if (essentialsKit.isEmpty() || essKitName == null)
+			{
+				usesEssentials = false;
 			}
 
 			hasPotionEffects = fc.getBoolean("hasPotionEffects", false);
@@ -200,9 +186,9 @@ public class ArenaClass implements Reloadable
 			// Save the file if changes were made
 			if (save) fc.save(file);
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading class: \"" + name + "\""));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading class: \"" + name + "\""));
 			return false;
 		}
 

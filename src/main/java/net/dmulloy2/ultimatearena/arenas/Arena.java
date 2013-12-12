@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,8 +30,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
-
-import com.earth2me.essentials.User;
 
 /**
  * Base Data Container for an arena. 
@@ -194,22 +191,8 @@ public abstract class Arena implements Reloadable
 		player.setFlySpeed(0.1F);
 		player.setFlying(false);
 
-		// Wrap this in a try catch for outdated Essentials
-		try
-		{
-			if (plugin.isUseEssentials())
-			{
-				User user = plugin.getEssentials().getUser(player);
-				
-				// Disable GodMode in the arena
-				user.setGodModeEnabled(false);
-			}
-		}
-		catch (Throwable e)
-		{
-			plugin.outConsole(Level.WARNING, "Encountered an exception adding {0} to {1}: {2}",
-					player.getName(), name, e instanceof ClassNotFoundException  ? "outdated Essentials!" : e.getMessage());
-		}
+		// Disable god mode
+		plugin.getEssentialsHandler().disableGodMode(player);
 
 		// Clear potion effects
 		pl.clearPotionEffects();

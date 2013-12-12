@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.types;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -18,9 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
-
-import com.earth2me.essentials.Kit;
-import com.earth2me.essentials.User;
 
 /**
  * Represents a player inside an {@link Arena}.
@@ -247,21 +242,9 @@ public class ArenaPlayer
 			return;
 		}
 
-		if (arenaClass.isUsesEssentials() && plugin.isUseEssentials())
+		if (arenaClass.isUsesEssentials() && plugin.getEssentialsHandler().useEssentials())
 		{
-			try
-			{
-				User user = plugin.getEssentials().getUser(player);
-
-				List<String> items = Kit.getItems(plugin.getEssentials(), user, arenaClass.getEssKitName(), arenaClass.getEssentialsKit());
-
-				Kit.expandItems(plugin.getEssentials(), user, items);
-			}
-			catch (Throwable e)
-			{
-				sendMessage("&cCould not give Essentials kit: {0}",
-						e instanceof ClassNotFoundException || e instanceof NoSuchMethodError ? "outdated Essentials!" : e.getMessage());
-			}
+			plugin.getEssentialsHandler().giveKitItems(this);
 		}
 
 		for (int i = 0; i < arenaClass.getArmor().size(); i++)
@@ -403,16 +386,19 @@ public class ArenaPlayer
 		}
 	}
 
+	/**
+	 * Attempts to force-respawn the player. Only works with Spigot
+	 */
 	public void respawn()
 	{
 		try
 		{
 			player.spigot().respawn();
 		}
-		catch (Throwable e)
+		catch (Throwable ex)
 		{
 			// They probably don't have spigot
-			plugin.debug(Util.getUsefulStack(e, "respawning player " + name));
+			plugin.debug(Util.getUsefulStack(ex, "respawning player " + name));
 		}
 	}
 }
