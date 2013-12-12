@@ -314,25 +314,25 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		reloadConfig();
 
 		// Reload configs
-		for (ArenaConfig conf : configs)
+		for (ArenaConfig conf : Util.newList(configs))
 		{
 			conf.reload();
 		}
 
 		// Reload ArenaZones
-		for (ArenaZone az : loadedArenas)
+		for (ArenaZone az : Util.newList(loadedArenas))
 		{
 			az.reload();
 		}
 
 		// Reload active arenas
-		for (Arena a : getActiveArenas())
+		for (Arena a : Util.newList(activeArenas))
 		{
 			a.reload();
 		}
 
 		// Reload classes
-		for (ArenaClass ac : classes)
+		for (ArenaClass ac : Util.newList(classes))
 		{
 			ac.reload();
 		}
