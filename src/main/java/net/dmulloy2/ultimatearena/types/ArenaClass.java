@@ -41,7 +41,7 @@ public class ArenaClass implements Reloadable
 	// Essentials Integration
 	private String essKitName;
 	private boolean usesEssentials;
-	private Map<String, Object> essentialsKit;
+	private Map<String, Object> essentialsKit = new HashMap<String, Object>();
 
 	// Potion Effects
 	private boolean hasPotionEffects;
