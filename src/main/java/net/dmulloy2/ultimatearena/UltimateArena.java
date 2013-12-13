@@ -174,11 +174,15 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		if (! checkDependencies())
 			return;
 
-		// Integration
+		// Vault
 		setupVaultIntegration();
-		setupWorldEditIntegration();
-		setupEssentialsIntegration();
 
+		// Essentials
+		setupEssentialsIntegration();
+		essentialsHandler = new EssentialsHandler(this);
+
+		// WorldEdit
+		setupWorldEditIntegration();
 		worldEditHandler = new WorldEditHandler(this);
 
 		// IO Stuff
