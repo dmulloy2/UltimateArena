@@ -642,10 +642,17 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	// Delete Stuff!
 	public void deleteArena(Player player, String str)
 	{
-		File folder = new File(getDataFolder(), "arenas");
-		File file = new File(folder, str + ".dat");
-		if (file.exists())
+		ArenaZone az = getArenaZone(str);
+		if (az != null)
 		{
+			// Delete the file
+			File file = az.getFile();
+			if (file.exists())
+			{
+				file.delete();
+			}
+
+			// Stop the active arena, if applicable
 			for (Arena a : Util.newList(activeArenas))
 			{
 				if (a.getName().equalsIgnoreCase(str))
@@ -654,16 +661,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				}
 			}
 
-			ArenaZone az = getArenaZone(str);
-
-			loadedArenas.remove(az);
-
-			file.delete();
-
+			// Delete any signs
 			for (ArenaSign sign : signHandler.getSigns(az))
 			{
 				signHandler.deleteSign(sign);
 			}
+
+			// Remove it from the list
+			loadedArenas.remove(az);
 
 			player.sendMessage(prefix + FormatUtil.format("&3Successfully deleted arena: &e{0}", str));
 

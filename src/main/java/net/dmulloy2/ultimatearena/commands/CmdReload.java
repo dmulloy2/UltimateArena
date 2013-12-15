@@ -25,10 +25,10 @@ public class CmdReload extends UltimateArenaCommand
 	{
 		long start = System.currentTimeMillis();
 		
-		sendMessage("&aReloading UltimateArena...");
+		sendpMessage("&aReloading UltimateArena...");
 
 		plugin.reload();
 
-		sendMessage("&aReload Complete! Took {0} ms!", System.currentTimeMillis() - start);
+		sendpMessage("&aReload Complete! Took {0} ms!", System.currentTimeMillis() - start);
 	}
 }
