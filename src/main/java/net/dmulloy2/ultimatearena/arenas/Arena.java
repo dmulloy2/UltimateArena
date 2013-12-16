@@ -384,14 +384,18 @@ public abstract class Arena implements Reloadable
 				Location loc = getSpawn(ap);
 				if (loc != null)
 				{
-					teleport(player, loc);
+					ap.teleport(loc);
+					ap.spawn();
+
+					if (! alreadySpawned)
+					{
+						onSpawn(ap);
+					}
 				}
-
-				ap.spawn();
-
-				if (! alreadySpawned)
+				else
 				{
-					onSpawn(ap);
+					ap.sendMessage("&cError spawning: Null spawnpoint!");
+					ap.leaveArena(LeaveReason.ERROR);
 				}
 			}
 		}
@@ -423,7 +427,7 @@ public abstract class Arena implements Reloadable
 		{
 			plugin.debug("Spawning player {0} in the lobby", ap.getName());
 
-			teleport(ap.getPlayer(), loc);
+			ap.teleport(loc);
 		}
 		else
 		{
@@ -713,18 +717,18 @@ public abstract class Arena implements Reloadable
 	{
 	}
 
-	/**
-	 * Teleports a player to the most ideal location
-	 * 
-	 * @param p
-	 *            - Player to teleport
-	 * @param loc
-	 *            - Raw location
-	 */
-	public final void teleport(Player p, Location loc)
-	{
-		p.teleport(loc.clone().add(0.5D, 1.0D, 0.5D));
-	}
+//	/**
+//	 * Teleports a player to the most ideal location
+//	 * 
+//	 * @param p
+//	 *            - Player to teleport
+//	 * @param loc
+//	 *            - Raw location
+//	 */
+//	public final void teleport(Player p, Location loc)
+//	{
+//		p.teleport(loc.clone().add(0.5D, 1.0D, 0.5D));
+//	}
 
 	/**
 	 * Called when an arena is updated
@@ -753,10 +757,8 @@ public abstract class Arena implements Reloadable
 
 		ap.clearInventory();
 		ap.returnInventory();
-
 		ap.clearPotionEffects();
-
-		teleport(ap.getPlayer(), ap.getSpawnBack());
+		ap.teleport(ap.getSpawnBack());
 
 		active.remove(ap);
 		inactive.add(ap);
@@ -765,11 +767,11 @@ public abstract class Arena implements Reloadable
 		{
 			ap.sendMessage("&3You have exceeded the death limit!");
 			tellPlayers("&e{0} &3has been eliminated!", ap.getName());
+		}
 
-			if (active.size() > 1)
-			{
-				tellPlayers("&3There are &e{0} &3players remaining!", active.size());
-			}
+		if (active.size() > 1)
+		{
+			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
 		}
 	}
 
@@ -865,38 +867,52 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void update()
 	{
+		if (stopped) // Don't tick if stopped
+			return;
+
 		checkTimers();
 		updateTeams();
 		check();
 
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			// Make sure they're still online
-			if (ap == null || !ap.getPlayer().isOnline())
+			// Null check
+			if (ap == null)
 			{
-				if (! ap.isOut())
-				{
-					// Attempt to end them
-					endPlayer(ap, false);
-				}
-
-				// Worst case, remove them
 				active.remove(ap);
 				inactive.add(ap);
 				continue;
 			}
 
-			// Check players in the Arena
+			// Make sure they're still online
+			if (! ap.getPlayer().isOnline())
+			{
+				// Attempt to end them
+				ap.leaveArena(LeaveReason.QUIT);
+			}
+
+			// End if they've reached the death limit
+			if (ap.getDeaths() >= getMaxDeaths())
+			{
+				if (ap.getPlayer().getHealth() > 0.0D)
+				{
+					ap.leaveArena(LeaveReason.DEATHS);
+				}
+			}
+
+			// Hats
 			if (isInLobby())
 			{
 				ap.decideHat();
 			}
 
+			// Class based stuff
 			ap.setHealTimer(ap.getHealTimer() - 1);
 
 			ArenaClass ac = ap.getArenaClass();
 			if (ac != null)
 			{
+				// Healing
 				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 				{
 					if (ap.getPlayer().getHealth() + 1 <= 20)
@@ -908,14 +924,14 @@ public abstract class Arena implements Reloadable
 					}
 				}
 
-				// Class based potion effects
+				// Potion effects
 				if (ac.isHasPotionEffects())
 				{
 					if (ac.getPotionEffects().size() > 0)
 					{
 						for (PotionEffect effect : ac.getPotionEffects())
 						{
-							if (!ap.getPlayer().hasPotionEffect(effect.getType()))
+							if (! ap.getPlayer().hasPotionEffect(effect.getType()))
 								ap.getPlayer().addPotionEffect(effect);
 						}
 					}
@@ -966,18 +982,6 @@ public abstract class Arena implements Reloadable
 
 			// XP Bar
 			decideXPBar(ap);
-
-			// End dead players
-			if (! stopped)
-			{
-				if (ap.getDeaths() >= getMaxDeaths())
-				{
-					if (ap.getPlayer().getHealth() > 0)
-					{
-						endPlayer(ap, true);
-					}
-				}
-			}
 		}
 
 		if (active.size() <= 0)

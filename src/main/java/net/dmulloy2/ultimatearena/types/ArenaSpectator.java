@@ -65,7 +65,7 @@ public class ArenaSpectator
 	 */
 	public void spawn()
 	{
-		arena.teleport(player, arena.getSpawn(arena.getActivePlayers().get(0)));
+		teleport(arena.getSpawn(arena.getActivePlayers().get(0)));
 		
 		saveInventory();
 		clearInventory();
@@ -120,7 +120,7 @@ public class ArenaSpectator
 			}
 		}
 
-		arena.teleport(player, spawnBack);
+		teleport(spawnBack);
 
 		this.active = false;
 	}
@@ -179,5 +179,17 @@ public class ArenaSpectator
 	public void sendMessage(String string, Object... objects)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+	}
+
+	/**
+	 * Teleports the player to a given location. Will attempt to teleport the
+	 * player to the center of the block.
+	 * 
+	 * @param location
+	 *        - {@link Location} to teleport the player to
+	 */
+	public final void teleport(Location location)
+	{
+		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 }
