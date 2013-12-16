@@ -85,6 +85,8 @@ public abstract class Arena implements Reloadable
 
 	protected boolean updatedTeams;
 	protected boolean disabled;
+	protected boolean inLobby;
+	protected boolean inGame;
 
 	protected Mode gameMode = Mode.DISABLED;
 
@@ -118,6 +120,9 @@ public abstract class Arena implements Reloadable
 
 		this.gameMode = Mode.LOBBY;
 
+		this.startTimer = az.getLobbyTime();
+		this.inLobby = true;
+
 		this.reload();
 		
 		plugin.getSpectatingHandler().registerArena(this);
@@ -131,7 +136,6 @@ public abstract class Arena implements Reloadable
 	{
 		this.maxGameTime = az.getGameTime();
 		this.gameTimer = az.getGameTime();
-		this.startTimer = az.getLobbyTime();
 		this.maxDeaths = az.getMaxDeaths();
 		this.allowTeamKilling = az.isAllowTeamKilling();
 		this.maxWave = az.getMaxWave();
@@ -624,7 +628,6 @@ public abstract class Arena implements Reloadable
 		if (! spawns.isEmpty())
 		{
 			return spawns.get(Util.random(spawns.size()));
-
 		}
 
 		return null;
@@ -678,8 +681,10 @@ public abstract class Arena implements Reloadable
 
 		plugin.outConsole("Stopping arena {0}!", name);
 
-		this.gameMode = Mode.STOPPING;
+		this.inGame = false;
 		this.stopped = true;
+
+		this.gameMode = Mode.STOPPING;
 
 		updateSigns();
 
@@ -840,6 +845,9 @@ public abstract class Arena implements Reloadable
 			plugin.outConsole("Starting arena {0} with {1} players", name, active.size());
 
 			this.start = true;
+			this.inGame = true;
+			this.inLobby = false;
+
 			this.gameMode = Mode.INGAME;
 
 			this.startingAmount = active.size();
@@ -863,6 +871,21 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : getActivePlayers())
 		{
+			// Make sure they're still online
+			if (ap == null || !ap.getPlayer().isOnline())
+			{
+				if (! ap.isOut())
+				{
+					// Attempt to end them
+					endPlayer(ap, false);
+				}
+
+				// Worst case, remove them
+				active.remove(ap);
+				inactive.add(ap);
+				continue;
+			}
+
 			// Check players in the Arena
 			if (isInLobby())
 			{
@@ -892,7 +915,7 @@ public abstract class Arena implements Reloadable
 					{
 						for (PotionEffect effect : ac.getPotionEffects())
 						{
-							if (! ap.getPlayer().hasPotionEffect(effect.getType()))
+							if (!ap.getPlayer().hasPotionEffect(effect.getType()))
 								ap.getPlayer().addPotionEffect(effect);
 						}
 					}
@@ -1046,21 +1069,21 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
-	/**
-	 * Returns whether or not an arena is ingame
-	 */
-	public final boolean isInGame()
-	{
-		return startTimer < 1 && gameTimer > 0;
-	}
-
-	/**
-	 * Returns whether or not an arena is in the lobby
-	 */
-	public final boolean isInLobby()
-	{
-		return startTimer > 1;
-	}
+//	/**
+//	 * Returns whether or not an arena is ingame
+//	 */
+//	public final boolean isInGame()
+//	{
+//		return startTimer < 1 && gameTimer > 0;
+//	}
+//
+//	/**
+//	 * Returns whether or not an arena is in the lobby
+//	 */
+//	public final boolean isInLobby()
+//	{
+//		return startTimer > 1;
+//	}
 	
 	/**
 	 * Returns a customized leaderboard for a {@link Player}

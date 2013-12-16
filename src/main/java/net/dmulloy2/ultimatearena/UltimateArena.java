@@ -890,81 +890,80 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		}
 		else
 		{
-			Arena ar = null;
-			boolean disabled = false;
-			for (int i = 0; i < activeArenas.size(); i++)
-			{
-				Arena aar = activeArenas.get(i);
-				if (aar.getName().equalsIgnoreCase(name))
-				{
-					disabled = aar.isDisabled();
-				}
-			}
+//			These checks don't really do anything useful
+//
+//			boolean disabled = false;
+//
+//			for (Arena active : Util.newList(activeArenas))
+//			{
+//				if (active.getName().equalsIgnoreCase(name))
+//				{
+//					if (active.isDisabled())
+//						disabled = true;  
+//				}
+//			}
+//
+//			for (ArenaZone arenaZone : Util.newList(loadedArenas))
+//			{
+//				if (arenaZone.getArenaName().equalsIgnoreCase(name))
+//				{
+//					if (arenaZone.isDisabled())
+//						disabled = true;
+//				}
+//			}
 
-			for (int ii = 0; ii < loadedArenas.size(); ii++)
-			{
-				ArenaZone aaz = loadedArenas.get(ii);
-				if (aaz.getArenaName().equalsIgnoreCase(name))
-				{
-					disabled = aaz.isDisabled();
-				}
-			}
-
-			if (! disabled)
-			{
-				String arenaType = az.getType().getName().toLowerCase();
-				if (arenaType.equals("pvp"))
-				{
-					ar = new PVPArena(az);
-				}
-				else if (arenaType.equals("mob"))
-				{
-					ar = new MOBArena(az);
-				}
-				else if (arenaType.equals("cq"))
-				{
-					ar = new CONQUESTArena(az);
-				}
-				else if (arenaType.equals("koth"))
-				{
-					ar = new KOTHArena(az);
-				}
-				else if (arenaType.equals("bomb"))
-				{
-					ar = new BOMBArena(az);
-				}
-				else if (arenaType.equals("ffa"))
-				{
-					ar = new FFAArena(az);
-				}
-				else if (arenaType.equals("hunger"))
-				{
-					ar = new HUNGERArena(az);
-				}
-				else if (arenaType.equals("spleef"))
-				{
-					ar = new SPLEEFArena(az);
-				}
-				else if (arenaType.equals("infect"))
-				{
-					ar = new INFECTArena(az);
-				}
-				else if (arenaType.equals("ctf"))
-				{
-					ar = new CTFArena(az);
-				}
-
-				if (ar != null)
-				{
-					activeArenas.add(ar);
-					ar.addPlayer(player);
-					ar.announce();
-				}
-			}
-			else
+			if (az.isDisabled())
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cThis arena is disabled!"));
+				return;
 			}
+
+			Arena arena = null;
+
+			switch (az.getType())
+			{
+				case BOMB:
+					arena = new BOMBArena(az);
+					break;
+				case CONQUEST:
+					arena = new CONQUESTArena(az);
+					break;
+				case CTF:
+					arena = new CTFArena(az);
+					break;
+				case FFA:
+					arena = new FFAArena(az);
+					break;
+				case HUNGER:
+					arena = new HUNGERArena(az);
+					break;
+				case INFECT:
+					arena = new INFECTArena(az);
+					break;
+				case KOTH:
+					arena = new KOTHArena(az);
+					break;
+				case MOB:
+					arena = new MOBArena(az);
+					break;
+				case PVP:
+					arena = new PVPArena(az);
+					break;
+				case SPLEEF:
+					arena = new SPLEEFArena(az);
+					break;
+			}
+
+			// Won't ever be null, but just in case
+			if (arena == null)
+			{
+				player.sendMessage(prefix + FormatUtil.format("&cCould not find a valid arena for the type: {0}", az.getType()));
+				return;
+			}
+
+			activeArenas.add(arena);
+			arena.addPlayer(player);
+			arena.announce();
 		}
 	}
 

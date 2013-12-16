@@ -391,7 +391,7 @@ public class ArenaPlayer
 	/**
 	 * Attempts to force-respawn the player. Only works with Spigot
 	 */
-	public void respawn()
+	public final void respawn()
 	{
 		try
 		{
@@ -402,5 +402,17 @@ public class ArenaPlayer
 			// They probably don't have spigot
 			plugin.debug(Util.getUsefulStack(ex, "respawning player " + name));
 		}
+	}
+
+	/**
+	 * Teleports the player to a given location. Will attempt to teleport the
+	 * player to the center of the block.
+	 * 
+	 * @param location
+	 *        - {@link Location} to teleport the player to
+	 */
+	public final void teleport(Location location)
+	{
+		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 }
