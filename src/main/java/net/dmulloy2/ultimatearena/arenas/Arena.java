@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 /**
- * Base Data Container for an arena. 
+ * Base Data Container for an arena.
  * <p>
  * This can be extended for specific arena types.
  * 
@@ -101,7 +101,7 @@ public abstract class Arena implements Reloadable
 	 * Creates a new Arena based around an {@link ArenaZone}
 	 * 
 	 * @param az
-	 *            - {@link ArenaZone} to base the {@link Arena} around
+	 *        - {@link ArenaZone} to base the {@link Arena} around
 	 */
 	public Arena(ArenaZone az)
 	{
@@ -154,12 +154,12 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Adds a player to an {@link Arena}.
+	 * Adds a player to the {@link Arena}.
 	 * <p>
 	 * Should not be overriden.
 	 * 
 	 * @param player
-	 *            - {@link Player} to add to an arena
+	 *        - {@link Player} to add to an arena
 	 */
 	public final void addPlayer(Player player)
 	{
@@ -279,13 +279,13 @@ public abstract class Arena implements Reloadable
 	 * Returns a {@link Player}'s {@link ArenaPlayer} instance.
 	 * <p>
 	 * Every player who has joined this arena will have an ArenaPlayer instance.
-	 * It is important to note, however, that players who are out will still have
-	 * arena player instances until the arena concludes.
+	 * It is important to note, however, that players who are out will still
+	 * have arena player instances until the arena concludes.
 	 * 
 	 * @param p
-	 *            - Player instance
+	 *        - Player instance
 	 * @param checkInactive
-	 *            - Whether or not to check the inactive list as well
+	 *        - Whether or not to check the inactive list as well
 	 */
 	public final ArenaPlayer getArenaPlayer(Player p, boolean checkInactive)
 	{
@@ -313,7 +313,7 @@ public abstract class Arena implements Reloadable
 	 * Has the same effect as <code>getArenaPlayer(p, true)</code>
 	 * 
 	 * @param p
-	 *            - Player instance
+	 *        - Player instance
 	 */
 	public final ArenaPlayer getArenaPlayer(Player p)
 	{
@@ -339,7 +339,7 @@ public abstract class Arena implements Reloadable
 	 * Can be overriden under certain circumstances
 	 * 
 	 * @param ap
-	 *            - {@link ArenaPlayer} instance
+	 *        - {@link ArenaPlayer} instance
 	 */
 	public Location getSpawn(ArenaPlayer ap)
 	{
@@ -361,14 +361,14 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Spawns a player in an {@link Arena}.
+	 * Spawns a player in the {@link Arena}.
 	 * <p>
 	 * This should not be overriden.
 	 * 
 	 * @param name
-	 *            - Player to spawn
+	 *        - Player to spawn
 	 * @param alreadySpawned
-	 *            - Whether or not they've already spawned
+	 *        - Whether or not they've already spawned
 	 */
 	public final void spawn(Player player, boolean alreadySpawned)
 	{
@@ -407,7 +407,7 @@ public abstract class Arena implements Reloadable
 	 * Has the same effect of <code>spawn(player, false)</code>
 	 * 
 	 * @param player
-	 *            - Player to spawn
+	 *        - Player to spawn
 	 */
 	public final void spawn(Player player)
 	{
@@ -417,8 +417,8 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Spawns an {@link ArenaPlayer} into the lobby
 	 * 
-	 * @param ap 
-	 *            - {@link ArenaPlayer} to spawn
+	 * @param ap
+	 *        - {@link ArenaPlayer} to spawn
 	 */
 	public final void spawnLobby(ArenaPlayer ap)
 	{
@@ -440,7 +440,7 @@ public abstract class Arena implements Reloadable
 	 * Called when a player is spawned.
 	 * 
 	 * @param apl
-	 *            - {@link ArenaPlayer} who was spawned
+	 *        - {@link ArenaPlayer} who was spawned
 	 */
 	public void onSpawn(ArenaPlayer apl)
 	{
@@ -450,7 +450,7 @@ public abstract class Arena implements Reloadable
 	 * Called when a player dies.
 	 * 
 	 * @param pl
-	 *            - {@link ArenaPlayer} who died
+	 *        - {@link ArenaPlayer} who died
 	 */
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
@@ -461,7 +461,7 @@ public abstract class Arena implements Reloadable
 	 * Default rewarding system. May be overriden in some cases.
 	 * 
 	 * @param ap
-	 *            - {@link ArenaPlayer} to reward
+	 *        - {@link ArenaPlayer} to reward
 	 */
 	public void reward(ArenaPlayer ap)
 	{
@@ -473,7 +473,7 @@ public abstract class Arena implements Reloadable
 	 * Rewards an entire team.
 	 * 
 	 * @param team
-	 *            - Team to reward
+	 *        - Team to reward
 	 */
 	public final void rewardTeam(int team)
 	{
@@ -495,7 +495,7 @@ public abstract class Arena implements Reloadable
 	 * Sets the winning team.
 	 * 
 	 * @param team
-	 *            - Winning team
+	 *        - Winning team
 	 */
 	public final void setWinningTeam(int team)
 	{
@@ -519,7 +519,7 @@ public abstract class Arena implements Reloadable
 	 * Checks if a player has enough points to win.
 	 * 
 	 * @param max
-	 *            - Max points for an arena
+	 *        - Max points for an arena
 	 */
 	public final void checkPlayerPoints(int max)
 	{
@@ -564,9 +564,9 @@ public abstract class Arena implements Reloadable
 	 * Tells all active players in the arena a message.
 	 * 
 	 * @param string
-	 *            - Base message
+	 *        - Base message
 	 * @param objects
-	 *            - Objects to format in
+	 *        - Objects to format in
 	 */
 	public final void tellPlayers(String string, Object... objects)
 	{
@@ -582,9 +582,9 @@ public abstract class Arena implements Reloadable
 	 * Includes inactive players
 	 * 
 	 * @param string
-	 *            - Base message
+	 *        - Base message
 	 * @param objects
-	 *            - Objects to format in
+	 *        - Objects to format in
 	 */
 	public final void tellAllPlayers(String string, Object... objects)
 	{
@@ -603,9 +603,9 @@ public abstract class Arena implements Reloadable
 	 * Kills all players within a certain radius of a {@link Location}
 	 * 
 	 * @param loc
-	 *            - Center {@link Location}
+	 *        - Center {@link Location}
 	 * @param rad
-	 *            - Radius to kill within
+	 *        - Radius to kill within
 	 */
 	public final void killAllNear(Location loc, int rad)
 	{
@@ -623,7 +623,7 @@ public abstract class Arena implements Reloadable
 	 * Returns a random spawn for an {@link ArenaPlayer}.
 	 * 
 	 * @param ap
-	 *            - {@link ArenaPlayer} to get spawn for
+	 *        - {@link ArenaPlayer} to get spawn for
 	 */
 	public Location getRandomSpawn(ArenaPlayer ap)
 	{
@@ -640,7 +640,8 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Handles an {@link ArenaPlayer}'s kill streak (if applicable)
 	 * 
-	 * @param ap - {@link ArenaPlayer} to handle kill streak for
+	 * @param ap
+	 *        - {@link ArenaPlayer} to handle kill streak for
 	 */
 	public final void handleKillStreak(ArenaPlayer ap)
 	{
@@ -741,9 +742,9 @@ public abstract class Arena implements Reloadable
 	 * Ends an {@link ArenaPlayer}
 	 * 
 	 * @param ap
-	 *            - {@link ArenaPlayer} to end
+	 *        - {@link ArenaPlayer} to end
 	 * @param dead
-	 *            - Whether or not a player died
+	 *        - Whether or not a player died
 	 */
 	public void endPlayer(ArenaPlayer ap, boolean dead)
 	{
@@ -889,6 +890,7 @@ public abstract class Arena implements Reloadable
 			{
 				// Attempt to end them
 				ap.leaveArena(LeaveReason.QUIT);
+				continue;
 			}
 
 			// End if they've reached the death limit
@@ -898,6 +900,8 @@ public abstract class Arena implements Reloadable
 				{
 					ap.leaveArena(LeaveReason.DEATHS);
 				}
+
+				continue;
 			}
 
 			// Hats
@@ -995,7 +999,7 @@ public abstract class Arena implements Reloadable
 	 * Decides the timer xp bar for an {@link ArenaPlayer}
 	 * 
 	 * @param ap
-	 *            - {@link ArenaPlayer} to decide xp bar for
+	 *        - {@link ArenaPlayer} to decide xp bar for
 	 */
 	public final void decideXPBar(ArenaPlayer ap)
 	{
@@ -1035,7 +1039,7 @@ public abstract class Arena implements Reloadable
 	 * Forces the start of an arena
 	 * 
 	 * @param player
-	 *            - {@link Player} forcing the start of the arena
+	 *        - {@link Player} forcing the start of the arena
 	 */
 	public final void forceStart(Player player)
 	{
@@ -1090,11 +1094,10 @@ public abstract class Arena implements Reloadable
 //	}
 	
 	/**
-	 * Returns a customized leaderboard for a {@link Player}
-	 * <p>
-	 * TODO: Store leaderboard entries then customize?
+	 * Returns a customized in-game leaderboard
 	 * 
-	 * @param player - Player to get leaderboard for
+	 * @param player
+	 *        - Player to get leaderboard for
 	 */
 	public List<String> getLeaderboard(Player player)
 	{
@@ -1144,7 +1147,8 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Decides a player's team color
 	 * 
-	 * @param pl - Player to decide team color for
+	 * @param pl
+	 *        - Player to decide team color for
 	 */
 	protected String decideColor(ArenaPlayer pl)
 	{
@@ -1192,7 +1196,8 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Returns whether or not a class can be used in this arena
 	 * 
-	 * @param ac - Class to check
+	 * @param ac
+	 *        - Class to check
 	 */
 	public final boolean isValidClass(ArenaClass ac)
 	{

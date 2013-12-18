@@ -12,10 +12,12 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,9 +37,6 @@ public class MOBArena extends Arena
 		super(az);
 
 		this.type = FieldType.MOB;
-//		this.startTimer = 80;
-//		this.maxGameTime = 60 * 10;
-//		this.maxDeaths = 1;
 		this.mobspawn = 0;
 		this.mobtimer = 0;
 		this.wave = 0;
@@ -104,7 +103,6 @@ public class MOBArena extends Arena
 	@Override
 	public void reward(ArenaPlayer p)
 	{
-		// Mob Arena is always gradient based... Deal with it.
 		// TODO: Maybe some configuration...?
 		int amtGold = (int) Math.round(p.getGameXP() / 500.0);
 		int amtSlime = (int) Math.round(p.getGameXP() / 550.0);
@@ -166,23 +164,80 @@ public class MOBArena extends Arena
 							String mob = spawning.get(Util.random(spawning.size()));
 							LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
 
+							// Special skeletons
 							if (newMob instanceof Skeleton)
 							{
-								if (Util.random(2) == 0 && getWave() >= 12)
-								{
-									// Wither skeletons! >:3
-									((Skeleton) newMob).setSkeletonType(Skeleton.SkeletonType.WITHER);
-								}
-							}
+								boolean giveBow = true;
+								int enchantmentLevel = 0;
 
-							if (newMob instanceof Zombie)
-							{
-								if (Util.random(5) == 0 && wave >= 7)
+								// Skeletons get amped up starting at level 12
+								if (wave >= 12)
 								{
-									// Baby zombies! >:3
-									((Zombie) newMob).setBaby(true);
+									// Wither Skeletons
+									if (Util.random(2) == 0)
+									{
+										// Set skeleton type to Wither
+										((Skeleton) newMob).setSkeletonType(SkeletonType.WITHER);
+
+										// Wither skeletons dont have bows
+										giveBow = false;
+									}
+									else
+									{
+										// Give them power bows
+										enchantmentLevel = Util.random(5) == 0 ? 2 : 1;
+									}
+								}
+
+								// Give them a bow, if applicable
+								if (giveBow)
+								{
+									ItemStack item = new ItemStack(Material.BOW);
+
+									// Enchant
+									if (enchantmentLevel > 0)
+									{
+										item.addEnchantment(Enchantment.ARROW_DAMAGE, enchantmentLevel);
+									}
+
+									newMob.getEquipment().setItemInHand(item);
 								}
 							}
+							// Special zombies
+							else if (newMob instanceof Zombie)
+							{
+								// For zombies, it starts at wave 7
+								if (wave >= 7)
+								{
+									int rand = Util.random(10);
+
+									if (rand == 10)
+									{
+										// Zombies with swords
+										ItemStack item = new ItemStack(wave >= 12 ? Material.DIAMOND_SWORD : Material.IRON_SWORD);
+
+										// Possibly enchant it
+										if (wave >= 12)
+										{
+											item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
+											item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+										}
+
+										newMob.getEquipment().setItemInHand(item);
+									}
+									else if (rand == 5)
+									{
+										// Babie zombies
+										((Zombie) newMob).setBaby(true);
+									}
+									else if (rand == 0)
+									{
+										// Villager zombies
+										((Zombie) newMob).setVillager(true);
+									}
+								}
+							}
+							// TODO: More fun entity calculations? :D
 
 							mobs.add(newMob);
 						}
