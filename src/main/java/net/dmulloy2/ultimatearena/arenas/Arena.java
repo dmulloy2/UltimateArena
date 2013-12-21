@@ -398,6 +398,11 @@ public abstract class Arena implements Reloadable
 					ap.leaveArena(LeaveReason.ERROR);
 				}
 			}
+			else
+			{
+				// If they've reached the death cap, remove them
+				ap.leaveArena(LeaveReason.DEATHS);
+			}
 		}
 	}
 	

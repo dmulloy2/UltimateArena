@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -289,15 +290,21 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event)
 	{
-		Player pl = event.getPlayer();
-		if (plugin.isInArena(pl))
+		// If the player is in an arena, respawn them a second later,
+		// Since plugins like Multiverse and Essentials generally take
+		// priority with respawning
+
+		final Player player = event.getPlayer();
+		if (plugin.isInArena(player))
 		{
-			Arena a = plugin.getArena(pl);
-			ArenaPlayer apl = plugin.getArenaPlayer(pl);
-			if (apl.getDeaths() < a.getMaxDeaths())
+			new BukkitRunnable()
 			{
-				a.spawn(pl);
-			}
+				@Override
+				public void run()
+				{
+					plugin.getArena(player).spawn(player);
+				}
+			}.runTaskLater(plugin, 20L);
 		}
 	}
 

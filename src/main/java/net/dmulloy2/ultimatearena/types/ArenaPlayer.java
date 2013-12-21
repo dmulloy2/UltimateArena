@@ -401,6 +401,7 @@ public class ArenaPlayer
 		{
 			// They probably don't have spigot
 			plugin.debug(Util.getUsefulStack(ex, "respawning player " + name));
+			plugin.debug("This message is probably safe to ignore!");
 		}
 	}
 

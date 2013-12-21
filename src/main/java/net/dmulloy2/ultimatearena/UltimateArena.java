@@ -318,6 +318,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		// Reload config
 		reloadConfig();
 
+		// TODO: Check for deleted/new files when reloading
+
 		// Reload configs
 		for (ArenaConfig conf : Util.newList(configs))
 		{

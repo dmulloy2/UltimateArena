@@ -421,7 +421,8 @@ public class EntityListener implements Listener
 						}
 					}
 
-					// No valid PvP/PvM reason was found
+					// TODO: Possibly perform some more checks here
+
 					String dc = FormatUtil.getFriendlyName(pdied.getLastDamageCause().getCause().toString());
 					plugin.debug("Player {0} was killed by {1}", pdied.getName(), dc);
 					ar.tellPlayers("&e{0} &3was killed by &e{1}", pdied.getName(), dc);
