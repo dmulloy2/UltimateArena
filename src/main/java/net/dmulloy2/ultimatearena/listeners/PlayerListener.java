@@ -297,14 +297,19 @@ public class PlayerListener implements Listener
 		final Player player = event.getPlayer();
 		if (plugin.isInArena(player))
 		{
-			new BukkitRunnable()
+			final Arena arena = plugin.getArena(player);
+			final ArenaPlayer ap = plugin.getArenaPlayer(player);
+			if (ap.getDeaths() < arena.getMaxDeaths())
 			{
-				@Override
-				public void run()
+				new BukkitRunnable()
 				{
-					plugin.getArena(player).spawn(player);
-				}
-			}.runTaskLater(plugin, 20L);
+					@Override
+					public void run()
+					{
+						arena.spawn(player);
+					}
+				}.runTaskLater(plugin, 20L);
+			}
 		}
 	}
 

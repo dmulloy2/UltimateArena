@@ -372,18 +372,18 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void spawn(Player player, boolean alreadySpawned)
 	{
-		plugin.debug("Attempting to spawn player: {0}", player.getName());
+		plugin.debug("Attempting to spawn player {0}", player.getName());
 
 		if (! stopped)
 		{
 			ArenaPlayer ap = getArenaPlayer(player);
-			if (ap.getDeaths() < getMaxDeaths())
+			if (ap.getDeaths() < maxDeaths)
 			{
-				plugin.debug("Spawning player: {0}", player.getName());
-
 				Location loc = getSpawn(ap);
 				if (loc != null)
 				{
+					plugin.debug("Spawning player: {0}", player.getName());
+
 					ap.teleport(loc);
 					ap.spawn();
 
@@ -394,6 +394,7 @@ public abstract class Arena implements Reloadable
 				}
 				else
 				{
+					// We couldn't find a spawnpoint for some reason :(
 					ap.sendMessage("&cError spawning: Null spawnpoint!");
 					ap.leaveArena(LeaveReason.ERROR);
 				}
@@ -405,7 +406,7 @@ public abstract class Arena implements Reloadable
 			}
 		}
 	}
-	
+
 	/**
 	 * Alias for {@link #spawn(Player, Boolean)}
 	 * <p>
