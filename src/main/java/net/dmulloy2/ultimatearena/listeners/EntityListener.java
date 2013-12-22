@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -256,20 +257,18 @@ public class EntityListener implements Listener
 			if (plugin.isInArena(pdied))
 			{
 				ArenaPlayer dp = plugin.getArenaPlayer(pdied);
-				if (dp.isDead())
-					return;
 
+				// Prevents duplicate deaths
+				if (dp.isDead()) return;
 				dp.onDeath();
-//				dp.respawn(); // Attempt to force respawn them
 
-				Arena ar = plugin.getArena(pdied);
+				Arena ar = dp.getArena();
 
 				if (pdied.getKiller() instanceof Player)
 				{
 					Player killer = pdied.getKiller();
 					if (killer.getName().equals(pdied.getName())) // Suicide
 					{
-//						plugin.debug("Player {0} has committed suicide!", pdied.getName());
 						ar.tellPlayers("&e{0} &3commited &esuicide&3!", pdied.getName());
 
 						List<String> lines = new ArrayList<String>();
@@ -285,10 +284,9 @@ public class EntityListener implements Listener
 							pdied.sendMessage(line);
 						}
 					}
-					else // PvP
+					else
 					{
-//						plugin.debug("PvP has occured between two players. Killer: {0}. Killed: {1}", killer.getName(), pdied.getName());
-
+						// PvP
 						ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(), getWeapon(killer));
 
 						List<String> deadlines = new ArrayList<String>();
@@ -312,7 +310,7 @@ public class EntityListener implements Listener
 							kp.setKillStreak(kp.getKillStreak() + 1);
 							kp.getArena().handleKillStreak(kp);
 							kp.addXP(100);
-	
+
 							List<String> killerlines = new ArrayList<String>();
 							killerlines.add(FormatUtil.format("&3----------------------------"));
 							killerlines.add(FormatUtil.format("&3Kills: &e{0}", kp.getKills()));
@@ -320,7 +318,7 @@ public class EntityListener implements Listener
 							killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillStreak()));
 							killerlines.add(FormatUtil.format("&3GameXP: &e{0}", kp.getGameXP()));
 							killerlines.add(FormatUtil.format("&3----------------------------"));
-	
+
 							for (String killerline : killerlines)
 							{
 								killer.sendMessage(killerline);
@@ -328,8 +326,9 @@ public class EntityListener implements Listener
 						}
 					}
 				}
-				else // From this point on, we will return when there is a valid match
+				else
 				{
+					// From this point on, we will return when there is a valid match
 					if (pdied.getKiller() instanceof LivingEntity)
 					{
 						LivingEntity lentity = pdied.getKiller();
@@ -401,7 +400,6 @@ public class EntityListener implements Listener
 							LivingEntity lentity = pdied.getKiller();
 							String name = FormatUtil.getFriendlyName(lentity.getType());
 
-//							plugin.debug("Player {0} was killed by {1}", pdied.getName(), name);
 							ar.tellPlayers("&e{0} &3was killed by {1} &e{2}", pdied.getName(), FormatUtil.getArticle(name), name);
 
 							List<String> deadlines = new ArrayList<String>();
@@ -421,11 +419,182 @@ public class EntityListener implements Listener
 						}
 					}
 
-					// TODO: Possibly perform some more checks here
+					// If we've gotten to this point, our checks have basically failed
+					// [WARNING] The code gets pretty messy (and repetitive) from this point on
 
-					String dc = FormatUtil.getFriendlyName(pdied.getLastDamageCause().getCause().toString());
-					plugin.debug("Player {0} was killed by {1}", pdied.getName(), dc);
-					ar.tellPlayers("&e{0} &3was killed by &e{1}", pdied.getName(), dc);
+					// TODO: Rewrite this mess
+
+					EntityDamageEvent ede = pdied.getLastDamageCause();
+
+					DamageCause dc = ede.getCause();
+
+					if (dc == DamageCause.ENTITY_ATTACK)
+					{
+						if (ede instanceof EntityDamageByEntityEvent)
+						{
+							EntityDamageByEntityEvent edbe = (EntityDamageByEntityEvent) ede;
+							Entity damager = edbe.getDamager();
+							if (edbe.getDamager() != null)
+							{
+								if (damager instanceof Player)
+								{
+									Player killer = (Player) damager;
+
+									ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(), getWeapon(killer));
+
+									List<String> deadlines = new ArrayList<String>();
+									deadlines.add(FormatUtil.format("&3----------------------------"));
+									deadlines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
+									deadlines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
+									deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
+									deadlines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
+									deadlines.add(FormatUtil.format("&3----------------------------"));
+
+									for (String deadline : deadlines)
+									{
+										pdied.sendMessage(deadline);
+									}
+
+									// Handle killer
+									ArenaPlayer kp = plugin.getArenaPlayer(killer);
+									if (kp != null)
+									{
+										kp.setKills(kp.getKills() + 1);
+										kp.setKillStreak(kp.getKillStreak() + 1);
+										kp.getArena().handleKillStreak(kp);
+										kp.addXP(100);
+
+										List<String> killerlines = new ArrayList<String>();
+										killerlines.add(FormatUtil.format("&3----------------------------"));
+										killerlines.add(FormatUtil.format("&3Kills: &e{0}", kp.getKills()));
+										killerlines.add(FormatUtil.format("&3Deaths: &e{0}", kp.getDeaths()));
+										killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillStreak()));
+										killerlines.add(FormatUtil.format("&3GameXP: &e{0}", kp.getGameXP()));
+										killerlines.add(FormatUtil.format("&3----------------------------"));
+
+										for (String killerline : killerlines)
+										{
+											killer.sendMessage(killerline);
+										}
+									}
+								}
+								else
+								{
+									String name = FormatUtil.getFriendlyName(damager.getType());
+
+									plugin.debug("Player {0} was killed by {1}", pdied.getName(), name);
+									ar.tellPlayers("&e{0} &3was killed by &3{1} &e{2}", pdied.getName(), FormatUtil.getArticle(name), name);
+
+									List<String> deadlines = new ArrayList<String>();
+									deadlines.add(FormatUtil.format("&3----------------------------"));
+									deadlines.add(FormatUtil.format("&cKills: &e{0}", dp.getKills()));
+									deadlines.add(FormatUtil.format("&cDeaths: &e{0}", dp.getDeaths()));
+									deadlines.add(FormatUtil.format("&cStreak: &e{0}", dp.getKillStreak()));
+									deadlines.add(FormatUtil.format("&cGameXP: &e{0}", dp.getGameXP()));
+									deadlines.add(FormatUtil.format("&3----------------------------"));
+
+									for (String deadline : deadlines)
+									{
+										pdied.sendMessage(deadline);
+									}
+								}
+
+								return;
+							}
+						}
+					}
+
+					if (dc == DamageCause.PROJECTILE)
+					{
+						if (ede instanceof EntityDamageByEntityEvent)
+						{
+							EntityDamageByEntityEvent edbe = (EntityDamageByEntityEvent) ede;
+							Entity damager = edbe.getDamager();
+							if (edbe.getDamager() != null)
+							{
+								if (damager instanceof Projectile)
+								{
+									Projectile proj = (Projectile) damager;
+									LivingEntity shooter = proj.getShooter();
+									if (shooter != null)
+									{
+										if (shooter instanceof Player)
+										{
+											Player killer = (Player) shooter;
+
+											ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(),
+													getWeapon(killer));
+
+											List<String> deadlines = new ArrayList<String>();
+											deadlines.add(FormatUtil.format("&3----------------------------"));
+											deadlines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
+											deadlines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
+											deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
+											deadlines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
+											deadlines.add(FormatUtil.format("&3----------------------------"));
+
+											for (String deadline : deadlines)
+											{
+												pdied.sendMessage(deadline);
+											}
+
+											// Handle killer
+											ArenaPlayer kp = plugin.getArenaPlayer(killer);
+											if (kp != null)
+											{
+												kp.setKills(kp.getKills() + 1);
+												kp.setKillStreak(kp.getKillStreak() + 1);
+												kp.getArena().handleKillStreak(kp);
+												kp.addXP(100);
+
+												List<String> killerlines = new ArrayList<String>();
+												killerlines.add(FormatUtil.format("&3----------------------------"));
+												killerlines.add(FormatUtil.format("&3Kills: &e{0}", kp.getKills()));
+												killerlines.add(FormatUtil.format("&3Deaths: &e{0}", kp.getDeaths()));
+												killerlines.add(FormatUtil.format("&3Streak: &e{0}", kp.getKillStreak()));
+												killerlines.add(FormatUtil.format("&3GameXP: &e{0}", kp.getGameXP()));
+												killerlines.add(FormatUtil.format("&3----------------------------"));
+
+												for (String killerline : killerlines)
+												{
+													killer.sendMessage(killerline);
+												}
+											}
+										}
+										else
+										{
+											String name = FormatUtil.getFriendlyName(shooter.getType());
+
+											plugin.debug("Player {0} was killed by {1}", pdied.getName(), name);
+											ar.tellPlayers("&e{0} &3was killed by &3{1} &e{2}", pdied.getName(), FormatUtil.getArticle(name),
+													name);
+
+											List<String> deadlines = new ArrayList<String>();
+											deadlines.add(FormatUtil.format("&3----------------------------"));
+											deadlines.add(FormatUtil.format("&cKills: &e{0}", dp.getKills()));
+											deadlines.add(FormatUtil.format("&cDeaths: &e{0}", dp.getDeaths()));
+											deadlines.add(FormatUtil.format("&cStreak: &e{0}", dp.getKillStreak()));
+											deadlines.add(FormatUtil.format("&cGameXP: &e{0}", dp.getGameXP()));
+											deadlines.add(FormatUtil.format("&3----------------------------"));
+
+											for (String deadline : deadlines)
+											{
+												pdied.sendMessage(deadline);
+											}
+										}
+
+										return;
+									}
+								}
+							}
+						}
+					}
+
+					// There's probably nothing else we can do here, so just turn it into a string
+
+					String dcs = FormatUtil.getFriendlyName(pdied.getLastDamageCause().getCause().toString());
+					plugin.debug("Player {0} was killed by {1}", pdied.getName(), dcs);
+					ar.tellPlayers("&e{0} &3was killed by &e{1}", pdied.getName(), dcs);
 
 					List<String> deadlines = new ArrayList<String>();
 					deadlines.add(FormatUtil.format("&3----------------------------"));
@@ -452,10 +621,10 @@ public class EntityListener implements Listener
 					Player killer = lentity.getKiller();
 					if (plugin.isInArena(killer))
 					{
-//						plugin.debug("{0} has been killed by {1}", FormatUtil.getFriendlyName(lentity.getType()), killer.getName());
-
 						ArenaPlayer ak = plugin.getArenaPlayer(killer);
-						if (ak.getArena().isCountMobKills()) // Selectively count mob kills
+
+						// Selectively count mob kills
+						if (ak.getArena().isCountMobKills())
 						{
 							ak.addXP(25);
 							ak.setKills(ak.getKills() + 1);
@@ -485,11 +654,13 @@ public class EntityListener implements Listener
 		}
 	}
 
+	// Line count for onEntityDeath = 416
+
 	/**
 	 * Gets the weapon that a player has
 	 * 
 	 * @param player
-	 *            - {@link Player} to get weapon for
+	 *        - {@link Player} to get weapon for
 	 * @return The player's weapon
 	 */
 	private String getWeapon(Player player)
