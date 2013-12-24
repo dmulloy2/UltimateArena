@@ -32,6 +32,7 @@ public class SignHandler
 	private List<ArenaSign> signs;
 
 	private final UltimateArena plugin;
+
 	public SignHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -66,6 +67,8 @@ public class SignHandler
 					nextId++;
 
 					signs.add(sign);
+
+					plugin.debug("Successfully loaded ArenaSign {0}. Next id = {1}", sign, nextId);
 				}
 			}
 
@@ -124,6 +127,8 @@ public class SignHandler
 
 	private final boolean createNewSave(boolean delete)
 	{
+		plugin.debug("Creating new sign save. Delete = {0}", delete);
+
 		try
 		{
 			if (file.exists() && delete)
@@ -166,7 +171,7 @@ public class SignHandler
 		signs.add(sign);
 
 		plugin.debug("Added new sign: {0}", sign);
-		
+
 		new BukkitRunnable()
 		{
 			@Override

@@ -99,7 +99,6 @@ import net.dmulloy2.ultimatearena.util.TimeUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -168,10 +167,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		spectatingHandler = new SpectatingHandler(this);
 		commandHandler = new CommandHandler(this);
 		fileHandler = new FileHandler(this);
-
-		// Dependencies
-		if (! checkDependencies())
-			return;
 
 		// Vault
 		setupVaultIntegration();
@@ -342,35 +337,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		{
 			ac.reload();
 		}
-	}
-
-	/**
-	 * Checks the {@link Bukkit} version.
-	 * <p>
-	 * UltimateArena is not compatible below 1.6.
-	 * 
-	 * @return Whether or not the Bukkit version is up-to-date
-	 */
-	// TODO: This isn't really needed anymore... remove?
-	private boolean checkDependencies()
-	{
-		PluginManager pm = getServer().getPluginManager();
-
-		try
-		{
-			Class.forName("org.bukkit.entity.Horse");
-		}
-		catch (ClassNotFoundException e)
-		{
-			outConsole(Level.WARNING, "UltimateArena has detected that you are using an outdated {0} build!", getServer().getName());
-			outConsole(Level.WARNING, "Builds below 1.6 have been known to cause game ending errors!");
-			outConsole(Level.WARNING, "Consider updating to the latest build!");
-
-			pm.disablePlugin(this);
-			return false;
-		}
-
-		return true;
 	}
 
 	/**

@@ -20,8 +20,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
- * Represents an ArenaSign, whether it be join or not
- * 
  * @author dmulloy2
  */
 
@@ -40,16 +38,16 @@ public class ArenaSign implements ConfigurationSerializable
 	private transient final UltimateArena plugin;
 
 	/**
-	 * Creates a new ArenaSign
+	 * Creates a new {@link ArenaSign}
 	 * 
 	 * @param plugin
-	 *            - {@link UltimateArena} plugin instance
+	 *        - {@link UltimateArena} plugin instance
 	 * @param loc
-	 *            - {@link Location} of the spawn
+	 *        - {@link Location} of the spawn
 	 * @param zone
-	 *            - {@link ArenaZone} that the sign is for
+	 *        - {@link ArenaZone} that the sign is for
 	 * @param id
-	 *            - The sign's ID
+	 *        - The sign's ID
 	 */
 	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone az, int id)
 	{
@@ -133,7 +131,7 @@ public class ArenaSign implements ConfigurationSerializable
 		{
 			sign.setLine(0, "[UltimateArena]");
 			sign.setLine(1, FormatUtil.format("&4Null Arena"));
-			
+
 			plugin.getSignHandler().deleteSign(this);
 			return;
 		}
@@ -153,6 +151,7 @@ public class ArenaSign implements ConfigurationSerializable
 					break;
 				case INGAME:
 					line.append(FormatUtil.format("&cIn-Game"));
+					break;
 				case DISABLED:
 					line.append(FormatUtil.format("&cDisabled"));
 					break;
