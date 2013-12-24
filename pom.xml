@@ -66,28 +66,6 @@
           <finalName>${project.name}</finalName>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <version>1.5.2</version>
-        <executions>
-          <execution>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <file>target/classes/plugin.yml</file>
-          <replacements>
-            <replacement>
-              <token>maven-version-string</token>
-              <value>${project.version} (Build ${project.build.number})</value>
-            </replacement>
-          </replacements>
-        </configuration>
-      </plugin>
     </plugins>
     <resources>
       <resource>

@@ -14,6 +14,7 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -25,39 +26,36 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class SignHandler
 {
-	private File signsSave;
+	private File file;
+	private FileConfiguration signsSave;
+
+	private List<ArenaSign> signs;
 
 	private final UltimateArena plugin;
 	public SignHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
 
-		load();
-	}
-
-	public void load()
-	{
 		try
 		{
-			this.signsSave = new File(plugin.getDataFolder(), "signs.yml");
-			if (! signsSave.exists())
+			this.file = new File(plugin.getDataFolder(), "signs.yml");
+			if (! file.exists())
 			{
-				signsSave.createNewFile();
+				if (! createNewSave(false))
+					return;
 			}
 
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
-			if (fc.isSet("total"))
+			this.signsSave = YamlConfiguration.loadConfiguration(file);
+			if (signsSave.isSet("total"))
 			{
-				signsSave.delete();
-				signsSave.createNewFile();
-
-				fc = YamlConfiguration.loadConfiguration(signsSave);
+				if (! createNewSave(true))
+					return;
 			}
 
 			// Dynamic ID's
 			int nextId = 1;
 
-			for (Entry<String, Object> value : fc.getValues(false).entrySet())
+			for (Entry<String, Object> value : signsSave.getValues(false).entrySet())
 			{
 				MemorySection mem = (MemorySection) value.getValue();
 
@@ -67,7 +65,7 @@ public class SignHandler
 					sign.setId(nextId);
 					nextId++;
 
-					plugin.getArenaSigns().add(sign);
+					signs.add(sign);
 				}
 			}
 
@@ -77,7 +75,7 @@ public class SignHandler
 				@Override
 				public void run()
 				{
-					updateSigns();
+					updateAllSigns();
 				}
 			}.runTaskLater(plugin, 120L);
 		}
@@ -87,26 +85,36 @@ public class SignHandler
 		}
 	}
 
-	public void save()
+	/**
+	 * Saves and clears all signs
+	 */
+	public final void onDisable()
 	{
+		// Save signs
+		save();
+
+		// Clear the list
+		signs.clear();
+	}
+
+	private final void save()
+	{
+		plugin.debug("Saving signs...");
+
 		try
 		{
-			if (signsSave.exists())
-			{
-				signsSave.delete();
-			}
-
-			signsSave.createNewFile();
-
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(signsSave);
+			if (! createNewSave(true))
+				return;
 
 			for (ArenaSign sign : getSigns())
 			{
+				plugin.debug("Saving sign: " + sign);
+
 				Map<String, Object> values = sign.serialize();
-				fc.set("" + sign.getId(), values);
+				signsSave.set("" + sign.getId(), values);
 			}
 
-			fc.save(signsSave);
+			signsSave.save(file);
 		}
 		catch (Exception e)
 		{
@@ -114,7 +122,27 @@ public class SignHandler
 		}
 	}
 
-	public final void updateSigns()
+	private final boolean createNewSave(boolean delete)
+	{
+		try
+		{
+			if (file.exists() && delete)
+			{
+				file.delete();
+			}
+
+			file.createNewFile();
+			signsSave = YamlConfiguration.loadConfiguration(file);
+			return true;
+		}
+		catch (Exception e)
+		{
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "creating new sign save"));
+			return false;
+		}
+	}
+
+	public final void updateAllSigns()
 	{
 		for (ArenaSign sign : getSigns())
 		{
@@ -133,13 +161,30 @@ public class SignHandler
 		return null;
 	}
 
+	public final void addSign(final ArenaSign sign)
+	{
+		signs.add(sign);
+
+		plugin.debug("Added new sign: {0}", sign);
+		
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				sign.update();
+			}
+		}.runTaskLater(plugin, 60L);
+
+	}
+
 	public final void deleteSign(ArenaSign sign)
 	{
 		plugin.debug("Deleting sign {0}!", sign.getId());
 
-		plugin.getArenaSigns().remove(sign);
+		signs.remove(sign);
 
-		updateSigns();
+		updateAllSigns();
 	}
 
 	public final void updateSigns(ArenaZone az)
@@ -168,6 +213,6 @@ public class SignHandler
 	 */
 	public final List<ArenaSign> getSigns()
 	{
-		return Util.newList(plugin.getArenaSigns());
+		return Util.newList(signs);
 	}
 }

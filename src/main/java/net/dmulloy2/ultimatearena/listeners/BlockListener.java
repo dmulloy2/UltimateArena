@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -119,20 +118,8 @@ public class BlockListener implements Listener
 								id = sign.getId();
 						}
 						
-						final ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
-						
-						plugin.getArenaSigns().add(sign);
-
-						plugin.debug("Added new sign: {0}", sign);
-						
-						new BukkitRunnable()
-						{
-							@Override
-							public void run()
-							{
-								sign.update();
-							}
-						}.runTaskLater(plugin, 60L);
+						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
+						plugin.getSignHandler().addSign(sign);
 
 						event.getPlayer().sendMessage(plugin.getPrefix() + 
 								FormatUtil.format("&aCreated new Join Sign!"));
@@ -159,20 +146,8 @@ public class BlockListener implements Listener
 								id = sign.getId();
 						}
 						
-						final ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
-						
-						plugin.getArenaSigns().add(sign);
-
-						plugin.debug("Added new sign: {0}", sign);
-						
-						new BukkitRunnable()
-						{
-							@Override
-							public void run()
-							{
-								sign.update();
-							}
-						}.runTaskLater(plugin, 60L);
+						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
+						plugin.getSignHandler().addSign(sign);
 
 						event.getPlayer().sendMessage(plugin.getPrefix() + 
 								FormatUtil.format("&aCreated new Join Sign!"));

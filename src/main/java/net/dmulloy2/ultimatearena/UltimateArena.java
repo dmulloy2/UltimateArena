@@ -145,7 +145,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
-	private @Getter List<ArenaSign> arenaSigns = new ArrayList<ArenaSign>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
 	private @Getter List<String> whitelistedCommands = new ArrayList<String>();
 	private @Getter List<String> pluginsUsingAPI = new ArrayList<String>();
@@ -260,7 +259,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		stopAll();
 
 		// Save Signs
-		signHandler.save();
+		signHandler.onDisable();
 
 		// Refresh arena saves
 		for (ArenaZone az : loadedArenas)
@@ -606,7 +605,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	public void loadSigns()
 	{
 		signHandler = new SignHandler(this);
-		outConsole("Loaded {0} arena signs!", arenaSigns.size());
+		outConsole("Loaded {0} arena signs!", signHandler.getSigns().size());
 	}
 
 	public ArenaConfig getConfig(String type)
@@ -1212,7 +1211,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		loadedArenas.clear();
 		activeArenas.clear();
 		makingArena.clear();
-		arenaSigns.clear();
 		waiting.clear();
 		classes.clear();
 		configs.clear();
