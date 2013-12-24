@@ -376,9 +376,9 @@ public class ArenaZone implements Reloadable
 		{
 			if (plugin.getEconomy() != null)
 			{
-				double money = cashReward;
+				double money = (double) cashReward;
 				if (rewardBasedOnXp)
-					money = (cashReward) * (ap.getGameXP() / 250.0D);
+					money = money * (ap.getGameXP() / 250.0D);
 
 				if (money > 0.0D)
 				{
