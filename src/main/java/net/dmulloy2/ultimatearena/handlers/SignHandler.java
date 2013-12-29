@@ -32,10 +32,10 @@ public class SignHandler
 	private List<ArenaSign> signs;
 
 	private final UltimateArena plugin;
-
 	public SignHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
+		this.signs = new ArrayList<ArenaSign>();
 
 		try
 		{
