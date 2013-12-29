@@ -7,7 +7,7 @@ description: The Ultimate in Minecraft death sports and spleef!
 load: postworld
 commands:
   ua:
-    description: Ultimate Arena base command
+    description: UltimateArena base command
     usage: /<command> <args>
     aliases: [ultimatearena]
 
@@ -82,9 +82,6 @@ permissions:
     default: false
   ultimatearena.reload:
     description: Allows the reloading of the UltimateArena plugin
-    default: false
-  ultimatearena.setdone:
-    description: Allows the usage of /ua done
     default: false
   ultimatearena.setpoint:
     description: Allows the usage of /ua setpoint

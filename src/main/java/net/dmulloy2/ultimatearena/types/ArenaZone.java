@@ -52,7 +52,6 @@ public class ArenaZone implements Reloadable
 
 	private FieldType type;
 
-	// TODO: Use SimpleVector
 	private Location lobby1;
 	private Location lobby2;
 	private Location arena1;
@@ -68,7 +67,6 @@ public class ArenaZone implements Reloadable
 	private transient Field arena;
 
 	private List<String> voted = new ArrayList<String>();
-	// TODO: Use SimpleVector
 	private List<Location> spawns = new ArrayList<Location>();
 	private List<Location> flags = new ArrayList<Location>();
 

@@ -6,23 +6,22 @@ package net.dmulloy2.ultimatearena.types;
 
 public enum Permission
 {
-	CLASS, 
+	CLASS,
 	CLASSLIST,
-	CREATE, 
+	CREATE,
 	DELETE,
 	DISABLE,
 	DISLIKE,
 	ENABLE,
 	FORCESTOP,
-	INFO, 
+	INFO,
 	JOIN,
 	JOIN_FORCE,
 	KICK,
-	LIKE, 
+	LIKE,
 	LIST,
 	PAUSE,
-	RELOAD, 
-	SETDONE, 
+	RELOAD,
 	SETPOINT,
 	SPECTATE,
 	START,
@@ -30,12 +29,11 @@ public enum Permission
 	STOP,
 	VERSION,
 
-	BUILD, 
+	BUILD,
 	BYPASS;
 
-	public final String node;
-
-	Permission()
+	private final String node;
+	private Permission()
 	{
 		this.node = toString().toLowerCase().replaceAll("_", ".");
 	}
