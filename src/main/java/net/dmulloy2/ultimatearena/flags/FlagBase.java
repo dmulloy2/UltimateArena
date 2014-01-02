@@ -30,6 +30,7 @@ public abstract class FlagBase
 		this.arena = arena;
 		this.location = location.clone().subtract(0, 1, 0);
 		this.plugin = plugin;
+		this.setup();
 	}
 
 	public FlagBase(Arena arena, ArenaLocation location, UltimateArena plugin)
