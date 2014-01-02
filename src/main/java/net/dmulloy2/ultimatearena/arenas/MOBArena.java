@@ -165,7 +165,7 @@ public class MOBArena extends Arena
 					{
 						for (int i = 0; i < mobPerWave; i++)
 						{
-							Location loc = az.getSpawns().get(Util.random(az.getSpawns().size()));
+							Location loc = az.getSpawns().get(Util.random(az.getSpawns().size())).getLocation();
 							String mob = spawning.get(Util.random(spawning.size()));
 							LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
 

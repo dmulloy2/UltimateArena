@@ -15,6 +15,7 @@ import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.tasks.ArenaFinalizeTask;
 import net.dmulloy2.ultimatearena.tasks.EntityClearTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
@@ -53,7 +54,7 @@ public abstract class Arena implements Reloadable
 	protected List<ArenaPlayer> toReward;
  
 	protected List<ArenaFlag> flags;
-	protected List<Location> spawns;
+	protected List<ArenaLocation> spawns;
 
 	private List<String> blacklistedClasses;
 	private List<String> whitelistedClasses;
@@ -116,7 +117,7 @@ public abstract class Arena implements Reloadable
 		this.inactive = new ArrayList<ArenaPlayer>();
 
 		this.flags = new ArrayList<ArenaFlag>();
-		this.spawns = new ArrayList<Location>();
+		this.spawns = new ArrayList<ArenaLocation>();
 
 		this.gameMode = Mode.LOBBY;
 
@@ -343,7 +344,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public Location getSpawn(ArenaPlayer ap)
 	{
-		Location loc = null;
+		ArenaLocation loc = null;
 		if (isInLobby())
 		{
 			loc = az.getLobbyREDspawn();
@@ -357,7 +358,7 @@ public abstract class Arena implements Reloadable
 				loc = az.getTeam2spawn();
 		}
 
-		return loc;
+		return loc.getLocation();
 	}
 
 	/**
@@ -637,7 +638,7 @@ public abstract class Arena implements Reloadable
 
 		if (! spawns.isEmpty())
 		{
-			return spawns.get(Util.random(spawns.size()));
+			return spawns.get(Util.random(spawns.size())).getLocation();
 		}
 
 		return null;

@@ -8,11 +8,11 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -30,10 +30,9 @@ public class BombFlag extends ArenaFlag
 	protected boolean fused;
 	protected boolean exploded;
 
-	public BombFlag(Arena arena, Location location, final UltimateArena plugin)
+	public BombFlag(Arena arena, ArenaLocation location, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
-
 		this.timer = 45;
 	}
 

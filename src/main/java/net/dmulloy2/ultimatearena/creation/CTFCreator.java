@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.creation;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.FieldType;
 
 import org.bukkit.Location;
@@ -62,8 +63,8 @@ public class CTFCreator extends ArenaCreator
 						return;
 					}
 
-					target.setArena1(arena1);
-					target.setArena2(arena2);
+					target.setArena1(new ArenaLocation(arena1));
+					target.setArena2(new ArenaLocation(arena2));
 
 					sendMessage("&3Arena points set!");
 					break; // Step completed
@@ -72,14 +73,14 @@ public class CTFCreator extends ArenaCreator
 				{
 					if (target.getArena1() == null)
 					{
-						target.setArena1(player.getLocation());
+						target.setArena1(new ArenaLocation(player));
 						sendMessage("&3First point set.");
 						sendMessage("&3Please set the &e2nd &3point.");
 						return;
 					}
 					else
 					{
-						target.setArena2(player.getLocation());
+						target.setArena2(new ArenaLocation(player));
 						sendMessage("&3Second point set!");
 						break; // Step completed
 					}
@@ -125,15 +126,15 @@ public class CTFCreator extends ArenaCreator
 						return;
 					}
 
-					target.setLobby1(lobby1);
-					target.setLobby2(lobby2);
+					target.setLobby1(new ArenaLocation(lobby1));
+					target.setLobby2(new ArenaLocation(lobby2));
 
 					sendMessage("&3Lobby points set!");
 					break; // Step completed
 				}
 				else
 				{
-					Location loc = player.getLocation();
+					ArenaLocation loc = new ArenaLocation(player);
 					if (plugin.isInArena(loc))
 					{
 						sendMessage("&cThis point overlaps an existing arena!");
@@ -148,14 +149,14 @@ public class CTFCreator extends ArenaCreator
 
 					if (target.getLobby1() == null)
 					{
-						target.setLobby1(player.getLocation());
+						target.setLobby1(new ArenaLocation(player));
 						sendMessage("&3First point set.");
 						sendMessage("&3Please set the &e2nd &3point.");
 						return;
 					}
 					else
 					{
-						target.setArena2(player.getLocation());
+						target.setArena2(new ArenaLocation(player));
 						sendMessage("&3Second point set!");
 						break; // Step completed
 					}
@@ -163,25 +164,25 @@ public class CTFCreator extends ArenaCreator
 			}
 			case 3:
 			{
-				target.setLobbyREDspawn(player.getLocation());
+				target.setLobbyREDspawn(new ArenaLocation(player));
 				sendMessage("&eRed &3team lobby spawn set.");
 				break; // Step completed
 			}
 			case 4:
 			{
-				target.setLobbyBLUspawn(player.getLocation());
+				target.setLobbyBLUspawn(new ArenaLocation(player));
 				sendMessage("&eBlue &3team lobby spawn set.");
 				break; // Step completed
 			}
 			case 5:
 			{
-				target.setTeam1spawn(player.getLocation());
+				target.setTeam1spawn(new ArenaLocation(player));
 				sendMessage("&eRed &3team arena spawn set.");
 				break; // Step completed
 			}
 			case 6:
 			{
-				target.setTeam2spawn(player.getLocation());
+				target.setTeam2spawn(new ArenaLocation(player));
 				sendMessage("&eBlue &3team arena spawn set.");
 				break; // Step completed
 			}
@@ -189,13 +190,13 @@ public class CTFCreator extends ArenaCreator
 			{
 				if (target.getFlags().isEmpty())
 				{
-					target.getFlags().add(player.getLocation());
+					target.getFlags().add(new ArenaLocation(player));
 					sendMessage("&e1&3/&e2 &3flag spawnpoints set.");
 					return;
 				}
 				else
 				{
-					target.getFlags().add(player.getLocation());
+					target.getFlags().add(new ArenaLocation(player));
 					sendMessage("&e2&3/&e2 &3flag spawnpoints set.");
 					break; // Step complete
 				}

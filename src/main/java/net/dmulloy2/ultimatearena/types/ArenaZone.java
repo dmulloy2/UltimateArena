@@ -52,14 +52,14 @@ public class ArenaZone implements Reloadable
 
 	private FieldType type;
 
-	private Location lobby1;
-	private Location lobby2;
-	private Location arena1;
-	private Location arena2;
-	private Location team1spawn;
-	private Location team2spawn;
-	private Location lobbyREDspawn;
-	private Location lobbyBLUspawn;
+	private ArenaLocation lobby1;
+	private ArenaLocation lobby2;
+	private ArenaLocation arena1;
+	private ArenaLocation arena2;
+	private ArenaLocation team1spawn;
+	private ArenaLocation team2spawn;
+	private ArenaLocation lobbyREDspawn;
+	private ArenaLocation lobbyBLUspawn;
 
 	private transient File file;
 
@@ -67,8 +67,8 @@ public class ArenaZone implements Reloadable
 	private transient Field arena;
 
 	private List<String> voted = new ArrayList<String>();
-	private List<Location> spawns = new ArrayList<Location>();
-	private List<Location> flags = new ArrayList<Location>();
+	private List<ArenaLocation> spawns = new ArrayList<ArenaLocation>();
+	private List<ArenaLocation> flags = new ArrayList<ArenaLocation>();
 
 	private transient World world;
 
@@ -115,8 +115,8 @@ public class ArenaZone implements Reloadable
 			}
 
 			// Set lobby parameters
-			lobby.setParam(lobby1.getWorld(), lobby1.getBlockX(), lobby1.getBlockZ(), lobby2.getBlockX(), lobby2.getBlockZ());
-			arena.setParam(arena1.getWorld(), arena1.getBlockX(), arena1.getBlockZ(), arena2.getBlockX(), arena2.getBlockZ());
+			lobby.setParam(lobby1.getWorld(), lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
+			arena.setParam(arena1.getWorld(), arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
 
 			// Add to the loaded arenas list
 			plugin.getLoadedArenas().add(this);

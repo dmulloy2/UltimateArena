@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.CTFArena;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.TeamHelper;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -38,6 +39,11 @@ public class CTFFlagBase extends FlagBase
 
 		flag.setTeam(team);
 		flag.colorize();
+	}
+
+	public CTFFlagBase(Arena arena, ArenaLocation location, int team, UltimateArena plugin)
+	{
+		this(arena, location.getLocation(), team, plugin);
 	}
 
 	@Override

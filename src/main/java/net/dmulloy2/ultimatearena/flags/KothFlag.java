@@ -10,11 +10,11 @@ import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.KOTHArena;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -26,10 +26,9 @@ public class KothFlag extends ArenaFlag
 	protected ArenaPlayer leader;
 	protected KOTHArena arena;
 
-	public KothFlag(KOTHArena arena, Location location, UltimateArena plugin)
+	public KothFlag(KOTHArena arena, ArenaLocation location, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
-
 		this.arena = arena;
 	}
 

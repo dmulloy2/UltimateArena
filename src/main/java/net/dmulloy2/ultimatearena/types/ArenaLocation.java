@@ -12,17 +12,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 
 /**
  * This class provides a lazy-load Location, so that World doesn't need to be
  * initialized yet when an object of this class is created, only when the
- * {@link Location} is first accessed.
+ * {@link Location} is first accessed. This class is also serializable and
+ * can easily be converted into a {@link Location} or {@link SimpleVector}
  * 
  * @author dmulloy2
  */
 
 @Getter
-public class LazyLocation implements ConfigurationSerializable
+public class ArenaLocation implements ConfigurationSerializable
 {
 	private transient Location location;
 	private transient SimpleVector simpleVector;
@@ -32,7 +34,7 @@ public class LazyLocation implements ConfigurationSerializable
 	private int y;
 	private int z;
 
-	public LazyLocation(String worldName, int x, int y, int z)
+	public ArenaLocation(String worldName, int x, int y, int z)
 	{
 		this.worldName = worldName;
 		this.x = x;
@@ -40,17 +42,32 @@ public class LazyLocation implements ConfigurationSerializable
 		this.z = z;
 	}
 
-	public LazyLocation(String worldName, int x, int z)
+	public ArenaLocation(String worldName, int x, int z)
 	{
 		this(worldName, x, 0, z);
 	}
 
-	public LazyLocation(Location location)
+	public ArenaLocation(World world, int x, int y, int z)
+	{
+		this(world.getName(), x, y, z);
+	}
+
+	public ArenaLocation(World world, int x, int z)
+	{
+		this(world.getName(), x, z);
+	}
+
+	public ArenaLocation(Location location)
 	{
 		this(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
 
-	public LazyLocation(Map<String, Object> args)
+	public ArenaLocation(Player player)
+	{
+		this(player.getLocation());
+	}
+
+	public ArenaLocation(Map<String, Object> args)
 	{
 		this.worldName = (String) args.get("worldName");
 		this.x = (int) args.get("x");

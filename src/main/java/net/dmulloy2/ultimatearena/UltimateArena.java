@@ -85,6 +85,7 @@ import net.dmulloy2.ultimatearena.listeners.ServerListener;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -657,6 +658,11 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		}
 
 		return false;
+	}
+
+	public boolean isInArena(ArenaLocation loc)
+	{
+		return isInArena(loc.getLocation());
 	}
 
 	public boolean isInArena(Entity entity)

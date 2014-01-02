@@ -6,12 +6,12 @@ import java.util.List;
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.DyeColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
@@ -31,7 +31,7 @@ public class ArenaFlag extends FlagBase
 
 	protected boolean capped;
 
-	public ArenaFlag(Arena arena, Location location, UltimateArena plugin)
+	public ArenaFlag(Arena arena, ArenaLocation location, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
 	}

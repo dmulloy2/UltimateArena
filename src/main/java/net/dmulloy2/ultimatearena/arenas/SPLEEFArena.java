@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.Random;
 
 import lombok.Getter;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
@@ -26,25 +27,18 @@ public class SPLEEFArena extends FFAArena
 	public SPLEEFArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.SPLEEF;
-//		this.maxGameTime = 600;
-//		this.startTimer = 80;
-//		this.maxDeaths = 2;
 
 		this.spleefGround = new Field3D();
-		Location pos1 = az.getFlags().get(0);
-		Location pos2 = az.getFlags().get(1);
-		spleefGround.setParam(pos1.getWorld(), pos1.getBlockX(), pos1.getBlockY(), pos1.getBlockZ(), pos2.getBlockX(), pos2.getBlockY(),
-				pos2.getBlockZ());
-
+		ArenaLocation pos1 = az.getFlags().get(0);
+		ArenaLocation pos2 = az.getFlags().get(1);
+		spleefGround.setParam(pos1.getWorld(), pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
 		spleefGround.setType(az.getSpecialType()); // Refresh the ground
 
 		this.outZone = new Field3D();
-		Location pos3 = az.getFlags().get(2);
-		Location pos4 = az.getFlags().get(3);
-		outZone.setParam(pos3.getWorld(), pos3.getBlockX(), pos3.getBlockY(), pos3.getBlockZ(), pos4.getBlockX(), pos3.getBlockY(),
-				pos3.getBlockZ());
+		ArenaLocation pos3 = az.getFlags().get(2);
+		ArenaLocation pos4 = az.getFlags().get(3);
+		outZone.setParam(pos3.getWorld(), pos3.getX(), pos3.getY(), pos3.getZ(), pos4.getX(), pos3.getY(), pos3.getZ());
 	}
 
 	@Override
