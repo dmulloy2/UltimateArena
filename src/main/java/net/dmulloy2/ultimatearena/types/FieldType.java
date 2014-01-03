@@ -1,10 +1,18 @@
 package net.dmulloy2.ultimatearena.types;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import lombok.Getter;
+
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+
 /**
  * @author dmulloy2
  */
 
-public enum FieldType
+@Getter
+public enum FieldType implements ConfigurationSerializable
 {
 	BOMB("bomb", "Bomb"), 
 	CONQUEST("cq", "CQ"), 
@@ -19,8 +27,7 @@ public enum FieldType
 
 	private String name;
 	private String stylized;
-
-	FieldType(String name, String stylized)
+	private FieldType(String name, String stylized)
 	{
 		this.name = name;
 		this.stylized = stylized;
@@ -39,16 +46,19 @@ public enum FieldType
 
 	public static boolean contains(String type)
 	{
-		return (getByName(type) != null);
+		return getByName(type) != null;
 	}
 
-	public String getName()
+	@Override
+	public Map<String, Object> serialize()
 	{
-		return name;
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("c", name);
+		return ret;
 	}
-	
-	public String stylize()
+
+	public static FieldType deserialize(Map<String, Object> args)
 	{
-		return stylized;
+		return FieldType.getByName((String) args.get("c"));
 	}
 }

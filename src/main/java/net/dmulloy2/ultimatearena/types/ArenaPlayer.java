@@ -398,4 +398,9 @@ public class ArenaPlayer
 	{
 		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
+
+	public final void teleport(ArenaLocation location)
+	{
+		teleport(location.getLocation());
+	}
 }

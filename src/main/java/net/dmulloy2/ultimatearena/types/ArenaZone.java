@@ -1,7 +1,9 @@
 package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -31,11 +34,9 @@ import org.bukkit.inventory.ItemStack;
 
 @Getter
 @Setter
-public class ArenaZone implements Reloadable
+public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
-	private int amtLobbys = 2;
 	private int maxPlayers = 24;
-	private int amtSpawnpoints = 2;
 
 	private int liked;
 	private int disliked;
@@ -66,7 +67,8 @@ public class ArenaZone implements Reloadable
 	private transient Field lobby;
 	private transient Field arena;
 
-	private List<String> voted = new ArrayList<String>();
+	private transient List<String> voted = new ArrayList<String>();
+
 	private List<ArenaLocation> spawns = new ArrayList<ArenaLocation>();
 	private List<ArenaLocation> flags = new ArrayList<ArenaLocation>();
 
@@ -397,70 +399,70 @@ public class ArenaZone implements Reloadable
 		}
 	}
 
-//  TODO: Use this when we convert to ConfigurationSerialization
-//	@Override
-//	@SuppressWarnings("rawtypes")
-//	public Map<String, Object> serialize()
-//	{
-//		Map<String, Object> data = new HashMap<String, Object>();
-//
-//		for (Field field : getClass().getDeclaredFields())
-//		{
-//			if (Modifier.isTransient(field.getModifiers()))
-//				continue;
-//
-//			try
-//			{
-//				boolean accessible = field.isAccessible();
-//
-//				field.setAccessible(true);
-//
-//				if (field.getType().equals(Integer.TYPE))
-//				{
-//					if (field.getInt(this) != 0)
-//						data.put(field.getName(), field.getInt(this));
-//				}
-//				else if (field.getType().equals(Long.TYPE))
-//				{
-//					if (field.getLong(this) != 0)
-//						data.put(field.getName(), field.getLong(this));
-//				}
-//				else if (field.getType().equals(Boolean.TYPE))
-//				{
-//					if (field.getBoolean(this))
-//						data.put(field.getName(), field.getBoolean(this));
-//				}
-//				else if (field.getType().isAssignableFrom(Collection.class))
-//				{
-//					if (! ((Collection) field.get(this)).isEmpty())
-//						data.put(field.getName(), field.get(this));
-//				}
-//				else if (field.getType().isAssignableFrom(String.class))
-//				{
-//					if (((String) field.get(this)) != null)
-//						data.put(field.getName(), field.get(this));
-//				}
-//				else if (field.getType().isAssignableFrom(Map.class))
-//				{
-//					if (! ((Map) field.get(this)).isEmpty())
-//						data.put(field.getName(), field.get(this));
-//				}
-//				else
-//				{
-//					if (field.get(this) != null)
-//						data.put(field.getName(), field.get(this));
-//				}
-//
-//				field.setAccessible(accessible);
-//
-//			}
-//			catch (Exception e)
-//			{
-//			}
-//		}
-//
-//		return data;
-//	}
+	@Override
+	@SuppressWarnings("rawtypes")
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> data = new HashMap<String, Object>();
+
+		for (java.lang.reflect.Field field : getClass().getDeclaredFields())
+		{
+			if (Modifier.isTransient(field.getModifiers()))
+				continue;
+
+			try
+			{
+				boolean accessible = field.isAccessible();
+
+				field.setAccessible(true);
+
+				if (field.getType().equals(Integer.TYPE))
+				{
+					if (field.getInt(this) != 0)
+						data.put(field.getName(), field.getInt(this));
+				}
+				else if (field.getType().equals(Long.TYPE))
+				{
+					if (field.getLong(this) != 0)
+						data.put(field.getName(), field.getLong(this));
+				}
+				else if (field.getType().equals(Boolean.TYPE))
+				{
+					if (field.getBoolean(this))
+						data.put(field.getName(), field.getBoolean(this));
+				}
+				else if (field.getType().isAssignableFrom(Collection.class))
+				{
+					if (! ((Collection) field.get(this)).isEmpty())
+						data.put(field.getName(), field.get(this));
+				}
+				else if (field.getType().isAssignableFrom(String.class))
+				{
+					if (((String) field.get(this)) != null)
+						data.put(field.getName(), field.get(this));
+				}
+				else if (field.getType().isAssignableFrom(Map.class))
+				{
+					if (! ((Map) field.get(this)).isEmpty())
+						data.put(field.getName(), field.get(this));
+				}
+				else
+				{
+					if (field.get(this) != null)
+						data.put(field.getName(), field.get(this));
+				}
+
+				field.setAccessible(accessible);
+
+			}
+			catch (Exception e)
+			{
+				//
+			}
+		}
+
+		return data;
+	}
 
 	@Override
 	public void reload()

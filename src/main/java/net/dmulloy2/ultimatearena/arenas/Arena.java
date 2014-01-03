@@ -235,12 +235,12 @@ public abstract class Arena implements Reloadable
 					if (announced == 0)
 					{
 						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&e{0} &3arena has been created!", type.stylize()));
+								FormatUtil.format("&e{0} &3arena has been created!", type.getStylized()));
 					}
 					else
 					{
 						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.stylize()));
+								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getStylized()));
 					}
 
 					player.sendMessage(plugin.getPrefix() + 
