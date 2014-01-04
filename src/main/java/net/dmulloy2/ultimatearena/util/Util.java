@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 public class Util
 {
 	/**
-	 * Gets the OfflinePlayer from a given string
+	 * Gets the Player from a given string
 	 * 
 	 * @param pl
 	 *        - String to match with a player
