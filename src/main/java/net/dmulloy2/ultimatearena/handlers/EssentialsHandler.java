@@ -26,6 +26,8 @@ import com.earth2me.essentials.User;
 
 public class EssentialsHandler
 {
+	private boolean useEssentials;
+
 	private final UltimateArena plugin;
 	public EssentialsHandler(UltimateArena plugin)
 	{
@@ -39,13 +41,24 @@ public class EssentialsHandler
 	{
 		try
 		{
-			return plugin.getEssentials() != null;
+			return useEssentials;
 		}
 		catch (Throwable ex)
 		{
 			plugin.getLogHandler().debug(Util.getUsefulStack(ex, "useEssentials()"));
 			return false;
 		}
+	}
+
+	/**
+	 * Sets whether or not to use essentials
+	 * 
+	 * @param useEssentials
+	 *        - Whether or not to use Essentials
+	 */
+	public final void setUseEssentials(boolean useEssentials)
+	{
+		this.useEssentials = useEssentials;
 	}
 
 	/**

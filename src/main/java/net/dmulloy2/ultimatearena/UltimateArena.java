@@ -174,7 +174,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		// Essentials
 		setupEssentialsIntegration();
-		essentialsHandler = new EssentialsHandler(this);
 
 		// WorldEdit
 		setupWorldEditIntegration();
@@ -373,26 +372,27 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 */
 	private void setupEssentialsIntegration()
 	{
-		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("Essentials"))
+		essentialsHandler = new EssentialsHandler(this);
+
+		try
 		{
-			try
+			PluginManager pm = getServer().getPluginManager();
+			if (pm.isPluginEnabled("Essentials"))
 			{
 				Plugin plugin = pm.getPlugin("Essentials");
 				if (plugin instanceof Essentials)
 				{
 					essentials = (Essentials) plugin;
+					essentialsHandler.setUseEssentials(true);
 
 					outConsole("Integration with Essentials successful!");
 					return;
 				}
 			}
-			catch (Throwable ex)
-			{
-				//
-			}
-
-			outConsole(Level.WARNING, "Could not hook into Essentials!");
+		}
+		catch (Throwable ex)
+		{
+			essentialsHandler.setUseEssentials(false);
 		}
 	}
 
@@ -863,28 +863,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		}
 		else
 		{
-//			These checks don't really do anything useful
-//
-//			boolean disabled = false;
-//
-//			for (Arena active : Util.newList(activeArenas))
-//			{
-//				if (active.getName().equalsIgnoreCase(name))
-//				{
-//					if (active.isDisabled())
-//						disabled = true;  
-//				}
-//			}
-//
-//			for (ArenaZone arenaZone : Util.newList(loadedArenas))
-//			{
-//				if (arenaZone.getArenaName().equalsIgnoreCase(name))
-//				{
-//					if (arenaZone.isDisabled())
-//						disabled = true;
-//				}
-//			}
-
 			if (az.isDisabled())
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cThis arena is disabled!"));

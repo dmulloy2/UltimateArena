@@ -28,6 +28,10 @@
       <id>sk89q-repo</id>
       <url>http://maven.sk89q.com/repo</url>
     </repository>
+    <repository>
+      <id>essentials-repo</id>
+      <url>http://repo.ess3.net/content/repositories/public/</url>
+    </repository>
   </repositories>
 
   <profiles>
@@ -115,16 +119,14 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.earth2me</groupId>
-      <artifactId>essentials</artifactId>
-      <version>2.12.108</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/lib/Essentials.jar</systemPath>
+      <groupId>net.ess3</groupId>
+      <artifactId>Essentials</artifactId>
+      <version>2.13-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.27</version>
+      <version>1.2.30</version>
     </dependency>
     <dependency>
       <groupId>com.sk89q</groupId>
