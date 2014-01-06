@@ -210,6 +210,14 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		this.worldName = world.getName();
 	}
 
+	public final World getWorld()
+	{
+		if (world == null)
+			world = plugin.getServer().getWorld(worldName);
+
+		return world;
+	}
+
 	// ---- Configuration ---- //
 
 	// Serializable variables
