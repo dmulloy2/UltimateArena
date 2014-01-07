@@ -32,7 +32,7 @@ public class SPLEEFArena extends FFAArena
 		ArenaLocation pos1 = az.getFlags().get(0);
 		ArenaLocation pos2 = az.getFlags().get(1);
 		this.spleefGround = new Field3D(pos1, pos2);
-		this.spleefGround.setType(az.getSpecialType()); // Refresh the ground
+		this.spleefGround.setType(az.getSpecialType().getBukkitMaterial()); // Refresh the ground
 
 		ArenaLocation pos3 = az.getFlags().get(2);
 		ArenaLocation pos4 = az.getFlags().get(3);
@@ -61,7 +61,7 @@ public class SPLEEFArena extends FFAArena
 		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
 
 		Material mat = b.getType();
-		if (mat == az.getSpecialType())
+		if (mat == az.getSpecialType().getBukkitMaterial())
 		{
 			ret = b.getLocation();
 		}
@@ -104,7 +104,7 @@ public class SPLEEFArena extends FFAArena
 		}
 		else
 		{
-			spleefGround.setType(az.getSpecialType()); // Refresh the ground
+			spleefGround.setType(az.getSpecialType().getBukkitMaterial()); // Refresh the ground
 
 			if (startingAmount > 1)
 			{

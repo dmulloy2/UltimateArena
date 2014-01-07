@@ -4,11 +4,10 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.ultimatearena.types.Material;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.MaterialUtil;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -206,7 +205,7 @@ public class SpleefCreator extends ArenaCreator
 				Material specialType = Material.QUARTZ_BLOCK;
 				if (args.length > 0)
 				{
-					Material material = MaterialUtil.getMaterial(args[0]);
+					Material material = Material.getMaterial(args[0]);
 					if (material != null)
 						specialType = material;
 				}

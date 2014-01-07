@@ -7,7 +7,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.ultimatearena.util.MaterialUtil;
+import net.dmulloy2.ultimatearena.types.Material;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -328,16 +328,6 @@ public class FileHandler
 
 			az.setWorldName(worldName);
 
-//			World world = plugin.getServer().getWorld(worldName);
-//			if (world == null)
-//			{
-//				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
-//				az.setLoaded(false);
-//				return;
-//			}
-//
-//			az.setWorld(world);
-
 			az.setLobby1(new ArenaLocation(worldName, fc.getInt("lobby1.x"), 0, fc.getInt("lobby1.z")));
 			az.setLobby2(new ArenaLocation(worldName, fc.getInt("lobby2.x"), 0, fc.getInt("lobby2.z")));
 
@@ -425,7 +415,7 @@ public class FileHandler
 			{
 				az.setLobbyREDspawn(new ArenaLocation(worldName, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
-				az.setSpecialType(MaterialUtil.getMaterial(fc.getString("specialType")));
+				az.setSpecialType(Material.getMaterial(fc.getString("specialType")));
 
 				for (int i = 0; i < 4; i++)
 				{

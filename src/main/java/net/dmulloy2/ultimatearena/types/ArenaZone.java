@@ -20,7 +20,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

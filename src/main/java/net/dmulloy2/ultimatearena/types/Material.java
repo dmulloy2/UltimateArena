@@ -1,9 +1,11 @@
 package net.dmulloy2.ultimatearena.types;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.map.MapView;
 import org.bukkit.material.Bed;
 import org.bukkit.material.Button;
@@ -53,7 +55,6 @@ import org.bukkit.material.Vine;
 import org.bukkit.material.WoodenStep;
 import org.bukkit.material.Wool;
 import org.bukkit.potion.Potion;
-import org.bukkit.util.Java15Compat;
 
 import com.google.common.collect.Maps;
 
@@ -63,7 +64,7 @@ import com.google.common.collect.Maps;
  * @author dmulloy2
  */
 
-public enum Material
+public enum Material implements ConfigurationSerializable
 {
     AIR(0, 0),
     STONE(1),
@@ -574,7 +575,7 @@ public enum Material
 	 */
 	public static Material getMaterial(final String name)
 	{
-		return BY_NAME.get(name);
+		return matchMaterial(name);
 	}
 
 	/**
@@ -590,9 +591,9 @@ public enum Material
 	 */
 	public static Material matchMaterial(final String name)
 	{
-		Validate.notNull(name, "Name cannot be null");
-
 		Material result = null;
+		if (name == null)
+			return result;
 
 		try
 		{
@@ -623,9 +624,10 @@ public enum Material
 			}
 			else
 			{
-				byId = Java15Compat.Arrays_copyOfRange(byId, 0, material.id + 2);
+				byId = Arrays.copyOfRange(byId, 0, material.id + 2);
 				byId[material.id] = material;
 			}
+
 			BY_NAME.put(material.name(), material);
 		}
 	}
@@ -641,5 +643,18 @@ public enum Material
 	public static Material getByBukkitMaterial(org.bukkit.Material bukkitMaterial)
 	{
 		return matchMaterial(bukkitMaterial.toString());
+	}
+
+	@Override
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("c", toString());
+		return ret;
+	}
+
+	public static Material deserialize(Map<String, Object> args)
+	{
+		return Material.getMaterial((String) args.get("c"));
 	}
 }

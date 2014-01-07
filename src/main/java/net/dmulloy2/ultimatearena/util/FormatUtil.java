@@ -4,8 +4,6 @@ import java.text.MessageFormat;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 
 /**
  * Util used for general formatting
@@ -19,9 +17,9 @@ public class FormatUtil
 	 * Formats a given string and its object
 	 * 
 	 * @param format
-	 *            - Base string
+	 *        - Base string
 	 * @param objects
-	 *            - Objects to format in
+	 *        - Objects to format in
 	 * @return Formatted string
 	 */
 	public static String format(String format, Object... objects)
@@ -31,48 +29,36 @@ public class FormatUtil
 	}
 
 	/**
-	 * Returns the "Friendly" name of a material
+	 * Returns the "Friendly" name of an {@link Enum} constant
 	 * 
 	 * @param mat
-	 *            - Material to get the "friendly" name for
-	 * @return The "friendly" name for the given material
+	 *        - Enum constant to get the "friendly" name for
+	 * @return The "friendly" name for the given enum constant
 	 */
-	public static String getFriendlyName(Material mat)
+	public static String getFriendlyName(Enum<?> e)
 	{
-		return getFriendlyName(mat.toString());
-	}
-
-	/**
-	 * Returns the "Friendly" name of an entity
-	 * 
-	 * @param mat
-	 *            - Entity to get the "friendly" name for
-	 * @return The "friendly" name for the given entity
-	 */
-	public static String getFriendlyName(EntityType entityType)
-	{
-		return getFriendlyName(entityType.toString());
+		return getFriendlyName(e.toString());
 	}
 
 	/**
 	 * Returns the "Friendly" version of a given string
 	 * 
 	 * @param mat
-	 *            - String to get the "friendly" version for
+	 *        - String to get the "friendly" version for
 	 * @return The "friendly" version of the given string
 	 */
 	public static String getFriendlyName(String string)
 	{
 		String ret = string.toLowerCase();
 		ret = ret.replaceAll("_", " ");
-		return (WordUtils.capitalize(ret));
+		return WordUtils.capitalize(ret);
 	}
 
 	/**
 	 * Returns the proper article of a given string
 	 * 
 	 * @param string
-	 *            - String to get the article for
+	 *        - String to get the article for
 	 * @return The article that should go with the string
 	 */
 	public static String getArticle(String string)
