@@ -725,19 +725,6 @@ public abstract class Arena implements Reloadable
 	{
 	}
 
-//	/**
-//	 * Teleports a player to the most ideal location
-//	 * 
-//	 * @param p
-//	 *            - Player to teleport
-//	 * @param loc
-//	 *            - Raw location
-//	 */
-//	public final void teleport(Player p, Location loc)
-//	{
-//		p.teleport(loc.clone().add(0.5D, 1.0D, 0.5D));
-//	}
-
 	/**
 	 * Called when an arena is updated
 	 */
@@ -893,7 +880,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// Make sure they're still online
-			if (! ap.getPlayer().isOnline())
+			if (! ap.isOnline())
 			{
 				// Attempt to end them
 				ap.leaveArena(LeaveReason.QUIT);
@@ -903,7 +890,7 @@ public abstract class Arena implements Reloadable
 			// End if they've reached the death limit
 			if (ap.getDeaths() >= getMaxDeaths())
 			{
-				if (ap.getPlayer().getHealth() > 0.0D)
+				if (ap.getHealth() > 0.0D)
 				{
 					ap.leaveArena(LeaveReason.DEATHS);
 				}
@@ -926,11 +913,9 @@ public abstract class Arena implements Reloadable
 				// Healing
 				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 				{
-					if (ap.getPlayer().getHealth() + 1 <= 20)
+					if (ap.getHealth() > 0 && ap.getHealth() + 1 <= 20)
 					{
-						if (ap.getPlayer().getHealth() < 0)
-							ap.getPlayer().setHealth(1);
-						ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
+						ap.setHealth(ap.getHealth() + 1);
 						ap.setHealTimer(2);
 					}
 				}
@@ -942,8 +927,8 @@ public abstract class Arena implements Reloadable
 					{
 						for (PotionEffect effect : ac.getPotionEffects())
 						{
-							if (! ap.getPlayer().hasPotionEffect(effect.getType()))
-								ap.getPlayer().addPotionEffect(effect);
+							if (! ap.hasPotionEffect(effect.getType()))
+								ap.addPotionEffect(effect);
 						}
 					}
 				}
@@ -1014,12 +999,12 @@ public abstract class Arena implements Reloadable
 		{
 			if (isInGame())
 			{
-				ap.getPlayer().setLevel(gameTimer);
+				ap.setLevel(gameTimer);
 			}
 
 			if (isInLobby())
 			{
-				ap.getPlayer().setLevel(startTimer);
+				ap.setLevel(startTimer);
 			}
 		}
 	}
@@ -1035,11 +1020,11 @@ public abstract class Arena implements Reloadable
 		plugin.debug("Returning {0} levels of xp for {1}", ap.getBaseLevel(), ap.getName());
 
 		// Clear XP
-		ap.getPlayer().setExp(0.0F);
-		ap.getPlayer().setLevel(0);
+		ap.setExp(0.0F);
+		ap.setLevel(0);
 
 		// Give Base XP
-		ap.getPlayer().setLevel(ap.getBaseLevel());
+		ap.setLevel(ap.getBaseLevel());
 	}
 
 	/**
@@ -1084,22 +1069,6 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
-//	/**
-//	 * Returns whether or not an arena is ingame
-//	 */
-//	public final boolean isInGame()
-//	{
-//		return startTimer < 1 && gameTimer > 0;
-//	}
-//
-//	/**
-//	 * Returns whether or not an arena is in the lobby
-//	 */
-//	public final boolean isInLobby()
-//	{
-//		return startTimer > 1;
-//	}
-	
 	/**
 	 * Returns a customized in-game leaderboard
 	 * 

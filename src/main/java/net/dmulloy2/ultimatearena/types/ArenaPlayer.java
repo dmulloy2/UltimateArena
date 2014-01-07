@@ -30,7 +30,7 @@ import org.bukkit.potion.PotionEffect;
 
 @Getter
 @Setter
-public class ArenaPlayer
+public class ArenaPlayer extends PlayerExtension
 {
 	private int kills;
 	private int deaths;
@@ -46,7 +46,7 @@ public class ArenaPlayer
 	private boolean canReward;
 	private boolean changeClassOnRespawn;
 
-	private Player player;
+	private Player base;
 
 	private String name;
 
@@ -71,7 +71,8 @@ public class ArenaPlayer
 	 */
 	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
-		this.player = player;
+		super(player);
+		this.base = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
 
@@ -83,15 +84,15 @@ public class ArenaPlayer
 	/**
 	 * Decides the player's hat
 	 */
-	public void decideHat()
+	public final void decideHat()
 	{
 		if (arenaClass != null && ! arenaClass.isUsesHelmet())
 		{
-			player.getInventory().setHelmet(null);
+			getInventory().setHelmet(null);
 			return;
 		}
 
-		if (player.getInventory().getHelmet() == null)
+		if (getInventory().getHelmet() == null)
 		{
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
@@ -100,7 +101,7 @@ public class ArenaPlayer
 				teamColor = Color.BLUE;
 			meta.setColor(teamColor);
 			itemStack.setItemMeta(meta);
-			player.getInventory().setHelmet(itemStack);
+			getInventory().setHelmet(itemStack);
 		}
 	}
 
@@ -110,9 +111,9 @@ public class ArenaPlayer
 	 * @param stack
 	 *            - {@link ItemStack} to give the player
 	 */
-	public void giveItem(ItemStack stack)
+	public final void giveItem(ItemStack stack)
 	{
-		InventoryHelper.addItem(player, stack);
+		InventoryHelper.addItem(getPlayer(), stack);
 	}
 
 	/**
@@ -123,21 +124,21 @@ public class ArenaPlayer
 	 * @param stack
 	 *            - {@link ItemStack} to give as armor
 	 */
-	public void giveArmor(int slot, ItemStack stack)
+	public final void giveArmor(int slot, ItemStack stack)
 	{
 		if (stack != null)
 		{
 			if (slot == 0)
 			{
-				player.getInventory().setChestplate(stack);
+				getInventory().setChestplate(stack);
 			}
 			if (slot == 1)
 			{
-				player.getInventory().setLeggings(stack);
+				getInventory().setLeggings(stack);
 			}
 			if (slot == 2)
 			{
-				player.getInventory().setBoots(stack);
+				getInventory().setBoots(stack);
 			}
 		}
 	}
@@ -145,25 +146,25 @@ public class ArenaPlayer
 	/**
 	 * Saves the player's inventory
 	 */
-	public void saveInventory()
+	public final void saveInventory()
 	{
 		if (plugin.getConfig().getBoolean("saveInventories", true))
 		{
-			this.inventoryContents = player.getInventory().getContents();
-			this.armorContents = player.getInventory().getArmorContents();
+			this.inventoryContents = getInventory().getContents();
+			this.armorContents = getInventory().getArmorContents();
 		}
 	}
 
 	/**
 	 * Clears the player's inventory
 	 */
-	public void clearInventory()
+	public final void clearInventory()
 	{
 		// Close any open inventories
-		player.closeInventory();
+		closeInventory();
 
 		// Clear their inventory
-		PlayerInventory inv = player.getInventory();
+		PlayerInventory inv = getInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -175,19 +176,19 @@ public class ArenaPlayer
 	/**
 	 * Returns the player's inventory
 	 */
-	public void returnInventory()
+	public final void returnInventory()
 	{
 		if (plugin.getConfig().getBoolean("saveInventories", true))
 		{
-			player.getInventory().setContents(inventoryContents);
-			player.getInventory().setArmorContents(armorContents);
+			getInventory().setContents(inventoryContents);
+			getInventory().setArmorContents(armorContents);
 		}
 	}
 
 	/**
 	 * Readies the player for spawning
 	 */
-	public void spawn()
+	public final void spawn()
 	{
 		if (amtKicked > 10)
 		{
@@ -209,7 +210,7 @@ public class ArenaPlayer
 	 * 
 	 * @return Whether or not the operation was successful
 	 */
-	public boolean setClass(ArenaClass ac)
+	public final boolean setClass(ArenaClass ac)
 	{
 		if (arena.isValidClass(ac))
 		{
@@ -227,7 +228,7 @@ public class ArenaPlayer
 	/**
 	 * Gives the player their class items
 	 */
-	public void giveClassItems()
+	public final void giveClassItems()
 	{
 		if (! arena.isInGame())
 			return;
@@ -267,11 +268,11 @@ public class ArenaPlayer
 	/**
 	 * Clears a player's potion effects
 	 */
-	public void clearPotionEffects()
+	public final void clearPotionEffects()
 	{
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for (PotionEffect effect : getActivePotionEffects())
 		{
-			player.removePotionEffect(effect.getType());
+			removePotionEffect(effect.getType());
 		}
 	}
 
@@ -283,9 +284,15 @@ public class ArenaPlayer
 	 * @param objects
 	 *            - Objects to format in
 	 */
-	public void sendMessage(String string, Object... objects)
+	public final void sendMessage(String string, Object... objects)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		super.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+	}
+
+	@Override
+	public final void sendMessage(String string)
+	{
+		sendMessage(string, new Object[0]);
 	}
 
 	/**
@@ -294,7 +301,7 @@ public class ArenaPlayer
 	 * @param xp
 	 *            - XP to give the player
 	 */
-	public void addXP(int xp)
+	public final void addXP(int xp)
 	{
 		this.gameXP += xp;
 	}
@@ -305,7 +312,7 @@ public class ArenaPlayer
 	 * @param xp
 	 *            - XP to subtract
 	 */
-	public void subtractXP(int xp)
+	public final void subtractXP(int xp)
 	{
 		this.gameXP -= xp;
 	}
@@ -315,7 +322,7 @@ public class ArenaPlayer
 	 * 
 	 * @return KDR
 	 */
-	public double getKDR()
+	public final double getKDR()
 	{
 		double k = (double) kills;
 		if (deaths == 0)
@@ -332,7 +339,7 @@ public class ArenaPlayer
 	 * 
 	 * @return Whether or not the player is dead
 	 */
-	public boolean isDead()
+	public final boolean isDead()
 	{
 		return (System.currentTimeMillis() - deathTime) < 60L;
 	}
@@ -340,7 +347,7 @@ public class ArenaPlayer
 	/**
 	 * Handles the player's death
 	 */
-	public void onDeath()
+	public final void onDeath()
 	{
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
@@ -355,7 +362,7 @@ public class ArenaPlayer
 	 * @param reason
 	 *            - Reason the player is leaving
 	 */
-	public void leaveArena(LeaveReason reason)
+	public final void leaveArena(LeaveReason reason)
 	{
 		switch (reason)
 		{
@@ -394,13 +401,14 @@ public class ArenaPlayer
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
-	public final void teleport(Location location)
+	@Override
+	public final boolean teleport(Location location)
 	{
-		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		return super.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
-	public final void teleport(ArenaLocation location)
+	public final boolean teleport(ArenaLocation location)
 	{
-		teleport(location.getLocation());
+		return teleport(location.getLocation());
 	}
 }
