@@ -117,8 +117,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			}
 
 			// Set lobby parameters
-			lobby.setParam(lobby1.getWorld(), lobby1.getX(), lobby1.getZ(), lobby2.getX(), lobby2.getZ());
-			arena.setParam(arena1.getWorld(), arena1.getX(), arena1.getZ(), arena2.getX(), arena2.getZ());
+			lobby.setParam(lobby1, lobby2);
+			arena.setParam(arena1, arena2);
 
 			// Add to the loaded arenas list
 			plugin.getLoadedArenas().add(this);

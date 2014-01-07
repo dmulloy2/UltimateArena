@@ -2,7 +2,6 @@ package net.dmulloy2.ultimatearena.types;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 
 /**
@@ -16,26 +15,27 @@ public class Field3D extends Field
 
 	private int height;
 
-	public Field3D(World world, int maxx, int maxy, int maxz, int minx, int miny, int minz)
+	public Field3D(ArenaLocation max, ArenaLocation min)
 	{
-		setParam(world, maxx, maxy, maxz, minx, miny, minz);
+		setParam(max, min);
 	}
 
 	public Field3D()
 	{
 	}
 
-	public void setParam(World world, int maxx, int maxy, int maxz, int minx, int miny, int minz)
+	@Override
+	public void setParam(ArenaLocation max, ArenaLocation min)
 	{
-		super.setParam(world, maxx, maxz, minx, minz);
+		super.setParam(max, min);
 
-		this.maxy = maxy;
-		this.miny = miny;
+		this.maxy = max.getY();
+		this.miny = min.getY();
 
 		if (miny > maxy)
 		{
-			this.maxy = miny;
-			this.miny = maxy;
+			this.maxy = min.getY();
+			this.miny = max.getY();
 		}
 
 		this.height = maxy - miny;
@@ -43,7 +43,7 @@ public class Field3D extends Field
 
 	public Block getBlockAt(int x, int y, int z)
 	{
-		return world.getBlockAt(minx + x, miny + y, minz + z);
+		return getWorld().getBlockAt(minx + x, miny + y, minz + z);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class Field3D extends Field
 		if (super.isInside(loc))
 		{
 			int locy = loc.getBlockY();
-			return (locy >= miny && locy <= maxy);
+			return locy >= miny && locy <= maxy;
 		}
 
 		return false;
@@ -76,7 +76,7 @@ public class Field3D extends Field
 			{
 				for (int z = minz; z <= maxz; z++)
 				{
-					Block b = world.getBlockAt(x, y, z);
+					Block b = getWorld().getBlockAt(x, y, z);
 					b.setType(mat);
 				}
 			}

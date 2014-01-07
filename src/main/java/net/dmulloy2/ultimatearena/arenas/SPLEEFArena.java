@@ -29,16 +29,14 @@ public class SPLEEFArena extends FFAArena
 		super(az);
 		this.type = FieldType.SPLEEF;
 
-		this.spleefGround = new Field3D();
 		ArenaLocation pos1 = az.getFlags().get(0);
 		ArenaLocation pos2 = az.getFlags().get(1);
-		spleefGround.setParam(pos1.getWorld(), pos1.getX(), pos1.getY(), pos1.getZ(), pos2.getX(), pos2.getY(), pos2.getZ());
-		spleefGround.setType(az.getSpecialType()); // Refresh the ground
+		this.spleefGround = new Field3D(pos1, pos2);
+		this.spleefGround.setType(az.getSpecialType()); // Refresh the ground
 
-		this.outZone = new Field3D();
 		ArenaLocation pos3 = az.getFlags().get(2);
 		ArenaLocation pos4 = az.getFlags().get(3);
-		outZone.setParam(pos3.getWorld(), pos3.getX(), pos3.getY(), pos3.getZ(), pos4.getX(), pos3.getY(), pos3.getZ());
+		this.outZone = new Field3D(pos3, pos4);
 	}
 
 	@Override

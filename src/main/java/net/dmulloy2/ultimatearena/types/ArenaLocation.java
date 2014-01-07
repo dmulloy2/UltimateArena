@@ -26,10 +26,12 @@ import org.bukkit.entity.Player;
 @Getter
 public class ArenaLocation implements ConfigurationSerializable
 {
+	private transient World world;
 	private transient Location location;
 	private transient SimpleVector simpleVector;
 
 	private String worldName;
+
 	private int x;
 	private int y;
 	private int z;
@@ -77,7 +79,10 @@ public class ArenaLocation implements ConfigurationSerializable
 
 	public World getWorld()
 	{
-		return Bukkit.getWorld(worldName);
+		if (world == null)
+			world = Bukkit.getWorld(worldName);
+
+		return world;
 	}
 
 	/**
@@ -90,7 +95,7 @@ public class ArenaLocation implements ConfigurationSerializable
 			return;
 
 		// get World; hopefully it's initialized at this point
-		World world = Bukkit.getWorld(worldName);
+		World world = getWorld();
 		if (world == null)
 			return;
 

@@ -81,7 +81,6 @@ import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
-import net.dmulloy2.ultimatearena.listeners.ServerListener;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
@@ -121,9 +120,6 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 public class UltimateArena extends JavaPlugin implements Reloadable
 {
-	// Economy
-	private @Getter Economy economy;
-
 	// Handlers
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter SpectatingHandler spectatingHandler;
@@ -132,15 +128,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private @Getter SignHandler signHandler;
 	private @Getter LogHandler logHandler;
 
-	// WorldEdit
+	// Integration
+	private @Getter Economy economy;
+	private @Getter Essentials essentials;
 	private @Getter WorldEditPlugin worldEdit;
 	private @Getter WorldEditHandler worldEditHandler;
-
-	// Essentials
-	private @Getter Essentials essentials;
 	private @Getter EssentialsHandler essentialsHandler;
 
-	// Lists
+	// Lists and Maps
 	private @Getter HashMap<Player, ArenaJoinTask> waiting = new HashMap<Player, ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
@@ -152,7 +147,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private List<Arena> activeArenas = new ArrayList<Arena>();
 
 	private @Getter boolean stopping;
-	private @Getter boolean delayedStartup;
 
 	// Global prefix
 	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
@@ -169,15 +163,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		commandHandler = new CommandHandler(this);
 		fileHandler = new FileHandler(this);
 
-		// Vault
+		// Integration
 		setupVaultIntegration();
-
-		// Essentials
 		setupEssentialsIntegration();
-
-		// WorldEdit
 		setupWorldEditIntegration();
-		worldEditHandler = new WorldEditHandler(this);
 
 		// IO Stuff
 		checkDirectories();
@@ -216,22 +205,12 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		pm.registerEvents(new PlayerListener(this), this);
 
 		// Register serializables
+		ConfigurationSerialization.registerClass(ArenaLocation.class);
 		ConfigurationSerialization.registerClass(SimpleVector.class);
 		ConfigurationSerialization.registerClass(ArenaSign.class);
 
-		// Determines whether or not we need to delay loading to account for Multiverse
-		// If the plugin is found, but not enabled, we will delay the startup so worlds wont be null
-		// If the plugin is found and enabled, we will enable as normal
-		if (pm.getPlugin("Multiverse-Core") != null && ! pm.isPluginEnabled("Multiverse-Core"))
-		{
-			outConsole("Delaying the loading of Arenas until after Multiverse loads!");
-			pm.registerEvents(new ServerListener(this), this);
-			delayedStartup = true;
-		}
-
-		// If we aren't delaying the startup, load files as normal
-		if (! delayedStartup)
-			loadFiles();
+		// Load files
+		loadFiles();
 
 		// Arena Updater, runs every second
 		new ArenaUpdateTask().runTaskTimer(this, 2L, TimeUtil.toTicks(1));
@@ -340,30 +319,60 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	}
 
 	/**
+	 * Sets up integration with Vault Economy
+	 */
+	public void setupVaultIntegration()
+	{
+		try
+		{
+			PluginManager pm = getServer().getPluginManager();
+			if (pm.isPluginEnabled("Vault"))
+			{
+				RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+				if (economyProvider != null)
+				{
+					economy = economyProvider.getProvider();
+	
+					outConsole("Enabled economy through {0}!", economy.getName());
+				}
+				else
+				{
+					outConsole("Failed to hook into Vault economy.");
+				}
+			}
+		}
+		catch (Throwable ex)
+		{
+			//
+		}
+	}
+
+	/**
 	 * Sets up integration with WorldEdit
 	 */
 	private void setupWorldEditIntegration()
 	{
-		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("WorldEdit"))
+		worldEditHandler = new WorldEditHandler(this);
+
+		try
 		{
-			try
+			PluginManager pm = getServer().getPluginManager();
+			if (pm.isPluginEnabled("WorldEdit"))
 			{
 				Plugin plugin = pm.getPlugin("WorldEdit");
 				if (plugin instanceof WorldEditPlugin)
 				{
 					worldEdit = (WorldEditPlugin) plugin;
+					worldEditHandler.setUseWorldEdit(getConfig().getBoolean("useWorldEdit", true));
 
 					outConsole("Integration with WorldEdit successful!");
 					return;
 				}
 			}
-			catch (Throwable ex)
-			{
-				//
-			}
-
-			outConsole(Level.WARNING, "Could not hook into WorldEdit!");
+		}
+		catch (Throwable ex)
+		{
+			worldEditHandler.setUseWorldEdit(false);
 		}
 	}
 
@@ -1164,28 +1173,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		waiting.clear();
 		classes.clear();
 		configs.clear();
-	}
-
-	/**
-	 * Vault {@link Economy} integration
-	 */
-	public void setupVaultIntegration()
-	{
-		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("Vault"))
-		{
-			RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-			if (economyProvider != null)
-			{
-				economy = economyProvider.getProvider();
-
-				outConsole("Enabled economy through {0}!", economy.getName());
-			}
-			else
-			{
-				outConsole("Failed to hook into Vault economy.");
-			}
-		}
 	}
 
 	/**
