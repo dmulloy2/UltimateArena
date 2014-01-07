@@ -284,7 +284,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
-		sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
