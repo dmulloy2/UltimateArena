@@ -46,7 +46,7 @@ public class ArenaPlayer extends PlayerExtension
 	private boolean canReward;
 	private boolean changeClassOnRespawn;
 
-	private Player base;
+	private Player player;
 
 	private String name;
 
@@ -71,8 +71,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
-		super(player);
-		this.base = player;
+		this.player = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
 
@@ -88,20 +87,19 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		if (arenaClass != null && ! arenaClass.isUsesHelmet())
 		{
-			getInventory().setHelmet(null);
+			player.getInventory().setHelmet(null);
 			return;
 		}
 
-		if (getInventory().getHelmet() == null)
+		if (player.getInventory().getHelmet() == null)
 		{
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
 			Color teamColor = Color.RED;
-			if (getTeam() == 2)
-				teamColor = Color.BLUE;
+			if (team == 2) teamColor = Color.BLUE;
 			meta.setColor(teamColor);
 			itemStack.setItemMeta(meta);
-			getInventory().setHelmet(itemStack);
+			player.getInventory().setHelmet(itemStack);
 		}
 	}
 
@@ -113,7 +111,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void giveItem(ItemStack stack)
 	{
-		InventoryHelper.addItem(getPlayer(), stack);
+		InventoryHelper.addItem(player.getPlayer(), stack);
 	}
 
 	/**
@@ -130,15 +128,15 @@ public class ArenaPlayer extends PlayerExtension
 		{
 			if (slot == 0)
 			{
-				getInventory().setChestplate(stack);
+				player.getInventory().setChestplate(stack);
 			}
 			if (slot == 1)
 			{
-				getInventory().setLeggings(stack);
+				player.getInventory().setLeggings(stack);
 			}
 			if (slot == 2)
 			{
-				getInventory().setBoots(stack);
+				player.getInventory().setBoots(stack);
 			}
 		}
 	}
@@ -150,8 +148,8 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		if (plugin.getConfig().getBoolean("saveInventories", true))
 		{
-			this.inventoryContents = getInventory().getContents();
-			this.armorContents = getInventory().getArmorContents();
+			this.inventoryContents = player.getInventory().getContents();
+			this.armorContents = player.getInventory().getArmorContents();
 		}
 	}
 
@@ -161,10 +159,10 @@ public class ArenaPlayer extends PlayerExtension
 	public final void clearInventory()
 	{
 		// Close any open inventories
-		closeInventory();
+		player.closeInventory();
 
 		// Clear their inventory
-		PlayerInventory inv = getInventory();
+		PlayerInventory inv = player.getInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -180,8 +178,8 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		if (plugin.getConfig().getBoolean("saveInventories", true))
 		{
-			getInventory().setContents(inventoryContents);
-			getInventory().setArmorContents(armorContents);
+			player.getInventory().setContents(inventoryContents);
+			player.getInventory().setArmorContents(armorContents);
 		}
 	}
 
@@ -270,9 +268,9 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void clearPotionEffects()
 	{
-		for (PotionEffect effect : getActivePotionEffects())
+		for (PotionEffect effect : player.getActivePotionEffects())
 		{
-			removePotionEffect(effect.getType());
+			player.removePotionEffect(effect.getType());
 		}
 	}
 
@@ -286,13 +284,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
-		super.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
-	}
-
-	@Override
-	public final void sendMessage(String string)
-	{
-		sendMessage(string, new Object[0]);
+		sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
@@ -401,14 +393,13 @@ public class ArenaPlayer extends PlayerExtension
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
-	@Override
-	public final boolean teleport(Location location)
+	public final void teleport(Location location)
 	{
-		return super.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
-	public final boolean teleport(ArenaLocation location)
+	public final void teleport(ArenaLocation location)
 	{
-		return teleport(location.getLocation());
+		 teleport(location.getLocation());
 	}
 }

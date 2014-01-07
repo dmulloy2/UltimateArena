@@ -880,7 +880,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// Make sure they're still online
-			if (! ap.isOnline())
+			if (! ap.getPlayer().isOnline())
 			{
 				// Attempt to end them
 				ap.leaveArena(LeaveReason.QUIT);
@@ -890,7 +890,7 @@ public abstract class Arena implements Reloadable
 			// End if they've reached the death limit
 			if (ap.getDeaths() >= getMaxDeaths())
 			{
-				if (ap.getHealth() > 0.0D)
+				if (ap.getPlayer().getHealth() > 0.0D)
 				{
 					ap.leaveArena(LeaveReason.DEATHS);
 				}
@@ -913,9 +913,9 @@ public abstract class Arena implements Reloadable
 				// Healing
 				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 				{
-					if (ap.getHealth() > 0 && ap.getHealth() + 1 <= 20)
+					if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
 					{
-						ap.setHealth(ap.getHealth() + 1);
+						ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
 						ap.setHealTimer(2);
 					}
 				}
@@ -927,8 +927,8 @@ public abstract class Arena implements Reloadable
 					{
 						for (PotionEffect effect : ac.getPotionEffects())
 						{
-							if (! ap.hasPotionEffect(effect.getType()))
-								ap.addPotionEffect(effect);
+							if (! ap.getPlayer().hasPotionEffect(effect.getType()))
+								ap.getPlayer().addPotionEffect(effect);
 						}
 					}
 				}
@@ -999,12 +999,12 @@ public abstract class Arena implements Reloadable
 		{
 			if (isInGame())
 			{
-				ap.setLevel(gameTimer);
+				ap.getPlayer().setLevel(gameTimer);
 			}
 
 			if (isInLobby())
 			{
-				ap.setLevel(startTimer);
+				ap.getPlayer().setLevel(startTimer);
 			}
 		}
 	}
@@ -1020,11 +1020,11 @@ public abstract class Arena implements Reloadable
 		plugin.debug("Returning {0} levels of xp for {1}", ap.getBaseLevel(), ap.getName());
 
 		// Clear XP
-		ap.setExp(0.0F);
-		ap.setLevel(0);
+		ap.getPlayer().setExp(0.0F);
+		ap.getPlayer().setLevel(0);
 
 		// Give Base XP
-		ap.setLevel(ap.getBaseLevel());
+		ap.getPlayer().setLevel(ap.getBaseLevel());
 	}
 
 	/**
