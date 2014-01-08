@@ -84,10 +84,10 @@ public class PlayerListener implements Listener
 
 		if (plugin.isPlayerWaiting(player))
 		{
-			ArenaJoinTask task = plugin.getWaiting().get(player);
+			ArenaJoinTask task = plugin.getWaiting().get(player.getName());
 
 			task.cancel();
-			plugin.getWaiting().remove(player);
+			plugin.getWaiting().remove(player.getName());
 		}
 
 		if (plugin.getSpectatingHandler().isSpectating(player))
@@ -326,7 +326,7 @@ public class PlayerListener implements Listener
 			Player player = event.getPlayer();
 			if (plugin.isPlayerWaiting(player))
 			{
-				ArenaJoinTask task = plugin.getWaiting().get(player);
+				ArenaJoinTask task = plugin.getWaiting().get(player.getName());
 
 				task.cancel();
 				plugin.getWaiting().remove(player);

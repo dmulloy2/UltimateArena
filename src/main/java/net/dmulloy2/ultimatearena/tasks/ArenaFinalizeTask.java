@@ -6,7 +6,11 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public final class ArenaFinalizeTask extends BukkitRunnable
+/**
+ * @author dmulloy2
+ */
+
+public class ArenaFinalizeTask extends BukkitRunnable
 {
 	private final Arena arena;
 	private final UltimateArena plugin;
@@ -20,9 +24,7 @@ public final class ArenaFinalizeTask extends BukkitRunnable
 	public void run()
 	{
 		plugin.removeActiveArena(arena);
-
 		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(arena.getName()));
-
 		arena.finalize();
 	}
 }

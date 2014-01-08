@@ -136,7 +136,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private @Getter EssentialsHandler essentialsHandler;
 
 	// Lists and Maps
-	private @Getter HashMap<Player, ArenaJoinTask> waiting = new HashMap<Player, ArenaJoinTask>();
+	private @Getter HashMap<String, ArenaJoinTask> waiting = new HashMap<String, ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
@@ -808,14 +808,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			return;
 		}
 
-		ArenaJoinTask join = new ArenaJoinTask(this, player, arena);
+		ArenaJoinTask join = new ArenaJoinTask(player.getName(), arena, this);
 		if (getConfig().getBoolean("joinTimer.enabled"))
 		{
 			int seconds = getConfig().getInt("joinTimer.wait");
 			int wait = seconds * 20;
 
 			join.runTaskLater(this, wait);
-			waiting.put(player, join);
+			waiting.put(player.getName(), join);
 
 			player.sendMessage(prefix + FormatUtil.format("&3Please stand still for &e{0} &3seconds!", seconds));
 		}
@@ -1232,7 +1232,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	public final boolean isPlayerWaiting(Player player)
 	{
-		return waiting.containsKey(player);
+		return waiting.containsKey(player.getName());
 	}
 
 	/**

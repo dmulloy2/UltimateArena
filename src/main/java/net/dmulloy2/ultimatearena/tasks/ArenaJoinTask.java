@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.tasks;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -11,27 +12,34 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ArenaJoinTask extends BukkitRunnable
 {
+	private final String arenaName;
+	private final String playerName;
 	private final UltimateArena plugin;
-	private final Player player;
-	private final String name;
-
-	public ArenaJoinTask(final UltimateArena plugin, final Player player, final String name)
+	public ArenaJoinTask(String playerName, String arenaName, UltimateArena plugin)
 	{
+		this.playerName = playerName;
+		this.arenaName = arenaName;
 		this.plugin = plugin;
-		this.player = player;
-		this.name = name;
 	}
 
 	@Override
 	public void run()
 	{
-		plugin.getWaiting().remove(player);
+		Player player = getPlayer();
+		if (player != null)
+		{
+			plugin.join(player, arenaName);
+		}
+		else
+		{
+			cancel();
+		}
 
-		plugin.join(player, name);
+		plugin.getWaiting().remove(playerName);
 	}
 
 	public final Player getPlayer()
 	{
-		return player;
+		return Util.matchPlayer(playerName);
 	}
 }

@@ -1247,4 +1247,28 @@ public abstract class Arena implements Reloadable
 				team2size++;
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o instanceof Arena)
+		{
+			Arena a = (Arena) o;
+			return a.getName().equals(name);
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return "Arena { name = " + name + " }";
+	}
 }
