@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -20,12 +21,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class EntityClearTask extends BukkitRunnable
 {
-	private final Arena arena;
 	private final World world;
+	private final ArenaZone az;
 	private final UltimateArena plugin;
 	public EntityClearTask(Arena arena)
 	{
-		this.arena = arena;
+		this.az = arena.getAz();
 		this.world = arena.getWorld();
 		this.plugin = arena.getPlugin();
 	}
@@ -58,9 +59,9 @@ public class EntityClearTask extends BukkitRunnable
 		{
 			if (entity != null && entity.isValid())
 			{
-				if (plugin.isInArena(entity))
+				if (plugin.isInArena(entity.getLocation()))
 				{
-					if (plugin.getArenaInside(entity).equals(arena))
+					if (plugin.getZoneInside(entity.getLocation()).equals(az))
 					{
 						if (! persistentEntities.contains(entity.getType()))
 							ret.add(entity);

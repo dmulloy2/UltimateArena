@@ -38,7 +38,7 @@ public class BlockListener implements Listener
 
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
-		if (plugin.isInArena(block))
+		if (plugin.isInArena(block.getLocation()))
 		{
 			/** The player is in an arena **/
 			if (plugin.isInArena(player))
@@ -70,7 +70,7 @@ public class BlockListener implements Listener
 
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
-		if (plugin.isInArena(block))
+		if (plugin.isInArena(block.getLocation()))
 		{
 			/** The player is in an arena **/
 			if (plugin.isInArena(player))

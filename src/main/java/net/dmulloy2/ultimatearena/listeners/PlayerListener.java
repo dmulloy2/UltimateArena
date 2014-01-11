@@ -182,7 +182,7 @@ public class PlayerListener implements Listener
 					if (event.hasBlock())
 					{
 						Block block = event.getClickedBlock();
-						if (plugin.isInArena(block))
+						if (plugin.isInArena(block.getLocation()))
 						{
 							Arena a = plugin.getArena(player);
 							if (a != null)
@@ -329,7 +329,7 @@ public class PlayerListener implements Listener
 				ArenaJoinTask task = plugin.getWaiting().get(player.getName());
 
 				task.cancel();
-				plugin.getWaiting().remove(player);
+				plugin.getWaiting().remove(player.getName());
 
 				player.sendMessage(plugin.getPrefix() + 
 						FormatUtil.format("&cCancelled!"));

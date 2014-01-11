@@ -100,10 +100,8 @@ import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -657,16 +655,30 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		}
 	}
 
-	// Checks for whether or not something is in an arena
-	public boolean isInArena(Location loc)
+	// ---- Locational Checks ---- //
+	public ArenaZone getZoneInside(Location location)
 	{
 		for (ArenaZone az : Util.newList(loadedArenas))
 		{
-			if (az.checkLocation(loc))
-				return true;
+			if (az.checkLocation(location))
+				return az;
 		}
 
-		return false;
+		return null;
+	}
+
+	public Arena getArenaInside(Location location)
+	{
+		ArenaZone az = getZoneInside(location);
+		if (az != null)
+			return getArena(az.getArenaName());
+
+		return null;
+	}
+
+	public boolean isInArena(Location loc)
+	{
+		return getZoneInside(loc) != null;
 	}
 
 	public boolean isInArena(ArenaLocation loc)
@@ -674,42 +686,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		return isInArena(loc.getLocation());
 	}
 
-	public boolean isInArena(Entity entity)
-	{
-		return isInArena(entity.getLocation());
-	}
-
-	public boolean isInArena(Block block)
-	{
-		return isInArena(block.getLocation());
-	}
-
 	// Special case for player
 	public boolean isInArena(Player player)
 	{
 		return getArenaPlayer(player) != null;
-	}
-
-	public Arena getArenaInside(Block block)
-	{
-		for (ArenaZone az : Util.newList(loadedArenas))
-		{
-			if (az.checkLocation(block.getLocation()))
-				return getArena(az.getArenaName());
-		}
-
-		return null;
-	}
-
-	public Arena getArenaInside(Entity entity)
-	{
-		for (ArenaZone az : Util.newList(loadedArenas))
-		{
-			if (az.checkLocation(entity.getLocation()))
-				return getArena(az.getArenaName());
-		}
-
-		return null;
 	}
 
 	public ArenaPlayer getArenaPlayer(Player player, boolean inactive)

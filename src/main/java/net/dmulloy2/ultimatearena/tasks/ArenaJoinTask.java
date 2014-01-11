@@ -30,12 +30,9 @@ public class ArenaJoinTask extends BukkitRunnable
 		{
 			plugin.join(player, arenaName);
 		}
-		else
-		{
-			cancel();
-		}
 
 		plugin.getWaiting().remove(playerName);
+		cancel();
 	}
 
 	public final Player getPlayer()

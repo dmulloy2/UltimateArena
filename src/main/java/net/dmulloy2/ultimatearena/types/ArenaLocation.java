@@ -1,5 +1,5 @@
 /**
- * (c) 2013 dmulloy2
+ * (c) 2013 - 2014 dmulloy2
  */
 package net.dmulloy2.ultimatearena.types;
 
@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
  */
 
 @Getter
-public class ArenaLocation implements ConfigurationSerializable
+public class ArenaLocation implements ConfigurationSerializable, Cloneable
 {
 	private transient World world;
 	private transient Location location;
@@ -77,6 +77,9 @@ public class ArenaLocation implements ConfigurationSerializable
 		this.z = (int) args.get("z");
 	}
 
+	/**
+	 * Returns the {@link World} associated with this
+	 */
 	public World getWorld()
 	{
 		if (world == null)
@@ -135,6 +138,9 @@ public class ArenaLocation implements ConfigurationSerializable
 		return simpleVector;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, Object> serialize()
 	{
@@ -146,5 +152,53 @@ public class ArenaLocation implements ConfigurationSerializable
 		result.put("z", z);
 
 		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object o)
+	{
+		if (! (o instanceof ArenaLocation))
+			return false;
+
+		ArenaLocation that = (ArenaLocation) o;
+		if (x != that.x || y != that.y || z != that.z)
+			return false;
+
+		return worldName.equals(that.worldName);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode()
+	{
+		int hash = 1;
+		hash *= x;
+		hash *= y;
+		hash *= z;
+		hash *= worldName.hashCode();
+		return hash;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return "ArenaLocation { x = " + x + ", y = " + y + ", z = " + z + ", worldName = " + worldName + " }";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ArenaLocation clone()
+	{
+		return new ArenaLocation(getLocation());
 	}
 }

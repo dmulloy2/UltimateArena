@@ -245,7 +245,7 @@ public class EntityListener implements Listener
 			return;
 
 		// Clear the drops if in an arena
-		if (plugin.isInArena(died))
+		if (plugin.isInArena(died.getLocation()))
 		{
 			event.getDrops().clear();
 			event.setDroppedExp(0);
