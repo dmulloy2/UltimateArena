@@ -23,12 +23,32 @@ import org.bukkit.entity.Player;
 
 public class EssentialsHandler
 {
+	private Object essentials;
 	private boolean useEssentials;
 
 	private final UltimateArena plugin;
 	public EssentialsHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
+		this.essentials = null;
+		this.useEssentials = false;
+	}
+
+	/**
+	 * Returns Essentials. Stored in an object because integration with it is
+	 * nearly impossible
+	 */
+	public final com.earth2me.essentials.Essentials getEssentials()
+	{
+		return (com.earth2me.essentials.Essentials) essentials;
+	}
+
+	/**
+	 * Sets the Essentials instance
+	 */
+	public final void setEssentials(Object essentials)
+	{
+		this.essentials = essentials;
 	}
 
 	/**
@@ -38,7 +58,7 @@ public class EssentialsHandler
 	{
 		try
 		{
-			return useEssentials;
+			return useEssentials && essentials != null;
 		}
 		catch (Throwable ex)
 		{

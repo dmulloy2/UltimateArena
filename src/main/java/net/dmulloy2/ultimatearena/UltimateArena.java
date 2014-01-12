@@ -128,7 +128,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	// Integration
 	private @Getter Economy economy;
-	private @Getter Essentials essentials;
 	private @Getter WorldEditPlugin worldEdit;
 	private @Getter WorldEditHandler worldEditHandler;
 	private @Getter EssentialsHandler essentialsHandler;
@@ -389,9 +388,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				Plugin plugin = pm.getPlugin("Essentials");
 				if (plugin instanceof Essentials)
 				{
-					essentials = (Essentials) plugin;
+					essentialsHandler.setEssentials(plugin);
 					essentialsHandler.setUseEssentials(true);
-
 					outConsole("Integration with Essentials successful!");
 					return;
 				}
