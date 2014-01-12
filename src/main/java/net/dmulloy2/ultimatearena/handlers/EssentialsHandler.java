@@ -11,9 +11,6 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.entity.Player;
 
-import com.earth2me.essentials.Kit;
-import com.earth2me.essentials.User;
-
 /**
  * Handles integration with Essentials.
  * <p>
@@ -73,7 +70,7 @@ public class EssentialsHandler
 		{
 			if (useEssentials())
 			{
-				User user = getEssentialsUser(player);
+				com.earth2me.essentials.User user = getEssentialsUser(player);
 				if (user != null)
 				{
 					user.setGodModeEnabled(false);
@@ -92,7 +89,7 @@ public class EssentialsHandler
 	 * @param player
 	 *        - {@link Player} to get Essentials user for
 	 */
-	public final User getEssentialsUser(Player player)
+	public final com.earth2me.essentials.User getEssentialsUser(Player player)
 	{
 		try
 		{
@@ -119,15 +116,16 @@ public class EssentialsHandler
 	{
 		try
 		{
-			User user = getEssentialsUser(player.getPlayer());
+			com.earth2me.essentials.User user = getEssentialsUser(player.getPlayer());
 			if (user == null)
 			{
 				throw new Exception("Null user!");
 			}
 
 			ArenaClass ac = player.getArenaClass();
-			List<String> items = Kit.getItems(plugin.getEssentials(), user, ac.getEssKitName(), ac.getEssentialsKit());
-			Kit.expandItems(plugin.getEssentials(), user, items);
+			List<String> items = com.earth2me.essentials.Kit.getItems(plugin.getEssentials(), user, ac.getEssKitName(), 
+					ac.getEssentialsKit());
+			com.earth2me.essentials.Kit.expandItems(plugin.getEssentials(), user, items);
 		}
 		catch (Throwable ex)
 		{
