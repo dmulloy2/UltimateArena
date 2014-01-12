@@ -115,7 +115,7 @@ public class EssentialsHandler
 		{
 			if (useEssentials())
 			{
-				return plugin.getEssentials().getUser(player);
+				return getEssentials().getUser(player);
 			}
 		}
 		catch (Throwable ex)
@@ -143,9 +143,9 @@ public class EssentialsHandler
 			}
 
 			ArenaClass ac = player.getArenaClass();
-			List<String> items = com.earth2me.essentials.Kit.getItems(plugin.getEssentials(), user, ac.getEssKitName(), 
+			List<String> items = com.earth2me.essentials.Kit.getItems(getEssentials(), user, ac.getEssKitName(), 
 					ac.getEssentialsKit());
-			com.earth2me.essentials.Kit.expandItems(plugin.getEssentials(), user, items);
+			com.earth2me.essentials.Kit.expandItems(getEssentials(), user, items);
 		}
 		catch (Throwable ex)
 		{
@@ -170,7 +170,7 @@ public class EssentialsHandler
 		{
 			if (useEssentials())
 			{
-				kit = plugin.getEssentials().getSettings().getKit(name);
+				kit = getEssentials().getSettings().getKit(name);
 			}
 		}
 		catch (Throwable ex)
