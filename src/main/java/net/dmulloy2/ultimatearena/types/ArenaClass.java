@@ -157,7 +157,7 @@ public class ArenaClass implements Reloadable
 
 			usesEssentials = fc.getBoolean("useEssentials", false);
 
-			if (usesEssentials)
+			if (usesEssentials && plugin.useEssentials())
 			{
 				essKitName = fc.getString("essentialsKit", "");
 				if (! essKitName.isEmpty())
@@ -166,9 +166,12 @@ public class ArenaClass implements Reloadable
 				}
 			}
 
-			if (essentialsKit.isEmpty() || essKitName.isEmpty())
+			if (usesEssentials && (essentialsKit.isEmpty() || essKitName.isEmpty()))
 			{
 				usesEssentials = false;
+				fc.set("useEssentials", false);
+				fc.set("essentialsKit", "");
+				save = true;
 			}
 
 			hasPotionEffects = fc.getBoolean("hasPotionEffects", false);

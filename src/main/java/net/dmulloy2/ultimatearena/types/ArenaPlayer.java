@@ -242,7 +242,7 @@ public class ArenaPlayer extends PlayerExtension
 			return;
 		}
 
-		if (arenaClass.isUsesEssentials() && plugin.getEssentialsHandler().useEssentials())
+		if (arenaClass.isUsesEssentials() && plugin.useEssentials())
 		{
 			plugin.getEssentialsHandler().giveKitItems(this);
 		}

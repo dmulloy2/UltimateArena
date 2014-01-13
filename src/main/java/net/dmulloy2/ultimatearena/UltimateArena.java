@@ -378,10 +378,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 */
 	private void setupEssentialsIntegration()
 	{
-		essentialsHandler = new EssentialsHandler(this);
-
 		try
 		{
+			essentialsHandler = new EssentialsHandler(this);
+
 			PluginManager pm = getServer().getPluginManager();
 			if (pm.isPluginEnabled("Essentials"))
 			{
@@ -397,7 +397,22 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		}
 		catch (Throwable ex)
 		{
-			essentialsHandler.setUseEssentials(false);
+			//
+		}
+	}
+
+	/**
+	 * Returns whether or not to use Essentials
+	 */
+	public final boolean useEssentials()
+	{
+		try
+		{
+			return essentialsHandler.useEssentials();
+		}
+		catch (Throwable ex)
+		{
+			return false;
 		}
 	}
 
