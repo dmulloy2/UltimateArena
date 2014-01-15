@@ -117,6 +117,17 @@ public class UltimateArenaAPI
 	}
 
 	/**
+	 * Gets an {@link Arena} by its name
+	 * 
+	 * @param name
+	 *        - Name of the Arena
+	 */
+	public final Arena getArena(String name)
+	{
+		return ultimateArena.getArena(name);
+	}
+
+	/**
 	 * Stops all running arenas
 	 */
 	public final void stopArenas()
