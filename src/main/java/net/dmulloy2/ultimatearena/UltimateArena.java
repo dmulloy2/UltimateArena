@@ -560,7 +560,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	/**
 	 * Generates the WhiteListedCommands file
 	 */
-	public void generateWhitelistedCommands()
+	private void generateWhitelistedCommands()
 	{
 		saveResource("whiteListedCommands.yml", false);
 	}
@@ -571,7 +571,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 * @param field
 	 *        - Field to generate config for
 	 */
-	public void generateArenaConfig(String field)
+	private void generateArenaConfig(String field)
 	{
 		saveResource("configs" + File.separator + field + "Config.yml", false);
 	}
@@ -579,7 +579,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	/**
 	 * Generates stock classes
 	 */
-	public void generateStockClasses()
+	private void generateStockClasses()
 	{
 		String[] stockClasses = new String[] { "archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef" };
 
@@ -589,7 +589,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		}
 	}
 
-	public void loadSigns()
+	private void loadSigns()
 	{
 		signHandler = new SignHandler(this);
 		outConsole("Loaded {0} arena signs!", signHandler.getSigns().size());
