@@ -80,6 +80,7 @@ public abstract class Arena implements Reloadable
 	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
 	protected boolean countMobKills;
+	protected boolean giveRewards;
 	protected boolean forceStop;
 	protected boolean stopped;
 	protected boolean start;
@@ -144,6 +145,7 @@ public abstract class Arena implements Reloadable
 		this.countMobKills = az.isCountMobKills();
 		this.rewardBasedOnXp = az.isRewardBasedOnXp();
 		this.killStreaks = az.getKillStreaks();
+		this.giveRewards = az.isGiveRewards();
 		
 		this.blacklistedClasses = az.getBlacklistedClasses();
 		this.whitelistedClasses = az.getWhitelistedClasses();
@@ -473,7 +475,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public void reward(ArenaPlayer ap)
 	{
-		if (ap != null)
+		if (az.isGiveRewards() && ap != null)
 			az.giveRewards(ap);
 	}
 
@@ -485,14 +487,17 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void rewardTeam(int team)
 	{
-		for (ArenaPlayer ap : toReward)
+		if (az.isGiveRewards())
 		{
-			if (ap.isCanReward())
+			for (ArenaPlayer ap : toReward)
 			{
-				if (ap.getTeam() == team || team == -1)
+				if (ap.isCanReward())
 				{
-					reward(ap);
-				}	
+					if (ap.getTeam() == team || team == -1)
+					{
+						reward(ap);
+					}
+				}
 			}
 		}
 

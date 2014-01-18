@@ -27,7 +27,7 @@ public class ArenaConfig implements Reloadable
 {
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
-	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp, loaded;
+	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp, loaded, giveRewards;
 
 	private List<String> blacklistedClasses, whitelistedClasses;
 
@@ -81,6 +81,8 @@ public class ArenaConfig implements Reloadable
 				if (stack != null)
 					rewards.add(stack);
 			}
+
+			this.giveRewards = fc.getBoolean("giveRewards", true);
 
 			List<String> xpBasedTypes = Arrays.asList(new String[] { "KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB" });
 

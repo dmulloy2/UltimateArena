@@ -103,12 +103,18 @@ public class MOBArena extends Arena
 	@Override
 	public void reward(ArenaPlayer p)
 	{
+		// Enable check
+		if (! az.isGiveRewards())
+			return;
+
+		// If there are predefined rewards, give those
 		if (! az.getRewards().isEmpty())
 		{
 			super.reward(p);
 			return;
 		}
 
+		// Default to old system
 		int amtGold = (int) Math.round(p.getGameXP() / 500.0);
 		int amtSlime = (int) Math.round(p.getGameXP() / 550.0);
 		int amtGlowStone = (int) Math.round(p.getGameXP() / 450.0);

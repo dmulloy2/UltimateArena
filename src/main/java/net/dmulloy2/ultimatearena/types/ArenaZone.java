@@ -222,7 +222,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	// Serializable variables
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
 
-	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp;
+	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp, giveRewards;
 
 	private List<String> blacklistedClasses, whitelistedClasses;
 
@@ -270,6 +270,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			{
 				this.rewards = conf.getRewards();
 			}
+
+			this.giveRewards = fc.getBoolean("giveRewards", conf.isGiveRewards());
 
 			this.blacklistedClasses = new ArrayList<String>();
 
