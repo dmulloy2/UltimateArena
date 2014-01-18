@@ -94,7 +94,7 @@ import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.types.Reloadable;
 import net.dmulloy2.ultimatearena.types.SimpleVector;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.InventoryUtil;
 import net.dmulloy2.ultimatearena.util.TimeUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
@@ -736,7 +736,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			return;
 		}
 
-		if (! InventoryHelper.isEmpty(player.getInventory()))
+		if (! InventoryUtil.isEmpty(player.getInventory()))
 		{
 			if (! getConfig().getBoolean("saveInventories"))
 			{

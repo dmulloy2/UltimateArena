@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -57,11 +57,12 @@ public class KillStreak
 		switch (type)
 		{
 			case ITEM:
-				InventoryHelper.addItem(ap.getPlayer(), item);
+				ap.giveItem(item);
+				break;
 			case MOB:
+				Player player = ap.getPlayer();
 				for (int i = 0; i < mobAmount; i++)
-					ap.getPlayer().getWorld().spawnEntity(ap.getPlayer().getLocation(), mobType);
-			default:
+					player.getWorld().spawnEntity(player.getLocation(), mobType);
 				break;
 		}
 

@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.InventoryUtil;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -377,7 +377,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				stack.setAmount(amt);
 
 				// Add the item
-				InventoryHelper.addItem(player, stack);
+				InventoryUtil.addItem(player, stack);
 			}
 		}
 

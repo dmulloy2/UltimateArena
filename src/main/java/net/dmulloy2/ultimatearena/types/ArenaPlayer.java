@@ -5,7 +5,7 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.InventoryUtil;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -111,7 +111,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void giveItem(ItemStack stack)
 	{
-		InventoryHelper.addItem(player.getPlayer(), stack);
+		InventoryUtil.addItem(player.getPlayer(), stack);
 	}
 
 	/**

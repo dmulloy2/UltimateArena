@@ -11,21 +11,37 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 /**
+ * Util dealing with Inventories
+ * 
  * @author dmulloy2
  */
 
-public class InventoryHelper
+public class InventoryUtil
 {
-	public static boolean isEmpty(PlayerInventory inventory)
+	public static boolean isEmpty(Inventory inventory)
+	{
+		for (ItemStack stack : inventory.getContents())
+		{
+			if (stack != null && stack.getType() != Material.AIR)
+				return false;
+		}
+
+		if (inventory instanceof PlayerInventory)
+		{
+			return isEmpty((PlayerInventory) inventory);
+		}
+
+		return true;
+	}
+
+	private static boolean isEmpty(PlayerInventory inventory)
 	{
 		if (inventory != null)
 		{
 			for (ItemStack stack : inventory.getContents())
 			{
 				if (stack != null && stack.getType() != Material.AIR)
-				{
 					return false;
-				}
 			}
 
 			if (inventory.getHelmet() != null)
@@ -47,18 +63,16 @@ public class InventoryHelper
 	public static int firstPartial(final Inventory inventory, final ItemStack item, final int maxAmount)
 	{
 		if (item == null)
-		{
 			return -1;
-		}
+
 		final ItemStack[] stacks = inventory.getContents();
 		for (int i = 0; i < stacks.length; i++)
 		{
 			final ItemStack cItem = stacks[i];
 			if (cItem != null && cItem.getAmount() < maxAmount && cItem.isSimilar(item))
-			{
 				return i;
-			}
 		}
+
 		return -1;
 	}
 
@@ -71,6 +85,7 @@ public class InventoryHelper
 			addItems(inventory, items);
 			return true;
 		}
+
 		return false;
 	}
 
@@ -95,9 +110,8 @@ public class InventoryHelper
 		for (int i = 0; i < items.length; i++)
 		{
 			if (items[i] == null || items[i].getAmount() < 1)
-			{
 				continue;
-			}
+
 			for (int j = 0; j < combined.length; j++)
 			{
 				if (combined[j] == null)
@@ -106,6 +120,7 @@ public class InventoryHelper
 					combined[j].setData(items[i].getData());
 					break;
 				}
+
 				if (combined[j].isSimilar(items[i]))
 				{
 					combined[j].setAmount(combined[j].getAmount() + items[i].getAmount());
@@ -118,9 +133,7 @@ public class InventoryHelper
 		{
 			final ItemStack item = combined[i];
 			if (item == null)
-			{
 				continue;
-			}
 
 			while (true)
 			{

@@ -8,7 +8,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.DyeColor;
@@ -106,7 +105,8 @@ public class ArenaFlag extends FlagBase
 	{
 		int team1 = 0;
 		int team2 = 0;
-		List<Player> players = new ArrayList<Player>();
+
+		List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 
 		for (int i = 0; i < arenaPlayers.size(); i++)
 		{
@@ -116,7 +116,7 @@ public class ArenaFlag extends FlagBase
 			{
 				if (Util.pointDistance(player.getLocation(), location) < 4.5 && player.getHealth() > 0)
 				{
-					players.add(player);
+					players.add(ap);
 
 					if (ap.getTeam() == 1)
 						team1++;
@@ -145,10 +145,15 @@ public class ArenaFlag extends FlagBase
 			added += (team1 - team2) * 5;
 			for (int i = 0; i < players.size(); i++)
 			{
-				Player player = players.get(i);
-				if (percent < 100)
+				ArenaPlayer player = players.get(i);
+				if (percent == 100)
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Capping! &e{0}&3%", percent));
+					player.sendMessage("&3Capped!");
+					capped = true;
+				}
+				else if (percent < 100)
+				{
+					player.sendMessage("&3Capping! &e{0}&3%");
 				}
 			}
 		}
@@ -157,10 +162,15 @@ public class ArenaFlag extends FlagBase
 			added -= (team2 - team1) * 5;
 			for (int i = 0; i < players.size(); i++)
 			{
-				Player player = players.get(i);
-				if (percent < 100)
+				ArenaPlayer player = players.get(i);
+				if (percent == 100)
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Capping! &e{0}&3%", percent));
+					player.sendMessage("&3Capped!");
+					capped = true;
+				}
+				else if (percent < 100)
+				{
+					player.sendMessage("&3Capping! &e{0}&3%");
 				}
 			}
 		}

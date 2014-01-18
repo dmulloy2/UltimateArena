@@ -6,7 +6,7 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.ultimatearena.util.InventoryHelper;
+import net.dmulloy2.ultimatearena.util.InventoryUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
@@ -126,16 +126,16 @@ public class MOBArena extends Arena
 		Player pl = p.getPlayer();
 
 		if (amtGold > 0)
-			InventoryHelper.addItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold));
+			InventoryUtil.addItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold));
 
 		if (amtSlime > 0)
-			InventoryHelper.addItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime));
+			InventoryUtil.addItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime));
 
 		if (amtGlowStone > 0)
-			InventoryHelper.addItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
+			InventoryUtil.addItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
 
 		if (amtGunPowder > 0)
-			InventoryHelper.addItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder));
+			InventoryUtil.addItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder));
 
 		if (amtCash > 0 && plugin.getConfig().getBoolean("moneyrewards"))
 		{
