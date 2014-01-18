@@ -23,12 +23,7 @@ public class FFAArena extends Arena
 	public FFAArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.FFA;
-//		this.startTimer = 120;
-//		this.maxGameTime = 60 * 10;
-//		this.maxDeaths = 4;
-//		this.allowTeamKilling = true;
 
 		for (int i = 0; i < az.getSpawns().size(); i++)
 		{

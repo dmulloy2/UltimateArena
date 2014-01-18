@@ -23,12 +23,7 @@ public class HUNGERArena extends Arena
 	public HUNGERArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.HUNGER;
-//		this.startTimer = 120;
-//		this.maxGameTime = 60 * 10 * 3;
-//		this.maxDeaths = 1;
-//		this.allowTeamKilling = true;
 
 		for (int i = 0; i < az.getSpawns().size(); i++)
 		{

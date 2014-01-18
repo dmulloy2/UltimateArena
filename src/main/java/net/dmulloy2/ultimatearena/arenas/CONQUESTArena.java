@@ -23,11 +23,7 @@ public class CONQUESTArena extends Arena
 	public CONQUESTArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.CONQUEST;
-//		this.startTimer = 180;
-//		this.maxGameTime = 60 * 20;
-//		this.maxDeaths = 900;
 
 		this.redTeamPower = 1;
 		this.blueTeamPower = 1;

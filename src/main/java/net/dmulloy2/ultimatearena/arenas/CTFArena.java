@@ -32,17 +32,13 @@ public class CTFArena extends Arena
 	public CTFArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.CTF;
-//		this.startTimer = 120;
-//		this.maxGameTime = 60 * 15;
-//		this.maxDeaths = 990;
 
 		this.redFlag = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
-		this.blueFlag = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
+		this.redFlag.initialize();
 
-		redFlag.initialize();
-		blueFlag.initialize();
+		this.blueFlag = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
+		this.blueFlag.initialize();
 
 		this.moveTask = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}

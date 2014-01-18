@@ -29,29 +29,32 @@ public class MOBArena extends Arena
 {
 	private int mobtimer, mobspawn, mobPerWave;
 
-	private List<LivingEntity> mobs = new ArrayList<LivingEntity>();
-	private List<String> spawning = new ArrayList<String>();
+	private List<LivingEntity> mobs;
+	private List<String> spawning;
 
 	public MOBArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.MOB;
+
 		this.mobspawn = 0;
 		this.mobtimer = 0;
 		this.wave = 0;
 		this.winningTeam = -1;
 
+		this.spawning = new ArrayList<String>();
 		spawning.add("ZOMBIE");
 		spawning.add("ZOMBIE");
 		spawning.add("ZOMBIE");
+
+		this.mobs = new ArrayList<LivingEntity>();
 
 		newWave();
 	}
 
 	public void newWave()
 	{
-		if (getWave() > 0)
+		if (wave > 0)
 		{
 			tellPlayers("&aYou survived the wave!");
 			tellPlayers("&aNow going to wave &c{0}&a!", getWave());
@@ -61,7 +64,7 @@ public class MOBArena extends Arena
 		this.mobPerWave = 4 + ((int) (wave * 1.5)) + (active.size() * 3);
 		this.mobtimer = (wave * 4) + 20;
 
-		// TODO: Make this configurable?
+		// TODO: Make entities spawned configurable?
 		if (wave <= 1)
 		{
 			mobtimer = 1;
@@ -96,8 +99,7 @@ public class MOBArena extends Arena
 	public void endPlayer(ArenaPlayer ap, boolean end)
 	{
 		super.endPlayer(ap, end);
-
-		reward(ap);
+		this.reward(ap);
 	}
 
 	@Override
@@ -248,7 +250,7 @@ public class MOBArena extends Arena
 									}
 								}
 							}
-							// TODO: More fun entity calculations? :D
+							// TODO: More fun entity calculations? >:D
 
 							mobs.add(newMob);
 						}

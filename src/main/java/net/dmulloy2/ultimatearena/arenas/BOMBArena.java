@@ -21,19 +21,15 @@ public class BOMBArena extends Arena
 	public BOMBArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.BOMB;
-//		this.startTimer = 120;
-//		this.maxGameTime = 60 * 15;
-//		this.maxDeaths = 990;
 
 		this.redTeamPower = 1;
 
 		this.bomb1 = new BombFlag(this, az.getFlags().get(0), plugin);
-		this.bomb2 = new BombFlag(this, az.getFlags().get(1), plugin);
+		this.bomb1.setBombNumber(1);
 
-		bomb1.setBombNumber(1);
-		bomb2.setBombNumber(2);
+		this.bomb2 = new BombFlag(this, az.getFlags().get(1), plugin);
+		this.bomb2.setBombNumber(2);
 	}
 
 	@Override

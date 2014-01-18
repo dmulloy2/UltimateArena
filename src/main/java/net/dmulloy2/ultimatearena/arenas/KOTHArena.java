@@ -28,18 +28,13 @@ public class KOTHArena extends Arena
 	public KOTHArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.KOTH;
-//		this.startTimer = 180;
-//		this.maxGameTime = 60 * 20;
-//		this.maxDeaths = 900;
-//		this.allowTeamKilling = true;
-//		this.maxPower = 60;
 
 		for (int i = 0; i < az.getFlags().size(); i++)
 		{
 			flags.add(new KothFlag(this, az.getFlags().get(i), plugin));
 		}
+
 		for (int i = 0; i < az.getSpawns().size(); i++)
 		{
 			spawns.add(az.getSpawns().get(i));
