@@ -194,13 +194,13 @@ public class ConquestCreator extends ArenaCreator
 					sendMessage("&e1&3/&e3 &3flag spawnpoints set.");
 					return;
 				}
-				else if (target.getFlags().size() == 2)
+				else if (target.getFlags().size() == 1)
 				{
 					target.getFlags().add(new ArenaLocation(player));
 					sendMessage("&e2&3/&e3 &3flag spawnpoints set.");
 					return;
 				}
-				else if (target.getFlags().size() == 3)
+				else if (target.getFlags().size() == 2)
 				{
 					target.getFlags().add(new ArenaLocation(player));
 					sendMessage("&e3&3/&e3 &3flag spawnpoints set.");
