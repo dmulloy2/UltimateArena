@@ -13,7 +13,6 @@ import net.dmulloy2.ultimatearena.util.Util;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
 /**
@@ -71,19 +70,15 @@ public class ArenaFlag extends FlagBase
 
 		if (capped)
 		{
-			MaterialData dat = notify.getState().getData();
-			if (dat instanceof Wool)
-			{
-				((Wool) dat).setColor(getColor(color));
-			}
+			notify.setType(Material.WOOL);
+			((Wool) notify.getState().getData()).setColor(getColor(color));
+			notify.getState().update(true);
 		}
 		else
 		{
-			MaterialData dat = notify.getState().getData();
-			if (dat instanceof Wool)
-			{
-				((Wool) dat).setColor(getColor(8));
-			}
+			notify.setType(Material.WOOL);
+			((Wool) notify.getState().getData()).setColor(getColor(8));
+			notify.getState().update(true);
 		}
 	}
 
@@ -146,12 +141,7 @@ public class ArenaFlag extends FlagBase
 			for (int i = 0; i < players.size(); i++)
 			{
 				ArenaPlayer player = players.get(i);
-				if (percent == 100)
-				{
-					player.sendMessage("&3Capped!");
-					capped = true;
-				}
-				else if (percent < 100)
+				if (percent < 100)
 				{
 					player.sendMessage("&3Capping! &e{0}&3%");
 				}
@@ -163,12 +153,7 @@ public class ArenaFlag extends FlagBase
 			for (int i = 0; i < players.size(); i++)
 			{
 				ArenaPlayer player = players.get(i);
-				if (percent == 100)
-				{
-					player.sendMessage("&3Capped!");
-					capped = true;
-				}
-				else if (percent < 100)
+				if (percent < 100)
 				{
 					player.sendMessage("&3Capping! &e{0}&3%");
 				}
