@@ -32,7 +32,6 @@ public class ArenaJoinTask extends BukkitRunnable
 		}
 
 		plugin.getWaiting().remove(playerName);
-		cancel();
 	}
 
 	public final Player getPlayer()

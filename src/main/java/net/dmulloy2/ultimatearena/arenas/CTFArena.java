@@ -35,9 +35,9 @@ public class CTFArena extends Arena
 		this.type = FieldType.CTF;
 
 		this.redFlag = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
-		this.redFlag.initialize();
-
 		this.blueFlag = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
+
+		this.redFlag.initialize();
 		this.blueFlag.initialize();
 
 		this.moveTask = new ExecuteMove().runTaskTimer(plugin, 12, 1);
