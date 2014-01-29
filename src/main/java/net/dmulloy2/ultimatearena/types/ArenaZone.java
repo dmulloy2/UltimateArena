@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -195,7 +196,15 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	public final boolean checkLocation(Location loc)
 	{
-		return lobby.isInside(loc) || arena.isInside(loc);
+		try
+		{
+			return lobby.isInside(loc) || arena.isInside(loc);
+		}
+		catch (Exception e)
+		{
+			plugin.outConsole(Level.SEVERE, "Could not perform location check! Does world \"{0}\" exist?", worldName);
+			return false;
+		}
 	}
 
 	public final boolean canLike(Player player)

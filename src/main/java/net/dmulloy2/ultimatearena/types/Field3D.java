@@ -1,4 +1,9 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
+
+import lombok.Getter;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,73 +13,59 @@ import org.bukkit.block.Block;
  * @author dmulloy2
  */
 
+@Getter
 public class Field3D extends Field
 {
-	protected int miny;
-	protected int maxy;
+	protected int maxY;
+	protected int minY;
 
-	private int height;
-
-	public Field3D(ArenaLocation max, ArenaLocation min)
+	public Field3D(ArenaLocation point1, ArenaLocation point2)
 	{
-		setParam(max, min);
+		setParam(point1, point2);
 	}
 
 	public Field3D()
 	{
+
 	}
 
 	@Override
-	public void setParam(ArenaLocation max, ArenaLocation min)
+	public void setParam(ArenaLocation point1, ArenaLocation point2)
 	{
-		super.setParam(max, min);
+		super.setParam(point1, point2);
 
-		this.maxy = max.getY();
-		this.miny = min.getY();
+		this.maxY = point1.getY();
+		this.minY = point2.getY();
 
-		if (miny > maxy)
+		if (minY > maxY)
 		{
-			this.maxy = min.getY();
-			this.miny = max.getY();
+			this.maxY = point2.getY();
+			this.minY = point1.getY();
 		}
-
-		this.height = maxy - miny;
 	}
 
-	public Block getBlockAt(int x, int y, int z)
+	public final Block getBlockAt(int x, int y, int z)
 	{
-		return getWorld().getBlockAt(minx + x, miny + y, minz + z);
+		return getWorld().getBlockAt(minX + x, minY + y, minZ + z);
 	}
 
-	@Override
-	public boolean isInside(Location loc)
+	public final boolean isUnder(Location loc)
 	{
 		if (super.isInside(loc))
 		{
-			int locy = loc.getBlockY();
-			return locy >= miny && locy <= maxy;
+			return loc.getBlockY() < minY;
 		}
 
 		return false;
 	}
 
-	public boolean isUnder(Location loc)
+	public final void setType(Material mat)
 	{
-		if (super.isInside(loc))
+		for (int x = minX; x <= maxX; x++)
 		{
-			return loc.getBlockY() < miny;
-		}
-
-		return false;
-	}
-
-	public void setType(final Material mat)
-	{
-		for (int x = minx; x <= maxx; x++)
-		{
-			for (int y = miny; y <= maxy; y++)
+			for (int y = minY; y <= maxY; y++)
 			{
-				for (int z = minz; z <= maxz; z++)
+				for (int z = minZ; z <= maxZ; z++)
 				{
 					Block b = getWorld().getBlockAt(x, y, z);
 					b.setType(mat);
@@ -83,13 +74,8 @@ public class Field3D extends Field
 		}
 	}
 
-	public int getVolume()
+	public final int getHeight()
 	{
-		return getHeight() * getArea();
-	}
-
-	public int getHeight()
-	{
-		return Math.abs(height);
+		return maxY - minY;
 	}
 }

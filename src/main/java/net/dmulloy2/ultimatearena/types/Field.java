@@ -1,5 +1,7 @@
 package net.dmulloy2.ultimatearena.types;
 
+import lombok.Getter;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -7,110 +9,92 @@ import org.bukkit.World;
  * @author dmulloy2
  */
 
+@Getter
 public class Field
 {
 	protected boolean initialized;
-	
-	protected ArenaLocation max;
-	protected ArenaLocation min;
 
-	protected int minx;
-	protected int maxx;
+	protected ArenaLocation point1;
+	protected ArenaLocation point2;
 
-	protected int minz;
-	protected int maxz;
+	protected int maxX;
+	protected int maxZ;
 
-	private int width;
-	private int length;
+	protected int minX;
+	protected int minZ;
 
-	public Field(ArenaLocation max, ArenaLocation min)
+	public Field(ArenaLocation point1, ArenaLocation point2)
 	{
-		setParam(max, min);
+		setParam(point1, point2);
 	}
 
 	public Field()
 	{
+
 	}
 
-	public void setParam(ArenaLocation max, ArenaLocation min)
+	public void setParam(ArenaLocation point1, ArenaLocation point2)
 	{
-		this.max = max;
-		this.min = min;
+		this.point1 = point1;
+		this.point2 = point2;
 
-		this.maxx = max.getX();
-		this.minx = min.getX();
+		this.maxX = point1.getX();
+		this.maxZ = point1.getZ();
 
-		this.maxz = max.getZ();
-		this.minz = min.getZ();
+		this.minX = point2.getX();
+		this.minZ = point2.getZ();
 
-		if (minx > maxx)
+		if (minX > maxX)
 		{
-			this.max = min;
-			this.min = max;
-			this.maxx = min.getX();
-			this.minx = max.getX();
+			this.maxX = point2.getX();
+			this.minX = point1.getX();
 		}
 
-		if (minz > maxz)
+		if (minZ > maxZ)
 		{
-			this.min = max;
-			this.max = min;
-			this.maxz = min.getX();
-			this.minz = max.getX();
+			this.maxZ = point2.getZ();
+			this.minZ = point1.getZ();
 		}
-
-		this.length = maxx - minx;
-		this.width = maxz - minz;
 
 		this.initialized = true;
+	}
+
+	public boolean isInside(ArenaLocation loc)
+	{
+		return isInside(loc.getLocation());
 	}
 
 	public boolean isInside(Location loc)
 	{
 		if (! initialized)
 			return false;
-		
-		World locw = loc.getWorld();
-		int locx = loc.getBlockX();
-		int locz = loc.getBlockZ();
-		if (getWorld().getUID() == locw.getUID())
+
+		World world = loc.getWorld();
+		int locX = loc.getBlockX();
+		int locZ = loc.getBlockZ();
+		if (getWorld().getUID() == world.getUID())
 		{
-			if (locx >= minx && locx <= maxx)
+			if (locX >= minX && locX <= maxX)
 			{
-				return locz >= minz && locz <= maxz;
+				return locZ >= minZ && locZ <= maxZ;
 			}
 		}
 
 		return false;
 	}
 
-	protected final World getWorld()
+	public final World getWorld()
 	{
-		return max.getWorld();
-	}
-
-	public final ArenaLocation getMax()
-	{
-		return max;
-	}
-
-	public final ArenaLocation getMin()
-	{
-		return min;
-	}
-
-	public final int getArea()
-	{
-		return getLength() * getWidth();
-	}
-
-	public final int getLength()
-	{
-		return Math.abs(length);
+		return point1.getWorld();
 	}
 
 	public final int getWidth()
 	{
-		return Math.abs(width);
+		return maxX - minX;
+	}
+
+	public final int getLength()
+	{
+		return maxZ - minZ;
 	}
 }
