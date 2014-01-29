@@ -202,7 +202,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, "Could not perform location check! Does world \"{0}\" exist?", worldName);
+			plugin.outConsole(Level.WARNING, "Could not perform location check for arena {0}!", arenaName);
+			plugin.outConsole(Level.WARNING, "This is often caused by a null world!");
+			plugin.outConsole(Level.WARNING, "worldName = {0}, world = {1}", worldName, getWorld() == null ? "null" : getWorld().getName());
 			return false;
 		}
 	}
