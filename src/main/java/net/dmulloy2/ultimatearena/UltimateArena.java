@@ -498,6 +498,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		for (String cmd : fc.getStringList("whiteListedCmds"))
 		{
+			if (! cmd.startsWith("/")) cmd = "/" + cmd;
 			whitelistedCommands.add(cmd);
 		}
 
@@ -581,7 +582,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 */
 	private void generateStockClasses()
 	{
-		String[] stockClasses = new String[] { "archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef" };
+		String[] stockClasses = new String[]
+		{
+				"archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef"
+		};
 
 		for (String stockClass : stockClasses)
 		{
@@ -1216,7 +1220,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	{
 		for (String cmd : whitelistedCommands)
 		{
-			if (cmd.matches(cmd.contains("/") ? "" : "/" + cmd + ".*"))
+			if (command.matches(cmd + ".*"))
 				return true;
 		}
 
