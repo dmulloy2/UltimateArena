@@ -21,8 +21,10 @@ import org.bukkit.entity.Player;
 
 public class Util
 {
+	private Util() { }
+
 	/**
-	 * Gets the Player from a given string
+	 * Gets the OfflinePlayer from a given string
 	 * 
 	 * @param pl
 	 *        - String to match with a player
@@ -237,42 +239,6 @@ public class Util
 	}
 
 	/**
-	 * Basically just a wrapper for {@link Integer#parseInt(String)}
-	 * <p>
-	 * Catches the {@link NumberFormatException} and returns -1
-	 * 
-	 * @param s
-	 *        - String to attempt to parse into an Integer
-	 */
-	public static int parseInt(String s)
-	{
-		int ret = -1;
-
-		try
-		{
-			ret = Integer.parseInt(s);
-		}
-		catch (Exception e)
-		{
-			// Return -1, move on
-		}
-
-		return ret;
-	}
-
-	/**
-	 * Returns whether or not a String can be parsed as an Integer
-	 * 
-	 * @param string
-	 *        - String to check
-	 * @return Whether or not a String can be parsed as an Integer
-	 */
-	public static boolean isInteger(String s)
-	{
-		return parseInt(s) != -1;
-	}
-
-	/**
 	 * Plays an effect to all online players
 	 * 
 	 * @param effect
@@ -291,7 +257,7 @@ public class Util
 		}
 	}
 
-	public static String trimFileExtension(final File file, final String extension)
+	public static String trimFileExtension(File file, String extension)
 	{
 		int index = file.getName().lastIndexOf(extension);
 		return index > 0 ? file.getName().substring(0, index) : file.getName();

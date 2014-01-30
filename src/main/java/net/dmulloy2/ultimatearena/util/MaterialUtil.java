@@ -10,6 +10,8 @@ import net.dmulloy2.ultimatearena.types.Material;
 
 public class MaterialUtil
 {
+	private MaterialUtil() { }
+
 	/**
 	 * Returns the {@link org.bukkit.Material} from a given string
 	 * 
@@ -19,7 +21,7 @@ public class MaterialUtil
 	 */
 	public static org.bukkit.Material getMaterial(String string)
 	{
-		if (Util.isInteger(string))
+		if (NumberUtil.isInt(string))
 		{
 			return getMaterial(Integer.parseInt(string));
 		}

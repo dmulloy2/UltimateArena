@@ -12,6 +12,7 @@ import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.MaterialUtil;
+import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Material;
@@ -54,7 +55,7 @@ public class ArenaClass implements Reloadable
 	{
 		this.plugin = plugin;
 		this.file = file;
-		this.name = getName(file);
+		this.name = Util.trimFileExtension(file, ".yml");
 
 		this.loaded = load();
 		if (! loaded)
@@ -64,28 +65,31 @@ public class ArenaClass implements Reloadable
 	}
 
 	public boolean load()
-	{	
+	{
 		try
 		{
 			boolean save = false;
-			
+
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
-			String[] armor = new String[] { "chestplate", "leggings", "boots" };
-			
+			String[] armor = new String[]
+			{
+					"chestplate", "leggings", "boots"
+			};
+
 			for (String armorPath : armor)
 			{
 				if (fc.isSet("armor." + armorPath))
-				{	
+				{
 					Material mat = null;
-					
+
 					Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
-					
+
 					String arm = fc.getString("armor." + armorPath);
 					if (arm.contains(","))
 					{
 						String[] split = arm.split(",");
-						
+
 						mat = MaterialUtil.getMaterial(split[0]);
 
 						StringBuilder line = new StringBuilder();
@@ -95,16 +99,16 @@ public class ArenaClass implements Reloadable
 						}
 
 						line.delete(line.length() - 1, line.length());
-						
+
 						enchants = readArmorEnchantments(line.toString());
 					}
 					else
 					{
 						mat = MaterialUtil.getMaterial(arm);
 					}
-					
+
 					ItemStack stack = new ItemStack(mat, 1);
-					
+
 					if (! enchants.isEmpty())
 					{
 						for (Entry<Enchantment, Integer> entry : enchants.entrySet())
@@ -112,7 +116,7 @@ public class ArenaClass implements Reloadable
 							stack.addUnsafeEnchantment(entry.getKey(), entry.getValue());
 						}
 					}
-					
+
 					this.armor.add(stack);
 				}
 			}
@@ -182,9 +186,9 @@ public class ArenaClass implements Reloadable
 			}
 
 			usesHelmet = fc.getBoolean("useHelmet", true);
-			
+
 			permissionNode = fc.getString("permissionNode", "");
-			
+
 			// Save the file if changes were made
 			if (save) fc.save(file);
 		}
@@ -201,7 +205,7 @@ public class ArenaClass implements Reloadable
 	public List<PotionEffect> readPotionEffects(String str)
 	{
 		List<PotionEffect> ret = new ArrayList<PotionEffect>();
-		
+
 		try
 		{
 			str = str.replaceAll(" ", "");
@@ -213,12 +217,10 @@ public class ArenaClass implements Reloadable
 					if (s.contains(":"))
 					{
 						String[] split1 = s.split(":");
-	
 						PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
-	
-						int strength = Integer.parseInt(split1[1]);
+						int strength = NumberUtil.toInt(split1[1]);
 
-						if (type != null)
+						if (type != null && strength > 0)
 						{
 							ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 						}
@@ -230,12 +232,10 @@ public class ArenaClass implements Reloadable
 				if (str.contains(":"))
 				{
 					String[] split1 = str.split(":");
-					
 					PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
-	
-					int strength = Integer.parseInt(split1[1]);
+					int strength = NumberUtil.toInt(split1[1]);
 
-					if (type != null)
+					if (type != null && strength > 0)
 					{
 						ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 					}
@@ -253,16 +253,14 @@ public class ArenaClass implements Reloadable
 	public Map<Enchantment, Integer> readArmorEnchantments(String string)
 	{
 		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
-		
+
 		try
 		{
 			if (string.contains(":"))
 			{
 				String[] split2 = string.split(":");
-	
 				Enchantment enchantment = EnchantmentType.toEnchantment(split2[0]);
-
-				int level = Integer.parseInt(split2[1]);
+				int level = NumberUtil.toInt(split2[1]);
 
 				if (enchantment != null && level > 0)
 				{
@@ -284,11 +282,6 @@ public class ArenaClass implements Reloadable
 			return true;
 
 		return plugin.getPermissionHandler().hasPermission(player, permissionNode);
-	}
-
-	public String getName(File file)
-	{
-		return file.getName().replaceAll(".yml", "");
 	}
 
 	public ItemStack getArmor(int index)

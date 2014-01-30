@@ -16,6 +16,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryUtil;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
+import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -306,7 +307,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 				for (Entry<String, Object> entry : map.entrySet())
 				{
-					int kills = Util.parseInt(entry.getKey());
+					int kills = NumberUtil.toInt(entry.getKey());
 					if (kills < 0)
 						continue;
 
@@ -388,7 +389,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				stack.setAmount(amt);
 
 				// Add the item
-				InventoryUtil.addItem(player, stack);
+				InventoryUtil.giveItem(player, stack);
 			}
 		}
 

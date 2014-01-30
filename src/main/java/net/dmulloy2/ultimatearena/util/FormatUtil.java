@@ -13,6 +13,8 @@ import org.bukkit.ChatColor;
 
 public class FormatUtil
 {
+	private FormatUtil() { }
+
 	/**
 	 * Formats a given string and its object
 	 * 
@@ -31,9 +33,9 @@ public class FormatUtil
 	/**
 	 * Returns the "Friendly" name of an {@link Enum} constant
 	 * 
-	 * @param mat
-	 *        - Enum constant to get the "friendly" name for
-	 * @return The "friendly" name for the given enum constant
+	 * @param e
+	 *        - Constant to get the "friendly" name for
+	 * @return The "friendly" name for the given Enum constant
 	 */
 	public static String getFriendlyName(Enum<?> e)
 	{
@@ -59,16 +61,29 @@ public class FormatUtil
 	 * 
 	 * @param string
 	 *        - String to get the article for
-	 * @return The article that should go with the string
+	 * @return The proper article of a given string
 	 */
 	public static String getArticle(String string)
 	{
 		string = string.toLowerCase();
 		if (string.startsWith("a") || string.startsWith("e") || string.startsWith("i") || string.startsWith("o") || string.startsWith("u"))
-		{
 			return "an";
-		}
 
 		return "a";
+	}
+
+	/**
+	 * Returns the proper plural of a given string
+	 * 
+	 * @param string
+	 *        - String to get the plural for
+	 * @return The proper plural of a given string
+	 */
+	public static String getPlural(String string)
+	{
+		if (string.toLowerCase().endsWith("s"))
+			return string + "s";
+
+		return string;
 	}
 }

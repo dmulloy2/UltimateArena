@@ -126,16 +126,16 @@ public class MOBArena extends Arena
 		Player pl = p.getPlayer();
 
 		if (amtGold > 0)
-			InventoryUtil.addItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold));
+			InventoryUtil.giveItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold));
 
 		if (amtSlime > 0)
-			InventoryUtil.addItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime));
+			InventoryUtil.giveItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime));
 
 		if (amtGlowStone > 0)
-			InventoryUtil.addItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
+			InventoryUtil.giveItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
 
 		if (amtGunPowder > 0)
-			InventoryUtil.addItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder));
+			InventoryUtil.giveItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder));
 
 		if (amtCash > 0 && plugin.getConfig().getBoolean("moneyrewards"))
 		{

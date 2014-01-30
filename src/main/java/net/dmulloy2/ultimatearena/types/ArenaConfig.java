@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
+import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -110,7 +111,7 @@ public class ArenaConfig implements Reloadable
 
 				for (Entry<String, Object> entry : map.entrySet())
 				{
-					int kills = Util.parseInt(entry.getKey());
+					int kills = NumberUtil.toInt(entry.getKey());
 					if (kills < 0)
 						continue;
 					

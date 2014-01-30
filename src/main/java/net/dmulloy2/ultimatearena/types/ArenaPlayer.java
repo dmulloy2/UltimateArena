@@ -111,7 +111,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void giveItem(ItemStack stack)
 	{
-		InventoryUtil.addItem(player.getPlayer(), stack);
+		InventoryUtil.giveItem(player, stack);
 	}
 
 	/**
