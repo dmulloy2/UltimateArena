@@ -15,9 +15,6 @@ public class PVPArena extends Arena
 		super(az);
 
 		this.type = FieldType.PVP;
-//		this.startTimer = 120;
-//		this.maxGameTime = 60 * 10;
-//		this.maxDeaths = 3;
 	}
 
 	@Override

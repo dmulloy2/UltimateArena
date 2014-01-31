@@ -148,11 +148,11 @@ public class CONQUESTArena extends Arena
 			{
 				if (ap.getTeam() == 1)
 				{
-					ap.sendMessage("&cYour power is now: &6" + redTeamPower);
+					ap.sendMessage("&3Your power is now: &e{0}", redTeamPower);
 				}
 				else
 				{
-					ap.sendMessage("&cThe other team's power is now: &6" + redTeamPower);
+					ap.sendMessage("&3The other team\'s power is now: &e{0}", redTeamPower);
 				}
 			}
 		}
@@ -163,11 +163,11 @@ public class CONQUESTArena extends Arena
 			{
 				if (ap.getTeam() == 2)
 				{
-					ap.sendMessage("&cYour power is now: &6" + blueTeamPower);
+					ap.sendMessage("&3Your power is now: &e{0}", blueTeamPower);
 				}
 				else
 				{
-					ap.sendMessage("&cThe other team's power is now: &6" + blueTeamPower);
+					ap.sendMessage("&3The other team\'s power is now: &e{0}", blueTeamPower);
 				}
 			}
 		}

@@ -143,7 +143,7 @@ public class ArenaFlag extends FlagBase
 				ArenaPlayer player = players.get(i);
 				if (percent < 100)
 				{
-					player.sendMessage("&3Capping! &e{0}&3%");
+					player.sendMessage("&3Capping! &e{0}&3%", percent);
 				}
 			}
 		}
@@ -155,7 +155,7 @@ public class ArenaFlag extends FlagBase
 				ArenaPlayer player = players.get(i);
 				if (percent < 100)
 				{
-					player.sendMessage("&3Capping! &e{0}&3%");
+					player.sendMessage("&3Capping! &e{0}&3%", percent);
 				}
 			}
 		}
