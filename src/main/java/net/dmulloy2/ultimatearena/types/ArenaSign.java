@@ -1,20 +1,14 @@
 package net.dmulloy2.ultimatearena.types;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -27,13 +21,10 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 public class ArenaSign implements ConfigurationSerializable
 {
 	private int id;
-	private String worldName;
 	private String arenaName;
-	private SimpleVector vec;
+	private ArenaLocation loc;
 
 	private transient final Sign sign;
-	private transient final World world;
-	private transient final Location loc;
 	private transient final ArenaZone az;
 	private transient final UltimateArena plugin;
 
@@ -51,16 +42,13 @@ public class ArenaSign implements ConfigurationSerializable
 	 */
 	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone az, int id)
 	{
-		this.plugin = plugin;
-		this.loc = loc;
-		this.world = loc.getWorld();
-		this.worldName = world.getName();
-		this.az = az;
-		this.sign = getSign();
-
 		this.id = id;
 		this.arenaName = az.getArenaName();
-		this.vec = new SimpleVector(loc.toVector());
+		this.loc = new ArenaLocation(loc);
+
+		this.sign = getSign();
+		this.az = az;
+		this.plugin = plugin;
 	}
 
 	/**
@@ -68,34 +56,13 @@ public class ArenaSign implements ConfigurationSerializable
 	 */
 	public ArenaSign(UltimateArena plugin, Map<String, Object> args)
 	{
-		for (Entry<String, Object> entry : args.entrySet())
-		{
-			try
-			{
-				for (Field field : getClass().getDeclaredFields())
-				{
-					if (field.getName().equals(entry.getKey()))
-					{
-						boolean accessible = field.isAccessible();
+		this.id = (int) args.get("id");
+		this.arenaName = (String) args.get("arenaName");
+		this.loc = (ArenaLocation) args.get("loc");
 
-						field.setAccessible(true);
-
-						field.set(this, entry.getValue());
-
-						field.setAccessible(accessible);
-					}
-				}
-			}
-			catch (IllegalArgumentException | IllegalAccessException ex)
-			{
-			}
-		}
-
-		this.plugin = plugin;
-		this.world = plugin.getServer().getWorld(worldName);
-		this.loc = vec.toVector().toLocation(world);
 		this.sign = getSign();
 		this.az = plugin.getArenaZone(arenaName);
+		this.plugin = plugin;
 	}
 
 	/**
@@ -105,7 +72,7 @@ public class ArenaSign implements ConfigurationSerializable
 	 */
 	public Sign getSign()
 	{
-		Block block = loc.getWorld().getBlockAt(loc);
+		Block block = loc.getWorld().getBlockAt(loc.getLocation());
 		if (block.getState() instanceof Sign)
 		{
 			return (Sign) block.getState();
@@ -248,13 +215,7 @@ public class ArenaSign implements ConfigurationSerializable
 	@Override
 	public String toString()
 	{
-		StringBuilder ret = new StringBuilder();
-		ret.append("ArenaSign {");
-		ret.append("id=" + id + ", ");
-		ret.append("loc=" + Util.locationToString(loc));
-		ret.append("}");
-
-		return ret.toString();
+		return "ArenaSign { id = " + id + ", arenaName = " + arenaName + ", loc = " + loc + " }";
 	}
 
 	@Override
@@ -262,53 +223,9 @@ public class ArenaSign implements ConfigurationSerializable
 	{
 		Map<String, Object> data = new HashMap<String, Object>();
 
-		for (Field field : getClass().getDeclaredFields())
-		{
-			if (Modifier.isTransient(field.getModifiers()))
-				continue;
-
-			try
-			{
-				boolean accessible = field.isAccessible();
-
-				field.setAccessible(true);
-
-				if (field.getType().equals(Integer.TYPE))
-				{
-					data.put(field.getName(), field.getInt(this));
-				}
-				else if (field.getType().equals(Long.TYPE))
-				{
-					data.put(field.getName(), field.getLong(this));
-				}
-				else if (field.getType().equals(Boolean.TYPE))
-				{
-					data.put(field.getName(), field.getBoolean(this));
-				}
-				else if (field.getType().isAssignableFrom(Collection.class))
-				{
-					data.put(field.getName(), field.get(this));
-				}
-				else if (field.getType().isAssignableFrom(String.class))
-				{
-					data.put(field.getName(), field.get(this));
-				}
-				else if (field.getType().isAssignableFrom(Map.class))
-				{
-					data.put(field.getName(), field.get(this));
-				}
-				else
-				{
-					data.put(field.getName(), field.get(this));
-				}
-
-				field.setAccessible(accessible);
-
-			}
-			catch (IllegalArgumentException | IllegalAccessException ex)
-			{
-			}
-		}
+		data.put("id", id);
+		data.put("arenaName", arenaName);
+		data.put("loc", loc);
 
 		return data;
 	}

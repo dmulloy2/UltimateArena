@@ -109,14 +109,7 @@ public class BlockListener implements Listener
 					ArenaZone az = plugin.getArenaZone(event.getLine(2));
 					if (az != null)
 					{
-						int id = 0;
-						
-						// Make sure we get the highest id
-						for (ArenaSign sign : plugin.getSignHandler().getSigns())
-						{
-							if (sign.getId() > id)
-								id = sign.getId();
-						}
+						int id = plugin.getSignHandler().getFreeId(1);
 						
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);
@@ -137,14 +130,7 @@ public class BlockListener implements Listener
 					ArenaZone az = plugin.getArenaZone(event.getLine(1));
 					if (az != null)
 					{
-						int id = 0;
-						
-						// Make sure we get the highest id
-						for (ArenaSign sign : plugin.getSignHandler().getSigns())
-						{
-							if (sign.getId() > id)
-								id = sign.getId();
-						}
+						int id = plugin.getSignHandler().getFreeId(1);
 						
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);

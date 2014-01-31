@@ -2,9 +2,11 @@ package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -26,6 +28,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class SignHandler
 {
+	private static final int CURRENT_VERSION = 1;
+	
 	private File file;
 	private FileConfiguration signsSave;
 
@@ -47,28 +51,26 @@ public class SignHandler
 			}
 
 			this.signsSave = YamlConfiguration.loadConfiguration(file);
-			if (signsSave.isSet("total"))
+			if (! signsSave.isSet("version"))
 			{
 				if (! createNewSave(true))
 					return;
 			}
 
-			// Dynamic ID's
-			int nextId = 1;
-
-			for (Entry<String, Object> value : signsSave.getValues(false).entrySet())
+			Map<String, Object> values = signsSave.getValues(false);
+			for (Entry<String, Object> value : values.entrySet())
 			{
-				MemorySection mem = (MemorySection) value.getValue();
+				if (value.getKey().equals("version"))
+				{
+					// Normally, we would do some sort of conversion here, but signs were broken beyond repair before this.
+					continue;
+				}
 
+				MemorySection mem = (MemorySection) value.getValue();
 				ArenaSign sign = new ArenaSign(plugin, mem.getValues(true));
 				if (sign != null)
 				{
-					sign.setId(nextId);
-					nextId++;
-
 					signs.add(sign);
-
-					plugin.debug("Successfully loaded ArenaSign {0}. Next id = {1}", sign, nextId);
 				}
 			}
 
@@ -102,8 +104,6 @@ public class SignHandler
 
 	private final void save()
 	{
-		plugin.debug("Saving signs...");
-
 		try
 		{
 			if (! createNewSave(true))
@@ -111,11 +111,11 @@ public class SignHandler
 
 			for (ArenaSign sign : getSigns())
 			{
-				plugin.debug("Saving sign: " + sign);
-
 				Map<String, Object> values = sign.serialize();
 				signsSave.set("" + sign.getId(), values);
 			}
+
+			signsSave.set("version", CURRENT_VERSION);
 
 			signsSave.save(file);
 		}
@@ -127,8 +127,6 @@ public class SignHandler
 
 	private final boolean createNewSave(boolean delete)
 	{
-		plugin.debug("Creating new sign save. Delete = {0}", delete);
-
 		try
 		{
 			if (file.exists() && delete)
@@ -159,7 +157,7 @@ public class SignHandler
 	{
 		for (ArenaSign sign : getSigns())
 		{
-			if (Util.checkLocation(sign.getLoc(), loc))
+			if (Util.checkLocation(sign.getLoc().getLocation(), loc))
 				return sign;
 		}
 
@@ -169,8 +167,6 @@ public class SignHandler
 	public final void addSign(final ArenaSign sign)
 	{
 		signs.add(sign);
-
-		plugin.debug("Added new sign: {0}", sign);
 
 		new BukkitRunnable()
 		{
@@ -185,8 +181,6 @@ public class SignHandler
 
 	public final void deleteSign(ArenaSign sign)
 	{
-		plugin.debug("Deleting sign {0}!", sign.getId());
-
 		signs.remove(sign);
 
 		updateAllSigns();
@@ -219,5 +213,44 @@ public class SignHandler
 	public final List<ArenaSign> getSigns()
 	{
 		return Util.newList(signs);
+	}
+
+	// ---- ID Related Stuff ---- //
+
+	public final int getFreeId(int start)
+	{
+		Set<Integer> keySet = getById().keySet();
+
+ 		int id = recurseFreeId(start, keySet);
+		int newId;
+
+		// Iterate through until we find an id that does not already exist
+		while (id != (newId = recurseFreeId(id, keySet)))
+			id = newId;
+
+		return id;
+	}
+
+	private final int recurseFreeId(int start, Set<Integer> keySet)
+	{
+		int id = start;
+		for (int i : keySet)
+		{
+			if (id == i)
+				id++;
+		}
+
+		return id;
+	}
+
+	private final Map<Integer, ArenaSign> getById()
+	{
+		Map<Integer, ArenaSign> ret = new HashMap<Integer, ArenaSign>();
+		for (ArenaSign sign : getSigns())
+		{
+			ret.put(sign.getId(), sign);
+		}
+
+		return ret;
 	}
 }
