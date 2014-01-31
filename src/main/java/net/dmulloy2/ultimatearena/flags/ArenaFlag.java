@@ -28,7 +28,7 @@ public class ArenaFlag extends FlagBase
 	protected int power;
 
 	protected boolean capped;
-	
+
 	public ArenaFlag(Arena arena, ArenaLocation location, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
@@ -63,6 +63,8 @@ public class ArenaFlag extends FlagBase
 			}
 		}
 
+		// FIXME: Capping messages are displayed twice
+
 		cappingTeam = team1 > team2 ? 1 : 2;
 
 		// The other team is trying to cap
@@ -71,8 +73,10 @@ public class ArenaFlag extends FlagBase
 			if (cappingTeam == 1)
 			{
 				int added = (team1 - team2) * 5;
-				if (power - added < 0) power = 0;
-				else power -= added;
+				if (power - added < 0)
+					power = 0;
+				else
+					power -= added;
 
 				for (ArenaPlayer ap : players)
 				{
@@ -87,8 +91,10 @@ public class ArenaFlag extends FlagBase
 			else
 			{
 				int added = (team2 - team1) * 5;
-				if (power - added < 0) power = 0;
-				else power -= added;
+				if (power - added < 0)
+					power = 0;
+				else
+					power -= added;
 
 				for (ArenaPlayer ap : players)
 				{
@@ -103,11 +109,13 @@ public class ArenaFlag extends FlagBase
 		}
 		else
 		{
-			if (owningTeam == 1 && ! capped)
+			if (owningTeam == 1 && !capped)
 			{
 				int added = (team1 - team2) * 5;
-				if (power + added > 100) power = 100;
-				else power += added;
+				if (power + added > 100)
+					power = 100;
+				else
+					power += added;
 
 				for (ArenaPlayer ap : players)
 				{
@@ -125,11 +133,13 @@ public class ArenaFlag extends FlagBase
 					setOwningTeam(1);
 				}
 			}
-			else if (owningTeam == 2 && ! capped)
+			else if (owningTeam == 2 && !capped)
 			{
 				int added = (team2 - team1) * 5;
-				if (power + added > 100) power = 100;
-				else power += added;
+				if (power + added > 100)
+					power = 100;
+				else
+					power += added;
 
 				for (ArenaPlayer ap : players)
 				{
@@ -158,6 +168,7 @@ public class ArenaFlag extends FlagBase
 		wool.setColor(getColor(team == 1 ? 14 : 11));
 		Util.setData(notify, wool);
 	}
+
 	private final DyeColor getColor(int color)
 	{
 		if (color == 8)

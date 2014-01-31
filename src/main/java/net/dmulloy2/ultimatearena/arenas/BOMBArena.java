@@ -69,7 +69,7 @@ public class BOMBArena extends Arena
 				}
 				else
 				{
-					ap.sendMessage("&3The other team\'s power is now: &e{0}", redTeamPower);
+					ap.sendMessage("&3The other team''s power is now: &e{0}", redTeamPower);
 				}
 			}
 		}
