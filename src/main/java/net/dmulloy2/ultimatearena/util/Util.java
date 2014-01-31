@@ -11,7 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
 /**
  * Base Util class
@@ -261,5 +263,12 @@ public class Util
 	{
 		int index = file.getName().lastIndexOf(extension);
 		return index > 0 ? file.getName().substring(0, index) : file.getName();
+	}
+
+	@SuppressWarnings("deprecation")
+	public static void setData(Block block, MaterialData data)
+	{
+		block.setData(data.getData());
+		block.getState().update(true);
 	}
 }

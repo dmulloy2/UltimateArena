@@ -67,7 +67,6 @@ public class KOTHArena extends Arena
 	{
 		for (ArenaFlag flag : flags)
 		{
-			flag.step();
 			flag.checkNear(getActivePlayers());
 		}
 

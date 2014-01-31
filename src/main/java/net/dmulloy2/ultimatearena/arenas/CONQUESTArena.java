@@ -69,7 +69,7 @@ public class CONQUESTArena extends Arena
 		for (int i = 0; i < flags.size(); i++)
 		{
 			ArenaFlag flag = flags.get(i);
-			if (flag.getTeam() == ap.getTeam())
+			if (flag.getOwningTeam() == ap.getTeam())
 			{
 				if (flag.isCapped())
 				{
@@ -107,14 +107,14 @@ public class CONQUESTArena extends Arena
 		for (int i = 0; i < flags.size(); i++)
 		{
 			ArenaFlag flag = flags.get(i);
-			if (flag.getColor() == 14)
+			if (flag.getOwningTeam() == 1)
 			{
 				if (flag.isCapped())
 				{
 					red++;
 				}
 			}
-			else if (flag.getColor() == 11)
+			else if (flag.getOwningTeam() == 2)
 			{
 				if (flag.isCapped())
 				{
@@ -152,7 +152,7 @@ public class CONQUESTArena extends Arena
 				}
 				else
 				{
-					ap.sendMessage("&3The other team\'s power is now: &e{0}", redTeamPower);
+					ap.sendMessage("&3The other team''s power is now: &e{0}", redTeamPower);
 				}
 			}
 		}
@@ -167,7 +167,7 @@ public class CONQUESTArena extends Arena
 				}
 				else
 				{
-					ap.sendMessage("&3The other team\'s power is now: &e{0}", blueTeamPower);
+					ap.sendMessage("&3The other team''s power is now: &e{0}", blueTeamPower);
 				}
 			}
 		}
@@ -214,7 +214,6 @@ public class CONQUESTArena extends Arena
 		{
 			ArenaFlag flag = flags.get(i);
 
-			flag.step();
 			flag.checkNear(getActivePlayers());
 		}
 

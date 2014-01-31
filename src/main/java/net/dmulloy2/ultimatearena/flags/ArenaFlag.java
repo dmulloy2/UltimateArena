@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
@@ -11,7 +12,6 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Wool;
 
@@ -20,79 +20,22 @@ import org.bukkit.material.Wool;
  */
 
 @Getter
+@Setter
 public class ArenaFlag extends FlagBase
 {
-	protected int team;
+	protected int owningTeam;
+	protected int cappingTeam;
 	protected int power;
-	protected int added;
-	protected int color = 14;
 
 	protected boolean capped;
-
+	
 	public ArenaFlag(Arena arena, ArenaLocation location, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
-	}
 
-	@Override
-	protected void setup()
-	{
-		super.setup();
-		location.getBlock().setType(Material.WOOL);
-	}
-
-	public final void step()
-	{
-		this.capped = false;
-		this.color = 8;
-		this.team = 0;
-
-		if (added > 50)
-		{
-			this.color = 14;
-			this.team = 1;
-		}
-		if (added < -50)
-		{
-			this.color = 11;
-			this.team = 2;
-		}
-		if (added >= 150)
-		{
-			this.added = 150;
-			this.capped = true;
-		}
-		if (added <= -150)
-		{
-			this.added = -150;
-			this.capped = true;
-		}
-
-		if (capped)
-		{
-			notify.setType(Material.WOOL);
-			((Wool) notify.getState().getData()).setColor(getColor(color));
-			notify.getState().update(true);
-		}
-		else
-		{
-			notify.setType(Material.WOOL);
-			((Wool) notify.getState().getData()).setColor(getColor(8));
-			notify.getState().update(true);
-		}
-	}
-
-	private final DyeColor getColor(int color)
-	{
-		if (color == 8)
-			return DyeColor.SILVER;
-		else if (color == 11)
-			return DyeColor.BLUE;
-		else if (color == 14)
-			return DyeColor.RED;
-		else
-			return DyeColor.WHITE;
-
+		Wool wool = new Wool();
+		wool.setColor(getColor(8));
+		Util.setData(notify, wool);
 	}
 
 	@Override
@@ -103,61 +46,127 @@ public class ArenaFlag extends FlagBase
 
 		List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : arenaPlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
 			Player player = ap.getPlayer();
-			if (player != null)
-			{
-				if (Util.pointDistance(player.getLocation(), location) < 4.5 && player.getHealth() > 0)
-				{
-					players.add(ap);
+			if (player.getHealth() < 0.0D)
+				continue;
 
-					if (ap.getTeam() == 1)
-						team1++;
-					else
-						team2++;
-				}
+			if (Util.pointDistance(player.getLocation(), location) < 4.5)
+			{
+				players.add(ap);
+
+				if (ap.getTeam() == 1)
+					team1++;
+				else
+					team2++;
 			}
 		}
 
-		int percent = 0;
-		if (color == 14)
+		cappingTeam = team1 > team2 ? 1 : 2;
+
+		// The other team is trying to cap
+		if (cappingTeam != owningTeam)
 		{
-			percent = added - 50;
-		}
-		else if (color == 11)
-		{
-			percent = Math.abs(added) - 50;
+			if (cappingTeam == 1)
+			{
+				int added = (team1 - team2) * 5;
+				if (power - added < 0) power = 0;
+				else power -= added;
+
+				for (ArenaPlayer ap : players)
+				{
+					ap.sendMessage("&3Capping! &e{0}&3%", power);
+				}
+
+				if (power == 0)
+				{
+					setOwningTeam(1);
+				}
+			}
+			else
+			{
+				int added = (team2 - team1) * 5;
+				if (power - added < 0) power = 0;
+				else power -= added;
+
+				for (ArenaPlayer ap : players)
+				{
+					ap.sendMessage("&3Capping! &e{0}&3%", power);
+				}
+
+				if (power == 0)
+				{
+					setOwningTeam(2);
+				}
+			}
 		}
 		else
 		{
-			percent = added + 50;
-		}
+			if (owningTeam == 1 && ! capped)
+			{
+				int added = (team1 - team2) * 5;
+				if (power + added > 100) power = 100;
+				else power += added;
 
-		if (team1 > team2)
-		{
-			added += (team1 - team2) * 5;
-			for (int i = 0; i < players.size(); i++)
-			{
-				ArenaPlayer player = players.get(i);
-				if (percent < 100)
+				for (ArenaPlayer ap : players)
 				{
-					player.sendMessage("&3Capping! &e{0}&3%", percent);
+					ap.sendMessage("&3Capping! &e{0}&3%", power);
+				}
+
+				if (power == 100)
+				{
+					for (ArenaPlayer ap : players)
+					{
+						ap.sendMessage("&3Capped!");
+					}
+
+					capped = true;
+					setOwningTeam(1);
+				}
+			}
+			else if (owningTeam == 2 && ! capped)
+			{
+				int added = (team2 - team1) * 5;
+				if (power + added > 100) power = 100;
+				else power += added;
+
+				for (ArenaPlayer ap : players)
+				{
+					ap.sendMessage("&3Capping! &e{0}&3%", power);
+				}
+
+				if (power == 100)
+				{
+					for (ArenaPlayer ap : players)
+					{
+						ap.sendMessage("&3Capped!");
+					}
+
+					capped = true;
+					setOwningTeam(1);
 				}
 			}
 		}
-		else if (team2 > team1)
-		{
-			added -= (team2 - team1) * 5;
-			for (int i = 0; i < players.size(); i++)
-			{
-				ArenaPlayer player = players.get(i);
-				if (percent < 100)
-				{
-					player.sendMessage("&3Capping! &e{0}&3%", percent);
-				}
-			}
-		}
+	}
+
+	private final void setOwningTeam(int team)
+	{
+		this.owningTeam = team;
+
+		Wool wool = new Wool();
+		wool.setColor(getColor(team == 1 ? 14 : 11));
+		Util.setData(notify, wool);
+	}
+	private final DyeColor getColor(int color)
+	{
+		if (color == 8)
+			return DyeColor.SILVER;
+		else if (color == 11)
+			return DyeColor.BLUE;
+		else if (color == 14)
+			return DyeColor.RED;
+		else
+			return DyeColor.WHITE;
 	}
 }
