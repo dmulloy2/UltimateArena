@@ -34,6 +34,7 @@ permissions:
       ultimatearena.setdone: true
       ultimatearena.delete: true
       ultimatearena.stop: true
+      ultimatearena.undo: true
       ultimatearena.build: true
   ultimatearena.class:
     description: Allows the switching of classes ingame
@@ -97,6 +98,9 @@ permissions:
     default: true
   ultimatearena.stop:
     description: Allows the usage of /ua stop
+    default: false
+  ultimatearena.undo:
+    description: Allows the usage of /ua undo
     default: false
   ultimatearena.version:
     description: Allows usage of /ua version

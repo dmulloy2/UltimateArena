@@ -222,17 +222,6 @@ public class MobCreator extends ArenaCreator
 
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * @throws UnsupportedOperationException Not supported yet
-	 */
-	@Override
-	public void undo()
-	{
-		throw new UnsupportedOperationException("Not supported yet"); // TODO
-	}
-
-	/**
-	 * {@inheritDoc}
 	 */
 	@Override
 	public FieldType getType()

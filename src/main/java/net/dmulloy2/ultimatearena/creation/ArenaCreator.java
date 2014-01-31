@@ -93,9 +93,19 @@ public abstract class ArenaCreator
 	public abstract void stepInfo();
 
 	/**
-	 * Un-does the last step in the creation process
+	 * Undo the last step in the creation process
 	 */
-	public abstract void undo();
+	public final void undo()
+	{
+		if (stepNumber == 1)
+		{
+			sendMessage("&cYou cannot undo a nonexistant step!");
+			return;
+		}
+
+		stepNumber--;
+		stepInfo();
+	}
 
 	/**
 	 * Completes the Arena Creation process
@@ -127,8 +137,6 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * Gets the {@link FieldType} of this particular creator
-	 * 
 	 * @return The {@link FieldType} of this particular creator
 	 */
 	public abstract FieldType getType();

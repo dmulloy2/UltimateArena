@@ -58,6 +58,7 @@ import net.dmulloy2.ultimatearena.commands.CmdSpectate;
 import net.dmulloy2.ultimatearena.commands.CmdStart;
 import net.dmulloy2.ultimatearena.commands.CmdStats;
 import net.dmulloy2.ultimatearena.commands.CmdStop;
+import net.dmulloy2.ultimatearena.commands.CmdUndo;
 import net.dmulloy2.ultimatearena.commands.CmdVersion;
 import net.dmulloy2.ultimatearena.creation.ArenaCreator;
 import net.dmulloy2.ultimatearena.creation.BombCreator;
@@ -193,6 +194,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		commandHandler.registerCommand(new CmdStart(this));
 		commandHandler.registerCommand(new CmdStats(this));
 		commandHandler.registerCommand(new CmdStop(this));
+		commandHandler.registerCommand(new CmdUndo(this));
 		commandHandler.registerCommand(new CmdVersion(this));
 
 		// Register Listeners
