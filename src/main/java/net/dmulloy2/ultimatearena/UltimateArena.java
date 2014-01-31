@@ -332,7 +332,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				{
 					economy = economyProvider.getProvider();
 	
-					outConsole("Enabled economy through {0}!", economy.getName());
+					outConsole("Economy integration through {0}!", economy.getName());
 				}
 				else
 				{
@@ -469,7 +469,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			}
 		}
 
-		outConsole("Loaded {0} arena files!", total);
+		outConsole("Loaded {0} arenas!", total);
 	}
 
 	private void loadConfigs()
@@ -481,7 +481,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				total++;
 		}
 
-		outConsole("Loaded {0} arena config files!", total);
+		debug("Loaded {0} arena configs!", total);
 
 		loadWhiteListedCommands();
 	}
@@ -557,7 +557,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			}
 		}
 
-		outConsole("Loaded {0} Arena Classes!", total);
+		outConsole("Loaded {0} classes!", total);
 	}
 
 	/**
@@ -598,7 +598,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private void loadSigns()
 	{
 		signHandler = new SignHandler(this);
-		outConsole("Loaded {0} arena signs!", signHandler.getSigns().size());
+		outConsole("Loaded {0} signs!", signHandler.getSigns().size());
 	}
 
 	public ArenaConfig getConfig(String type)
@@ -1180,7 +1180,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 * @param plugin
 	 *        - {@link JavaPlugin} to accept the registration from
 	 */
-	public void acceptRegistration(JavaPlugin plugin)
+	public void acceptRegistration(Plugin plugin)
 	{
 		outConsole("Accepted API registration from {0}", plugin.getName());
 

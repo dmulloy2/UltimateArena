@@ -32,6 +32,12 @@ public class CmdList extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
+		if (plugin.getLoadedArenas().isEmpty())
+		{
+			err("There are no arenas to display!");
+			return;
+		}
+
 		List<String> lines = new ArrayList<String>();
 		StringBuilder line = new StringBuilder();
 		line.append("&3====[ &eUltimateArenas &3]====");

@@ -26,7 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class UltimateArenaAPI
 {
 	protected final UltimateArena ultimateArena;
-	protected final JavaPlugin accessingPlugin;
+	protected final Plugin accessingPlugin;
 
 	/**
 	 * Whether or not a {@link Player} is playing an {@link Arena}
@@ -172,7 +172,7 @@ public class UltimateArenaAPI
 	 *        - {@link JavaPlugin} to hook into {@link UltimateArena} with
 	 * @return New instance of {@link UltimateArenaAPI}
 	 */
-	public static UltimateArenaAPI hookIntoUA(JavaPlugin plugin)
+	public static UltimateArenaAPI hookIntoUA(Plugin plugin)
 	{
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (! pm.isPluginEnabled("UltimateArena"))
