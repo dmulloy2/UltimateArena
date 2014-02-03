@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.KOTHArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
@@ -21,6 +23,7 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
+@Getter @Setter
 public class KothFlag extends ArenaFlag
 {
 	protected ArenaPlayer leader;

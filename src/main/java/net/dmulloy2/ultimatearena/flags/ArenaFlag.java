@@ -12,6 +12,7 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Wool;
 
@@ -19,8 +20,7 @@ import org.bukkit.material.Wool;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
+@Getter @Setter
 public class ArenaFlag extends FlagBase
 {
 	protected int owningTeam;
@@ -36,6 +36,13 @@ public class ArenaFlag extends FlagBase
 		Wool wool = new Wool();
 		wool.setColor(getColor(8));
 		Util.setData(notify, wool);
+	}
+
+	@Override
+	protected void setup()
+	{
+		super.setup();
+		location.getBlock().setType(Material.WOOL);
 	}
 
 	@Override
@@ -109,7 +116,7 @@ public class ArenaFlag extends FlagBase
 		}
 		else
 		{
-			if (owningTeam == 1 && !capped)
+			if (owningTeam == 1 && ! capped)
 			{
 				int added = (team1 - team2) * 5;
 				if (power + added > 100)
@@ -133,7 +140,7 @@ public class ArenaFlag extends FlagBase
 					setOwningTeam(1);
 				}
 			}
-			else if (owningTeam == 2 && !capped)
+			else if (owningTeam == 2 && ! capped)
 			{
 				int added = (team2 - team1) * 5;
 				if (power + added > 100)

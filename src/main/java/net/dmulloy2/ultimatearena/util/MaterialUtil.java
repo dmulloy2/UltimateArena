@@ -1,5 +1,7 @@
 package net.dmulloy2.ultimatearena.util;
 
+import org.bukkit.Bukkit;
+
 import net.dmulloy2.ultimatearena.types.Material;
 
 /**
@@ -27,8 +29,35 @@ public class MaterialUtil
 		}
 		else
 		{
-			return org.bukkit.Material.matchMaterial(string);
+			return matchMaterial(string);
 		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private static org.bukkit.Material matchMaterial(String string)
+	{
+		org.bukkit.Material material = null;
+
+		try
+		{
+			material = org.bukkit.Material.matchMaterial(string);
+		}
+		catch (Throwable ex)
+		{
+		}
+
+		if (material == null)
+		{
+			try
+			{
+				material = Bukkit.getUnsafe().getMaterialFromInternalName(string);
+			}
+			catch (Throwable ex)
+			{
+			}
+		}
+
+		return material;
 	}
 
 	/**

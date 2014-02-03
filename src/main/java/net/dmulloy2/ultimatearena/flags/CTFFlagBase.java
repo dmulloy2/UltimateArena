@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.flags;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.CTFArena;
@@ -11,7 +12,6 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.TeamHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -21,7 +21,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author dmulloy2
  */
 
-@Getter
+@Getter @Setter
 public class CTFFlagBase extends FlagBase
 {
 	protected CTFArena ctf;
@@ -30,7 +30,7 @@ public class CTFFlagBase extends FlagBase
 
 	protected int team;
 
-	public CTFFlagBase(Arena arena, Location location, int team, UltimateArena plugin)
+	public CTFFlagBase(Arena arena, ArenaLocation location, int team, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
 		this.arena = arena;
@@ -41,20 +41,12 @@ public class CTFFlagBase extends FlagBase
 		flag.colorize();
 	}
 
-	public CTFFlagBase(Arena arena, ArenaLocation location, int team, UltimateArena plugin)
-	{
-		this(arena, location.getLocation(), team, plugin);
-	}
-
 	@Override
 	public void setup()
 	{
 		super.setup();
 		this.flag = new CTFFlag(arena, location.clone().add(0, 1, 0), team);
-
-		Location flag = location.clone().add(0, 5, 0);
-
-		this.notify = flag.getBlock();
+		this.notify = location.clone().add(0.0D, 5.0D, 0.0D).getBlock();
 		this.notify.setType(Material.AIR);
 	}
 

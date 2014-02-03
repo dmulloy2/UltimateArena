@@ -19,8 +19,7 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
+@Getter @Setter
 public class BombFlag extends ArenaFlag
 {
 	protected int fuser;

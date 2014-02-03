@@ -210,14 +210,7 @@ public class Util
 	 */
 	public static <T> List<T> newList(List<T> list)
 	{
-		List<T> ret = new ArrayList<T>();
-
-		for (int i = 0; i < list.size(); i++)
-		{
-			ret.add(list.get(i));
-		}
-
-		return ret;
+		return new ArrayList<T>(list);
 	}
 
 	/**
@@ -247,7 +240,7 @@ public class Util
 	 *        - Effect type to play
 	 * @param loc
 	 *        - Location where the effect should be played
-	 * @param i
+	 * @param data
 	 *        - Data
 	 */
 	@SuppressWarnings("deprecation") // TODO: Is there a replacement for this?

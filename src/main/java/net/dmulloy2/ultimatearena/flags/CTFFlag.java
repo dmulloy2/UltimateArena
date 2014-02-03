@@ -2,7 +2,8 @@ package net.dmulloy2.ultimatearena.flags;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -21,7 +22,7 @@ import org.bukkit.potion.PotionEffectType;
  * @author dmulloy2
  */
 
-@Data
+@Getter @Setter
 public class CTFFlag
 {
 	protected Player riding;
