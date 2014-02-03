@@ -1,8 +1,8 @@
 package net.dmulloy2.ultimatearena.util;
 
-import org.bukkit.Bukkit;
-
 import net.dmulloy2.ultimatearena.types.Material;
+
+import org.bukkit.Bukkit;
 
 /**
  * Util dealing with the loss of item id's
