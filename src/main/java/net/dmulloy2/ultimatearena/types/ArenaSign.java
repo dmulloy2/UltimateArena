@@ -114,10 +114,10 @@ public class ArenaSign implements ConfigurationSerializable
 			switch (ar.getGameMode())
 			{
 				case LOBBY:
-					line.append(FormatUtil.format("&aJoin ({0} sec)", ar.getStartTimer()));
+					line.append(FormatUtil.format("&aJoin - {0}", ar.getStartTimer()));
 					break;
 				case INGAME:
-					line.append(FormatUtil.format("&cIn-Game"));
+					line.append(FormatUtil.format("&eIn Game - {0}", ar.getGameTimer()));
 					break;
 				case DISABLED:
 					line.append(FormatUtil.format("&cDisabled"));
@@ -126,7 +126,7 @@ public class ArenaSign implements ConfigurationSerializable
 					line.append(FormatUtil.format("&aJoin"));
 					break;
 				case STOPPING:
-					line.append(FormatUtil.format("&cStopping"));
+					line.append(FormatUtil.format("&eStopping"));
 					break;
 				default:
 					break;
@@ -148,7 +148,7 @@ public class ArenaSign implements ConfigurationSerializable
 			switch (ar.getGameMode())
 			{
 				case DISABLED:
-					line.append("STOPPING (0/");
+					line.append("DISABLED (0/");
 					line.append(az.getMaxPlayers());
 					line.append(")");
 					break;
@@ -228,10 +228,5 @@ public class ArenaSign implements ConfigurationSerializable
 		data.put("loc", loc);
 
 		return data;
-	}
-
-	public final void setId(int id)
-	{
-		this.id = id;
 	}
 }

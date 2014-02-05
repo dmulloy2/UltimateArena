@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.tasks;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.arenas.Arena.Mode;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,6 +24,7 @@ public class ArenaFinalizeTask extends BukkitRunnable
 	@Override
 	public void run()
 	{
+		arena.setGameMode(Mode.IDLE);
 		plugin.removeActiveArena(arena);
 		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(arena.getName()));
 		arena.finalize();

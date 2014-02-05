@@ -1,9 +1,11 @@
 package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,7 +15,6 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.tasks.ArenaFinalizeTask;
-import net.dmulloy2.ultimatearena.tasks.EntityClearTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -29,6 +30,9 @@ import net.dmulloy2.ultimatearena.util.Util;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
@@ -717,8 +721,6 @@ public abstract class Arena implements Reloadable
 
 		plugin.getSpectatingHandler().unregisterArena(this);
 
-		this.gameMode = Mode.IDLE;
-
 		clearEntities();
 
 		new ArenaFinalizeTask(this).runTaskLater(plugin, 120L);
@@ -1061,17 +1063,38 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Clears the entities inside this arena
 	 */
-	public final void clearEntities()
+	private final void clearEntities()
 	{
-		plugin.debug("Clearing entities in arena {0}", name);
+		plugin.debug("Clearning entities in arena {0}", name);
 		
-		if (plugin.isStopping())
+		List<EntityType> persistentEntities = Arrays.asList(new EntityType[]
 		{
-			new EntityClearTask(this).run();
+				EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
+		});
+
+		List<Entity> entities = new ArrayList<Entity>();
+
+		for (Entity entity : world.getEntities())
+		{
+			if (entity != null && entity.isValid())
+			{
+				if (az.checkLocation(entity.getLocation()))
+				{
+					if (! persistentEntities.contains(entity.getType()))
+						entities.add(entity);
+				}
+			}
 		}
-		else
+
+		Iterator<Entity> iter = entities.iterator();
+		while (iter.hasNext())
 		{
-			new EntityClearTask(this).runTaskLater(plugin, 2L);
+			Entity next = iter.next();
+			if (next instanceof LivingEntity)
+				((LivingEntity) next).setHealth(0.0D);
+
+			next.remove();
+			iter.remove();
 		}
 	}
 
