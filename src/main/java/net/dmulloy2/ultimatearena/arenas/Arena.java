@@ -1065,7 +1065,7 @@ public abstract class Arena implements Reloadable
 	 */
 	private final void clearEntities()
 	{
-		plugin.debug("Clearning entities in arena {0}", name);
+		plugin.debug("Clearing entities in arena {0}", name);
 		
 		List<EntityType> persistentEntities = Arrays.asList(new EntityType[]
 		{
@@ -1104,23 +1104,24 @@ public abstract class Arena implements Reloadable
 	 * @param player
 	 *        - Player to get leaderboard for
 	 */
+	// TODO: Use the side scoreboard
 	public List<String> getLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
 
 		// Build kills map
 		HashMap<String, Double> kdrMap = new HashMap<String, Double>();
-		
-		for (ArenaPlayer ap : active)
+
+		for (ArenaPlayer ap : getActivePlayers())
 		{
 			kdrMap.put(ap.getName(), ap.getKDR());
 		}
 
-		final List<Map.Entry<String, Double>> sortedEntries = new ArrayList<Map.Entry<String, Double>>(kdrMap.entrySet());
+		List<Map.Entry<String, Double>> sortedEntries = new ArrayList<Map.Entry<String, Double>>(kdrMap.entrySet());
 		Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Double>>()
 		{
 			@Override
-			public int compare(final Entry<String, Double> entry1, final Entry<String, Double> entry2)
+			public int compare(Entry<String, Double> entry1, Entry<String, Double> entry2)
 			{
 				return -entry1.getValue().compareTo(entry2.getValue());
 			}
