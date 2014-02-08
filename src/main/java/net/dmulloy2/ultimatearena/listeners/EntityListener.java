@@ -93,9 +93,9 @@ public class EntityListener implements Listener
 			}
 			else if (attacker instanceof Projectile)
 			{
-				Entity shooter = ((Projectile) attacker).getShooter();
-				if (shooter instanceof Player)
-					att = (Player) shooter;
+				Projectile proj = (Projectile) attacker;
+				if (proj.getShooter() instanceof Player)
+					att = (Player) proj.getShooter();
 			}
 
 			// Defender
@@ -105,9 +105,9 @@ public class EntityListener implements Listener
 			}
 			else if (defender instanceof Projectile)
 			{
-				Entity shooter = ((Projectile) defender).getShooter();
-				if (shooter instanceof Player)
-					def = (Player) shooter;
+				Projectile proj = (Projectile) defender;
+				if (proj.getShooter() instanceof Player)
+					def = (Player) proj.getShooter();
 			}
 
 			if (att == null || def == null)
@@ -514,12 +514,11 @@ public class EntityListener implements Listener
 								if (damager instanceof Projectile)
 								{
 									Projectile proj = (Projectile) damager;
-									LivingEntity shooter = proj.getShooter();
-									if (shooter != null)
+									if (proj.getShooter() != null)
 									{
-										if (shooter instanceof Player)
+										if (proj.getShooter() instanceof Player)
 										{
-											Player killer = (Player) shooter;
+											Player killer = (Player) proj.getShooter();
 
 											ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(),
 													getWeapon(killer));
@@ -562,10 +561,12 @@ public class EntityListener implements Listener
 										}
 										else
 										{
-											String name = FormatUtil.getFriendlyName(shooter.getType());
+											String name = "";
+											if (proj.getShooter() instanceof LivingEntity)
+												name = FormatUtil.getFriendlyName(((LivingEntity) proj.getShooter()).getType());
 
-											plugin.debug("Player {0} was killed by {1}", pdied.getName(), name);
-											ar.tellPlayers("&e{0} &3was killed by &3{1} &e{2}", pdied.getName(), FormatUtil.getArticle(name),
+											plugin.debug("Player {0} was shot by {1}", pdied.getName(), name);
+											ar.tellPlayers("&e{0} &3was shot by &3{1} &e{2}", pdied.getName(), FormatUtil.getArticle(name),
 													name);
 
 											List<String> deadlines = new ArrayList<String>();
