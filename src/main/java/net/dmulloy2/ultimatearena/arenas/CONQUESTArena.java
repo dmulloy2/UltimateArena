@@ -210,10 +210,9 @@ public class CONQUESTArena extends Arena
 			setWinningTeam(2);
 		}
 
-		for (int i = 0; i < flags.size(); i++)
+		// TODO: Make sure this only fires once per second
+		for (ArenaFlag flag : Util.newList(flags))
 		{
-			ArenaFlag flag = flags.get(i);
-
 			flag.checkNear(getActivePlayers());
 		}
 

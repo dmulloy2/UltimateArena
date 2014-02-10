@@ -1,7 +1,8 @@
 package net.dmulloy2.ultimatearena.flags;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +52,8 @@ public class ArenaFlag extends FlagBase
 		int team1 = 0;
 		int team2 = 0;
 
-		List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
+		// Use a set so messages aren't displayed more than once
+		Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
@@ -69,8 +71,6 @@ public class ArenaFlag extends FlagBase
 					team2++;
 			}
 		}
-
-		// FIXME: Capping messages are displayed twice
 
 		cappingTeam = team1 > team2 ? 1 : 2;
 
