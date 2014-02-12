@@ -84,37 +84,30 @@ public class INFECTArena extends PVPArena
 	{
 		if (startTimer <= 0)
 		{
+			if (startingAmount <= 1)
+			{
+				tellPlayers("&3Not enough people to play!");
+				stop();
+				return;
+			}
+
 			if (! simpleTeamCheck())
 			{
 				if (team1size == 0)
 				{
 					setWinningTeam(2);
-
 					stop();
-
 					rewardTeam(2);
 				}
 				else if (team2size == 0)
 				{
 					setWinningTeam(1);
-					
 					stop();
-					
 					rewardTeam(1);
 				}
 				else
 				{
 					tellPlayers("&3One team is empty! game ended!");
-
-					stop();
-				}
-			}
-			else
-			{
-				if (startingAmount <= 1)
-				{
-					tellPlayers("&3Not enough people to play!");
-
 					stop();
 				}
 			}
