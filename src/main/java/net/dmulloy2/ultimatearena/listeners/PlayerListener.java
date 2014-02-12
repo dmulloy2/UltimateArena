@@ -189,11 +189,14 @@ public class PlayerListener implements Listener
 							{
 								if (a instanceof SPLEEFArena)
 								{
-									SPLEEFArena spa = (SPLEEFArena) a;
-									Field3D splf = spa.getSpleefGround();
-									if (splf.isInside(block.getLocation()))
+									if (a.isInGame())
 									{
-										block.setType(Material.AIR);
+										SPLEEFArena spa = (SPLEEFArena) a;
+										Field3D splf = spa.getSpleefGround();
+										if (splf.isInside(block.getLocation()))
+										{
+											block.setType(Material.AIR);
+										}
 									}
 								}
 							}

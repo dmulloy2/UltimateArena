@@ -79,44 +79,48 @@ public class SPLEEFArena extends FFAArena
 	@Override
 	public void check()
 	{
-		if (active.size() == 1)
+		if (isInGame())
 		{
-			if (startingAmount > 1)
+			if (isEmpty())
 			{
 				setWinningTeam(-1);
-			}
-		}
 
-		if (! checkEmpty())
-		{
-			for (ArenaPlayer ap : getActivePlayers())
-			{
-				Player pl = ap.getPlayer();
-				Location loc = pl.getLocation();
-				if (pl.getHealth() < 0)
+				if (startingAmount > 1)
 				{
-					if (outZone.isUnder(loc))
+					if (active.size() > 0)
 					{
-						pl.setHealth(0.0D);
+						this.winner = active.get(0);
+					}
+				}
+
+				stop();
+
+				if (startingAmount > 1)
+				{
+					rewardTeam(winningTeam);
+				}
+				else
+				{
+					tellPlayers("&3Not enough people to play!");
+				}
+
+				spleefGround.setType(az.getSpecialType().getBukkitMaterial()); // Refresh the ground
+			}
+			else
+			{
+				for (ArenaPlayer ap : getActivePlayers())
+				{
+					Player pl = ap.getPlayer();
+					Location loc = pl.getLocation();
+					if (pl.getHealth() > 0.0D)
+					{
+						if (outZone.isUnder(loc))
+						{
+							pl.setHealth(0.0D);
+						}
 					}
 				}
 			}
-		}
-		else
-		{
-			spleefGround.setType(az.getSpecialType().getBukkitMaterial()); // Refresh the ground
-
-			if (startingAmount > 1)
-			{
-				rewardTeam(-1);
-
-				if (active.size() > 0)
-				{
-					this.winner = active.get(0);
-				}
-			}
-
-			stop();
 		}
 	}
 
