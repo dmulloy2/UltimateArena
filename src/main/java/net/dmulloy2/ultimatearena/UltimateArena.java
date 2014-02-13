@@ -331,7 +331,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				if (economyProvider != null)
 				{
 					economy = economyProvider.getProvider();
-	
+
 					outConsole("Economy integration through {0}!", economy.getName());
 				}
 				else
