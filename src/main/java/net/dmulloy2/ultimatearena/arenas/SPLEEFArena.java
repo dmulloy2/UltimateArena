@@ -104,7 +104,8 @@ public class SPLEEFArena extends FFAArena
 					tellPlayers("&3Not enough people to play!");
 				}
 
-				spleefGround.setType(az.getSpecialType().getBukkitMaterial()); // Refresh the ground
+				// Refresh the ground
+				spleefGround.setType(az.getSpecialType().getBukkitMaterial());
 			}
 			else
 			{
