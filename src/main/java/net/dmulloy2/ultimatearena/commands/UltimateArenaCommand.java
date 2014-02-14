@@ -93,7 +93,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		}
 		catch (Throwable e)
 		{
-			err("Error executing command: {0}", e.getMessage());
+			err("Error executing command: {0}", e.toString());
 			plugin.getLogHandler().debug(Util.getUsefulStack(e, "executing command " + name));
 		}
 	}
