@@ -1,8 +1,11 @@
 package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.NumberUtil;
@@ -23,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-@Getter
+@Getter @Setter
 public class ArenaConfig implements Reloadable
 {
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
@@ -32,13 +36,12 @@ public class ArenaConfig implements Reloadable
 
 	private List<String> blacklistedClasses, whitelistedClasses;
 
-	private List<ItemStack> rewards;
+	private transient List<ItemStack> rewards;
+	private transient HashMap<Integer, List<KillStreak>> killStreaks;
 
-	private HashMap<Integer, List<KillStreak>> killStreaks;
-
-	private String arenaName;
-	private File file;
-	private final UltimateArena plugin;
+	private transient String arenaName;
+	private transient File file;
+	private transient final UltimateArena plugin;
 
 	public ArenaConfig(UltimateArena plugin, String str, File file)
 	{
@@ -85,7 +88,10 @@ public class ArenaConfig implements Reloadable
 
 			this.giveRewards = fc.getBoolean("giveRewards", true);
 
-			List<String> xpBasedTypes = Arrays.asList(new String[] { "KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB" });
+			List<String> xpBasedTypes = Arrays.asList(new String[]
+			{
+					"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
+			});
 
 			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", xpBasedTypes.contains(arenaName.toUpperCase()));
 
@@ -186,5 +192,73 @@ public class ArenaConfig implements Reloadable
 
 		// Load again
 		load();
+	}
+
+	public final void save()
+	{
+		try
+		{
+			Map<String, Object> data = new HashMap<String, Object>();
+
+			for (Field field : getClass().getDeclaredFields())
+			{
+				if (Modifier.isTransient(field.getModifiers()))
+					continue;
+
+				boolean accessible = field.isAccessible();
+
+				field.setAccessible(true);
+
+				if (field.getType().equals(Integer.TYPE))
+				{
+					if (field.getInt(this) != 0)
+						data.put(field.getName(), field.getInt(this));
+				}
+				else if (field.getType().equals(Long.TYPE))
+				{
+					if (field.getLong(this) != 0)
+						data.put(field.getName(), field.getLong(this));
+				}
+				else if (field.getType().equals(Boolean.TYPE))
+				{
+					if (field.getBoolean(this))
+						data.put(field.getName(), field.getBoolean(this));
+				}
+				else if (field.getType().isAssignableFrom(Collection.class))
+				{
+					if (! ((Collection<?>) field.get(this)).isEmpty())
+						data.put(field.getName(), field.get(this));
+				}
+				else if (field.getType().isAssignableFrom(String.class))
+				{
+					if (((String) field.get(this)) != null)
+						data.put(field.getName(), field.get(this));
+				}
+				else if (field.getType().isAssignableFrom(Map.class))
+				{
+					if (! ((Map<?, ?>) field.get(this)).isEmpty())
+						data.put(field.getName(), field.get(this));
+				}
+				else
+				{
+					if (field.get(this) != null)
+						data.put(field.getName(), field.get(this));
+				}
+
+				field.setAccessible(accessible);
+			}
+
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			for (Entry<String, Object> entry : data.entrySet())
+			{
+				fc.set(entry.getKey(), entry.getValue());
+			}
+
+			fc.save(file);
+		}
+		catch (Throwable ex)
+		{
+			//
+		}
 	}
 }

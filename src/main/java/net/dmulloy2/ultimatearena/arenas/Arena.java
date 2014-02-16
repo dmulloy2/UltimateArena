@@ -44,8 +44,7 @@ import org.bukkit.potion.PotionEffect;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
+@Getter @Setter
 public abstract class Arena implements Reloadable
 {
 	public static enum Mode
@@ -182,12 +181,11 @@ public abstract class Arena implements Reloadable
 		// Teleport the player to the lobby spawn
 		spawnLobby(pl);
 
-		// Inventory
-		pl.saveInventory();
-		pl.clearInventory();
+		// Save vital data
+		pl.savePlayerData();
 
-		// XP
-		pl.setBaseLevel(player.getLevel());
+		// Clear Inventory
+		pl.clearInventory();
 
 		// Make sure the player is in survival
 		player.setGameMode(GameMode.SURVIVAL);
@@ -752,16 +750,11 @@ public abstract class Arena implements Reloadable
 	{
 		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
 
-		ap.setOut(true);
-
-		this.updatedTeams = true;
-
-		returnXP(ap);
-
-		ap.clearInventory();
-		ap.returnInventory();
-		ap.clearPotionEffects();
+		ap.reset();
 		ap.teleport(ap.getSpawnBack());
+
+		ap.setOut(true);
+		updatedTeams = true;
 
 		active.remove(ap);
 		inactive.add(ap);
@@ -1015,24 +1008,6 @@ public abstract class Arena implements Reloadable
 				ap.getPlayer().setLevel(startTimer);
 			}
 		}
-	}
-
-	/**
-	 * Returns a player's xp when they leave the game
-	 * 
-	 * @param ap
-	 *            - {@link ArenaPlayer} to return xp
-	 */
-	public final void returnXP(ArenaPlayer ap)
-	{
-		plugin.debug("Returning {0} levels of xp for {1}", ap.getBaseLevel(), ap.getName());
-
-		// Clear XP
-		ap.getPlayer().setExp(0.0F);
-		ap.getPlayer().setLevel(0);
-
-		// Give Base XP
-		ap.getPlayer().setLevel(ap.getBaseLevel());
 	}
 
 	/**

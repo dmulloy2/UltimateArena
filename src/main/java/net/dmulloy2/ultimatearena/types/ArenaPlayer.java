@@ -38,7 +38,7 @@ public class ArenaPlayer extends PlayerExtension
 	private int gameXP;
 	private int team = 1;
 	private int points;
-	private int baseLevel;
+	// private int baseLevel;
 	private int amtKicked;
 	private int healTimer;
 
@@ -46,9 +46,9 @@ public class ArenaPlayer extends PlayerExtension
 	private boolean canReward;
 	private boolean changeClassOnRespawn;
 
-	private Player player;
-
 	private String name;
+	private Player player;
+	private PlayerData playerData;
 
 	private Arena arena;
 	private ArenaClass arenaClass;
@@ -401,5 +401,17 @@ public class ArenaPlayer extends PlayerExtension
 	public final void teleport(ArenaLocation location)
 	{
 		 teleport(location.getLocation());
+	}
+
+	public final void savePlayerData()
+	{
+		this.playerData = new PlayerData(player);
+	}
+
+	public final void reset()
+	{
+		clearInventory();
+		clearPotionEffects();
+		playerData.apply();
 	}
 }

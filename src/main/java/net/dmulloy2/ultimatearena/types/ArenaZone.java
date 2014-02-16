@@ -33,8 +33,7 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
+@Getter @Setter
 public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
 	private int maxPlayers = 24;
@@ -421,7 +420,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
 	public Map<String, Object> serialize()
 	{
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -454,7 +452,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Collection.class))
 				{
-					if (! ((Collection) field.get(this)).isEmpty())
+					if (! ((Collection<?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(String.class))
@@ -464,7 +462,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Map.class))
 				{
-					if (! ((Map) field.get(this)).isEmpty())
+					if (! ((Map<?, ?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else
@@ -474,7 +472,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 
 				field.setAccessible(accessible);
-
 			}
 			catch (Exception e)
 			{
@@ -483,6 +480,27 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 
 		return data;
+	}
+
+	public final void saveConfiguration()
+	{
+		Map<String, Object> data = serialize();
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+		for (Entry<String, Object> entry : data.entrySet())
+		{
+			try
+			{
+				// Make sure it's also defined in ArenaConfig. If not, an Exception will be thrown
+				ArenaConfig.class.getDeclaredField(entry.getKey());
+				fc.set(entry.getKey(), entry.getValue());
+			}
+			catch (Exception e)
+			{
+				//
+			}
+		}
+
+		try { fc.save(file); } catch (Exception e) { }
 	}
 
 	@Override

@@ -20,6 +20,7 @@ public enum Permission
 	KICK,
 	LIKE,
 	LIST,
+	OPTION,
 	PAUSE,
 	RELOAD,
 	SETPOINT,
