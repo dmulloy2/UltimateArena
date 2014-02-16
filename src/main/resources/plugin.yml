@@ -22,6 +22,7 @@ permissions:
       ultimatearena.disable: true
       ultimatearena.enable: true
       ultimatearena.kick: true
+      ultimatearena.option: true
       ultimatearena.start: true
       ultimatearena.pause: true
       ultimatearena.bypass: true
@@ -78,6 +79,9 @@ permissions:
   ultimatearena.list:
     description: Allows the listing of available arenas
     default: true
+  ultimatearena.option:
+    description: Allows the usage of /ua option
+    default: false
   ultimatearena.pause:
     description: Allows the pausing of arena start timers
     default: false
