@@ -292,8 +292,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		// Reload config
 		reloadConfig();
 
-		// TODO: Check for deleted/new files when reloading
-
 		// Reload configs
 		for (ArenaConfig conf : Util.newList(configs))
 		{
@@ -312,11 +310,17 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			a.reload();
 		}
 
+		// Load any new arenas
+		loadArenas();
+
 		// Reload classes
 		for (ArenaClass ac : Util.newList(classes))
 		{
 			ac.reload();
 		}
+
+		// Load any new classes
+		loadClasses();
 	}
 
 	/**
@@ -463,6 +467,15 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		int total = 0;
 		for (File file : children)
 		{
+			boolean alreadyLoaded = false;
+			for (ArenaZone loaded : loadedArenas)
+			{
+				if (loaded.getFile().equals(file))
+					alreadyLoaded = true;
+			}
+
+			if (alreadyLoaded) continue;
+	
 			ArenaZone az = new ArenaZone(this, file);
 			if (az.isLoaded())
 			{
@@ -551,6 +564,15 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		int total = 0;
 		for (File file : children)
 		{
+			boolean alreadyLoaded = false;
+			for (ArenaClass loaded : classes)
+			{
+				if (loaded.getFile().equals(file))
+					alreadyLoaded = true;
+			}
+
+			if (alreadyLoaded) continue;
+
 			ArenaClass ac = new ArenaClass(this, file);
 			if (ac.isLoaded())
 			{

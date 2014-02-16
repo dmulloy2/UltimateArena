@@ -506,6 +506,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	@Override
 	public void reload()
 	{
+		if (! file.exists())
+		{
+			if (plugin.getArena(arenaName) != null)
+			{
+				plugin.getArena(arenaName).stop();
+			}
+
+			plugin.getLoadedArenas().remove(this);
+			return;
+		}
+
 		// Clear lists and maps
 		this.blacklistedClasses.clear();
 		this.whitelistedClasses.clear();

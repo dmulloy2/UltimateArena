@@ -181,19 +181,6 @@ public class ArenaConfig implements Reloadable
 		return true;
 	}
 
-	@Override
-	public void reload()
-	{
-		// Clear lists and maps
-		this.blacklistedClasses.clear();
-		this.whitelistedClasses.clear();
-		this.killStreaks.clear();
-		this.rewards.clear();
-
-		// Load again
-		load();
-	}
-
 	public final void save()
 	{
 		try
@@ -260,5 +247,25 @@ public class ArenaConfig implements Reloadable
 		{
 			//
 		}
+	}
+
+	@Override
+	public void reload()
+	{
+		// Make sure this class still exists
+		if (! file.exists())
+		{
+			plugin.getClasses().remove(this);
+			return;
+		}
+
+		// Clear lists and maps
+		this.blacklistedClasses.clear();
+		this.whitelistedClasses.clear();
+		this.killStreaks.clear();
+		this.rewards.clear();
+
+		// Load again
+		load();
 	}
 }
