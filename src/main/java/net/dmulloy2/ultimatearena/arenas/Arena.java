@@ -1156,7 +1156,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Clears the signs fr the arena
+	 * Clears the signs for the arena
 	 */
 	protected final void clearSigns()
 	{
