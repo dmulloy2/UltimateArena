@@ -28,8 +28,7 @@ import org.bukkit.potion.PotionEffect;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
+@Getter @Setter
 public class ArenaPlayer extends PlayerExtension
 {
 	private int kills;
@@ -38,7 +37,6 @@ public class ArenaPlayer extends PlayerExtension
 	private int gameXP;
 	private int team = 1;
 	private int points;
-	// private int baseLevel;
 	private int amtKicked;
 	private int healTimer;
 

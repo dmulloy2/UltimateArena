@@ -45,7 +45,6 @@ public class SpectatingHandler implements Listener
 	public SpectatingHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
-
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
@@ -72,7 +71,7 @@ public class SpectatingHandler implements Listener
 		ArenaSpectator spectator = getSpectator(player);
 		if (spectator != null)
 		{
-			return getArena(spectator);	
+			return getArena(spectator);
 		}
 
 		return null;
@@ -94,11 +93,9 @@ public class SpectatingHandler implements Listener
 	public ArenaSpectator addSpectator(Arena arena, Player player)
 	{
 		ArenaSpectator spectator = new ArenaSpectator(player, arena, plugin);
-
 		spectator.spawn();
 
 		spectating.get(arena).add(spectator);
-
 		return spectator;
 	}
 
@@ -114,10 +111,8 @@ public class SpectatingHandler implements Listener
 	private void removeSpectator(ArenaSpectator spectator)
 	{
 		spectator.endPlayer();
-
-		spectating.get(spectator.getArena()).remove(spectator);
-
 		closeInventory(spectator.getPlayer());
+		spectating.get(spectator.getArena()).remove(spectator);
 	}
 
 	public boolean isSpectating(Player player)

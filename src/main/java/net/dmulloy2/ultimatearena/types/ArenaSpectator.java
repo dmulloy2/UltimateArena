@@ -20,25 +20,20 @@ import org.bukkit.potion.PotionEffect;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
+@Getter @Setter
 public class ArenaSpectator
 {
-	private int baseLevel;
-
-	private Player player;
-
-	private String name;
+	private boolean active;
 
 	private Arena arena;
-	private Location spawnBack;
+
+	private String name;
+	private final Player player;
+	private final Location spawnBack;
+
+	private PlayerData playerData;
 
 	private final UltimateArena plugin;
-
-	private ItemStack[] inventoryContents;
-	private ItemStack[] armorContents;
-
-	private boolean active;
 
 	/**
 	 * Creates a new ArenaSpectator instance
@@ -67,45 +62,39 @@ public class ArenaSpectator
 	{
 		teleport(arena.getSpawn(arena.getActivePlayers().get(0)));
 
-		saveInventory();
+		// Save Data
+		savePlayerData();
+
+		// Clear inventory
 		clearInventory();
 
-		baseLevel = player.getLevel();
-
+		// Make sure the player is in survival
 		player.setGameMode(GameMode.SURVIVAL);
 
+		// Heal up the Player
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		player.setHealth(20);
 
+		// Allow flight
 		player.setAllowFlight(true);
 		player.setFlySpeed(0.1F);
-		player.setFlying(false);
 
+		// Give them a compass
 		player.getInventory().addItem(new ItemStack(Material.COMPASS));
 
+		// Hide the player
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
 			ap.getPlayer().hidePlayer(player);
 		}
-
-		clearPotionEffects();
 
 		this.active = true;
 	}
 
 	public void endPlayer()
 	{
-		player.setExp(0.0F);
-		player.setLevel(baseLevel);
-
-		player.setAllowFlight(false);
-		player.setFlying(false);
-
-		clearInventory();
-		returnInventory();
-
-		clearPotionEffects();
+		reset();
 
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
@@ -126,18 +115,6 @@ public class ArenaSpectator
 	}
 
 	/**
-	 * Saves the player's inventory
-	 */
-	public void saveInventory()
-	{
-		if (plugin.getConfig().getBoolean("saveInventories", true))
-		{
-			this.inventoryContents = player.getInventory().getContents();
-			this.armorContents = player.getInventory().getArmorContents();
-		}
-	}
-
-	/**
 	 * Clears the player's inventory
 	 */
 	public void clearInventory()
@@ -151,18 +128,6 @@ public class ArenaSpectator
 		inv.setLeggings(null);
 		inv.setBoots(null);
 		inv.clear();
-	}
-
-	/**
-	 * Returns the player's inventory
-	 */
-	public void returnInventory()
-	{
-		if (plugin.getConfig().getBoolean("saveInventories", true))
-		{
-			player.getInventory().setContents(inventoryContents);
-			player.getInventory().setArmorContents(armorContents);
-		}
 	}
 
 	/**
@@ -191,5 +156,22 @@ public class ArenaSpectator
 	public final void teleport(Location location)
 	{
 		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+	}
+
+	public final void teleport(ArenaLocation location)
+	{
+		 teleport(location.getLocation());
+	}
+
+	public final void savePlayerData()
+	{
+		this.playerData = new PlayerData(player);
+	}
+
+	public final void reset()
+	{
+		clearInventory();
+		clearPotionEffects();
+		playerData.apply();
 	}
 }
