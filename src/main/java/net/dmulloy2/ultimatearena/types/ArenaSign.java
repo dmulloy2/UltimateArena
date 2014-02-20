@@ -24,8 +24,8 @@ public class ArenaSign implements ConfigurationSerializable
 	private String arenaName;
 	private ArenaLocation loc;
 
-	private transient final Sign sign;
-	private transient final ArenaZone az;
+	private transient Sign sign;
+	private transient ArenaZone az;
 	private transient final UltimateArena plugin;
 
 	/**
@@ -46,7 +46,7 @@ public class ArenaSign implements ConfigurationSerializable
 		this.arenaName = az.getArenaName();
 		this.loc = new ArenaLocation(loc);
 
-		this.sign = getSign();
+		this.getSign();
 		this.az = az;
 		this.plugin = plugin;
 	}
@@ -60,7 +60,7 @@ public class ArenaSign implements ConfigurationSerializable
 		this.arenaName = (String) args.get("arenaName");
 		this.loc = (ArenaLocation) args.get("loc");
 
-		this.sign = getSign();
+		this.getSign();
 		this.az = plugin.getArenaZone(arenaName);
 		this.plugin = plugin;
 	}
@@ -70,15 +70,16 @@ public class ArenaSign implements ConfigurationSerializable
 	 * 
 	 * @return {@link Sign} instance
 	 */
-	public Sign getSign()
+	public final void getSign()
 	{
 		Block block = loc.getWorld().getBlockAt(loc.getLocation());
 		if (block.getState() instanceof Sign)
 		{
-			return (Sign) block.getState();
+			this.sign = (Sign) block.getState();
+			return;
 		}
 
-		return null;
+		this.sign = null;
 	}
 
 	/**
@@ -86,8 +87,11 @@ public class ArenaSign implements ConfigurationSerializable
 	 */
 	public void update()
 	{
+		// Update the sign
+		this.getSign();
+		
 		// Abort if the sign is null
-		if (getSign() == null)
+		if (sign == null)
 		{
 			plugin.getSignHandler().deleteSign(this);
 			return;
@@ -98,6 +102,7 @@ public class ArenaSign implements ConfigurationSerializable
 		{
 			sign.setLine(0, "[UltimateArena]");
 			sign.setLine(1, FormatUtil.format("&4Null Arena"));
+			sign.update();
 
 			plugin.getSignHandler().deleteSign(this);
 			return;
@@ -106,7 +111,7 @@ public class ArenaSign implements ConfigurationSerializable
 		sign.setLine(0, "[UltimateArena]");
 		sign.setLine(1, az.getArenaName());
 
-		// Line 2
+		// Line 3
 		StringBuilder line = new StringBuilder();
 		if (isActive())
 		{
@@ -120,7 +125,7 @@ public class ArenaSign implements ConfigurationSerializable
 					line.append(FormatUtil.format("&eIn Game - {0}", ar.getGameTimer()));
 					break;
 				case DISABLED:
-					line.append(FormatUtil.format("&cDisabled"));
+					line.append(FormatUtil.format("&4Disabled"));
 					break;
 				case IDLE:
 					line.append(FormatUtil.format("&aJoin"));
@@ -139,7 +144,7 @@ public class ArenaSign implements ConfigurationSerializable
 
 		sign.setLine(2, line.toString());
 
-		// Line 3
+		// Line 4
 		line = new StringBuilder();
 		if (isActive())
 		{
@@ -198,6 +203,45 @@ public class ArenaSign implements ConfigurationSerializable
 		}
 
 		sign.setLine(3, line.toString());
+		sign.update();
+	}
+
+	public final void clear()
+	{
+		// Update the sign
+		this.getSign();
+		
+		// Abort if the sign is null
+		if (sign == null)
+		{
+			plugin.getSignHandler().deleteSign(this);
+			return;
+		}
+
+		// Abort if the ArenaZone is null
+		if (az == null)
+		{
+			sign.setLine(0, "[UltimateArena]");
+			sign.setLine(1, FormatUtil.format("&4Null Arena"));
+			sign.update();
+
+			plugin.getSignHandler().deleteSign(this);
+			return;
+		}
+
+		sign.setLine(0, "[UltimateArena]");
+		sign.setLine(1, az.getArenaName());
+
+		if (az.isDisabled())
+		{
+			sign.setLine(2, FormatUtil.format("&4Disabled"));
+			sign.setLine(3, "");
+		}
+		else
+		{
+			sign.setLine(2, FormatUtil.format("&aJoin"));
+			sign.setLine(3, "IDLE (0/" + az.getMaxPlayers() + ")");
+		}
 
 		sign.update();
 	}

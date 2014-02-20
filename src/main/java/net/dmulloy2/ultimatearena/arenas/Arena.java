@@ -706,7 +706,7 @@ public abstract class Arena implements Reloadable
 
 		this.gameMode = Mode.STOPPING;
 
-		updateSigns();
+		clearSigns();
 
 		onStop();
 
@@ -1153,6 +1153,14 @@ public abstract class Arena implements Reloadable
 	protected final void updateSigns()
 	{
 		plugin.getSignHandler().updateSigns(az);
+	}
+
+	/**
+	 * Clears the signs fr the arena
+	 */
+	protected final void clearSigns()
+	{
+		plugin.getSignHandler().clearSigns(az);
 	}
 
 	/**
