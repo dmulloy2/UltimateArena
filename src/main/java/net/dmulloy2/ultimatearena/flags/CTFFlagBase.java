@@ -61,9 +61,8 @@ public class CTFFlagBase extends FlagBase
 		if (enemyflag.getRiding() == null)
 			return;
 
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : arenaPlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
 			if (ap.getPlayer().isOnline() && ! ap.getPlayer().isDead())
 			{
 				if (ap.getTeam() == team)
@@ -82,9 +81,8 @@ public class CTFFlagBase extends FlagBase
 							p.removePotionEffect(PotionEffectType.SLOW);
 							p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 
-							for (int ii = 0; i < arenaPlayers.size(); ii++)
+							for (ArenaPlayer apl : Util.newList(arenaPlayers))
 							{
-								ArenaPlayer apl = arenaPlayers.get(ii);
 								if (ap.getTeam() == apl.getTeam())
 								{
 									apl.sendMessage("&aUnlocked 10 seconds of crits!");
