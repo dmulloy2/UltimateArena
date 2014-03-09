@@ -122,23 +122,15 @@ public class CTFFlag
 		this.riding = null;
 
 		int count = 0;
-		boolean can = true;
 		for (int i = 1; i < 128; i++)
 		{
-			if (can)
+			Block under = myloc.clone().subtract(0, i, 0).getBlock();
+			if (under != null)
 			{
-				Block under = myloc.clone().subtract(0, i, 0).getBlock();
-				if (under != null)
-				{
-					if (under.getType().equals(Material.AIR) || under.getType().equals(Material.WATER))
-					{
-						count++;
-					}
-					else
-					{
-						can = false;
-					}
-				}
+				if (under.getType().equals(Material.AIR) || under.getType().equals(Material.WATER))
+					count++;
+				else
+					break;
 			}
 		}
 
@@ -187,10 +179,10 @@ public class CTFFlag
 		}
 		else
 		{
-			if (riding.isOnline() && !riding.isDead())
+			if (riding.isOnline() && ! riding.isDead())
 			{
 				// if player is alive
-				toloc = riding.getLocation().clone().add(0, 3, 0);
+				toloc = riding.getLocation().clone().add(0, 5, 0);
 			}
 			else
 			{
