@@ -36,45 +36,45 @@ import org.bukkit.inventory.ItemStack;
 @Getter @Setter
 public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
-	private int maxPlayers = 24;
+	protected int maxPlayers = 24;
 
-	private int liked;
-	private int disliked;
-	private int timesPlayed;
+	protected int liked;
+	protected int disliked;
+	protected int timesPlayed;
 
-	private Material specialType;
+	protected Material specialType;
 
-	private boolean disabled;
-	private transient boolean loaded;
+	protected boolean disabled;
+	protected transient boolean loaded;
 
-	private String worldName;
-	private String arenaName = "";
-	private String defaultClass;
+	protected String worldName;
+	protected String arenaName = "";
+	protected String defaultClass;
 
-	private FieldType type;
+	protected FieldType type;
 
-	private ArenaLocation lobby1;
-	private ArenaLocation lobby2;
-	private ArenaLocation arena1;
-	private ArenaLocation arena2;
-	private ArenaLocation team1spawn;
-	private ArenaLocation team2spawn;
-	private ArenaLocation lobbyREDspawn;
-	private ArenaLocation lobbyBLUspawn;
+	protected ArenaLocation lobby1;
+	protected ArenaLocation lobby2;
+	protected ArenaLocation arena1;
+	protected ArenaLocation arena2;
+	protected ArenaLocation team1spawn;
+	protected ArenaLocation team2spawn;
+	protected ArenaLocation lobbyREDspawn;
+	protected ArenaLocation lobbyBLUspawn;
 
-	private transient File file;
+	protected transient File file;
 
-	private transient Field lobby;
-	private transient Field arena;
+	protected transient Field lobby;
+	protected transient Field arena;
 
-	private transient List<String> voted = new ArrayList<String>();
+	protected transient List<String> voted = new ArrayList<String>();
 
-	private List<ArenaLocation> spawns = new ArrayList<ArenaLocation>();
-	private List<ArenaLocation> flags = new ArrayList<ArenaLocation>();
+	protected List<ArenaLocation> spawns = new ArrayList<ArenaLocation>();
+	protected List<ArenaLocation> flags = new ArrayList<ArenaLocation>();
 
-	private transient World world;
+	protected transient World world;
 
-	private transient final UltimateArena plugin;
+	protected transient final UltimateArena plugin;
 
 	public ArenaZone(UltimateArena plugin)
 	{
