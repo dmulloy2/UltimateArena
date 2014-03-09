@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.listeners;
 
+import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
@@ -39,13 +40,10 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
+@AllArgsConstructor
 public class PlayerListener implements Listener
 {
 	private final UltimateArena plugin;
-	public PlayerListener(UltimateArena plugin)
-	{
-		this.plugin = plugin;
-	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent event)
@@ -56,10 +54,10 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent event)
 	{
-		if (! event.isCancelled())
-		{
-			onPlayerDisconnect(event.getPlayer());
-		}
+//		if (! event.isCancelled())
+//		{
+//			onPlayerDisconnect(event.getPlayer());
+//		}
 	}
 
 	private void onPlayerDisconnect(Player player)
@@ -161,7 +159,7 @@ public class PlayerListener implements Listener
 											String name = ac.getName();
 											String article = FormatUtil.getArticle(name);
 
-											ap.sendMessage("&3You will spawn as {0}: &e{1}", article, name);
+											ap.sendMessage("&3You will spawn as {0} &e{1}&3!", article, name);
 										}
 										else
 										{

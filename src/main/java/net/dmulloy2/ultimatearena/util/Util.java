@@ -26,7 +26,7 @@ public class Util
 	private Util() { }
 
 	/**
-	 * Gets the OfflinePlayer from a given string
+	 * Gets the Player from a given string
 	 * 
 	 * @param pl
 	 *        - String to match with a player
@@ -47,7 +47,7 @@ public class Util
 	 * 
 	 * @param pl
 	 *        - String to match with a player
-	 * @return Player from the given string, null if none exists
+	 * @return OfflinePlayer from the given string, null if none exists
 	 */
 	public static OfflinePlayer matchOfflinePlayer(String pl)
 	{
@@ -128,7 +128,7 @@ public class Util
 		return (int) magnitude(p1x, p1y, p1z, p2x, p2y, p2z);
 	}
 
-	public static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2)
+	private static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2)
 	{
 		int xdist = x1 - x2;
 		int ydist = y1 - y2;
