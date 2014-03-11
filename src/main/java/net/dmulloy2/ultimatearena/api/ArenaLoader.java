@@ -41,7 +41,7 @@ public class ArenaLoader
 		this.loaders = Maps.newHashMap();
 	}
 
-	public Entry<ArenaDescriptionFile, Class<? extends Arena>> loadArenaClass(File file) throws Exception
+	public final Entry<ArenaDescriptionFile, Class<? extends Arena>> loadArenaClass(File file) throws Exception
 	{
 		Validate.notNull(file, "File cannot be null");
 
@@ -66,7 +66,7 @@ public class ArenaLoader
 				true, loader).asSubclass(Arena.class));
 	}
 
-	private ArenaClassLoader loadClasses(String key, File file) throws Exception
+	private final ArenaClassLoader loadClasses(String key, File file) throws Exception
 	{
 		ArenaClassLoader loader = null;
 
@@ -80,7 +80,7 @@ public class ArenaLoader
 		return loader;
 	}
 
-	public ArenaDescriptionFile getArenaDescription(File file) throws InvalidDescriptionException
+	public final ArenaDescriptionFile getArenaDescription(File file) throws InvalidDescriptionException
 	{
 		Validate.notNull(file, "File cannot be null");
 
@@ -105,15 +105,15 @@ public class ArenaLoader
 			if (! name.matches("^[A-Za-z0-9 _.-]+$"))
 				throw new Exception("Name '" + name + "' contains invalid characters");
 
-			String version = (String) map.get("version");
-			Validate.notNull(version, "Version cannot be null");
-
 			String main = (String) map.get("main");
 			Validate.notNull(main, "Main class cannot be null");
 
+			String version = (String) map.get("version");
+			Validate.notNull(version, "Version cannot be null");
+
 			String author = (String) map.get("author");
 			if (author == null)
-				author = "anonymous";
+				author = "";
 
 			return new ArenaDescriptionFile(name, main, version, author);
 		}
@@ -141,7 +141,7 @@ public class ArenaLoader
 		}
 	}
 
-	public final Class<?> getClassByName(final String name)
+	public final Class<?> getClassByName(String name)
 	{
 		Class<?> cachedClass = classes.get(name);
 
