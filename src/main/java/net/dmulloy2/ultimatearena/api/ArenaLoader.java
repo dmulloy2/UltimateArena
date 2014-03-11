@@ -7,18 +7,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.AbstractMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import net.dmulloy2.ultimatearena.arenas.Arena;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.plugin.InvalidDescriptionException;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
@@ -41,7 +36,7 @@ public class ArenaLoader
 		this.loaders = Maps.newHashMap();
 	}
 
-	public final Entry<ArenaDescriptionFile, Class<? extends Arena>> loadArenaClass(File file) throws Exception
+	public final ArenaType loadArenaType(File file) throws Exception
 	{
 		Validate.notNull(file, "File cannot be null");
 
@@ -50,20 +45,32 @@ public class ArenaLoader
 			throw new FileNotFoundException(file.getPath() + " does not exist");
 		}
 
-		ArenaDescriptionFile description;
+		ArenaDescriptionFile description = getArenaDescription(file);
+		ArenaClassLoader loader = loadClasses(description.getName(), file);
+
+		Class<?> jarClass;
 
 		try
 		{
-			description = getArenaDescription(file);
+			jarClass = Class.forName(description.getMain(), true, loader);
 		}
-		catch (InvalidDescriptionException e)
+		catch (ClassNotFoundException ex)
 		{
-			throw new Exception(e);
+			throw new InvalidArenaException("Cannot find main class '" + description.getMain() + "'", ex);
 		}
 
-		ArenaClassLoader loader = loadClasses(description.getName(), file);
-		return new AbstractMap.SimpleEntry<ArenaDescriptionFile, Class<? extends Arena>>(description, Class.forName(description.getMain(),
-				true, loader).asSubclass(Arena.class));
+		Class<? extends ArenaType> clazz;
+
+		try
+		{
+			clazz = jarClass.asSubclass(ArenaType.class);
+		}
+		catch (ClassCastException ex)
+		{
+			throw new InvalidArenaException("Main class '" + description.getMain() + "' does not extend ArenaType", ex);
+		}
+
+		return clazz.newInstance();
 	}
 
 	private final ArenaClassLoader loadClasses(String key, File file) throws Exception
@@ -80,7 +87,7 @@ public class ArenaLoader
 		return loader;
 	}
 
-	public final ArenaDescriptionFile getArenaDescription(File file) throws InvalidDescriptionException
+	public final ArenaDescriptionFile getArenaDescription(File file) throws InvalidArenaException
 	{
 		Validate.notNull(file, "File cannot be null");
 
@@ -90,10 +97,10 @@ public class ArenaLoader
 		try
 		{
 			jar = new JarFile(file);
-			JarEntry entry = jar.getJarEntry("plugin.yml");
+			JarEntry entry = jar.getJarEntry("arena.yml");
 
 			if (entry == null)
-				throw new InvalidDescriptionException(new FileNotFoundException("Jar does not contain plugin.yml"));
+				throw new InvalidArenaException(new FileNotFoundException("Jar does not contain arena.yml"));
 
 			stream = jar.getInputStream(entry);
 
@@ -119,7 +126,7 @@ public class ArenaLoader
 		}
 		catch (Exception e)
 		{
-			throw new InvalidDescriptionException(e);
+			throw new InvalidArenaException(e);
 		}
 		finally
 		{

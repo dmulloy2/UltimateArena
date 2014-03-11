@@ -155,8 +155,17 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	{
 		long start = System.currentTimeMillis();
 
-		// Register Handlers
+		// Register LogHandler
 		logHandler = new LogHandler(this);
+
+		// Directories
+		checkDirectories();
+
+		// Configuration
+		saveDefaultConfig();
+		reloadConfig();
+
+		// Register other handlers
 		permissionHandler = new PermissionHandler(this);
 		spectatingHandler = new SpectatingHandler(this);
 		commandHandler = new CommandHandler(this);
@@ -166,10 +175,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		setupVaultIntegration();
 		setupEssentialsIntegration();
 		setupWorldEditIntegration();
-
-		// IO Stuff
-		checkDirectories();
-		saveDefaultConfig();
 
 		// Register Commands
 		commandHandler.setCommandPrefix("ua");
