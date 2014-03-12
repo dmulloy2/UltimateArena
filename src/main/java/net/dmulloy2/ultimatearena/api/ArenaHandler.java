@@ -51,6 +51,7 @@ public class ArenaHandler
 			try
 			{
 				arenaType = loader.loadArenaType(file);
+				arenaType.setPlugin(plugin);
 			}
 			catch (Exception e)
 			{

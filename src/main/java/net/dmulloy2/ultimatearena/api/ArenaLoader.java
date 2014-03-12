@@ -70,7 +70,9 @@ public class ArenaLoader
 			throw new InvalidArenaException("Main class '" + description.getMain() + "' does not extend ArenaType", ex);
 		}
 
-		return clazz.newInstance();
+		ArenaType type = clazz.newInstance();
+		type.setDescription(description);
+		return type;
 	}
 
 	private final ArenaClassLoader loadClasses(String key, File file) throws Exception
