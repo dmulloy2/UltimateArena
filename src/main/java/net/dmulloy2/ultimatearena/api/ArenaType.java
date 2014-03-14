@@ -28,6 +28,13 @@ public abstract class ArenaType
 		//
 	}
 
+	// ---- Optional Hooks
+	public void onLoad() { }
+
+	public void onEnable() { }
+
+	public void onDisable() { }
+
 	// ---- Required Getters
 
 	@NonNull

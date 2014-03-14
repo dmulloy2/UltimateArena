@@ -52,6 +52,7 @@ public class ArenaHandler
 			{
 				arenaType = loader.loadArenaType(file);
 				arenaType.setPlugin(plugin);
+				arenaType.onLoad();
 			}
 			catch (Exception e)
 			{
@@ -61,5 +62,37 @@ public class ArenaHandler
 
 			arenaTypes.put(arenaType.getName(), arenaType);
 		}
+	}
+
+	public final void enableArenaTypes()
+	{
+		for (ArenaType type : arenaTypes.values())
+		{
+			try
+			{
+				type.onEnable();
+			}
+			catch (Exception e)
+			{
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "enabling arena type '" + type.getName() + "'"));
+			}
+		}
+	}
+
+	public final void disableArenaTypes()
+	{
+		for (ArenaType type : arenaTypes.values())
+		{
+			try
+			{
+				type.onDisable();
+			}
+			catch (Exception e)
+			{
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "disabling arena type '" + type.getName() + "'"));
+			}
+		}
+
+		arenaTypes.clear();
 	}
 }
