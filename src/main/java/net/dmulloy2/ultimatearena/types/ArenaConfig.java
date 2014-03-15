@@ -30,18 +30,22 @@ import org.bukkit.inventory.ItemStack;
 @Getter @Setter
 public class ArenaConfig implements Reloadable
 {
-	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
+	protected int gameTime, lobbyTime, maxDeaths, cashReward;
+	protected int maxWave, maxPoints; // Arena-Specific
 
-	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp, loaded, giveRewards;
+	protected boolean allowTeamKilling, countMobKills, rewardBasedOnXp, giveRewards;
 
-	private List<String> blacklistedClasses, whitelistedClasses;
+	protected List<String> blacklistedClasses, whitelistedClasses;
 
-	private transient List<ItemStack> rewards;
-	private transient HashMap<Integer, List<KillStreak>> killStreaks;
+	protected transient List<ItemStack> rewards;
+	protected transient HashMap<Integer, List<KillStreak>> killStreaks;
 
-	private transient String arenaName;
-	private transient File file;
-	private transient final UltimateArena plugin;
+	// ---- Transient
+	protected transient String arenaName;
+	protected transient boolean loaded;
+	protected transient File file;
+
+	protected transient final UltimateArena plugin;
 
 	public ArenaConfig(UltimateArena plugin, String str, File file)
 	{

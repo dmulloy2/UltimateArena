@@ -39,7 +39,7 @@ public class ArenaHandler
 		}
 
 		Pattern filter = Pattern.compile("\\.jar$");
-		ArenaLoader loader = new ArenaLoader();
+		ArenaLoader loader = new ArenaLoader(plugin);
 
 		for (File file : directory.listFiles())
 		{
@@ -51,7 +51,6 @@ public class ArenaHandler
 			try
 			{
 				arenaType = loader.loadArenaType(file);
-				arenaType.setPlugin(plugin);
 				arenaType.onLoad();
 			}
 			catch (Exception e)

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import net.dmulloy2.ultimatearena.UltimateArena;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -26,11 +28,13 @@ import com.google.common.collect.Maps;
 public class ArenaLoader
 {
 	private final Yaml yaml;
+	private final UltimateArena plugin;
 	private final Map<String, Class<?>> classes;
 	private final Map<String, ArenaClassLoader> loaders;
 
-	public ArenaLoader()
+	public ArenaLoader(UltimateArena plugin)
 	{
+		this.plugin = plugin;
 		this.yaml = new Yaml(new SafeConstructor());
 		this.classes = Maps.newHashMap();
 		this.loaders = Maps.newHashMap();
@@ -71,7 +75,7 @@ public class ArenaLoader
 		}
 
 		ArenaType type = clazz.newInstance();
-		type.setDescription(description);
+		type.initialize(plugin, description, loader, file, new File(plugin.getDataFolder(), type.getName()));
 		return type;
 	}
 
@@ -82,7 +86,7 @@ public class ArenaLoader
 		URL[] urls = new URL[1];
 		urls[0] = file.toURI().toURL();
 
-		loader = new ArenaClassLoader(this, urls, getClass().getClassLoader());
+		loader = new ArenaClassLoader(this, file, urls, getClass().getClassLoader());
 
 		loaders.put(key, loader);
 
