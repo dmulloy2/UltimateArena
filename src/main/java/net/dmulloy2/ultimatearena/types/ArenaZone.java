@@ -33,7 +33,8 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-@Getter @Setter
+@Getter
+@Setter
 public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
 	protected int maxPlayers = 24;
@@ -211,7 +212,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	public final boolean canLike(Player player)
 	{
-		return ! voted.contains(player.getName());
+		return !voted.contains(player.getName());
 	}
 
 	public final void setWorld(World world)
@@ -228,7 +229,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return world;
 	}
 
-	// ---- Configuration ---- //
+	// ---- Configuration
 
 	// Serializable variables
 	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
@@ -359,7 +360,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			{
 				this.killStreaks = conf.getKillStreaks();
 			}
-		}
+		} 
 		catch (Exception e)
 		{
 			plugin.debug(Util.getUsefulStack(e, "loading config for \"" + arenaName + "\""));
@@ -406,13 +407,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 					if (er.transactionSuccess())
 					{
 						String format = plugin.getEconomy().format(money);
-						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&a{0} has been added to your account!", format));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
 					}
 				}
 			}
@@ -428,6 +427,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			if (Modifier.isTransient(field.getModifiers()))
 				continue;
+
+			// Configuration check
+
+			try
+			{
+				// This works because if the field does not exist, a
+				// NoSuchFieldException is thrown and we will never get to the
+				// continue statement
+				ArenaConfig.class.getDeclaredField(field.getName());
+				continue;
+			} catch (Exception e) { }
 
 			try
 			{
@@ -452,7 +462,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Collection.class))
 				{
-					if (! ((Collection<?>) field.get(this)).isEmpty())
+					if (!((Collection<?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(String.class))
@@ -462,7 +472,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Map.class))
 				{
-					if (! ((Map<?, ?>) field.get(this)).isEmpty())
+					if (!((Map<?, ?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else
@@ -472,11 +482,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 
 				field.setAccessible(accessible);
-			}
-			catch (Exception e)
-			{
-				//
-			}
+			} catch (Exception e) { }
 		}
 
 		return data;
@@ -490,17 +496,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			try
 			{
-				// Make sure it's also defined in ArenaConfig. If not, an Exception will be thrown
+				// Make sure it's also defined in ArenaConfig. If not, an
+				// Exception will be thrown
 				ArenaConfig.class.getDeclaredField(entry.getKey());
 				fc.set(entry.getKey(), entry.getValue());
-			}
-			catch (Exception e)
-			{
-				//
-			}
+			} catch (Exception e) { }
 		}
 
-		try { fc.save(file); } catch (Exception e) { }
+		try
+		{
+			fc.save(file);
+		} catch (Exception e) { }
 	}
 
 	@Override
