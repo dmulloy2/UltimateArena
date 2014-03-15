@@ -33,8 +33,7 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
+@Getter @Setter
 public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
 	protected int maxPlayers = 24;
@@ -212,7 +211,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	public final boolean canLike(Player player)
 	{
-		return !voted.contains(player.getName());
+		return ! voted.contains(player.getName());
 	}
 
 	public final void setWorld(World world)
@@ -360,7 +359,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			{
 				this.killStreaks = conf.getKillStreaks();
 			}
-		} 
+		}
 		catch (Exception e)
 		{
 			plugin.debug(Util.getUsefulStack(e, "loading config for \"" + arenaName + "\""));
@@ -462,7 +461,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Collection.class))
 				{
-					if (!((Collection<?>) field.get(this)).isEmpty())
+					if (! ((Collection<?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(String.class))
@@ -472,7 +471,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Map.class))
 				{
-					if (!((Map<?, ?>) field.get(this)).isEmpty())
+					if (! ((Map<?, ?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else
