@@ -1,9 +1,5 @@
-/**
- * (c) 2014 dmulloy2
- */
 package net.dmulloy2.ultimatearena.api;
 
-import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -15,14 +11,12 @@ import java.util.Map;
 
 public class ArenaClassLoader extends URLClassLoader
 {
-	private final File file;
 	private final ArenaLoader loader;
 	private final Map<String, Class<?>> classes;
 
-	public ArenaClassLoader(ArenaLoader loader, File file, URL[] urls, ClassLoader parent)
+	public ArenaClassLoader(ArenaLoader loader, URL[] urls, ClassLoader parent)
 	{
 		super(urls, parent);
-		this.file = file;
 		this.loader = loader;
 		this.classes = new HashMap<String, Class<?>>();
 	}
@@ -53,10 +47,5 @@ public class ArenaClassLoader extends URLClassLoader
 		}
 
 		return result;
-	}
-
-	public final File getFile()
-	{
-		return file;
 	}
 }
