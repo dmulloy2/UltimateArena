@@ -74,12 +74,12 @@ import net.dmulloy2.ultimatearena.creation.PvPCreator;
 import net.dmulloy2.ultimatearena.creation.SpleefCreator;
 import net.dmulloy2.ultimatearena.handlers.CommandHandler;
 import net.dmulloy2.ultimatearena.handlers.EssentialsHandler;
-import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.LogHandler;
 import net.dmulloy2.ultimatearena.handlers.PermissionHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
+import net.dmulloy2.ultimatearena.io.FileHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
@@ -149,6 +149,13 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	// Global prefix
 	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
+
+	@Override
+	public void onLoad()
+	{
+		// Register Serializables
+		ConfigurationSerialization.registerClass(ArenaLocation.class);
+	}
 
 	@Override
 	public void onEnable()
@@ -244,7 +251,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		// Refresh arena saves
 		for (ArenaZone az : loadedArenas)
 		{
-			az.save();
+			az.saveToDisk();
 		}
 
 		// Clear Memory
@@ -467,7 +474,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private void loadArenas()
 	{
 		File folder = new File(getDataFolder(), "arenas");
-		File[] children = folder.listFiles();
+		File[] children = folder.listFiles(new FileFilter()
+		{
+			@Override
+			public boolean accept(File file)
+			{
+				return file.getName().endsWith(".dat");
+			}
+		});
 
 		int total = 0;
 		for (File file : children)

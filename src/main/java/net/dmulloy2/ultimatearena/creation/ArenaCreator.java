@@ -116,7 +116,7 @@ public abstract class ArenaCreator
 		target.setWorld(target.getArena1().getWorld());
 
 		// Save the arena
-		target.save();
+		target.saveToDisk();
 
 		// Attempt to initialize
 		if (target.initialize())

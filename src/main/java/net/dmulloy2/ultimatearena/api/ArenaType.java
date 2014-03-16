@@ -146,11 +146,6 @@ public abstract class ArenaType
 				out.close();
 				in.close();
 			}
-			else
-			{
-				logger.log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName()
-						+ " already exists.");
-			}
 		}
 		catch (IOException ex)
 		{

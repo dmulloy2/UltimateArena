@@ -114,7 +114,7 @@ public class CmdOption extends UltimateArenaCommand
 			}
 
 			az.saveConfiguration();
-			az.save();
+			az.saveToDisk();
 			az.reload();
 
 			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for arena &e{2}", option, value, az.getArenaName());

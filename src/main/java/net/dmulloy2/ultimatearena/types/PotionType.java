@@ -1,9 +1,12 @@
 package net.dmulloy2.ultimatearena.types;
 
+import lombok.Getter;
+
 /**
  * @author dmulloy2
  */
 
+@Getter
 public enum PotionType
 {
 	FIRE_RESISTANCE("fireres"), 
@@ -19,9 +22,8 @@ public enum PotionType
 	WATER("water"),
 	WEAKNESS("weak");
 
-	public String name;
-
-	PotionType(String name)
+	private final String name;
+	private PotionType(String name)
 	{
 		this.name = name;
 	}

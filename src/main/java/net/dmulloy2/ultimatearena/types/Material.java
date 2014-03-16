@@ -2,10 +2,8 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.map.MapView;
 import org.bukkit.material.Bed;
 import org.bukkit.material.Button;
@@ -64,7 +62,7 @@ import com.google.common.collect.Maps;
  * @author dmulloy2
  */
 
-public enum Material implements ConfigurationSerializable
+public enum Material
 {
     AIR(0, 0),
     STONE(1),
@@ -643,18 +641,5 @@ public enum Material implements ConfigurationSerializable
 	public static Material getByBukkitMaterial(org.bukkit.Material bukkitMaterial)
 	{
 		return matchMaterial(bukkitMaterial.toString());
-	}
-
-	@Override
-	public Map<String, Object> serialize()
-	{
-		Map<String, Object> ret = new HashMap<String, Object>();
-		ret.put("c", toString());
-		return ret;
-	}
-
-	public static Material deserialize(Map<String, Object> args)
-	{
-		return Material.getMaterial((String) args.get("c"));
 	}
 }

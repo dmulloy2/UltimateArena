@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 /**
@@ -24,6 +25,7 @@ import org.bukkit.entity.Player;
  */
 
 @Getter
+@SerializableAs("net.dmulloy2.ArenaLocation")
 public class ArenaLocation implements ConfigurationSerializable, Cloneable
 {
 	private transient World world;

@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.io.FileSerialization;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryUtil;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
@@ -23,11 +25,14 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.google.common.io.Files;
 
 /**
  * @author dmulloy2
@@ -36,13 +41,16 @@ import org.bukkit.inventory.ItemStack;
 @Getter @Setter
 public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
+	private static transient final int CURRENT_VERSION = 3;
+	
 	protected int maxPlayers = 24;
 
 	protected int liked;
 	protected int disliked;
 	protected int timesPlayed;
 
-	protected Material specialType;
+	protected transient Material specialType; // Spleef
+	protected String specialTypeString;
 
 	protected boolean disabled;
 	protected transient boolean loaded;
@@ -51,7 +59,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected String arenaName = "";
 	protected String defaultClass;
 
-	protected FieldType type;
+	protected transient FieldType type;
+	protected String typeString;
 
 	protected ArenaLocation lobby1;
 	protected ArenaLocation lobby2;
@@ -96,7 +105,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		this.lobby = new Field();
 
 		// Load the arena
-		load();
+		loadFromDisk();
 
 		if (loaded)
 		{
@@ -125,38 +134,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 
 		return loaded;
-	}
-
-	public final void save()
-	{
-		// Make sure we have a valid file
-		checkFile();
-
-		// Actually save
-		plugin.getFileHandler().save(this);
-	}
-
-	public final void load()
-	{
-		// Make sure we have a valid file
-		checkFile();
-
-		// Load the core settings
-		plugin.getFileHandler().load(this);
-	}
-
-	private final void checkFile()
-	{
-		if (file == null)
-		{
-			File folder = new File(plugin.getDataFolder(), "arenas");
-			if (! folder.exists())
-			{
-				folder.mkdirs();
-			}
-
-			file = new File(folder, arenaName + ".dat");
-		}
 	}
 
 	public final List<String> getStats()
@@ -228,6 +205,177 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return world;
 	}
 
+	public void giveRewards(ArenaPlayer ap)
+	{
+		Player player = ap.getPlayer();
+
+		plugin.debug("Rewarding player {0}", player.getName());
+
+		for (ItemStack stack : rewards)
+		{
+			if (stack == null)
+				continue;
+
+			int amt = stack.getAmount();
+
+			// Gradient based, if applicable
+			if (rewardBasedOnXp)
+				amt = (int) Math.round(ap.getGameXP() / 200.0D);
+
+			if (amt > 0)
+			{
+				stack.setAmount(amt);
+
+				// Add the item
+				InventoryUtil.giveItem(player, stack);
+			}
+		}
+
+		if (plugin.getConfig().getBoolean("moneyrewards", true))
+		{
+			if (plugin.getEconomy() != null)
+			{
+				double money = (double) cashReward;
+				if (rewardBasedOnXp)
+					money = money * (ap.getGameXP() / 250.0D);
+
+				if (money > 0.0D)
+				{
+					EconomyResponse er = plugin.getEconomy().depositPlayer(player.getName(), money);
+					if (er.transactionSuccess())
+					{
+						String format = plugin.getEconomy().format(money);
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
+					}
+					else
+					{
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
+					}
+				}
+			}
+		}
+	}
+
+	// ---- I/O
+
+	public final void loadFromDisk()
+	{
+		checkFile();
+
+		FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
+		Map<String, Object> values = fc.getValues(false);
+
+		// Versioning
+		int version = 0;
+		if (values.containsKey("version"))
+			version = (int) values.get("version");
+
+		// Conversion
+		if (checkConversion(version))
+			return;
+
+		// Load
+		for (Entry<String, Object> entry : values.entrySet())
+		{
+			// Configuration check
+			try
+			{
+				// This works because if the field does not exist, a
+				// NoSuchFieldException is thrown and we will never get to the
+				// continue statement
+				ArenaConfig.class.getDeclaredField(entry.getKey());
+				continue;
+			} catch (Exception e) { }
+
+			try
+			{
+				for (java.lang.reflect.Field field : getClass().getDeclaredFields())
+				{
+					if (field.getName().equals(entry.getKey()))
+					{
+						boolean accessible = field.isAccessible();
+						field.setAccessible(true);
+						field.set(this, entry.getValue());
+						field.setAccessible(accessible);
+					}
+				}
+			} catch (Exception e) { }
+		}
+
+		this.specialType = Material.matchMaterial(specialTypeString);
+		this.type = FieldType.getByName(typeString);
+		this.loaded = true;
+
+		loadConfiguration();
+	}
+
+	public final void saveToDisk()
+	{
+		checkFile();
+
+		try
+		{
+			FileSerialization.save(this, file);
+		}
+		catch (IOException e)
+		{
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving arena " + arenaName));
+		}
+	}
+
+	private final void checkFile()
+	{
+		if (file == null)
+		{
+			File folder = new File(plugin.getDataFolder(), "arenas");
+			if (! folder.exists())
+			{
+				folder.mkdirs();
+			}
+
+			file = new File(folder, arenaName + ".dat");
+		}
+	}
+
+	// ---- Conversion
+
+	public final boolean checkConversion(int version)
+	{
+		if (version != CURRENT_VERSION)
+		{
+			convert();
+			return true;
+		}
+
+		return false;
+	}
+
+	@Deprecated
+	public final void convert()
+	{
+		try
+		{
+			// Make backup
+			File backup = new File(file.getAbsolutePath() + "_old");
+			Files.copy(file, backup);
+			// backup.createNewFile();
+			
+			// Load legacy arena zone
+			plugin.getFileHandler().load(this);
+
+			// Delete
+			file.delete();
+
+			// Reload
+			saveToDisk();
+			loadFromDisk();
+		}
+		catch (Exception e)
+		{
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "converting " + arenaName));
+		}
+	}
+
 	// ---- Configuration
 
 	// Serializable variables
@@ -241,7 +389,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	private transient List<ItemStack> rewards;
 	private transient HashMap<Integer, List<KillStreak>> killStreaks;
 
-	// TODO: Rewrite this to account for missing variables when we switch to ConfigurationSerialization
 	public void loadConfiguration()
 	{
 		try
@@ -366,55 +513,25 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 	}
 
-	public void giveRewards(ArenaPlayer ap)
+	public final void saveConfiguration()
 	{
-		Player player = ap.getPlayer();
-
-		plugin.debug("Rewarding player {0}", player.getName());
-
-		for (ItemStack stack : rewards)
+		Map<String, Object> data = serialize();
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+		for (Entry<String, Object> entry : data.entrySet())
 		{
-			if (stack == null)
-				continue;
-
-			int amt = stack.getAmount();
-
-			// Gradient based, if applicable
-			if (rewardBasedOnXp)
-				amt = (int) Math.round(ap.getGameXP() / 200.0D);
-
-			if (amt > 0)
+			try
 			{
-				stack.setAmount(amt);
-
-				// Add the item
-				InventoryUtil.giveItem(player, stack);
-			}
+				// Make sure it's also defined in ArenaConfig. If not, an
+				// Exception will be thrown
+				ArenaConfig.class.getDeclaredField(entry.getKey());
+				fc.set(entry.getKey(), entry.getValue());
+			} catch (Exception e) { }
 		}
 
-		if (plugin.getConfig().getBoolean("moneyrewards", true))
+		try
 		{
-			if (plugin.getEconomy() != null)
-			{
-				double money = (double) cashReward;
-				if (rewardBasedOnXp)
-					money = money * (ap.getGameXP() / 250.0D);
-
-				if (money > 0.0D)
-				{
-					EconomyResponse er = plugin.getEconomy().depositPlayer(player.getName(), money);
-					if (er.transactionSuccess())
-					{
-						String format = plugin.getEconomy().format(money);
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
-					}
-					else
-					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
-					}
-				}
-			}
-		}
+			fc.save(file);
+		} catch (Exception e) { }
 	}
 
 	@Override
@@ -484,28 +601,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			} catch (Exception e) { }
 		}
 
+		data.put("version", CURRENT_VERSION);
 		return data;
-	}
-
-	public final void saveConfiguration()
-	{
-		Map<String, Object> data = serialize();
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		for (Entry<String, Object> entry : data.entrySet())
-		{
-			try
-			{
-				// Make sure it's also defined in ArenaConfig. If not, an
-				// Exception will be thrown
-				ArenaConfig.class.getDeclaredField(entry.getKey());
-				fc.set(entry.getKey(), entry.getValue());
-			} catch (Exception e) { }
-		}
-
-		try
-		{
-			fc.save(file);
-		} catch (Exception e) { }
 	}
 
 	@Override

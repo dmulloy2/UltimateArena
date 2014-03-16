@@ -25,6 +25,13 @@ public class ArenaHandler
 		this.plugin = plugin;
 		this.arenaTypes = Maps.newHashMap();
 	}
+	
+	public final void loadArenasFromDisk()
+	{
+		
+	}
+
+	// ---- Arena Types
 
 	public final void loadArenaTypes()
 	{

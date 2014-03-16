@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.handlers;
+package net.dmulloy2.ultimatearena.io;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -29,9 +29,10 @@ public class FileHandler
 	 * 
 	 * @param az
 	 *        - {@link ArenaZone} to save
+	 * 
+	 * @deprecated Serialization
 	 */
-	// TODO: Serialize ArenaZones
-	public void save(ArenaZone az)
+	public final void save(ArenaZone az)
 	{
 		try
 		{
@@ -44,6 +45,8 @@ public class FileHandler
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
 			fc.set("type", az.getType().getName());
+			fc.set("typeString", az.getType().getName());
+
 			fc.set("world", az.getWorldName());
 
 			ArenaLocation lobby1 = az.getLobby1();
@@ -180,7 +183,6 @@ public class FileHandler
 					fc.set(path + "y", loc.getY());
 					fc.set(path + "z", loc.getZ());
 				}
-
 			}
 			else if (arenaType.equalsIgnoreCase("spleef"))
 			{
@@ -190,6 +192,7 @@ public class FileHandler
 				fc.set("lobbyRed.z", lobbyRed.getZ());
 
 				fc.set("specialType", az.getSpecialType().toString());
+				fc.set("specialTypeString", az.getSpecialType().toString());
 
 				for (int i = 0; i < 4; i++)
 				{
@@ -303,6 +306,8 @@ public class FileHandler
 	 * 
 	 * @param az
 	 *        - {@link ArenaZone} to load
+	 * 
+	 * @deprecated Serialization
 	 */
 	public void load(ArenaZone az)
 	{
@@ -317,6 +322,7 @@ public class FileHandler
 
 			String arenaType = fc.getString("type");
 			az.setType(FieldType.getByName(arenaType));
+			az.setTypeString(arenaType);
 
 			String worldName = fc.getString("world");
 			if (worldName == null || worldName.isEmpty())
@@ -415,7 +421,9 @@ public class FileHandler
 			{
 				az.setLobbyREDspawn(new ArenaLocation(worldName, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
-				az.setSpecialType(Material.getMaterial(fc.getString("specialType")));
+				String specialType = fc.getString("specialType");
+				az.setSpecialType(Material.matchMaterial(specialType));
+				az.setSpecialTypeString(specialType);
 
 				for (int i = 0; i < 4; i++)
 				{

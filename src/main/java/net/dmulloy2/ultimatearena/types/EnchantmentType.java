@@ -3,12 +3,15 @@ package net.dmulloy2.ultimatearena.types;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Getter;
+
 import org.bukkit.enchantments.Enchantment;
 
 /**
  * @author dmulloy2
  */
 
+@Getter
 public enum EnchantmentType
 {
 	ARROW_DAMAGE("power"),
@@ -34,9 +37,8 @@ public enum EnchantmentType
 	THORNS("thorns"),
 	WATER_WORKER("aqua");
 
-	public String name;
-
-	EnchantmentType(String name)
+	private final String name;
+	private EnchantmentType(String name)
 	{
 		this.name = name;
 	}
