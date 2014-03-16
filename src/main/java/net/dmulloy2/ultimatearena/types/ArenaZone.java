@@ -358,16 +358,19 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			// Make backup
 			File backup = new File(file.getAbsolutePath() + "_old");
 			Files.copy(file, backup);
-			// backup.createNewFile();
-			
+
 			// Load legacy arena zone
+			loadConfiguration();
 			plugin.getFileHandler().load(this);
 
 			// Delete
 			file.delete();
 
-			// Reload
+			// Save
 			saveToDisk();
+			saveConfiguration();
+
+			// Load
 			loadFromDisk();
 		}
 		catch (Exception e)
