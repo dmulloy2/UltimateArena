@@ -466,8 +466,10 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 					List<KillStreak> streaks = new ArrayList<KillStreak>();
 					for (String value : values)
 					{
+						value = value.trim();
+
 						// Determine type
-						String s = value.substring(0, value.indexOf(","));
+						String s = value.substring(0, value.indexOf(",")).trim();
 
 						KillStreak.Type type = null;
 						if (s.equalsIgnoreCase("mob"))
@@ -479,9 +481,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 						{
 							String[] split = value.split(",");
 
-							String message = split[1];
-							EntityType entityType = EntityType.valueOf(split[2]);
-							int amount = Integer.parseInt(split[3]);
+							String message = split[1].trim();
+							EntityType entityType = EntityType.valueOf(split[2].trim());
+							int amount = Integer.parseInt(split[3].trim());
 
 							streaks.add(new KillStreak(kills, message, entityType, amount));
 							continue;
@@ -489,11 +491,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 						else if (type == KillStreak.Type.ITEM)
 						{
 							// Yay substring and indexof!
-							s = value.substring(value.indexOf(",") + 1);
+							s = value.substring(value.indexOf(",") + 1).trim();
 
-							String message = s.substring(0, s.indexOf(","));
+							String message = s.substring(0, s.indexOf(",")).trim();
 
-							s = s.substring(s.indexOf(",") + 1);
+							s = s.substring(s.indexOf(",") + 1).trim();
 
 							ItemStack stack = ItemUtil.readItem(s);
 							if (stack != null)
