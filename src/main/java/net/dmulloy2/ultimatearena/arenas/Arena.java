@@ -1261,6 +1261,17 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
+	// ---- Generic Methods
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1269,8 +1280,8 @@ public abstract class Arena implements Reloadable
 	{
 		if (o instanceof Arena)
 		{
-			Arena a = (Arena) o;
-			return a.getName().equals(name);
+			Arena that = (Arena) o;
+			return this.name.equals(that.name);
 		}
 
 		return false;
@@ -1280,8 +1291,8 @@ public abstract class Arena implements Reloadable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString()
+	public int hashCode()
 	{
-		return "Arena { name = " + name + " }";
+		return 72 * name.hashCode();
 	}
 }

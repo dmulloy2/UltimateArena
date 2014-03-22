@@ -634,4 +634,30 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		// Re-initialize
 		initialize();
 	}
+
+	// ---- Generic Methods
+
+	@Override
+	public String toString()
+	{
+		return arenaName;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o instanceof ArenaZone)
+		{
+			ArenaZone that = (ArenaZone) o;
+			return this.arenaName.equals(that.arenaName);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return 71 * arenaName.hashCode();
+	}
 }

@@ -61,8 +61,8 @@ public class SpleefCreator extends ArenaCreator
 
 					if (plugin.isInArena(arena1) || plugin.isInArena(arena2))
 					{
-						sendMessage("&cThese points overlap an existing arena!");
-						return;
+						sendMessage("&4These points overlap an existing arena: &c{0}&4!", plugin.getZoneInside(arena1));
+						sendMessage("&4This is known to cause some errors! Type &c/ua undo &4to undo!");
 					}
 
 					target.setArena1(new ArenaLocation(arena1));
@@ -118,8 +118,8 @@ public class SpleefCreator extends ArenaCreator
 
 					if (plugin.isInArena(lobby1) || plugin.isInArena(lobby2))
 					{
-						sendMessage("&cThese points overlap an existing arena!");
-						return;
+						sendMessage("&4These points overlap an existing arena: &c{0}&4!", plugin.getZoneInside(lobby1));
+						sendMessage("&4This is known to cause some errors! Type &c/ua undo &4to undo!");
 					}
 
 					if (lobby1.getWorld().getUID() != target.getArena1().getWorld().getUID())

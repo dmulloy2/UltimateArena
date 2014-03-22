@@ -1,6 +1,3 @@
-/**
- * (c) 2013 dmulloy2
- */
 package net.dmulloy2.ultimatearena.creation;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
