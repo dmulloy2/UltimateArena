@@ -13,6 +13,7 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 /**
@@ -41,7 +42,7 @@ public class BombFlag extends ArenaFlag
 		if (fused)
 		{
 			timer--;
-			Util.playEffect(Effect.STEP_SOUND, location, 4);
+			Util.playEffect(Effect.STEP_SOUND, location, Material.COBBLESTONE);
 
 			if (timer == 30 || timer == 20 || timer == 10 || timer <= 5)
 			{
@@ -52,7 +53,7 @@ public class BombFlag extends ArenaFlag
 			{
 				if (! exploded)
 				{
-					Util.playEffect(Effect.EXTINGUISH, location, 4);
+					Util.playEffect(Effect.EXTINGUISH, location, null);
 					
 					BOMBArena ba = null;
 					if (arena instanceof BOMBArena)

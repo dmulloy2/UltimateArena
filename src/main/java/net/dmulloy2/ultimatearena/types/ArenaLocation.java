@@ -178,7 +178,7 @@ public class ArenaLocation implements ConfigurationSerializable, Cloneable
 	@Override
 	public int hashCode()
 	{
-		int hash = 1;
+		int hash = 39;
 		hash *= x;
 		hash *= y;
 		hash *= z;
@@ -201,6 +201,6 @@ public class ArenaLocation implements ConfigurationSerializable, Cloneable
 	@Override
 	public ArenaLocation clone()
 	{
-		return new ArenaLocation(getLocation());
+		return new ArenaLocation(worldName, x, y, z);
 	}
 }

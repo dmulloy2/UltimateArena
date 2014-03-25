@@ -59,7 +59,7 @@ public class CmdOption extends UltimateArenaCommand
 		{
 			if (! NumberUtil.isInt(args[3]))
 			{
-				err("Please specify a valid integer!");
+				err("\"&c{0}&4\" is not a valid integer!");
 				return;
 			}
 
@@ -75,7 +75,7 @@ public class CmdOption extends UltimateArenaCommand
 			ArenaZone az = plugin.getArenaZone(args[1]);
 			if (az == null)
 			{
-				err("Please specify a valid arena!");
+				err("Could not find an Arena by the name of \"&c{0}&4\"!", args[1]);
 				return;
 			}
 
@@ -124,7 +124,7 @@ public class CmdOption extends UltimateArenaCommand
 			ArenaConfig ac = plugin.getConfig(args[0]);
 			if (ac == null)
 			{
-				err("Please specify a valid arena type!");
+				err("\"&c{0}&4\" is not a valid Field Type!");
 				return;
 			}
 
@@ -169,7 +169,7 @@ public class CmdOption extends UltimateArenaCommand
 		}
 		else
 		{
-			err("Please specify either \"&carena&4\" or \"&cconfig&4\"");
+			err("Please specify either \"&carena&4\" or \"&cconfig&4\"!");
 		}
 	}
 

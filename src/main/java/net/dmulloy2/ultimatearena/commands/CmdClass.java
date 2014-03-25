@@ -44,10 +44,10 @@ public class CmdClass extends UltimateArenaCommand
 			ArenaClass cl = plugin.getArenaClass(args[0]);
 			if (cl == null)
 			{
-				err("Could not find a class by the name of \"{0}\"", args[0]);
+				err("Could not find a class by the name of \"&c{0}&4\"!", args[0]);
 				return;
 			}
-			
+
 			if (! cl.checkPermission(player))
 			{
 				err("You do not have permissions for this class.");
@@ -59,10 +59,10 @@ public class CmdClass extends UltimateArenaCommand
 				err("You cannot use this class in this arena.");
 				return;
 			}
-	
+
 			String name = cl.getName();
 			String article = FormatUtil.getArticle(name);
-	
+
 			if (ap.getArena().isInLobby())
 			{
 				sendpMessage("&3You will spawn as {0}: &e{1}", article, name);

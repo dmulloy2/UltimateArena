@@ -93,7 +93,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 		}
 		catch (Throwable e)
 		{
-			err("Error executing command: {0}", e.toString());
+			err("Error executing command: &c{0}&4: &c{1}", e.getClass().getName(), e.getLocalizedMessage());
 			plugin.getLogHandler().debug(Util.getUsefulStack(e, "executing command " + name));
 		}
 	}
@@ -133,7 +133,7 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 	public final String getUsageTemplate(final boolean displayHelp)
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("&b/ua ");
+		ret.append("&b/" + plugin.getCommandHandler().getCommandPrefix() + " ");
 
 		ret.append(name);
 
@@ -162,7 +162,8 @@ public abstract class UltimateArenaCommand implements CommandExecutor
 
 	protected final void err(String string, Object... objects)
 	{
-		sendpMessage("&c" + string, objects);
+		// sendpMessage("&c" + string, objects);
+		sendMessage("&cError: &4" + string, objects);
 	}
 
 	protected final void invalidArgs()

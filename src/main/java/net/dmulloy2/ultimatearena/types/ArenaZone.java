@@ -94,7 +94,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		this.plugin = plugin;
 		this.file = file;
-		this.arenaName = Util.trimFileExtension(file, ".dat");
+		this.arenaName = FormatUtil.trimFileExtension(file, ".dat");
 		this.initialize();
 	}
 

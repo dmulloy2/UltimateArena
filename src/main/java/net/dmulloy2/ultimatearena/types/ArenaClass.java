@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.MaterialUtil;
 import net.dmulloy2.ultimatearena.util.NumberUtil;
@@ -55,7 +56,7 @@ public class ArenaClass implements Reloadable
 	{
 		this.plugin = plugin;
 		this.file = file;
-		this.name = Util.trimFileExtension(file, ".yml");
+		this.name = FormatUtil.trimFileExtension(file, ".yml");
 
 		this.loaded = load();
 		if (! loaded)

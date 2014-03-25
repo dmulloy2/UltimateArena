@@ -16,6 +16,7 @@ import net.dmulloy2.ultimatearena.types.Permission;
  * @author dmulloy2
  */
 
+// TODO: Paginate this?
 public class CmdList extends UltimateArenaCommand
 {
 	public CmdList(UltimateArena plugin)
@@ -68,7 +69,7 @@ public class CmdList extends UltimateArenaCommand
 
 			line = new StringBuilder();
 			line.append("&3[&b" + az.getType().getStylized() + " &eArena&3]");
-			line.append(" &b" + az.getArenaName() + "  ");
+			line.append("  " + "&b" + az.getArenaName() + "  ");
 
 			if (az.isDisabled())
 			{

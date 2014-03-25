@@ -27,11 +27,11 @@ public class CmdPause extends UltimateArenaCommand
 		Arena arena = plugin.getArena(args[0]);
 		if (arena == null)
 		{
-			err("No arena with that name...");
+			err("Could not find an Arena by the name of \"&c{0}&4\"!");
 			return;
 		}
 
-		arena.setPauseStartTimer(!arena.isPauseStartTimer());
+		arena.setPauseStartTimer(! arena.isPauseStartTimer());
 		sendpMessage("&3Start timer for arena &e{0} &3is now &e{1}&3!", arena.getName(), (arena.isPauseStartTimer() ? "paused" : "unpaused"));
 	}
 }

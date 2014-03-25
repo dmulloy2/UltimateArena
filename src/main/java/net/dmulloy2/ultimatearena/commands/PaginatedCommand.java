@@ -33,7 +33,7 @@ public abstract class PaginatedCommand extends UltimateArenaCommand
 			}
 			catch (NumberFormatException ex)
 			{
-				err("{0} is not a valid number!", args[0]);
+				err("\"&c{0}&4\" is not a valid number!", args[0]);
 				return;
 			}
 			catch (IndexOutOfBoundsException ex)

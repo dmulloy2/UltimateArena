@@ -46,6 +46,6 @@ public class CmdDisable extends UltimateArenaCommand
 			}
 		}
 
-		err("Could not find an Arena by that name/type!");
+		err("Could not find an Arena by the name of \"&c{0}&4\"!", args[0]);
 	}
 }

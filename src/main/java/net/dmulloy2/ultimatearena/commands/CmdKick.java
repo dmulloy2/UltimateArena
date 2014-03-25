@@ -31,7 +31,7 @@ public class CmdKick extends UltimateArenaCommand
 		Player player = Util.matchPlayer(args[0]);
 		if (player == null)
 		{
-			err("Player not found!");
+			err("Player \"&c{0}&4\" not found!", args[0]);
 			return;
 		}
 

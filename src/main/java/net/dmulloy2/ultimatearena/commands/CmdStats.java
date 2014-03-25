@@ -28,13 +28,11 @@ public class CmdStats extends UltimateArenaCommand
 		ArenaZone az = plugin.getArenaZone(args[0]);
 		if (az == null)
 		{
-			err("This arena doesn't exist!");
+			err("Could not find an arena by the name of \"&c{0}&4\"!", args[0]);
 			return;
 		}
 
 		for (String s : az.getStats())
-		{
 			sendMessage(s);
-		}
 	}
 }
