@@ -108,36 +108,6 @@ public class Util
 	}
 
 	/**
-	 * Returns how far two locations are from each other
-	 * 
-	 * @param loc1
-	 *        - First location to compare
-	 * @param loc2
-	 *        - Second location to compare
-	 * @return Integer value of how far away they are
-	 */
-	public static int pointDistance(Location loc1, Location loc2)
-	{
-		int p1x = (int) loc1.getX();
-		int p1y = (int) loc1.getY();
-		int p1z = (int) loc1.getZ();
-
-		int p2x = (int) loc2.getX();
-		int p2y = (int) loc2.getY();
-		int p2z = (int) loc2.getZ();
-
-		return (int) magnitude(p1x, p1y, p1z, p2x, p2y, p2z);
-	}
-
-	private static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2)
-	{
-		int xdist = x1 - x2;
-		int ydist = y1 - y2;
-		int zdist = z1 - z2;
-		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist);
-	}
-
-	/**
 	 * Plays an effect to all online players
 	 * 
 	 * @param effect
@@ -167,10 +137,10 @@ public class Util
 	 */
 	public static boolean checkLocation(Location loc, Location loc2)
 	{
-		return loc.getBlockX() == loc2.getBlockX() &&
-				loc.getBlockY() == loc2.getBlockY() &&
-				loc.getBlockZ() == loc2.getBlockZ() &&
-				loc.getWorld().equals(loc2.getWorld());
+		return loc.getBlockX() == loc2.getBlockX() 
+				&& loc.getBlockY() == loc2.getBlockY() 
+				&& loc.getBlockZ() == loc2.getBlockZ()
+				&& loc.getWorld().equals(loc2.getWorld());
 	}
 
 	/**

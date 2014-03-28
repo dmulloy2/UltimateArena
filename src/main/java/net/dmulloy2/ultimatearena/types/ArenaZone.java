@@ -136,6 +136,50 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return loaded;
 	}
 
+	// ---- Getters and Setters
+
+	public final World getWorld()
+	{
+		if (world == null)
+			world = plugin.getServer().getWorld(worldName);
+
+		return world;
+	}
+
+	public final void setWorld(World world)
+	{
+		this.world = world;
+		this.worldName = world.getName();
+	}
+
+	public final FieldType getType()
+	{
+		if (type == null)
+			type = FieldType.getByName(typeString);
+
+		return type;
+	}
+
+	public final void setType(FieldType type)
+	{
+		this.type = type;
+		this.typeString = type.getName();
+	}
+
+	public final Material getSpecialType()
+	{
+		if (specialType == null)
+			specialType = Material.matchMaterial(specialTypeString);
+
+		return specialType;
+	}
+
+	public final void setSpecialType(Material specialType)
+	{
+		this.specialType = specialType;
+		this.specialTypeString = specialType.toString();
+	}
+
 	public final List<String> getStats()
 	{
 		List<String> lines = new ArrayList<String>();
@@ -171,6 +215,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return lines;
 	}
 
+	// ---- Utility Methods
+
 	public final boolean checkLocation(Location loc)
 	{
 		try
@@ -189,20 +235,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	public final boolean canLike(Player player)
 	{
 		return ! voted.contains(player.getName());
-	}
-
-	public final void setWorld(World world)
-	{
-		this.world = world;
-		this.worldName = world.getName();
-	}
-
-	public final World getWorld()
-	{
-		if (world == null)
-			world = plugin.getServer().getWorld(worldName);
-
-		return world;
 	}
 
 	public void giveRewards(ArenaPlayer ap)

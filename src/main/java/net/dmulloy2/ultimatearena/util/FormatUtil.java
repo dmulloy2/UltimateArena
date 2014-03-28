@@ -29,7 +29,7 @@ public class FormatUtil
 	 */
 	public static String format(String format, Object... objects)
 	{
-		try 
+		try
 		{
 			format = MessageFormat.format(format, objects);
 		} catch (Exception e) { }
@@ -101,10 +101,14 @@ public class FormatUtil
 	 *        - String to get the plural for
 	 * @return The proper plural of a given string
 	 */
-	public static String getPlural(String string)
+	public static String getPlural(String string, int amount)
 	{
-		if (string.toLowerCase().endsWith("s"))
-			return string + "s";
+		amount = Math.abs(amount);
+		if (amount == 0 || amount > 1)
+		{
+			if (! string.toLowerCase().endsWith("s"))
+				return string + "s";
+		}
 
 		return string;
 	}

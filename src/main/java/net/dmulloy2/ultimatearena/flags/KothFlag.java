@@ -50,7 +50,7 @@ public class KothFlag extends ArenaFlag
 			Player pl = ap.getPlayer();
 			if (pl != null)
 			{
-				if (Util.pointDistance(pl.getLocation(), location) < 3.0 && pl.getHealth() > 0)
+				if (pl.getHealth() > 0.0D && pl.getLocation().distance(location) < 3.0D)
 				{
 					players.add(pl);
 					amt++;
@@ -66,9 +66,9 @@ public class KothFlag extends ArenaFlag
 				Player pl = capturer.getPlayer();
 				capturer.setPoints(capturer.getPoints() + 1);
 
-				pl.sendMessage(plugin.getPrefix() + 
-						FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", 
-								capturer.getPoints(), arena.getMaxPoints()));
+				pl.sendMessage(plugin.getPrefix()
+						+ FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(),
+								arena.getMaxPoints()));
 
 				leadChange();
 			}
@@ -106,9 +106,9 @@ public class KothFlag extends ArenaFlag
 				if (leader == null || ! apl.getName().equals(leader.getName()))
 				{
 					arena.tellPlayers("&e{0} &3has taken the lead!", apl.getName());
-
-					this.leader = apl;
+					leader = apl;
 				}
+
 				pos++;
 			}
 		}

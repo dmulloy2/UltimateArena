@@ -55,7 +55,7 @@ public abstract class Arena implements Reloadable
 	protected List<ArenaPlayer> active;
 	protected List<ArenaPlayer> inactive;
 	protected List<ArenaPlayer> toReward;
- 
+
 	protected List<ArenaFlag> flags;
 	protected List<ArenaLocation> spawns;
 
@@ -63,7 +63,7 @@ public abstract class Arena implements Reloadable
 	private List<String> whitelistedClasses;
 
 	private HashMap<Integer, List<KillStreak>> killStreaks;
-	
+
 	protected int broadcastTimer = 45;
 	protected int winningTeam = 999;
 	protected int maxPoints = 60;
@@ -129,7 +129,7 @@ public abstract class Arena implements Reloadable
 		this.inLobby = true;
 
 		this.reload();
-		
+
 		plugin.getSpectatingHandler().registerArena(this);
 	}
 
@@ -149,7 +149,7 @@ public abstract class Arena implements Reloadable
 		this.rewardBasedOnXp = az.isRewardBasedOnXp();
 		this.killStreaks = az.getKillStreaks();
 		this.giveRewards = az.isGiveRewards();
-		
+
 		this.blacklistedClasses = az.getBlacklistedClasses();
 		this.whitelistedClasses = az.getWhitelistedClasses();
 
@@ -175,7 +175,7 @@ public abstract class Arena implements Reloadable
 
 		// Update Teams
 		pl.setTeam(getTeam());
-		
+
 		this.updatedTeams = true;
 
 		// Teleport the player to the lobby spawn
@@ -206,7 +206,7 @@ public abstract class Arena implements Reloadable
 
 		// Clear potion effects
 		pl.clearPotionEffects();
-		
+
 		// Decide Hat
 		pl.decideHat();
 
@@ -239,16 +239,16 @@ public abstract class Arena implements Reloadable
 				{
 					if (announced == 0)
 					{
-						player.sendMessage(plugin.getPrefix() + 
+						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&e{0} &3arena has been created!", type.getStylized()));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + 
+						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getStylized()));
 					}
 
-					player.sendMessage(plugin.getPrefix() + 
+					player.sendMessage(plugin.getPrefix() +
 							FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getArenaName()));
 				}
 			}
@@ -273,7 +273,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public boolean simpleTeamCheck()
 	{
-		if (team1size == 0 || team2size == 0) 
+		if (team1size == 0 || team2size == 0)
 		{
 			return startingAmount < 1;
 		}
@@ -300,7 +300,7 @@ public abstract class Arena implements Reloadable
 			if (ap.getName().equalsIgnoreCase(p.getName()))
 				return ap;
 		}
-		
+
 		if (checkInactive)
 		{
 			for (ArenaPlayer ap : inactive)
@@ -312,7 +312,7 @@ public abstract class Arena implements Reloadable
 
 		return null;
 	}
-	
+
 	/**
 	 * Alias for {@link #getArenaPlayer(Player, boolean)}
 	 * <p>
@@ -332,7 +332,7 @@ public abstract class Arena implements Reloadable
 	public final void spawnAll()
 	{
 		plugin.debug("Spawning players for Arena {0}", name);
-		
+
 		for (ArenaPlayer ap : active)
 		{
 			spawn(ap.getPlayer());
@@ -425,7 +425,7 @@ public abstract class Arena implements Reloadable
 	{
 		spawn(player, false);
 	}
-	
+
 	/**
 	 * Spawns an {@link ArenaPlayer} into the lobby
 	 * 
@@ -515,7 +515,7 @@ public abstract class Arena implements Reloadable
 	public final void setWinningTeam(int team)
 	{
 		this.toReward = new ArrayList<ArenaPlayer>();
-		
+
 		for (ArenaPlayer ap : active)
 		{
 			ap.setCanReward(false);
@@ -590,7 +590,7 @@ public abstract class Arena implements Reloadable
 			ap.sendMessage(string, objects);
 		}
 	}
-	
+
 	/**
 	 * Tells all players a message.
 	 * <p>
@@ -622,15 +622,15 @@ public abstract class Arena implements Reloadable
 	 * @param rad
 	 *        - Radius to kill within
 	 */
-	public final void killAllNear(Location loc, int rad)
+	public final void killAllNear(Location loc, double rad)
 	{
 		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
 
 		for (ArenaPlayer ap : active)
 		{
-			Location ploc = ap.getPlayer().getLocation();
-			if (Util.pointDistance(loc, ploc) < rad)
-				ap.getPlayer().setHealth(0.0D);
+			Player player = ap.getPlayer();
+			if (player.getLocation().distance(loc) < rad)
+				player.setHealth(0.0D);
 		}
 	}
 
@@ -711,7 +711,7 @@ public abstract class Arena implements Reloadable
 		onStop();
 
 		announceWinner();
-		
+
 		for (ArenaPlayer ap : getActivePlayers())
 		{
 			endPlayer(ap, false);
@@ -832,7 +832,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Starts the arena. 
+	 * Starts the arena.
 	 * <p>
 	 * Should not be overriden.
 	 */
@@ -1020,7 +1020,7 @@ public abstract class Arena implements Reloadable
 	{
 		if (isInGame())
 		{
-			player.sendMessage(plugin.getPrefix() + 
+			player.sendMessage(plugin.getPrefix() +
 					FormatUtil.format("&cThis arena is already in progress!"));
 			return;
 		}
@@ -1031,7 +1031,7 @@ public abstract class Arena implements Reloadable
 
 		gameTimer--;
 
-		player.sendMessage(plugin.getPrefix() + 
+		player.sendMessage(plugin.getPrefix() +
 				FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
@@ -1041,7 +1041,7 @@ public abstract class Arena implements Reloadable
 	private final void clearEntities()
 	{
 		plugin.debug("Clearing entities in arena {0}", name);
-		
+
 		List<EntityType> persistentEntities = Arrays.asList(new EntityType[]
 		{
 				EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
@@ -1194,15 +1194,15 @@ public abstract class Arena implements Reloadable
 		{
 			return whitelistedClasses.contains(ac.getName());
 		}
-		
+
 		if (! blacklistedClasses.isEmpty())
 		{
 			return ! blacklistedClasses.contains(ac.getName());
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public final void finalize()
 	{

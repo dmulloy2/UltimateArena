@@ -54,7 +54,7 @@ public class BombFlag extends ArenaFlag
 				if (! exploded)
 				{
 					Util.playEffect(Effect.EXTINGUISH, location, null);
-					
+
 					BOMBArena ba = null;
 					if (arena instanceof BOMBArena)
 					{
@@ -70,12 +70,12 @@ public class BombFlag extends ArenaFlag
 							amte++;
 
 						if (amte == 0)
-							arena.killAllNear(location, 12);
+							arena.killAllNear(location, 12.0D);
 					}
 
 					this.fused = false;
 					this.exploded = true;
-					
+
 					arena.tellPlayers("&cRED &3team blew up bomb &e{0}&3!", bombNumber);
 				}
 			}
@@ -91,7 +91,7 @@ public class BombFlag extends ArenaFlag
 			Player pl = ap.getPlayer();
 			if (pl != null)
 			{
-				if (Util.pointDistance(pl.getLocation(), location) < 3.0 && pl.getHealth() > 0)
+				if (pl.getHealth() > 0.0D && pl.getLocation().distance(location) < 3.0D)
 				{
 					players.add(pl);
 					capturer = ap;

@@ -63,23 +63,23 @@ public class CTFFlagBase extends FlagBase
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap.getPlayer().isOnline() && ! ap.getPlayer().isDead())
+			Player pl = ap.getPlayer();
+			if (pl.isOnline() && pl.getHealth() > 0.0D)
 			{
 				if (ap.getTeam() == team)
 				{
 					// If the arena player is on my team
-					Player p = ap.getPlayer();
-					if (enemyflag.getRiding().getName().equals(p.getName()))
+					if (enemyflag.getRiding().getName().equals(pl.getName()))
 					{
 						// If the player selected is carrying the enemy flag
-						if (Util.pointDistance(p.getLocation(), location.clone().add(0, 1, 0)) < 2.75)
+						if (pl.getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
 						{
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
 							ap.sendMessage("&aFlag Captured! &c+ 500 XP");
 
-							p.removePotionEffect(PotionEffectType.SLOW);
-							p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+							pl.removePotionEffect(PotionEffectType.SLOW);
+							pl.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 
 							for (ArenaPlayer apl : Util.newList(arenaPlayers))
 							{

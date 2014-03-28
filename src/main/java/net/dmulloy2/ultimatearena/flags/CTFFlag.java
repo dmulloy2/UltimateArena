@@ -149,7 +149,8 @@ public class CTFFlag
 			for (int i = 0; i < arenaPlayers.size(); i++)
 			{
 				ArenaPlayer ap = arenaPlayers.get(i);
-				if (Util.pointDistance(ap.getPlayer().getLocation(), myloc) < 1.75 && ap.getPlayer().getHealth() > 0.0D)
+				Player pl = ap.getPlayer();
+				if (pl.getHealth() > 0.0D && pl.getLocation().distance(myloc) < 1.75D)
 				{
 					if (ap.getTeam() != team)
 					{
@@ -164,7 +165,7 @@ public class CTFFlag
 					}
 					else
 					{
-						if (!myloc.equals(returnto))
+						if (! myloc.equals(returnto))
 						{
 							// If the flag is not at its flagstand
 							ap.sendMessage("&aFlag Returned! &c+50 XP");
@@ -210,9 +211,9 @@ public class CTFFlag
 		if (stopped)
 			return;
 
-		if (!pickedUp)
+		if (! pickedUp)
 		{
-			if (!myloc.equals(returnto))
+			if (! myloc.equals(returnto))
 			{
 				// if the flag is not at its flagstand
 				timer--;
@@ -238,7 +239,7 @@ public class CTFFlag
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
 
-		if (!Util.checkLocation(lastloc, myloc))
+		if (! Util.checkLocation(lastloc, myloc))
 		{
 			last.setType(lastBlockType);
 			last.getState().setData(lastBlockDat);

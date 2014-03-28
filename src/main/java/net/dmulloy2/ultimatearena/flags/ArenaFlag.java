@@ -58,10 +58,7 @@ public class ArenaFlag extends FlagBase
 		for (ArenaPlayer ap : arenaPlayers)
 		{
 			Player player = ap.getPlayer();
-			if (player.getHealth() < 0.0D)
-				continue;
-
-			if (Util.pointDistance(player.getLocation(), location) < 4.5)
+			if (player.getHealth() > 0.0D && player.getLocation().distance(location) < 4.5D)
 			{
 				players.add(ap);
 
