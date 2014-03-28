@@ -323,7 +323,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			{
 				for (java.lang.reflect.Field field : getClass().getDeclaredFields())
 				{
-					if (field.getName().equals(entry.getKey()))
+					if (field.getName().equalsIgnoreCase(entry.getKey()))
 					{
 						boolean accessible = field.isAccessible();
 						field.setAccessible(true);
