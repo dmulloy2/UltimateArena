@@ -18,6 +18,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 /**
  * @author dmulloy2
@@ -41,6 +42,7 @@ public abstract class ArenaType
 	}
 
 	// ---- Optional Hooks
+
 	public void onLoad() { }
 
 	public void onEnable() { }
@@ -58,17 +60,18 @@ public abstract class ArenaType
 	}
 
 	// ---- Required Hooks
+
 	public abstract ArenaCreator newCreator(Player player, String name, UltimateArena plugin);
 
 	public abstract Arena newArena(ArenaZone az);
-	
-	
+
 	public final String getName()
 	{
 		return description.getName();
 	}
 
-	public final void initialize(UltimateArena plugin, ArenaDescriptionFile description, ArenaClassLoader classLoader, File file, File dataFolder)
+	public final void initialize(UltimateArena plugin, ArenaDescriptionFile description, ArenaClassLoader classLoader, File file,
+			File dataFolder)
 	{
 		Validate.isTrue(! initialized, "Already initialized!");
 
@@ -107,9 +110,9 @@ public abstract class ArenaType
 		}
 	}
 
-	// ---- Credit to Bukkit for these methods from JavaPlugin
+	// ---- Utility Methods (Credit to Bukkit for the resource methods)
 
-	public final void saveResource(String resourcePath, boolean replace)
+	protected final void saveResource(String resourcePath, boolean replace)
 	{
 		if (resourcePath == null || resourcePath.equals(""))
 		{
@@ -134,7 +137,7 @@ public abstract class ArenaType
 
 		try
 		{
-			if (!outFile.exists() || replace)
+			if (! outFile.exists() || replace)
 			{
 				OutputStream out = new FileOutputStream(outFile);
 				byte[] buf = new byte[1024];
@@ -153,7 +156,7 @@ public abstract class ArenaType
 		}
 	}
 
-	public final InputStream getResource(String filename)
+	protected final InputStream getResource(String filename)
 	{
 		if (filename == null)
 		{
@@ -177,5 +180,10 @@ public abstract class ArenaType
 		{
 			return null;
 		}
+	}
+
+	protected final void registerListener(Listener listener)
+	{
+		plugin.getServer().getPluginManager().registerEvents(listener, plugin);
 	}
 }
