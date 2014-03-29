@@ -41,6 +41,18 @@ public class Field3D extends Field
 		}
 	}
 
+	@Override
+	public boolean isInside(Location loc)
+	{
+		if (super.isInside(loc))
+		{
+			int locY = loc.getBlockY();
+			return locY >= minY && locY <= maxY;
+		}
+
+		return false;
+	}
+
 	public final Block getBlockAt(int x, int y, int z)
 	{
 		return getWorld().getBlockAt(minX + x, minY + y, minZ + z);
