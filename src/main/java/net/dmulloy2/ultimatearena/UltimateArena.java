@@ -1,17 +1,17 @@
 /**
- * UltimateArena - a bukkit plugin 
+ * UltimateArena - a bukkit plugin
  * Copyright (C) 2012 - 2014 MineSworn and Affiliates
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -494,7 +494,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			}
 
 			if (alreadyLoaded) continue;
-	
+
 			ArenaZone az = new ArenaZone(this, file);
 			if (az.isLoaded())
 			{
@@ -613,7 +613,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Generates an arena config for a particular field
-	 * 
+	 *
 	 * @param field
 	 *        - Field to generate config for
 	 */
@@ -628,9 +628,9 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private void generateStockClasses()
 	{
 		String[] stockClasses = new String[]
-		{
+				{
 				"archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef"
-		};
+				};
 
 		for (String stockClass : stockClasses)
 		{
@@ -1055,7 +1055,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Attempts to create a new {@link Arena}
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} who is creating the arena
 	 * @param name
@@ -1139,10 +1139,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 * Returns a player's {@link ArenaCreator} instance
 	 * <p>
 	 * Will return <code>null</code> if the player is not creating an arena.
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to get {@link ArenaCreator} instance for.
-	 * 
+	 *
 	 * @return The player's {@link ArenaCreator} instance
 	 */
 	public ArenaCreator getArenaCreator(Player player)
@@ -1158,7 +1158,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Returns whether or not a {@link Player} is creating an arena.
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to check
 	 * @return Whether or not a {@link Player} is creating an arena.
@@ -1170,7 +1170,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Sets a point in the arena creation process
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} setting the point
 	 */
@@ -1188,7 +1188,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Stops the creation of an arena
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} who is stopping
 	 */
@@ -1219,7 +1219,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Accepts registration from a {@link JavaPlugin}
-	 * 
+	 *
 	 * @param plugin
 	 *        - {@link JavaPlugin} to accept the registration from
 	 */
@@ -1256,7 +1256,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Returns whether or not a command is whitelisted
-	 * 
+	 *
 	 * @param command
 	 *        - Command to check
 	 * @return Whether or not a command is whitelisted
@@ -1281,7 +1281,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 * Returns how many arenas have been played
 	 * <p>
 	 * Will return 1 if none have been played
-	 * 
+	 *
 	 * @return How many arenas have been played
 	 */
 	public final int getTotalArenasPlayed()
@@ -1308,7 +1308,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 	/**
 	 * Removes an active {@link Arena}
-	 * 
+	 *
 	 * @param a
 	 *        - Arena to remove
 	 */

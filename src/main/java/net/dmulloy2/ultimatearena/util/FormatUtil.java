@@ -9,7 +9,7 @@ import org.bukkit.ChatColor;
 
 /**
  * Util used for general formatting
- * 
+ *
  * @author dmulloy2
  */
 
@@ -19,7 +19,7 @@ public class FormatUtil
 
 	/**
 	 * Formats a given string with its objects.
-	 * 
+	 *
 	 * @param format
 	 *        - Base string
 	 * @param objects
@@ -43,7 +43,7 @@ public class FormatUtil
 	 * <p>
 	 * If the object or any of its superclasses (minus Object) do not implement
 	 * a toString() method, the object's simple name will be returned.
-	 * 
+	 *
 	 * @param o
 	 *        - Object to get the user-friendly representation of
 	 * @return A user-friendly representation of the given Object.
@@ -66,7 +66,7 @@ public class FormatUtil
 
 	/**
 	 * Returns a user-friendly version of a given String.
-	 * 
+	 *
 	 * @param string
 	 *        - String to get the user-friendly version of
 	 * @return A user-friendly version of the given String.
@@ -80,7 +80,7 @@ public class FormatUtil
 
 	/**
 	 * Returns the proper article of a given string
-	 * 
+	 *
 	 * @param string
 	 *        - String to get the article for
 	 * @return The proper article of a given string
@@ -96,7 +96,7 @@ public class FormatUtil
 
 	/**
 	 * Returns the proper plural of a given string
-	 * 
+	 *
 	 * @param string
 	 *        - String to get the plural for
 	 * @return The proper plural of a given string
@@ -115,7 +115,7 @@ public class FormatUtil
 
 	/**
 	 * Joins together multiple given strings with the given glue.
-	 * 
+	 *
 	 * @param glue
 	 *        - String to join the args together with
 	 * @param args
@@ -140,7 +140,7 @@ public class FormatUtil
 
 	/**
 	 * Returns the given {@link File}'s name with the extension omitted.
-	 * 
+	 *
 	 * @param file
 	 *        - {@link File}
 	 * @param extension

@@ -9,15 +9,15 @@ import lombok.Getter;
 @Getter
 public enum FieldType
 {
-	BOMB("bomb", "Bomb"), 
-	CONQUEST("cq", "CQ"), 
+	BOMB("bomb", "Bomb"),
+	CONQUEST("cq", "CQ"),
 	CTF("ctf", "CTF"),
 	FFA("ffa", "FFA"),
-	HUNGER("hunger", "Hunger"), 
-	INFECT("infect", "Infect"), 
+	HUNGER("hunger", "Hunger"),
+	INFECT("infect", "Infect"),
 	KOTH("koth", "KOTH"),
 	MOB("mob", "Mob"),
-	PVP("pvp", "PvP"), 
+	PVP("pvp", "PvP"),
 	SPLEEF("spleef", "Spleef");
 
 	private String name;

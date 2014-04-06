@@ -54,7 +54,6 @@ public class INFECTArena extends PVPArena
 		{
 			// Shouldn't happen...
 			tellPlayers("&cCould not choose a zombie! Aborting...");
-
 			stop();
 		}
 	}
@@ -68,7 +67,7 @@ public class INFECTArena extends PVPArena
 			ap.clearInventory();
 
 			spawn(pl, true);
-			
+
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 3));
 			pl.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));

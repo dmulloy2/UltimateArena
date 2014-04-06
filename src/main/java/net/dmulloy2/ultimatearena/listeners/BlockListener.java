@@ -110,11 +110,11 @@ public class BlockListener implements Listener
 					if (az != null)
 					{
 						int id = plugin.getSignHandler().getFreeId(1);
-						
+
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);
 
-						event.getPlayer().sendMessage(plugin.getPrefix() + 
+						event.getPlayer().sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&aCreated new Join Sign!"));
 					}
 					else
@@ -131,11 +131,11 @@ public class BlockListener implements Listener
 					if (az != null)
 					{
 						int id = plugin.getSignHandler().getFreeId(1);
-						
+
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);
 
-						event.getPlayer().sendMessage(plugin.getPrefix() + 
+						event.getPlayer().sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&aCreated new Join Sign!"));
 					}
 					else
@@ -179,7 +179,7 @@ public class BlockListener implements Listener
 					else
 					{
 						event.setCancelled(true);
-						player.sendMessage(plugin.getPrefix() + 
+						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&cPermission denied!"));
 					}
 				}

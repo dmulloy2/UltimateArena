@@ -40,7 +40,7 @@ public class CmdKick extends UltimateArenaCommand
 			err("That player is not in an arena!");
 			return;
 		}
-		
+
 		plugin.getArenaPlayer(player).leaveArena(LeaveReason.KICK);
 	}
 }

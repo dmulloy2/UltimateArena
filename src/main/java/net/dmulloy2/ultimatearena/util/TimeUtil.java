@@ -22,15 +22,15 @@ public final class TimeUtil
 
 	public static long getTimeDifference(long time1, long time2)
 	{
-		return (time2 - time1);
+		return time2 - time1;
 	}
 
 	public static String formatTime(long time)
 	{
 		StringBuilder ret = new StringBuilder();
 		int days = (int) Math.floor(time / (1000 * 3600 * 24));
-		int hours = (int) Math.floor((time % (1000 * 3600 * 24)) / (1000 * 3600));
-		int minutes = (int) Math.floor((time % (1000 * 3600 * 24)) % (1000 * 3600) / (1000 * 60));
+		int hours = (int) Math.floor(time % (1000 * 3600 * 24) / (1000 * 3600));
+		int minutes = (int) Math.floor(time % (1000 * 3600 * 24) % (1000 * 3600) / (1000 * 60));
 		int seconds = (int) Math.floor(time % (1000 * 3600 * 24) % (1000 * 3600) % (1000 * 60) / 1000);
 
 		if (days != 0)

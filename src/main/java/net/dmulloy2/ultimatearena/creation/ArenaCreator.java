@@ -36,7 +36,6 @@ public abstract class ArenaCreator
 	public final void start()
 	{
 		this.initializeArena();
-
 		this.setSteps();
 		this.stepNumber = 1;
 		this.stepInfo();
@@ -44,7 +43,7 @@ public abstract class ArenaCreator
 
 	/**
 	 * Initializes the arena
-	 * 
+	 *
 	 * @throws IllegalStateException If the arena is already initialized
 	 */
 	public final void initializeArena()
@@ -66,7 +65,7 @@ public abstract class ArenaCreator
 	 * Generally, you should return when an error is made or more points are
 	 * needed in that particular step. We will increment the step if no errors
 	 * occur
-	 * 
+	 *
 	 * @param args
 	 *        - Command line arguments, only necessary in a few steps
 	 */
@@ -164,7 +163,7 @@ public abstract class ArenaCreator
 
 	/**
 	 * Sends the creator a message
-	 * 
+	 *
 	 * @param string
 	 *        - Base message
 	 * @param objects

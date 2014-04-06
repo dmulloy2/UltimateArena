@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Stores data on players
- * 
+ *
  * @author dmulloy2
  */
 

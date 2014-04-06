@@ -140,18 +140,6 @@ public class ArenaPlayer extends PlayerExtension
 	}
 
 	/**
-	 * Saves the player's inventory
-	 */
-	public final void saveInventory()
-	{
-		if (plugin.getConfig().getBoolean("saveInventories", true))
-		{
-			this.inventoryContents = player.getInventory().getContents();
-			this.armorContents = player.getInventory().getArmorContents();
-		}
-	}
-
-	/**
 	 * Clears the player's inventory
 	 */
 	public final void clearInventory()
@@ -167,18 +155,6 @@ public class ArenaPlayer extends PlayerExtension
 		inv.setLeggings(null);
 		inv.setBoots(null);
 		inv.clear();
-	}
-
-	/**
-	 * Returns the player's inventory
-	 */
-	public final void returnInventory()
-	{
-		if (plugin.getConfig().getBoolean("saveInventories", true))
-		{
-			player.getInventory().setContents(inventoryContents);
-			player.getInventory().setArmorContents(armorContents);
-		}
 	}
 
 	/**

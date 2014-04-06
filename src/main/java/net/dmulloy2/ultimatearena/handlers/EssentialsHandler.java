@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
  * All Essentials integration should go through this handler.
  * Everything is wrapped in a catch-all, since Essentials integration is
  * somewhat buggy and isn't necessary for functioning
- * 
+ *
  * @author dmulloy2
  */
 
@@ -69,7 +69,7 @@ public class EssentialsHandler
 
 	/**
 	 * Sets whether or not to use essentials
-	 * 
+	 *
 	 * @param useEssentials
 	 *        - Whether or not to use Essentials
 	 */
@@ -80,7 +80,7 @@ public class EssentialsHandler
 
 	/**
 	 * Disables Essentials god mode
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to disable god mode for
 	 */
@@ -105,7 +105,7 @@ public class EssentialsHandler
 
 	/**
 	 * Attempts to get a player's Essentials user
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to get Essentials user for
 	 */
@@ -128,7 +128,7 @@ public class EssentialsHandler
 
 	/**
 	 * Attempts to give a player their class's Essentials kit items
-	 * 
+	 *
 	 * @param player
 	 *        - {@link ArenaPlayer} to give kit items to
 	 */
@@ -143,7 +143,7 @@ public class EssentialsHandler
 			}
 
 			ArenaClass ac = player.getArenaClass();
-			List<String> items = com.earth2me.essentials.Kit.getItems(getEssentials(), user, ac.getEssKitName(), 
+			List<String> items = com.earth2me.essentials.Kit.getItems(getEssentials(), user, ac.getEssKitName(),
 					ac.getEssentialsKit());
 			com.earth2me.essentials.Kit.expandItems(getEssentials(), user, items);
 		}
@@ -158,7 +158,7 @@ public class EssentialsHandler
 
 	/**
 	 * Attempts to read an Essentials kit from configuration
-	 * 
+	 *
 	 * @param name
 	 *        - Name of the Essentials kit
 	 */

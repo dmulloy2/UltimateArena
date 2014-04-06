@@ -146,9 +146,8 @@ public class CTFFlag
 
 		if (! pickedUp)
 		{
-			for (int i = 0; i < arenaPlayers.size(); i++)
+			for (ArenaPlayer ap : arenaPlayers)
 			{
-				ArenaPlayer ap = arenaPlayers.get(i);
 				Player pl = ap.getPlayer();
 				if (pl.getHealth() > 0.0D && pl.getLocation().distance(myloc) < 1.75D)
 				{
@@ -158,8 +157,8 @@ public class CTFFlag
 						this.pickedUp = true;
 						this.riding = ap.getPlayer();
 
-						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * (60 * 4), 1));
-						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * (60 * 4), 1));
+						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
+						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
 						arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", ap.getName(), flagType);
 						return;
 					}

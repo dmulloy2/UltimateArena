@@ -14,10 +14,10 @@
   <repositories>
     <repository>
       <id>vault-repo</id>
-	  <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+	  <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
     </repository>
     <repository>
-      <id>md_5-releases</id>
+      <id>md_5-repo</id>
       <url>http://repo.md-5.net/content/repositories/snapshots/</url>
     </repository>
     <repository>
@@ -26,7 +26,7 @@
     </repository>
     <repository>
       <id>sk89q-repo</id>
-      <url>http://maven.sk89q.com/repo</url>
+      <url>http://maven.sk89q.com/repo/</url>
     </repository>
     <repository>
       <id>essentials-repo</id>

@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.util;
 
 /**
  * Util for managing Numbers
- * 
+ *
  * @author dmulloy2
  */
 

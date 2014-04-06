@@ -28,7 +28,7 @@ public class CmdStop extends UltimateArenaCommand
 			err("You are not creating an arena!");
 			return;
 		}
-		
+
 		plugin.stopCreatingArena(player);
 	}
 }

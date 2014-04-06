@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionType;
 
 /**
  * Util that deals with Items
- * 
+ *
  * @author dmulloy2
  */
 
@@ -26,7 +26,7 @@ public class ItemUtil
 	 * Reads an ItemStack from configuration
 	 * <p>
 	 * The basic format is "[Type/ID]:[Data], [Amount], [Enchantment:Level...]"
-	 * 
+	 *
 	 * @param string
 	 *        - String to read
 	 * @return ItemStack from given string
@@ -127,7 +127,7 @@ public class ItemUtil
 
 	/**
 	 * Reads a potion from configuration
-	 * 
+	 *
 	 * @param string
 	 *        - String to read
 	 * @return ItemStack from string (will be a potion)
@@ -203,7 +203,7 @@ public class ItemUtil
 
 	/**
 	 * Returns the basic data of an ItemStack in string form
-	 * 
+	 *
 	 * @param stack
 	 *        - ItemStack to "convert" to a string
 	 * @return ItemStack's data in string form
@@ -225,7 +225,7 @@ public class ItemUtil
 
 	/**
 	 * Returns an ItemStack's enchantments in string form
-	 * 
+	 *
 	 * @param stack
 	 *        - ItemStack to get enchantments
 	 * @return ItemStack's enchantments in string form

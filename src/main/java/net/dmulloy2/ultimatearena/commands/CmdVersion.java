@@ -15,7 +15,7 @@ public class CmdVersion extends UltimateArenaCommand
 		this.name = "version";
 		this.aliases.add("v");
 		this.description = "Displays version information";
-		
+
 		this.permission = Permission.VERSION;
 	}
 

@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
  * initialized yet when an object of this class is created, only when the
  * {@link Location} is first accessed. This class is also serializable and
  * can easily be converted into a {@link Location} or {@link SimpleVector}
- * 
+ *
  * @author dmulloy2
  */
 

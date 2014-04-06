@@ -23,7 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Handles sign functions
- * 
+ *
  * @author dmulloy2
  */
 
@@ -157,7 +157,7 @@ public class SignHandler
 
 	/**
 	 * Attempts to get an {@link ArenaSign} based on location
-	 * 
+	 *
 	 * @param loc
 	 *        - Location
 	 */
@@ -174,7 +174,7 @@ public class SignHandler
 
 	/**
 	 * Attempts to get an {@link ArenaSign} based on location
-	 * 
+	 *
 	 * @param loc
 	 *        - {@link ArenaLocation}
 	 */
@@ -191,7 +191,7 @@ public class SignHandler
 
 	/**
 	 * Adds a sign to track and save
-	 * 
+	 *
 	 * @param sign
 	 *        - {@link ArenaSign} to add
 	 */
@@ -212,7 +212,7 @@ public class SignHandler
 
 	/**
 	 * Deletes a sign
-	 * 
+	 *
 	 * @param sign
 	 *        - {@link ArenaSign} to delete
 	 */
@@ -224,7 +224,7 @@ public class SignHandler
 
 	/**
 	 * Updates an {@link ArenaZone}'s signs
-	 * 
+	 *
 	 * @param az
 	 *        - {@link ArenaZone}
 	 */
@@ -238,7 +238,7 @@ public class SignHandler
 
 	/**
 	 * Clears an {@link ArenaZone}'s signs
-	 * 
+	 *
 	 * @param az
 	 *        - {@link ArenaZone}
 	 */
@@ -252,7 +252,7 @@ public class SignHandler
 
 	/**
 	 * Gets the signs associated with a given arena
-	 * 
+	 *
 	 * @param az
 	 *        - {@link ArenaZone}
 	 */
@@ -281,7 +281,7 @@ public class SignHandler
 
 	/**
 	 * Gets the lowest free id
-	 * 
+	 *
 	 * @param start
 	 *        - Start index
 	 */
@@ -289,7 +289,7 @@ public class SignHandler
 	{
 		Set<Integer> keySet = getById().keySet();
 
- 		int id = recurseFreeId(start, keySet);
+		int id = recurseFreeId(start, keySet);
 		int newId;
 
 		// Iterate through until we find an id that does not already exist

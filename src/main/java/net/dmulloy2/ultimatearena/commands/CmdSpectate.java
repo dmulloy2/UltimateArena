@@ -18,7 +18,7 @@ public class CmdSpectate extends UltimateArenaCommand
 		this.optionalArgs.add("arena");
 		this.description = "Spectates an arena";
 		this.permission = Permission.SPECTATE;
-		
+
 		this.mustBePlayer = true;
 	}
 

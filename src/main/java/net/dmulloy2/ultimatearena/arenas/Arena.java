@@ -5,16 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
-import net.dmulloy2.ultimatearena.tasks.ArenaFinalizeTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -27,6 +24,7 @@ import net.dmulloy2.ultimatearena.types.Reloadable;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,11 +33,16 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
- * Base Data Container for an arena.
+ * Base arena class. Can be extended to create custom arena types.
  * <p>
- * This can be extended for specific arena types.
+ * This class must be extended to function, since it does not create a
+ * functional arena on its own. It does, however, provide useful methods that
+ * can be used to create a functional arena.
+ * <p>
+ * The simplest example of a functional arena is the {@link PVPArena}
  * 
  * @author dmulloy2
  */
@@ -103,10 +106,10 @@ public abstract class Arena implements Reloadable
 	protected final ArenaZone az;
 
 	/**
-	 * Creates a new Arena based around an {@link ArenaZone}
+	 * Base {@link Arena} constructor. All constructors should reference this.
 	 * 
 	 * @param az
-	 *        - {@link ArenaZone} to base the {@link Arena} around
+	 *        - {@link ArenaZone} to base the {@link Arena} around.
 	 */
 	public Arena(ArenaZone az)
 	{
@@ -134,10 +137,10 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Reloads the Arena's configuration
+	 * Reloads the Arena's settings
 	 */
 	@Override
-	public void reload()
+	public final void reload()
 	{
 		this.maxGameTime = az.getGameTime();
 		this.gameTimer = az.getGameTime();
@@ -157,13 +160,18 @@ public abstract class Arena implements Reloadable
 		{
 			this.maxDeaths = 1;
 		}
+
+		onReload();
 	}
 
 	/**
+	 * Called when the Arena is reloaded.
+	 */
+	public void onReload() { }
+
+	/**
 	 * Adds a player to the {@link Arena}.
-	 * <p>
-	 * Should not be overriden.
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to add to an arena
 	 */
@@ -213,8 +221,19 @@ public abstract class Arena implements Reloadable
 		// Finally add the player
 		active.add(pl);
 
+		// API
+		onJoin(pl);
+
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), az.getMaxPlayers());
 	}
+
+	/**
+	 * Called when an {@link ArenaPlayer} joins the arena.
+	 * 
+	 * @param ap
+	 *        - {@link ArenaPlayer} who joined
+	 */
+	public void onJoin(ArenaPlayer ap) { }
 
 	/**
 	 * Returns which team a new player should be on.
@@ -287,7 +306,7 @@ public abstract class Arena implements Reloadable
 	 * Every player who has joined this arena will have an ArenaPlayer instance.
 	 * It is important to note, however, that players who are out will still
 	 * have arena player instances until the arena concludes.
-	 * 
+	 *
 	 * @param p
 	 *        - Player instance
 	 * @param checkInactive
@@ -317,7 +336,7 @@ public abstract class Arena implements Reloadable
 	 * Alias for {@link #getArenaPlayer(Player, boolean)}
 	 * <p>
 	 * Has the same effect as <code>getArenaPlayer(p, true)</code>
-	 * 
+	 *
 	 * @param p
 	 *        - Player instance
 	 */
@@ -343,7 +362,7 @@ public abstract class Arena implements Reloadable
 	 * Gets the spawn for an {@link ArenaPlayer}.
 	 * <p>
 	 * Can be overriden under certain circumstances
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} instance
 	 */
@@ -368,10 +387,8 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Spawns a player in the {@link Arena}.
-	 * <p>
-	 * This should not be overriden.
-	 * 
-	 * @param name
+	 *
+	 * @param player
 	 *        - Player to spawn
 	 * @param alreadySpawned
 	 *        - Whether or not they've already spawned
@@ -417,7 +434,7 @@ public abstract class Arena implements Reloadable
 	 * Alias for {@link #spawn(Player, Boolean)}
 	 * <p>
 	 * Has the same effect of <code>spawn(player, false)</code>
-	 * 
+	 *
 	 * @param player
 	 *        - Player to spawn
 	 */
@@ -427,8 +444,16 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
+	 * Called when a player is spawned.
+	 *
+	 * @param ap
+	 *        - {@link ArenaPlayer} who was spawned
+	 */
+	public void onSpawn(ArenaPlayer ap) { }
+
+	/**
 	 * Spawns an {@link ArenaPlayer} into the lobby
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} to spawn
 	 */
@@ -449,18 +474,8 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Called when a player is spawned.
-	 * 
-	 * @param apl
-	 *        - {@link ArenaPlayer} who was spawned
-	 */
-	public void onSpawn(ArenaPlayer apl)
-	{
-	}
-
-	/**
 	 * Called when a player dies.
-	 * 
+	 *
 	 * @param pl
 	 *        - {@link ArenaPlayer} who died
 	 */
@@ -471,7 +486,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Default rewarding system. May be overriden in some cases.
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} to reward
 	 */
@@ -483,7 +498,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Rewards an entire team.
-	 * 
+	 *
 	 * @param team
 	 *        - Team to reward
 	 */
@@ -508,7 +523,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Sets the winning team.
-	 * 
+	 *
 	 * @param team
 	 *        - Winning team
 	 */
@@ -532,7 +547,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Checks if a player has enough points to win.
-	 * 
+	 *
 	 * @param max
 	 *        - Max points for an arena
 	 */
@@ -553,7 +568,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Stops the arena if empty.
-	 * 
+	 *
 	 * @return Whether or not the arena is empty
 	 */
 	public final boolean checkEmpty()
@@ -567,7 +582,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Checks if the arena is empty.
-	 * 
+	 *
 	 * @return Whether or not the arena is empty
 	 */
 	public final boolean isEmpty()
@@ -577,7 +592,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Tells all active players in the arena a message.
-	 * 
+	 *
 	 * @param string
 	 *        - Base message
 	 * @param objects
@@ -595,7 +610,7 @@ public abstract class Arena implements Reloadable
 	 * Tells all players a message.
 	 * <p>
 	 * Includes inactive players
-	 * 
+	 *
 	 * @param string
 	 *        - Base message
 	 * @param objects
@@ -616,7 +631,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Kills all players within a certain radius of a {@link Location}
-	 * 
+	 *
 	 * @param loc
 	 *        - Center {@link Location}
 	 * @param rad
@@ -636,7 +651,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Returns a random spawn for an {@link ArenaPlayer}.
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} to get spawn for
 	 */
@@ -654,7 +669,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Handles an {@link ArenaPlayer}'s kill streak (if applicable)
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} to handle kill streak for
 	 */
@@ -677,7 +692,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Disables this arena
 	 */
-	public final void onDisable()
+	public final void disable()
 	{
 		tellPlayers("&cThis arena has been disabled!");
 
@@ -689,15 +704,20 @@ public abstract class Arena implements Reloadable
 		this.gameMode = Mode.DISABLED;
 
 		updateSigns();
+		onDisable();
 	}
+
+	/**
+	 * Called when the arena is disabled.
+	 */
+	public void onDisable() { }
 
 	/**
 	 * Ends the arena
 	 */
 	public final void stop()
 	{
-		if (stopped)
-			return; // No need to stop multiple times
+		if (stopped) return; // No need to stop multiple times
 
 		plugin.outConsole("Stopping arena {0}!", name);
 
@@ -707,7 +727,6 @@ public abstract class Arena implements Reloadable
 		this.gameMode = Mode.STOPPING;
 
 		clearSigns();
-
 		onStop();
 
 		announceWinner();
@@ -720,27 +739,42 @@ public abstract class Arena implements Reloadable
 		plugin.getSpectatingHandler().unregisterArena(this);
 
 		clearEntities();
-
-		new ArenaFinalizeTask(this).runTaskLater(plugin, 120L);
+		conclude(120L);
 	}
 
 	/**
 	 * Called when an arena is stopped
 	 */
-	public void onStop()
+	public void onStop() { }
+
+	private final void conclude(long delay)
 	{
+		if (delay <= 0 || plugin.isStopping())
+		{
+			conclude();
+			return;
+		}
+
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				conclude();
+			}
+		}.runTaskLater(plugin, 120L);
 	}
 
-	/**
-	 * Called when an arena is updated
-	 */
-	public void check()
+	private final void conclude()
 	{
+		if (! disabled) this.gameMode = Mode.IDLE;
+		plugin.removeActiveArena(this);
+		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
 	}
 
 	/**
 	 * Ends an {@link ArenaPlayer}
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} to end
 	 * @param dead
@@ -769,27 +803,6 @@ public abstract class Arena implements Reloadable
 		{
 			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
 		}
-	}
-
-	/**
-	 * Called when an arena starts
-	 */
-	public void onStart()
-	{
-	}
-
-	/**
-	 * Called when an arena runs out of time
-	 */
-	public void onOutOfTime()
-	{
-	}
-
-	/**
-	 * Called right before an arena runs out of time
-	 */
-	public void onPreOutOfTime()
-	{
 	}
 
 	/**
@@ -832,6 +845,16 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
+	 * Called right before an arena runs out of time.
+	 */
+	public void onPreOutOfTime() { }
+
+	/**
+	 * Called when an arena runs out of time.
+	 */
+	public void onOutOfTime() { }
+
+	/**
 	 * Starts the arena.
 	 * <p>
 	 * Should not be overriden.
@@ -859,6 +882,11 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
+	 * Called when an arena starts
+	 */
+	public void onStart() { }
+
+	/**
 	 * Arena Updater
 	 */
 	public final void update()
@@ -876,7 +904,7 @@ public abstract class Arena implements Reloadable
 			if (ap == null)
 			{
 				active.remove(ap);
-				inactive.add(ap);
+				inactive.remove(ap);
 				continue;
 			}
 
@@ -888,14 +916,10 @@ public abstract class Arena implements Reloadable
 				continue;
 			}
 
-			// End if they've reached the death limit
-			if (ap.getDeaths() >= getMaxDeaths())
+			// End if they've reached the death limit and they're alive
+			if (ap.getDeaths() >= maxDeaths && ap.getPlayer().getHealth() > 0.0D)
 			{
-				if (ap.getPlayer().getHealth() > 0.0D)
-				{
-					ap.leaveArena(LeaveReason.DEATHS);
-				}
-
+				ap.leaveArena(LeaveReason.DEATHS);
 				continue;
 			}
 
@@ -911,7 +935,7 @@ public abstract class Arena implements Reloadable
 			ArenaClass ac = ap.getArenaClass();
 			if (ac != null)
 			{
-				// Healing
+				// Healing. TODO: Does anyone even use this anymore?
 				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 				{
 					if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
@@ -989,8 +1013,13 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
+	 * Called when the arena is updated. Generally every second or so.
+	 */
+	public void check() { }
+
+	/**
 	 * Decides the timer xp bar for an {@link ArenaPlayer}
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} to decide xp bar for
 	 */
@@ -1012,7 +1041,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Forces the start of an arena
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} forcing the start of the arena
 	 */
@@ -1047,8 +1076,6 @@ public abstract class Arena implements Reloadable
 				EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
 		});
 
-		List<Entity> entities = new ArrayList<Entity>();
-
 		for (Entity entity : world.getEntities())
 		{
 			if (entity != null && entity.isValid())
@@ -1056,26 +1083,21 @@ public abstract class Arena implements Reloadable
 				if (az.checkLocation(entity.getLocation()))
 				{
 					if (! persistentEntities.contains(entity.getType()))
-						entities.add(entity);
+					{
+						if (entity instanceof LivingEntity)
+							((LivingEntity) entity).setHealth(0.0D);
+
+						entity.remove();
+					}
 				}
 			}
 		}
-
-		Iterator<Entity> iter = entities.iterator();
-		while (iter.hasNext())
-		{
-			Entity next = iter.next();
-			if (next instanceof LivingEntity)
-				((LivingEntity) next).setHealth(0.0D);
-
-			next.remove();
-			iter.remove();
-		}
 	}
+
 
 	/**
 	 * Returns a customized in-game leaderboard
-	 * 
+	 *
 	 * @param player
 	 *        - Player to get leaderboard for
 	 */
@@ -1092,8 +1114,8 @@ public abstract class Arena implements Reloadable
 			kdrMap.put(ap.getName(), ap.getKDR());
 		}
 
-		List<Map.Entry<String, Double>> sortedEntries = new ArrayList<Map.Entry<String, Double>>(kdrMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Double>>()
+		List<Entry<String, Double>> sortedEntries = new ArrayList<Entry<String, Double>>(kdrMap.entrySet());
+		Collections.sort(sortedEntries, new Comparator<Entry<String, Double>>()
 		{
 			@Override
 			public int compare(Entry<String, Double> entry1, Entry<String, Double> entry2)
@@ -1103,7 +1125,7 @@ public abstract class Arena implements Reloadable
 		});
 
 		int pos = 1;
-		for (Map.Entry<String, Double> entry : sortedEntries)
+		for (Entry<String, Double> entry : sortedEntries)
 		{
 			String string = entry.getKey();
 			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
@@ -1127,7 +1149,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Decides a player's team color
-	 * 
+	 *
 	 * @param pl
 	 *        - Player to decide team color for
 	 */
@@ -1184,7 +1206,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Returns whether or not a class can be used in this arena
-	 * 
+	 *
 	 * @param ac
 	 *        - Class to check
 	 */
@@ -1203,23 +1225,10 @@ public abstract class Arena implements Reloadable
 		return true;
 	}
 
-	@Override
-	public final void finalize()
-	{
-		try
-		{
-			super.finalize();
-		}
-		catch (Throwable e)
-		{
-			//
-		}
-	}
-
 	/**
-	 * Workaround for concurrency issues
+	 * Workaround for concurrency issues.
 	 * <p>
-	 * Should not be used for removing or adding
+	 * Should not be used for adding or removing players.
 	 */
 	public final List<ArenaPlayer> getActivePlayers()
 	{
@@ -1227,9 +1236,9 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Workaround for concurrency issues
+	 * Workaround for concurrency issues.
 	 * <p>
-	 * Should not be used for removing or adding
+	 * Should not be used for adding or removing players.
 	 */
 	public final List<ArenaPlayer> getInactivePlayers()
 	{
@@ -1278,6 +1287,9 @@ public abstract class Arena implements Reloadable
 	@Override
 	public boolean equals(Object o)
 	{
+		if (o == null)
+			return false;
+
 		if (o instanceof Arena)
 		{
 			Arena that = (Arena) o;

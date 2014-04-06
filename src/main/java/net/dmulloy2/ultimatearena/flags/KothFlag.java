@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Getter;
@@ -44,9 +43,8 @@ public class KothFlag extends ArenaFlag
 		int amt = 0;
 		ArenaPlayer capturer = null;
 		List<Player> players = new ArrayList<Player>();
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : Util.newList(arenaPlayers))
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
 			Player pl = ap.getPlayer();
 			if (pl != null)
 			{
@@ -66,8 +64,8 @@ public class KothFlag extends ArenaFlag
 				Player pl = capturer.getPlayer();
 				capturer.setPoints(capturer.getPoints() + 1);
 
-				pl.sendMessage(plugin.getPrefix()
-						+ FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(),
+				pl.sendMessage(plugin.getPrefix() +
+						FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(),
 								arena.getMaxPoints()));
 
 				leadChange();
@@ -83,18 +81,18 @@ public class KothFlag extends ArenaFlag
 			pointsMap.put(ap.getName(), ap.getPoints());
 		}
 
-		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(pointsMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Integer>>()
+		List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(pointsMap.entrySet());
+		Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
 		{
 			@Override
-			public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
+			public int compare(Entry<String, Integer> entry1, Entry<String, Integer> entry2)
 			{
 				return -entry1.getValue().compareTo(entry2.getValue());
 			}
 		});
 
 		int pos = 1;
-		for (Map.Entry<String, Integer> entry : sortedEntries)
+		for (Entry<String, Integer> entry : sortedEntries)
 		{
 			if (pos > 1)
 				return;

@@ -25,10 +25,7 @@ public class FFAArena extends Arena
 		super(az);
 		this.type = FieldType.FFA;
 
-		for (int i = 0; i < az.getSpawns().size(); i++)
-		{
-			spawns.add(az.getSpawns().get(i));
-		}
+		spawns.addAll(az.getSpawns());
 	}
 
 	@Override

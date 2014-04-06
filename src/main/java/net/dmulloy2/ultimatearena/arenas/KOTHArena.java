@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.flags.KothFlag;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
@@ -30,15 +30,12 @@ public class KOTHArena extends Arena
 		super(az);
 		this.type = FieldType.KOTH;
 
-		for (int i = 0; i < az.getFlags().size(); i++)
+		for (ArenaLocation loc : az.getFlags())
 		{
-			flags.add(new KothFlag(this, az.getFlags().get(i), plugin));
+			flags.add(new KothFlag(this, loc, plugin));
 		}
 
-		for (int i = 0; i < az.getSpawns().size(); i++)
-		{
-			spawns.add(az.getSpawns().get(i));
-		}
+		spawns.addAll(az.getSpawns());
 	}
 
 	@Override
@@ -86,18 +83,18 @@ public class KOTHArena extends Arena
 			pointsMap.put(ap.getName(), ap.getPoints());
 		}
 
-		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(pointsMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Integer>>()
+		List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(pointsMap.entrySet());
+		Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
 		{
 			@Override
-			public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
+			public int compare(Entry<String, Integer> entry1, Entry<String, Integer> entry2)
 			{
 				return -entry1.getValue().compareTo(entry2.getValue());
 			}
 		});
 
 		int pos = 1;
-		for (Map.Entry<String, Integer> entry : sortedEntries)
+		for (Entry<String, Integer> entry : sortedEntries)
 		{
 			String string = entry.getKey();
 			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));

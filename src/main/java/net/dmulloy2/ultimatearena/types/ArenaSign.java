@@ -30,7 +30,7 @@ public class ArenaSign implements ConfigurationSerializable
 
 	/**
 	 * Creates a new {@link ArenaSign}
-	 * 
+	 *
 	 * @param plugin
 	 *        - {@link UltimateArena} plugin instance
 	 * @param loc
@@ -67,7 +67,7 @@ public class ArenaSign implements ConfigurationSerializable
 
 	/**
 	 * Gets the {@link Sign} instance
-	 * 
+	 *
 	 * @return {@link Sign} instance
 	 */
 	public final void getSign()
@@ -89,7 +89,7 @@ public class ArenaSign implements ConfigurationSerializable
 	{
 		// Update the sign
 		this.getSign();
-		
+
 		// Abort if the sign is null
 		if (sign == null)
 		{
@@ -210,7 +210,7 @@ public class ArenaSign implements ConfigurationSerializable
 	{
 		// Update the sign
 		this.getSign();
-		
+
 		// Abort if the sign is null
 		if (sign == null)
 		{

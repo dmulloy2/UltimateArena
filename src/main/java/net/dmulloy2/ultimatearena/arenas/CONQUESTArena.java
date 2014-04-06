@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
@@ -28,9 +29,9 @@ public class CONQUESTArena extends Arena
 		this.redTeamPower = 1;
 		this.blueTeamPower = 1;
 
-		for (int i = 0; i < az.getFlags().size(); i++)
+		for (ArenaLocation loc : az.getFlags())
 		{
-			flags.add(new ArenaFlag(this, az.getFlags().get(i), plugin));
+			flags.add(new ArenaFlag(this, loc, plugin));
 		}
 	}
 

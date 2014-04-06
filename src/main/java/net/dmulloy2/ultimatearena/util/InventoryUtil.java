@@ -11,7 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 /**
  * Util dealing with Inventories
- * 
+ *
  * @author dmulloy2
  */
 
@@ -21,7 +21,7 @@ public class InventoryUtil
 
 	/**
 	 * Returns whether or not a given inventory is empty
-	 * 
+	 *
 	 * @param inventory
 	 *        - {@link Inventory} to check
 	 */
@@ -54,7 +54,7 @@ public class InventoryUtil
 
 	/**
 	 * Whether or not a Player's inventory has room for a given item
-	 * 
+	 *
 	 * @param item
 	 *        - {@link ItemStack} to attempt to add
 	 * @param player
@@ -62,7 +62,7 @@ public class InventoryUtil
 	 */
 	public static boolean hasRoom(ItemStack item, Player player)
 	{
-		int maxStackSize = (item.getMaxStackSize() == -1) ? player.getInventory().getMaxStackSize() : item.getMaxStackSize();
+		int maxStackSize = item.getMaxStackSize() == -1 ? player.getInventory().getMaxStackSize() : item.getMaxStackSize();
 		int amount = item.getAmount();
 
 		for (ItemStack stack : player.getInventory().getContents())
@@ -84,7 +84,7 @@ public class InventoryUtil
 
 	/**
 	 * Gives a player an item
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to give them item to
 	 * @param item
@@ -101,7 +101,7 @@ public class InventoryUtil
 
 	/**
 	 * Gives a player items
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to give them item to
 	 * @param items
@@ -125,23 +125,23 @@ public class InventoryUtil
 		Map<Integer, ItemStack> leftover = new HashMap<Integer, ItemStack>();
 
 		ItemStack[] combined = new ItemStack[items.length];
-		for (int i = 0; i < items.length; i++)
+		for (ItemStack item : items)
 		{
-			if (items[i] == null || items[i].getAmount() < 1)
+			if (item == null || item.getAmount() < 1)
 				continue;
 
 			for (int j = 0; j < combined.length; j++)
 			{
 				if (combined[j] == null)
 				{
-					combined[j] = items[i].clone();
-					combined[j].setData(items[i].getData());
+					combined[j] = item.clone();
+					combined[j].setData(item.getData());
 					break;
 				}
 
-				if (combined[j].isSimilar(items[i]))
+				if (combined[j].isSimilar(item))
 				{
-					combined[j].setAmount(combined[j].getAmount() + items[i].getAmount());
+					combined[j].setAmount(combined[j].getAmount() + item.getAmount());
 					break;
 				}
 			}

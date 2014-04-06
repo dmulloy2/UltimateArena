@@ -42,7 +42,7 @@ import com.google.common.io.Files;
 public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
 	private static transient final int CURRENT_VERSION = 3;
-	
+
 	protected int maxPlayers = 24;
 
 	protected int liked;
@@ -192,7 +192,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		int total = plugin.getTotalArenasPlayed();
 		int plays = timesPlayed;
 
-		double percentage = ((double) plays / (double) total) * 100;
+		double percentage = (double) plays / (double) total * 100;
 
 		line = new StringBuilder();
 		line.append(FormatUtil.format("&3Plays: &e{0}&3/&e{1} &3(&e{2}%&3)", plays, total, percentage));
@@ -205,7 +205,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 		else
 		{
-			percentage = ((double) liked / (double) voted.size()) * 100;
+			percentage = (double) liked / (double) voted.size() * 100;
 		}
 
 		line = new StringBuilder();
@@ -267,7 +267,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			if (plugin.getEconomy() != null)
 			{
-				double money = (double) cashReward;
+				double money = cashReward;
 				if (rewardBasedOnXp)
 					money = money * (ap.getGameXP() / 250.0D);
 
@@ -620,7 +620,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(String.class))
 				{
-					if (((String) field.get(this)) != null)
+					if ((String) field.get(this) != null)
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(Map.class))

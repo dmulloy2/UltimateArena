@@ -9,13 +9,13 @@ import lombok.Getter;
 @Getter
 public enum PotionType
 {
-	FIRE_RESISTANCE("fireres"), 
+	FIRE_RESISTANCE("fireres"),
 	INSTANT_DAMAGE("damage"),
 	INSTANT_HEAL("heal"),
-	INVISIBILITY("invis"), 
+	INVISIBILITY("invis"),
 	NIGHT_VISION("nvg"),
-	POISON("poison"), 
-	REGEN("regen"), 
+	POISON("poison"),
+	REGEN("regen"),
 	SLOWNESS("slow"),
 	SPEED("speed"),
 	STRENGTH("strength"),

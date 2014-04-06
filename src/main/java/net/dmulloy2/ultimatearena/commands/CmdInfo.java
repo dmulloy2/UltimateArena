@@ -26,7 +26,7 @@ public class CmdInfo extends UltimateArenaCommand
 	public void perform()
 	{
 		Arena arena = null;
-		
+
 		if (args.length == 0)
 		{
 			if (! plugin.isInArena(player))
@@ -34,14 +34,14 @@ public class CmdInfo extends UltimateArenaCommand
 				err("You are not in an arena!");
 				return;
 			}
-			
+
 			arena = plugin.getArena(player);
 		}
 		else
 		{
 			arena = plugin.getArena(args[0]);
 		}
-		
+
 		if (arena == null)
 		{
 			err("Please specify a valid arena!");

@@ -30,7 +30,7 @@ public class CmdLike extends UltimateArenaCommand
 			err("This arena doesn't exist!");
 			return;
 		}
-		
+
 		if (! az.canLike(player))
 		{
 			err("You already voted for this arena!");

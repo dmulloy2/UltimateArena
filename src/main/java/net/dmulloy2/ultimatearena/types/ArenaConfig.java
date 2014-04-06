@@ -93,9 +93,9 @@ public class ArenaConfig implements Reloadable
 			this.giveRewards = fc.getBoolean("giveRewards", true);
 
 			List<String> xpBasedTypes = Arrays.asList(new String[]
-			{
+					{
 					"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
-			});
+					});
 
 			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", xpBasedTypes.contains(arenaName.toUpperCase()));
 
@@ -224,7 +224,7 @@ public class ArenaConfig implements Reloadable
 				}
 				else if (field.getType().isAssignableFrom(String.class))
 				{
-					if (((String) field.get(this)) != null)
+					if ((String) field.get(this) != null)
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(Map.class))

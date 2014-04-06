@@ -24,7 +24,7 @@ public class CmdReload extends UltimateArenaCommand
 	public void perform()
 	{
 		long start = System.currentTimeMillis();
-		
+
 		sendpMessage("&aReloading UltimateArena...");
 
 		plugin.reload();

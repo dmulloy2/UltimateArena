@@ -84,10 +84,10 @@ public class BombFlag extends ArenaFlag
 		boolean fuse = false;
 		boolean defuse = false;
 		ArenaPlayer capturer = null;
+
 		List<Player> players = new ArrayList<Player>();
-		for (int i = 0; i < arenaPlayers.size(); i++)
+		for (ArenaPlayer ap : arenaPlayers)
 		{
-			ArenaPlayer ap = arenaPlayers.get(i);
 			Player pl = ap.getPlayer();
 			if (pl != null)
 			{

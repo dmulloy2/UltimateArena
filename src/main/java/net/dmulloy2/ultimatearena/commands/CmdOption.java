@@ -69,7 +69,7 @@ public class CmdOption extends UltimateArenaCommand
 		{
 			value = Boolean.parseBoolean(args[3]);
 		}
-		
+
 		if (args[0].equalsIgnoreCase("arena"))
 		{
 			ArenaZone az = plugin.getArenaZone(args[1]);

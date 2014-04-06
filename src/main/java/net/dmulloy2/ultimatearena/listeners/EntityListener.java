@@ -148,7 +148,7 @@ public class EntityListener implements Listener
 			{
 				if (plugin.isInArena(def))
 				{
-					att.sendMessage(plugin.getPrefix() + 
+					att.sendMessage(plugin.getPrefix() +
 							FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
 					event.setCancelled(true);
 					return;
@@ -200,7 +200,7 @@ public class EntityListener implements Listener
 								if (inHand != null && inHand.getType() == Material.GOLD_AXE)
 								{
 									Player pl = dp.getPlayer();
-									if (pl.getHealth() > 0.0D && (pl.getHealth() + 2.0D) <= 20.0D)
+									if (pl.getHealth() > 0.0D && pl.getHealth() + 2.0D <= 20.0D)
 									{
 										pl.setHealth(pl.getHealth() + 2.0D);
 										ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", pl.getName());
@@ -658,7 +658,7 @@ public class EntityListener implements Listener
 
 	/**
 	 * Gets the weapon that a player has
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to get weapon for
 	 * @return The player's weapon

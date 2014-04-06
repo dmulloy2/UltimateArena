@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffect;
 
 /**
  * Represents a player who is spectating.
- * 
+ *
  * @author dmulloy2
  */
 
@@ -37,7 +37,7 @@ public class ArenaSpectator
 
 	/**
 	 * Creates a new ArenaSpectator instance
-	 * 
+	 *
 	 * @param player
 	 *        - Base {@link Player} to create the ArenaSpectator around
 	 * @param arena
@@ -149,7 +149,7 @@ public class ArenaSpectator
 	/**
 	 * Teleports the player to a given location. Will attempt to teleport the
 	 * player to the center of the block.
-	 * 
+	 *
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
@@ -160,7 +160,7 @@ public class ArenaSpectator
 
 	public final void teleport(ArenaLocation location)
 	{
-		 teleport(location.getLocation());
+		teleport(location.getLocation());
 	}
 
 	public final void savePlayerData()

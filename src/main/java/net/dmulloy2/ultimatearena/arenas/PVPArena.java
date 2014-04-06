@@ -13,7 +13,6 @@ public class PVPArena extends Arena
 	public PVPArena(ArenaZone az)
 	{
 		super(az);
-
 		this.type = FieldType.PVP;
 	}
 
@@ -31,22 +30,22 @@ public class PVPArena extends Arena
 			if (startingAmount <= 1)
 			{
 				tellPlayers("&3Not enough people to play!");
-				
+
 				stop();
 				return;
 			}
-			
+
 			if (! simpleTeamCheck())
 			{
 				setWinningTeam(-1);
 
 				stop();
-				
+
 				rewardTeam(-1);
 			}
 		}
 	}
-	
+
 	@Override
 	public int getWinningTeam()
 	{
@@ -54,7 +53,7 @@ public class PVPArena extends Arena
 		{
 			if (team1size > 0)
 				return 1;
-			
+
 			if (team2size > 0)
 				return 2;
 		}

@@ -54,10 +54,10 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerKick(PlayerKickEvent event)
 	{
-//		if (! event.isCancelled())
-//		{
-//			onPlayerDisconnect(event.getPlayer());
-//		}
+		//		if (! event.isCancelled())
+		//		{
+		//			onPlayerDisconnect(event.getPlayer());
+		//		}
 	}
 
 	private void onPlayerDisconnect(Player player)
@@ -247,7 +247,7 @@ public class PlayerListener implements Listener
 								}
 								if (! found)
 								{
-									player.sendMessage(plugin.getPrefix() + 
+									player.sendMessage(plugin.getPrefix() +
 											FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
 								}
 							}
@@ -332,7 +332,7 @@ public class PlayerListener implements Listener
 				task.cancel();
 				plugin.getWaiting().remove(player.getName());
 
-				player.sendMessage(plugin.getPrefix() + 
+				player.sendMessage(plugin.getPrefix() +
 						FormatUtil.format("&cCancelled!"));
 			}
 		}
@@ -417,7 +417,7 @@ public class PlayerListener implements Listener
 					{
 						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&3You cannot use non-ua commands in an arena!"));
-						player.sendMessage(plugin.getPrefix() + 
+						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&3If you wish to use commands again, use &e/ua leave"));
 						event.setCancelled(true);
 					}

@@ -9,7 +9,7 @@ import com.sk89q.worldedit.regions.CuboidRegionSelector;
 
 /**
  * Handles WorldEdit selections and such
- * 
+ *
  * @author dmulloy2
  */
 
@@ -33,7 +33,7 @@ public class WorldEditHandler
 
 	/**
 	 * Sets whether or not to use WorldEdit for arena creation
-	 * 
+	 *
 	 * @param useWorldEdit
 	 *        - whether or not to use WorldEdit for arena creation
 	 */
@@ -44,7 +44,7 @@ public class WorldEditHandler
 
 	/**
 	 * Whether or not a given player has a selection
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to check
 	 */
@@ -55,7 +55,7 @@ public class WorldEditHandler
 
 	/**
 	 * Gets a given player's {@link Selection}
-	 * 
+	 *
 	 * @param player
 	 *        - {@link Player} to get selection for
 	 */
@@ -66,7 +66,7 @@ public class WorldEditHandler
 
 	/**
 	 * Whether or not a given selection is a Cubiod Selection
-	 * 
+	 *
 	 * @param sel
 	 *        - {@link Selection} to check
 	 */

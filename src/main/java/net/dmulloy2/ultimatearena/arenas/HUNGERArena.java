@@ -25,10 +25,7 @@ public class HUNGERArena extends Arena
 		super(az);
 		this.type = FieldType.HUNGER;
 
-		for (int i = 0; i < az.getSpawns().size(); i++)
-		{
-			spawns.add(az.getSpawns().get(i));
-		}
+		spawns.addAll(az.getSpawns());
 	}
 
 	@Override

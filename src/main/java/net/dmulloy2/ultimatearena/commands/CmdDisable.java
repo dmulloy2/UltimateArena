@@ -30,7 +30,7 @@ public class CmdDisable extends UltimateArenaCommand
 		{
 			if (a.getName().equalsIgnoreCase(args[0]))
 			{
-				a.onDisable();
+				a.disable();
 				sendpMessage("&cYou have disabled {0}!", a.getName());
 				return;
 			}

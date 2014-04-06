@@ -23,7 +23,7 @@ public class CTFArena extends Arena
 {
 	private CTFFlagBase redFlag;
 	private CTFFlagBase blueFlag;
-	
+
 	private int redCap, blueCap;
 
 	private BukkitTask moveTask;
@@ -68,7 +68,7 @@ public class CTFArena extends Arena
 		if (redCap >= 3 || blueCap >= 3)
 		{
 			setWinningTeam(1);
-			
+
 			this.lastcap = "&cRED";
 
 			if (blueCap >= 3)

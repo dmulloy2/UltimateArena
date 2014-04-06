@@ -26,12 +26,13 @@ public class FileHandler
 
 	/**
 	 * Saves an ArenaZone
-	 * 
+	 *
 	 * @param az
 	 *        - {@link ArenaZone} to save
-	 * 
+	 *
 	 * @deprecated Serialization
 	 */
+	@Deprecated
 	public final void save(ArenaZone az)
 	{
 		try
@@ -303,12 +304,13 @@ public class FileHandler
 
 	/**
 	 * Loads an ArenaZone
-	 * 
+	 *
 	 * @param az
 	 *        - {@link ArenaZone} to load
-	 * 
+	 *
 	 * @deprecated Serialization
 	 */
+	@Deprecated
 	public void load(ArenaZone az)
 	{
 		plugin.debug("Loading Arena: {0}", az.getArenaName());
