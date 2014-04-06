@@ -93,9 +93,9 @@ public class ArenaConfig implements Reloadable
 			this.giveRewards = fc.getBoolean("giveRewards", true);
 
 			List<String> xpBasedTypes = Arrays.asList(new String[]
-					{
+			{
 					"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
-					});
+			});
 
 			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", xpBasedTypes.contains(arenaName.toUpperCase()));
 

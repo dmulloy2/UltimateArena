@@ -74,9 +74,9 @@ public class ArenaClass implements Reloadable
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
 			String[] armor = new String[]
-					{
+			{
 					"chestplate", "leggings", "boots"
-					};
+			};
 
 			for (String armorPath : armor)
 			{

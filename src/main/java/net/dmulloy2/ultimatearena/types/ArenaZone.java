@@ -267,7 +267,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			if (plugin.getEconomy() != null)
 			{
-				double money = cashReward;
+				double money = (double) cashReward;
 				if (rewardBasedOnXp)
 					money = money * (ap.getGameXP() / 250.0D);
 

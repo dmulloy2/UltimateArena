@@ -628,9 +628,9 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	private void generateStockClasses()
 	{
 		String[] stockClasses = new String[]
-				{
+		{
 				"archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef"
-				};
+		};
 
 		for (String stockClass : stockClasses)
 		{

@@ -27,7 +27,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -48,20 +47,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		onPlayerDisconnect(event.getPlayer());
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerKick(PlayerKickEvent event)
-	{
-		//		if (! event.isCancelled())
-		//		{
-		//			onPlayerDisconnect(event.getPlayer());
-		//		}
-	}
-
-	private void onPlayerDisconnect(Player player)
-	{
+		Player player = event.getPlayer();
 		if (plugin.isCreatingArena(player))
 		{
 			ArenaCreator ac = plugin.getArenaCreator(player);

@@ -20,7 +20,7 @@ public class PermissionHandler
 
 	public boolean hasPermission(CommandSender sender, Permission permission)
 	{
-		return permission == null ? true : hasPermission(sender, getPermissionString(permission));
+		return permission == null || hasPermission(sender, getPermissionString(permission));
 	}
 
 	public boolean hasPermission(CommandSender sender, String permission)

@@ -54,13 +54,13 @@ public class CmdList extends UltimateArenaCommand
 
 		List<Entry<ArenaZone, Integer>> sortedEntries = new ArrayList<Entry<ArenaZone, Integer>>(playMap.entrySet());
 		Collections.sort(sortedEntries, new Comparator<Entry<ArenaZone, Integer>>()
-				{
+		{
 			@Override
-			public int compare(final Entry<ArenaZone, Integer> entry1, final Entry<ArenaZone, Integer> entry2)
+			public int compare(Entry<ArenaZone, Integer> entry1, Entry<ArenaZone, Integer> entry2)
 			{
 				return -entry1.getValue().compareTo(entry2.getValue());
 			}
-				});
+		});
 
 		// Now display them
 		for (Entry<ArenaZone, Integer> entry : sortedEntries)

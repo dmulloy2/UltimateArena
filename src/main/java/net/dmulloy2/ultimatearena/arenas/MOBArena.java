@@ -60,9 +60,9 @@ public class MOBArena extends Arena
 			tellPlayers("&aNow going to wave &c{0}&a!", getWave());
 		}
 
-		wave++;
-		this.mobPerWave = 4 + (int) (wave * 1.5) + active.size() * 3;
-		this.mobtimer = wave * 4 + 20;
+		this.wave++;
+		this.mobPerWave = 4 + ((int) (wave * 1.5)) + (active.size() * 3);
+		this.mobtimer = (wave * 4) + 20;
 
 		// TODO: Make entities spawned configurable?
 		if (wave <= 1)
