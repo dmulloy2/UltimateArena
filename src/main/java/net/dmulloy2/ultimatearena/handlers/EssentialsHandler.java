@@ -136,7 +136,7 @@ public class EssentialsHandler
 	{
 		try
 		{
-			com.earth2me.essentials.User user = getEssentialsUser(player.getPlayer());
+			com.earth2me.essentials.User user = getEssentialsUser(player.getBase());
 			if (user == null)
 			{
 				throw new Exception("Null user!");

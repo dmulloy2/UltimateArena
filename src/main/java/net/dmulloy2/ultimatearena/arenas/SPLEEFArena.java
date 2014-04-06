@@ -12,7 +12,6 @@ import net.dmulloy2.ultimatearena.types.FieldType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -111,13 +110,12 @@ public class SPLEEFArena extends FFAArena
 			{
 				for (ArenaPlayer ap : getActivePlayers())
 				{
-					Player pl = ap.getPlayer();
-					Location loc = pl.getLocation();
-					if (pl.getHealth() > 0.0D)
+					Location loc = ap.getLocation();
+					if (ap.getHealth() > 0.0D)
 					{
 						if (outZone.isUnder(loc))
 						{
-							pl.setHealth(0.0D);
+							ap.setHealth(0.0D);
 						}
 					}
 				}

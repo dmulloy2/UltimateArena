@@ -16,7 +16,6 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.io.FileSerialization;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryUtil;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
@@ -239,9 +238,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	public void giveRewards(ArenaPlayer ap)
 	{
-		Player player = ap.getPlayer();
-
-		plugin.debug("Rewarding player {0}", player.getName());
+		plugin.debug("Rewarding player {0}", ap.getName());
 
 		for (ItemStack stack : rewards)
 		{
@@ -258,8 +255,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			{
 				stack.setAmount(amt);
 
-				// Add the item
-				InventoryUtil.giveItem(player, stack);
+				// Give the item
+				ap.giveItem(stack);
 			}
 		}
 
@@ -273,15 +270,15 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 				if (money > 0.0D)
 				{
-					EconomyResponse er = plugin.getEconomy().depositPlayer(player.getName(), money);
+					EconomyResponse er = plugin.getEconomy().depositPlayer(ap.getName(), money);
 					if (er.transactionSuccess())
 					{
 						String format = plugin.getEconomy().format(money);
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
+						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
+						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
 					}
 				}
 			}

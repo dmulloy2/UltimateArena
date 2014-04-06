@@ -293,7 +293,7 @@ public class PlayerListener implements Listener
 					@Override
 					public void run()
 					{
-						arena.spawn(player);
+						arena.spawn(ap);
 					}
 				}.runTaskLater(plugin, 20L);
 			}
@@ -333,11 +333,13 @@ public class PlayerListener implements Listener
 			if (! plugin.isInArena(player))
 				return;
 
+			ArenaPlayer ap = plugin.getArenaPlayer(player);
+
 			if (! plugin.isInArena(event.getFrom()))
 			{
 				if (! plugin.isInArena(event.getTo()))
 				{
-					plugin.getArena(player).spawn(player);
+					ap.getArena().spawn(ap);
 				}
 				else
 				{

@@ -354,7 +354,7 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : active)
 		{
-			spawn(ap.getPlayer());
+			spawn(ap);
 		}
 	}
 
@@ -388,24 +388,23 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Spawns a player in the {@link Arena}.
 	 *
-	 * @param player
+	 * @param ap
 	 *        - Player to spawn
 	 * @param alreadySpawned
 	 *        - Whether or not they've already spawned
 	 */
-	public final void spawn(Player player, boolean alreadySpawned)
+	public final void spawn(ArenaPlayer ap, boolean alreadySpawned)
 	{
-		plugin.debug("Attempting to spawn player {0}", player.getName());
+		plugin.debug("Attempting to spawn player {0}", ap.getName());
 
 		if (! stopped)
 		{
-			ArenaPlayer ap = getArenaPlayer(player);
 			if (ap.getDeaths() < maxDeaths)
 			{
 				Location loc = getSpawn(ap);
 				if (loc != null)
 				{
-					plugin.debug("Spawning player: {0}", player.getName());
+					plugin.debug("Spawning player: {0}", ap.getName());
 
 					ap.teleport(loc);
 					ap.spawn();
@@ -435,12 +434,12 @@ public abstract class Arena implements Reloadable
 	 * <p>
 	 * Has the same effect of <code>spawn(player, false)</code>
 	 *
-	 * @param player
+	 * @param ap
 	 *        - Player to spawn
 	 */
-	public final void spawn(Player player)
+	public final void spawn(ArenaPlayer ap)
 	{
-		spawn(player, false);
+		spawn(ap, false);
 	}
 
 	/**
@@ -622,7 +621,7 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : inactive)
 		{
-			if (ap != null && ap.getPlayer().isOnline())
+			if (ap != null && ap.isOnline())
 			{
 				ap.sendMessage(string, objects);
 			}
@@ -643,9 +642,8 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : active)
 		{
-			Player player = ap.getPlayer();
-			if (player.getLocation().distance(loc) < rad)
-				player.setHealth(0.0D);
+			if (ap.getHealth() > 0.0D && ap.getLocation().distance(loc) < rad)
+				ap.setHealth(0.0D);
 		}
 	}
 
@@ -909,7 +907,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// Make sure they're still online
-			if (! ap.getPlayer().isOnline())
+			if (! ap.isOnline())
 			{
 				// Attempt to end them
 				ap.leaveArena(LeaveReason.QUIT);
@@ -917,7 +915,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// End if they've reached the death limit and they're alive
-			if (ap.getDeaths() >= maxDeaths && ap.getPlayer().getHealth() > 0.0D)
+			if (ap.getDeaths() >= maxDeaths && ap.getHealth() > 0.0D)
 			{
 				ap.leaveArena(LeaveReason.DEATHS);
 				continue;
@@ -938,9 +936,9 @@ public abstract class Arena implements Reloadable
 				// Healing. TODO: Does anyone even use this anymore?
 				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 				{
-					if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
+					if (ap.getHealth() > 0 && ap.getHealth() + 1 <= 20)
 					{
-						ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
+						ap.setHealth(ap.getHealth() + 1);
 						ap.setHealTimer(2);
 					}
 				}
@@ -952,8 +950,8 @@ public abstract class Arena implements Reloadable
 					{
 						for (PotionEffect effect : ac.getPotionEffects())
 						{
-							if (! ap.getPlayer().hasPotionEffect(effect.getType()))
-								ap.getPlayer().addPotionEffect(effect);
+							if (! ap.hasPotionEffect(effect.getType()))
+								ap.addPotionEffect(effect);
 						}
 					}
 				}
@@ -1029,12 +1027,12 @@ public abstract class Arena implements Reloadable
 		{
 			if (isInGame())
 			{
-				ap.getPlayer().setLevel(gameTimer);
+				ap.setLevel(gameTimer);
 			}
 
 			if (isInLobby())
 			{
-				ap.getPlayer().setLevel(startTimer);
+				ap.setLevel(startTimer);
 			}
 		}
 	}

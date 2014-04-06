@@ -13,7 +13,6 @@ import net.dmulloy2.ultimatearena.util.TeamHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -63,31 +62,30 @@ public class CTFFlagBase extends FlagBase
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			Player pl = ap.getPlayer();
-			if (pl.isOnline() && pl.getHealth() > 0.0D)
+			if (ap.isOnline() && ap.getHealth() > 0.0D)
 			{
 				if (ap.getTeam() == team)
 				{
 					// If the arena player is on my team
-					if (enemyflag.getRiding().getName().equals(pl.getName()))
+					if (enemyflag.getRiding().getName().equals(ap.getName()))
 					{
 						// If the player selected is carrying the enemy flag
-						if (pl.getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
+						if (ap.getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
 						{
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
 							ap.sendMessage("&aFlag Captured! &c+ 500 XP");
 
-							pl.removePotionEffect(PotionEffectType.SLOW);
-							pl.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+							ap.removePotionEffect(PotionEffectType.SLOW);
+							ap.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 
 							for (ArenaPlayer apl : Util.newList(arenaPlayers))
 							{
 								if (ap.getTeam() == apl.getTeam())
 								{
 									apl.sendMessage("&aUnlocked 10 seconds of crits!");
-									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
-									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
+									apl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
+									apl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
 								}
 							}
 

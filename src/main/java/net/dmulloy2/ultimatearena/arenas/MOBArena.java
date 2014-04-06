@@ -6,7 +6,6 @@ import java.util.List;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.ultimatearena.util.InventoryUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
@@ -15,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Zombie;
@@ -103,7 +101,7 @@ public class MOBArena extends Arena
 	}
 
 	@Override
-	public void reward(ArenaPlayer p)
+	public void reward(ArenaPlayer pl)
 	{
 		// Enable check
 		if (! az.isGiveRewards())
@@ -112,30 +110,28 @@ public class MOBArena extends Arena
 		// If there are predefined rewards, give those
 		if (! az.getRewards().isEmpty())
 		{
-			super.reward(p);
+			super.reward(pl);
 			return;
 		}
 
 		// Default to old system
-		int amtGold = (int) Math.round(p.getGameXP() / 500.0);
-		int amtSlime = (int) Math.round(p.getGameXP() / 550.0);
-		int amtGlowStone = (int) Math.round(p.getGameXP() / 450.0);
-		int amtGunPowder = (int) Math.round(p.getGameXP() / 425.0);
-		int amtCash = (int) Math.round(p.getGameXP() / 10.0);
-
-		Player pl = p.getPlayer();
+		int amtGold = (int) Math.round(pl.getGameXP() / 500.0);
+		int amtSlime = (int) Math.round(pl.getGameXP() / 550.0);
+		int amtGlowStone = (int) Math.round(pl.getGameXP() / 450.0);
+		int amtGunPowder = (int) Math.round(pl.getGameXP() / 425.0);
+		int amtCash = (int) Math.round(pl.getGameXP() / 10.0);
 
 		if (amtGold > 0)
-			InventoryUtil.giveItem(pl, new ItemStack(Material.GOLD_INGOT, amtGold));
+			pl.giveItem(new ItemStack(Material.GOLD_INGOT, amtGold));
 
 		if (amtSlime > 0)
-			InventoryUtil.giveItem(pl, new ItemStack(Material.SLIME_BALL, amtSlime));
+			pl.giveItem(new ItemStack(Material.SLIME_BALL, amtSlime));
 
 		if (amtGlowStone > 0)
-			InventoryUtil.giveItem(pl, new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
+			pl.giveItem(new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
 
 		if (amtGunPowder > 0)
-			InventoryUtil.giveItem(pl, new ItemStack(Material.SULPHUR, amtGunPowder));
+			pl.giveItem(new ItemStack(Material.SULPHUR, amtGunPowder));
 
 		if (amtCash > 0 && plugin.getConfig().getBoolean("moneyrewards"))
 		{
@@ -145,7 +141,7 @@ public class MOBArena extends Arena
 				eco.depositPlayer(pl.getName(), amtCash);
 
 				String cash = eco.format(amtCash);
-				p.sendMessage("&a{0} has been added to your balance!", cash);
+				pl.sendMessage("&a{0} has been added to your balance!", cash);
 			}
 		}
 	}

@@ -8,7 +8,6 @@ import net.dmulloy2.ultimatearena.util.ItemUtil;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -60,9 +59,8 @@ public class KillStreak
 				ap.giveItem(item);
 				break;
 			case MOB:
-				Player player = ap.getPlayer();
 				for (int i = 0; i < mobAmount; i++)
-					player.getWorld().spawnEntity(player.getLocation(), mobType);
+					ap.getWorld().spawnEntity(ap.getLocation(), mobType);
 				break;
 		}
 

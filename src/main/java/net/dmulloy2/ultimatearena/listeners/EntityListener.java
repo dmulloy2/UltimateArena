@@ -199,11 +199,10 @@ public class EntityListener implements Listener
 							{
 								if (inHand != null && inHand.getType() == Material.GOLD_AXE)
 								{
-									Player pl = dp.getPlayer();
-									if (pl.getHealth() > 0.0D && pl.getHealth() + 2.0D <= 20.0D)
+									if (dp.getHealth() > 0.0D && dp.getHealth() + 2.0D <= 20.0D)
 									{
-										pl.setHealth(pl.getHealth() + 2.0D);
-										ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", pl.getName());
+										dp.setHealth(dp.getHealth() + 2.0D);
+										ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", dp.getName());
 									}
 								}
 							}

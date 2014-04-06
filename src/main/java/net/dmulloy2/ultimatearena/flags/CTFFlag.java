@@ -13,7 +13,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,7 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 @Getter @Setter
 public class CTFFlag
 {
-	protected Player riding;
+	protected ArenaPlayer riding;
 
 	protected String flagType = "";
 
@@ -148,17 +147,16 @@ public class CTFFlag
 		{
 			for (ArenaPlayer ap : arenaPlayers)
 			{
-				Player pl = ap.getPlayer();
-				if (pl.getHealth() > 0.0D && pl.getLocation().distance(myloc) < 1.75D)
+				if (ap.getHealth() > 0.0D && ap.getLocation().distance(myloc) < 1.75D)
 				{
 					if (ap.getTeam() != team)
 					{
 						// If the guy is on the other team
 						this.pickedUp = true;
-						this.riding = ap.getPlayer();
+						this.riding = ap;
 
-						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
-						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
+						ap.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
+						ap.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
 						arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", ap.getName(), flagType);
 						return;
 					}

@@ -111,7 +111,7 @@ public class SpectatingHandler implements Listener
 	private void removeSpectator(ArenaSpectator spectator)
 	{
 		spectator.endPlayer();
-		closeInventory(spectator.getPlayer());
+		closeInventory(spectator.getBase());
 		spectating.get(spectator.getArena()).remove(spectator);
 	}
 
@@ -160,18 +160,23 @@ public class SpectatingHandler implements Listener
 		browsingInventory.add(p.getName());
 	}
 
-	public void closeInventory(Player p)
+	public void closeInventory(Player player)
 	{
-		if (isBrowsingInventory(p))
+		if (isBrowsingInventory(player))
 		{
-			browsingInventory.remove(p.getName());
-			p.closeInventory();
+			browsingInventory.remove(player.getName());
+			player.closeInventory();
 		}
 	}
 
-	public boolean isBrowsingInventory(Player p)
+	public boolean isBrowsingInventory(ArenaSpectator spectator)
 	{
-		return browsingInventory.contains(p.getName());
+		return browsingInventory.contains(spectator.getName());
+	}
+
+	public boolean isBrowsingInventory(Player player)
+	{
+		return browsingInventory.contains(player.getName());
 	}
 
 	// ---- Events ---- //
@@ -261,7 +266,7 @@ public class SpectatingHandler implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryClose(InventoryCloseEvent event)
 	{
-		if (event.getPlayer() instanceof Player)
+		if (event instanceof Player)
 		{
 			Player player = (Player) event.getPlayer();
 			if (isBrowsingInventory(player))

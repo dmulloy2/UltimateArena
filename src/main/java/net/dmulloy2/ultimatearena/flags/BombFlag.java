@@ -1,6 +1,5 @@
 package net.dmulloy2.ultimatearena.flags;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -14,7 +13,6 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -85,21 +83,17 @@ public class BombFlag extends ArenaFlag
 		boolean defuse = false;
 		ArenaPlayer capturer = null;
 
-		List<Player> players = new ArrayList<Player>();
+		// List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			Player pl = ap.getPlayer();
-			if (pl != null)
+			if (ap.getHealth() > 0.0D && ap.getLocation().distance(location) < 3.0D)
 			{
-				if (pl.getHealth() > 0.0D && pl.getLocation().distance(location) < 3.0D)
-				{
-					players.add(pl);
-					capturer = ap;
-					if (ap.getTeam() == 1)
-						fuse = true;
-					else
-						defuse = true;
-				}
+				// players.add(ap);
+				capturer = ap;
+				if (ap.getTeam() == 1)
+					fuse = true;
+				else
+					defuse = true;
 			}
 		}
 

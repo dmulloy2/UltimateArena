@@ -13,10 +13,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.KOTHArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
-
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -42,18 +39,14 @@ public class KothFlag extends ArenaFlag
 
 		int amt = 0;
 		ArenaPlayer capturer = null;
-		List<Player> players = new ArrayList<Player>();
+		// List<Player> players = new ArrayList<Player>();
 		for (ArenaPlayer ap : Util.newList(arenaPlayers))
 		{
-			Player pl = ap.getPlayer();
-			if (pl != null)
+			if (ap.getHealth() > 0.0D && ap.getLocation().distance(location) < 3.0D)
 			{
-				if (pl.getHealth() > 0.0D && pl.getLocation().distance(location) < 3.0D)
-				{
-					players.add(pl);
-					amt++;
-					capturer = ap;
-				}
+				// players.add(pl);
+				amt++;
+				capturer = ap;
 			}
 		}
 
@@ -61,13 +54,8 @@ public class KothFlag extends ArenaFlag
 		{
 			if (capturer != null)
 			{
-				Player pl = capturer.getPlayer();
 				capturer.setPoints(capturer.getPoints() + 1);
-
-				pl.sendMessage(plugin.getPrefix() +
-						FormatUtil.format("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(),
-								arena.getMaxPoints()));
-
+				capturer.sendMessage("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(), arena.getMaxPoints());
 				leadChange();
 			}
 		}

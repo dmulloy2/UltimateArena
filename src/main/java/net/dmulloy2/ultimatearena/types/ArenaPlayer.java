@@ -45,7 +45,7 @@ public class ArenaPlayer extends PlayerExtension
 	private boolean changeClassOnRespawn;
 
 	private String name;
-	private Player player;
+	// private Player player;
 	private PlayerData playerData;
 
 	private Arena arena;
@@ -69,7 +69,8 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
-		this.player = player;
+		super(player);
+		// this.player = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
 
@@ -85,11 +86,11 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		if (arenaClass != null && ! arenaClass.isUsesHelmet())
 		{
-			player.getInventory().setHelmet(null);
+			base.getInventory().setHelmet(null);
 			return;
 		}
 
-		if (player.getInventory().getHelmet() == null)
+		if (base.getInventory().getHelmet() == null)
 		{
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
@@ -97,7 +98,7 @@ public class ArenaPlayer extends PlayerExtension
 			if (team == 2) teamColor = Color.BLUE;
 			meta.setColor(teamColor);
 			itemStack.setItemMeta(meta);
-			player.getInventory().setHelmet(itemStack);
+			base.getInventory().setHelmet(itemStack);
 		}
 	}
 
@@ -109,7 +110,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void giveItem(ItemStack stack)
 	{
-		InventoryUtil.giveItem(player, stack);
+		InventoryUtil.giveItem(base, stack);
 	}
 
 	/**
@@ -126,15 +127,15 @@ public class ArenaPlayer extends PlayerExtension
 		{
 			if (slot == 0)
 			{
-				player.getInventory().setChestplate(stack);
+				base.getInventory().setChestplate(stack);
 			}
 			if (slot == 1)
 			{
-				player.getInventory().setLeggings(stack);
+				base.getInventory().setLeggings(stack);
 			}
 			if (slot == 2)
 			{
-				player.getInventory().setBoots(stack);
+				base.getInventory().setBoots(stack);
 			}
 		}
 	}
@@ -145,10 +146,10 @@ public class ArenaPlayer extends PlayerExtension
 	public final void clearInventory()
 	{
 		// Close any open inventories
-		player.closeInventory();
+		base.closeInventory();
 
 		// Clear their inventory
-		PlayerInventory inv = player.getInventory();
+		PlayerInventory inv = base.getInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -242,9 +243,9 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void clearPotionEffects()
 	{
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for (PotionEffect effect : base.getActivePotionEffects())
 		{
-			player.removePotionEffect(effect.getType());
+			base.removePotionEffect(effect.getType());
 		}
 	}
 
@@ -258,7 +259,13 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		base.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+	}
+
+	@Override
+	public final void sendMessage(String string)
+	{
+		sendMessage(string, new Object[0]);
 	}
 
 	/**
@@ -367,9 +374,9 @@ public class ArenaPlayer extends PlayerExtension
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
-	public final void teleport(Location location)
+	public final boolean teleport(Location location)
 	{
-		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		return base.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
 	public final void teleport(ArenaLocation location)
@@ -379,7 +386,7 @@ public class ArenaPlayer extends PlayerExtension
 
 	public final void savePlayerData()
 	{
-		this.playerData = new PlayerData(player);
+		this.playerData = new PlayerData(base);
 	}
 
 	public final void reset()
@@ -387,5 +394,18 @@ public class ArenaPlayer extends PlayerExtension
 		clearInventory();
 		clearPotionEffects();
 		playerData.apply();
+	}
+
+	public final boolean hasPermission(Permission permission)
+	{
+		return plugin.getPermissionHandler().hasPermission(base, permission);
+	}
+
+	/**
+	 * @deprecated - It's dynamic now
+	 */
+	public final Player getPlayer()
+	{
+		return base;
 	}
 }

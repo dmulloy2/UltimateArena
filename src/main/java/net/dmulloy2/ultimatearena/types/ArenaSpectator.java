@@ -21,14 +21,14 @@ import org.bukkit.potion.PotionEffect;
  */
 
 @Getter @Setter
-public class ArenaSpectator
+public class ArenaSpectator extends PlayerExtension
 {
 	private boolean active;
 
 	private Arena arena;
 
 	private String name;
-	private final Player player;
+	// private final Player player;
 	private final Location spawnBack;
 
 	private PlayerData playerData;
@@ -47,9 +47,10 @@ public class ArenaSpectator
 	 */
 	public ArenaSpectator(Player player, Arena arena, UltimateArena plugin)
 	{
-		this.player = player;
-		this.name = player.getName();
-		this.spawnBack = player.getLocation();
+		super(player);
+		// this.player = player;
+		this.name = getName();
+		this.spawnBack = getLocation();
 
 		this.arena = arena;
 		this.plugin = plugin;
@@ -69,24 +70,24 @@ public class ArenaSpectator
 		clearInventory();
 
 		// Make sure the player is in survival
-		player.setGameMode(GameMode.SURVIVAL);
+		setGameMode(GameMode.SURVIVAL);
 
 		// Heal up the Player
-		player.setFoodLevel(20);
-		player.setFireTicks(0);
-		player.setHealth(20);
+		setFoodLevel(20);
+		setFireTicks(0);
+		setHealth(20);
 
 		// Allow flight
-		player.setAllowFlight(true);
-		player.setFlySpeed(0.1F);
+		setAllowFlight(true);
+		setFlySpeed(0.1F);
 
 		// Give them a compass
-		player.getInventory().addItem(new ItemStack(Material.COMPASS));
+		getInventory().addItem(new ItemStack(Material.COMPASS));
 
 		// Hide the player
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
-			ap.getPlayer().hidePlayer(player);
+			ap.hidePlayer(base);
 		}
 
 		this.active = true;
@@ -98,14 +99,14 @@ public class ArenaSpectator
 
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
-			ap.getPlayer().showPlayer(player);
+			ap.showPlayer(base);
 		}
 
 		for (ArenaPlayer ap : arena.getInactivePlayers())
 		{
-			if (ap != null && ap.getPlayer().isOnline())
+			if (ap != null && ap.isOnline())
 			{
-				ap.getPlayer().showPlayer(player);
+				ap.showPlayer(base);
 			}
 		}
 
@@ -119,9 +120,9 @@ public class ArenaSpectator
 	 */
 	public void clearInventory()
 	{
-		PlayerInventory inv = player.getInventory();
+		PlayerInventory inv = getInventory();
 
-		player.closeInventory();
+		closeInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -135,15 +136,21 @@ public class ArenaSpectator
 	 */
 	public void clearPotionEffects()
 	{
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for (PotionEffect effect : getActivePotionEffects())
 		{
-			player.removePotionEffect(effect.getType());
+			removePotionEffect(effect.getType());
 		}
 	}
 
 	public void sendMessage(String string, Object... objects)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		base.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+	}
+
+	@Override
+	public void sendMessage(String string)
+	{
+		sendMessage(string, new Object[0]);
 	}
 
 	/**
@@ -153,9 +160,9 @@ public class ArenaSpectator
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
-	public final void teleport(Location location)
+	public final boolean teleport(Location location)
 	{
-		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		return base.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
 	public final void teleport(ArenaLocation location)
@@ -165,7 +172,7 @@ public class ArenaSpectator
 
 	public final void savePlayerData()
 	{
-		this.playerData = new PlayerData(player);
+		this.playerData = new PlayerData(base);
 	}
 
 	public final void reset()

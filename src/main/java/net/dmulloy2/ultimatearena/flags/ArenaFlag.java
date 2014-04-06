@@ -14,7 +14,6 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.material.Wool;
 
 /**
@@ -57,8 +56,7 @@ public class ArenaFlag extends FlagBase
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			Player player = ap.getPlayer();
-			if (player.getHealth() > 0.0D && player.getLocation().distance(location) < 4.5D)
+			if (ap.getHealth() > 0.0D && ap.getLocation().distance(location) < 4.5D)
 			{
 				players.add(ap);
 

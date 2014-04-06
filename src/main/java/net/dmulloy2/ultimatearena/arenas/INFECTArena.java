@@ -5,7 +5,6 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.Util;
 
-import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -38,7 +37,7 @@ public class INFECTArena extends PVPArena
 		if (tries < 16)
 		{
 			ArenaPlayer ap = active.get(Util.random(active.size()));
-			if (ap != null && ap.getPlayer().isOnline())
+			if (ap != null && ap.isOnline())
 			{
 				ap.setTeam(2);
 				ap.sendMessage("&3You have been chosen for the infected!");
@@ -63,15 +62,14 @@ public class INFECTArena extends PVPArena
 	{
 		if (ap.getTeam() == 2)
 		{
-			Player pl = ap.getPlayer();
 			ap.clearInventory();
 
-			spawn(pl, true);
+			spawn(ap, true);
 
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 3));
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));
-			pl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
+			ap.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
+			ap.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 3));
+			ap.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));
+			ap.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
 
 			ap.clearInventory();
 			ap.decideHat();
