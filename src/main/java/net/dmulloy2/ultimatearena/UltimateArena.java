@@ -42,6 +42,7 @@ import net.dmulloy2.ultimatearena.commands.CmdCreate;
 import net.dmulloy2.ultimatearena.commands.CmdDelete;
 import net.dmulloy2.ultimatearena.commands.CmdDisable;
 import net.dmulloy2.ultimatearena.commands.CmdDislike;
+import net.dmulloy2.ultimatearena.commands.CmdDone;
 import net.dmulloy2.ultimatearena.commands.CmdEnable;
 import net.dmulloy2.ultimatearena.commands.CmdForceStop;
 import net.dmulloy2.ultimatearena.commands.CmdHelp;
@@ -191,6 +192,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		commandHandler.registerCommand(new CmdDelete(this));
 		commandHandler.registerCommand(new CmdDisable(this));
 		commandHandler.registerCommand(new CmdDislike(this));
+		commandHandler.registerCommand(new CmdDone(this));
 		commandHandler.registerCommand(new CmdEnable(this));
 		commandHandler.registerCommand(new CmdForceStop(this));
 		commandHandler.registerCommand(new CmdHelp(this));
@@ -349,7 +351,6 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				if (economyProvider != null)
 				{
 					economy = economyProvider.getProvider();
-
 					outConsole("Economy integration through {0}!", economy.getName());
 				}
 				else
@@ -357,11 +358,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 					outConsole("Failed to hook into Vault economy.");
 				}
 			}
-		}
-		catch (Throwable ex)
-		{
-			//
-		}
+		} catch (Throwable ex) { }
 	}
 
 	/**
@@ -369,10 +366,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	 */
 	private void setupWorldEditIntegration()
 	{
-		worldEditHandler = new WorldEditHandler(this);
-
 		try
 		{
+			worldEditHandler = new WorldEditHandler(this);
+
 			PluginManager pm = getServer().getPluginManager();
 			if (pm.isPluginEnabled("WorldEdit"))
 			{
@@ -381,16 +378,10 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				{
 					worldEdit = (WorldEditPlugin) plugin;
 					worldEditHandler.setUseWorldEdit(getConfig().getBoolean("useWorldEdit", true));
-
 					outConsole("Integration with WorldEdit successful!");
-					return;
 				}
 			}
-		}
-		catch (Throwable ex)
-		{
-			worldEditHandler.setUseWorldEdit(false);
-		}
+		} catch (Throwable ex) { }
 	}
 
 	/**
@@ -411,14 +402,9 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 					essentialsHandler.setEssentials(plugin);
 					essentialsHandler.setUseEssentials(true);
 					outConsole("Integration with Essentials successful!");
-					return;
 				}
 			}
-		}
-		catch (Throwable ex)
-		{
-			//
-		}
+		} catch (Exception e) { }
 	}
 
 	/**
@@ -429,6 +415,21 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		try
 		{
 			return essentialsHandler.useEssentials();
+		}
+		catch (Throwable ex)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Returns whether or not to use WorldEdit
+	 */
+	public final boolean useWorldEdit()
+	{
+		try
+		{
+			return worldEditHandler.useWorldEdit();
 		}
 		catch (Throwable ex)
 		{
