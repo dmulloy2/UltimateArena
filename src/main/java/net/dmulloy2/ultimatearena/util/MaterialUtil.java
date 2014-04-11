@@ -33,7 +33,7 @@ public class MaterialUtil
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") // Bukkit.getUnsafe()
 	private static org.bukkit.Material matchMaterial(String string)
 	{
 		org.bukkit.Material material = null;
@@ -41,23 +41,18 @@ public class MaterialUtil
 		try
 		{
 			material = org.bukkit.Material.matchMaterial(string);
-		}
-		catch (Throwable ex)
-		{
-		}
+		} catch (Throwable ex) { }
 
 		if (material == null)
 		{
 			try
 			{
 				material = Bukkit.getUnsafe().getMaterialFromInternalName(string);
-			}
-			catch (Throwable ex)
-			{
-			}
+			} catch (Throwable ex) { }
 		}
 
-		return material;
+		// Never return air
+		return material == org.bukkit.Material.AIR ? null : material;
 	}
 
 	/**
@@ -70,7 +65,7 @@ public class MaterialUtil
 	public static org.bukkit.Material getMaterial(int id)
 	{
 		Material mat = Material.getMaterial(id);
-		if (mat != null)
+		if (mat != null) // This will return null when id's stop being assigned
 		{
 			return mat.getBukkitMaterial();
 		}

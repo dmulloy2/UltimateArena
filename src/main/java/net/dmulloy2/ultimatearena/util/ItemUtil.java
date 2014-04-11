@@ -23,7 +23,7 @@ public class ItemUtil
 	private ItemUtil() { }
 
 	/**
-	 * Reads an ItemStack from configuration
+	 * Reads an ItemStack from a given string
 	 * <p>
 	 * The basic format is "[Type/ID]:[Data], [Amount], [Enchantment:Level...]"
 	 *
@@ -49,7 +49,6 @@ public class ItemUtil
 				if (s.contains(":"))
 				{
 					mat = MaterialUtil.getMaterial(s.substring(0, s.indexOf(":")));
-
 					dat = Short.parseShort(s.substring(s.indexOf(":") + 1));
 				}
 				else
@@ -61,7 +60,6 @@ public class ItemUtil
 				if (s.contains(","))
 				{
 					amt = Integer.parseInt(s.substring(0, s.indexOf(",")));
-
 					s = s.substring(s.indexOf(",") + 1);
 
 					if (! s.isEmpty())
@@ -89,7 +87,6 @@ public class ItemUtil
 							{
 								Enchantment enchant = EnchantmentType.toEnchantment(s.substring(0, s.indexOf(":")));
 								int level = Integer.parseInt(s.substring(s.indexOf(":") + 1));
-
 								if (enchant != null && level > 0)
 								{
 									enchantments.put(enchant, level);
@@ -116,13 +113,8 @@ public class ItemUtil
 			}
 
 			return ret;
-		}
-		catch (Exception e)
-		{
-			// If the ItemStack could not be read,
-			// don't stall the enabling of the plugin
-			return null;
-		}
+		} catch (Throwable ex) { }
+		return null;
 	}
 
 	/**
@@ -193,11 +185,7 @@ public class ItemUtil
 					}
 				}
 			}
-		}
-		catch (Exception e)
-		{
-		}
-
+		} catch (Throwable ex) { }
 		return null;
 	}
 
@@ -233,7 +221,7 @@ public class ItemUtil
 	public static String getEnchantments(ItemStack stack)
 	{
 		StringBuilder ret = new StringBuilder();
-		if (!stack.getEnchantments().isEmpty())
+		if (! stack.getEnchantments().isEmpty())
 		{
 			ret.append("(");
 			for (Entry<Enchantment, Integer> enchantment : stack.getEnchantments().entrySet())
