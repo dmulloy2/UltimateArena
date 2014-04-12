@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.types;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.bukkit.enchantments.Enchantment;
@@ -12,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
  */
 
 @Getter
+@AllArgsConstructor
 public enum EnchantmentType
 {
 	ARROW_DAMAGE("power"),
@@ -27,6 +29,8 @@ public enum EnchantmentType
 	KNOCKBACK("knockback"),
 	LOOT_BONUS_BLOCKS("fortune"),
 	LOOT_BONUS_MOBS("looting"),
+	LUCK("luck"),
+	LURE("lure"),
 	OXYGEN("breathing"),
 	PROTECTION_ENVIRONMENTAL("prot"),
 	PROTECTION_EXPLOSIONS("blast"),
@@ -38,21 +42,6 @@ public enum EnchantmentType
 	WATER_WORKER("aqua");
 
 	private final String name;
-	private EnchantmentType(String name)
-	{
-		this.name = name;
-	}
-
-	public static String toName(Enchantment enchant)
-	{
-		for (EnchantmentType e : EnchantmentType.values())
-		{
-			if (e.toString().equals(enchant.getName()))
-				return e.name;
-		}
-
-		return "";
-	}
 
 	public static Enchantment toEnchantment(String enchant)
 	{
@@ -63,6 +52,16 @@ public enum EnchantmentType
 		}
 
 		return null;
+	}
+	public static String toName(Enchantment enchant)
+	{
+		for (EnchantmentType e : EnchantmentType.values())
+		{
+			if (e.toString().equals(enchant.getName()))
+				return e.name;
+		}
+
+		return "";
 	}
 
 	public static String toString(Map<Enchantment, Integer> enchantments)
