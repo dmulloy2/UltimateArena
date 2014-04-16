@@ -350,6 +350,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving arena " + arenaName));
 		}
+
+		saveConfiguration();
 	}
 
 	private final void checkFile()
