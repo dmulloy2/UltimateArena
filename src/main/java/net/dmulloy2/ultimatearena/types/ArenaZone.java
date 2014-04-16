@@ -551,17 +551,14 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	public final void saveConfiguration()
 	{
-		Map<String, Object> data = serialize();
+		Map<String, Object> data = serializeConfiguration();
+		if (data == null || data.isEmpty())
+			return;
+
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 		for (Entry<String, Object> entry : data.entrySet())
 		{
-			try
-			{
-				// Make sure it's also defined in ArenaConfig. If not, an
-				// Exception will be thrown
-				ArenaConfig.class.getDeclaredField(entry.getKey());
-				fc.set(entry.getKey(), entry.getValue());
-			} catch (Exception e) { }
+			fc.set(entry.getKey(), entry.getValue());
 		}
 
 		try
@@ -575,21 +572,38 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		Map<String, Object> data = new HashMap<String, Object>();
 
+		for (Entry<String, Object> entry : serializeAll().entrySet())
+		{
+			// Configuration check
+			if (! ArenaClass.isDeclaredField(entry.getKey()))
+				data.put(entry.getKey(), entry.getValue());
+		}
+
+		return data;
+	}
+
+	private Map<String, Object> serializeConfiguration()
+	{
+		Map<String, Object> data = new HashMap<String, Object>();
+
+		for (Entry<String, Object> entry : serializeAll().entrySet())
+		{
+			// Configuration check
+			if (ArenaClass.isDeclaredField(entry.getKey()))
+				data.put(entry.getKey(), entry.getValue());
+		}
+
+		return data;
+	}
+
+	private Map<String, Object> serializeAll()
+	{
+		Map<String, Object> data = new HashMap<String, Object>();
+
 		for (java.lang.reflect.Field field : getClass().getDeclaredFields())
 		{
 			if (Modifier.isTransient(field.getModifiers()))
 				continue;
-
-			// Configuration check
-
-			try
-			{
-				// This works because if the field does not exist, a
-				// NoSuchFieldException is thrown and we will never get to the
-				// continue statement
-				ArenaConfig.class.getDeclaredField(field.getName());
-				continue;
-			} catch (Exception e) { }
 
 			try
 			{

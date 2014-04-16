@@ -305,6 +305,16 @@ public class ArenaClass implements Reloadable
 		return null;
 	}
 
+	public static boolean isDeclaredField(String name)
+	{
+		try
+		{
+			ArenaClass.class.getDeclaredField(name);
+			return true;
+		} catch (Throwable ex) { }
+		return false;
+	}
+
 	@Override
 	public void reload()
 	{
