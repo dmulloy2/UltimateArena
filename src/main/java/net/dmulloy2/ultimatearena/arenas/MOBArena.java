@@ -104,11 +104,11 @@ public class MOBArena extends Arena
 	public void reward(ArenaPlayer pl)
 	{
 		// Enable check
-		if (! az.isGiveRewards())
+		if (! az.getConfig().isGiveRewards())
 			return;
 
 		// If there are predefined rewards, give those
-		if (! az.getRewards().isEmpty())
+		if (! az.getConfig().getRewards().isEmpty())
 		{
 			super.reward(pl);
 			return;

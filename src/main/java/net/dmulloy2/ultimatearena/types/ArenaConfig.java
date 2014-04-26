@@ -20,6 +20,7 @@ import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,12 +29,18 @@ import org.bukkit.inventory.ItemStack;
  */
 
 @Getter @Setter
-public class ArenaConfig implements Reloadable
+public class ArenaConfig implements ConfigurationSerializable, Reloadable
 {
-	protected int gameTime, lobbyTime, maxDeaths, cashReward;
-	protected int maxWave, maxPoints; // Arena-Specific
+	// Generic
+	protected int gameTime, lobbyTime, maxDeaths;
+	protected double cashReward;
 
-	protected boolean allowTeamKilling, countMobKills, rewardBasedOnXp, giveRewards;
+	// Arena Specific
+	protected int maxWave;
+	protected int maxPoints = 60;
+
+	protected boolean allowTeamKilling, countMobKills, rewardBasedOnXp;
+	protected boolean giveRewards = true;
 
 	protected List<String> blacklistedClasses, whitelistedClasses;
 
@@ -41,72 +48,97 @@ public class ArenaConfig implements Reloadable
 	protected transient HashMap<Integer, List<KillStreak>> killStreaks;
 
 	// ---- Transient
-	protected transient String arenaName;
-	protected transient boolean loaded;
 	protected transient File file;
 
+	protected transient boolean loaded;
+	protected transient boolean typeConfig;
+
+	protected transient String type;
+	
 	protected transient final UltimateArena plugin;
 
-	public ArenaConfig(UltimateArena plugin, String str, File file)
+	public ArenaConfig(UltimateArena plugin, String type, File file)
 	{
-		this.arenaName = str;
+		this.type = type;
 		this.file = file;
 		this.plugin = plugin;
+
+		// Initialize some variables
+		this.rewards = new ArrayList<ItemStack>();
+		this.blacklistedClasses = new ArrayList<String>();
+		this.whitelistedClasses = new ArrayList<String>();
+		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
+		this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(type.toUpperCase()));
 
 		this.loaded = load();
 		if (! loaded)
 		{
-			plugin.outConsole(Level.SEVERE, "Could not load config for " + arenaName + "!");
+			plugin.outConsole(Level.SEVERE, "Could not load config for " + type + "!");
 		}
 	}
 
-	public boolean load()
+	public ArenaConfig(ArenaZone az)
+	{
+		this.typeConfig = false;
+		this.type = az.getName() + " - Config";
+		this.plugin = az.getPlugin();
+		this.file = az.getFile();
+	}
+
+	public final boolean load()
+	{
+		return load(file, this);
+	}
+
+	public final boolean load(File file, ArenaConfig def)
 	{
 		try
 		{
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			if (arenaName.equalsIgnoreCase("mob"))
+			if (type.equalsIgnoreCase("mob"))
 			{
-				this.maxWave = fc.getInt("maxWave");
+				this.maxWave = fc.getInt("maxWave", def.getMaxWave());
 			}
 
-			if (arenaName.equalsIgnoreCase("koth"))
+			if (type.equalsIgnoreCase("koth"))
 			{
-				this.maxPoints = fc.getInt("maxPoints", 60);
+				this.maxPoints = fc.getInt("maxPoints", def.getMaxDeaths());
 			}
 
-			this.gameTime = fc.getInt("gameTime");
-			this.lobbyTime = fc.getInt("lobbyTime");
-			this.maxDeaths = fc.getInt("maxDeaths");
-			this.allowTeamKilling = fc.getBoolean("allowTeamKilling");
-			this.cashReward = fc.getInt("cashReward");
-			this.countMobKills = fc.getBoolean("countMobKills", arenaName.equalsIgnoreCase("mob"));
+			this.gameTime = fc.getInt("gameTime", def.getGameTime());
+			this.lobbyTime = fc.getInt("lobbyTime", def.getLobbyTime());
+			this.maxDeaths = fc.getInt("maxDeaths", def.getMaxDeaths());
+			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", def.isAllowTeamKilling());
+			this.cashReward = fc.getDouble("cashReward", def.getCashReward());
+			this.countMobKills = fc.getBoolean("countMobKills", def.isCountMobKills());
 
 			this.rewards = new ArrayList<ItemStack>();
-			for (String reward : fc.getStringList("rewards"))
+			if (fc.isSet("rewards"))
 			{
-				ItemStack stack = ItemUtil.readItem(reward);
-				if (stack != null)
-					rewards.add(stack);
+				for (String reward : fc.getStringList("rewards"))
+				{
+					ItemStack stack = ItemUtil.readItem(reward);
+					if (stack != null)
+						rewards.add(stack);
+				}
+			}
+			else
+			{
+				this.rewards = def.getRewards();
 			}
 
-			this.giveRewards = fc.getBoolean("giveRewards", true);
+			this.giveRewards = fc.getBoolean("giveRewards", def.isGiveRewards());
 
-			List<String> xpBasedTypes = Arrays.asList(new String[]
-			{
-					"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
-			});
+			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", def.isRewardBasedOnXp());
 
-			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", xpBasedTypes.contains(arenaName.toUpperCase()));
-
-			this.blacklistedClasses = new ArrayList<String>();
+			this.blacklistedClasses = def.getBlacklistedClasses();
 
 			if (fc.isSet("blacklistedClasses"))
 			{
 				blacklistedClasses.addAll(fc.getStringList("blacklistedClasses"));
 			}
 
-			this.whitelistedClasses = new ArrayList<String>();
+			this.whitelistedClasses = def.getWhitelistedClasses();
 
 			if (fc.isSet("whitelistedClasses"))
 			{
@@ -172,27 +204,48 @@ public class ArenaConfig implements Reloadable
 					killStreaks.put(kills, streaks);
 				}
 			}
-			else
-			{
-				this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(arenaName.toUpperCase()));
-			}
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading config for \"" + arenaName + "\""));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading config for \"" + type + "\""));
 			return false;
 		}
 
-		plugin.debug("Loaded ArenaConfig for type: {0}!", arenaName);
+		plugin.debug("Loaded ArenaConfig for type: {0}!", type);
 		return true;
 	}
 
+	private final List<String> xpBasedTypes = Arrays.asList(new String[]
+	{
+			"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
+	});
+
 	public final void save()
+	{
+		save(file);
+	}
+
+	public final void save(File file)
 	{
 		try
 		{
-			Map<String, Object> data = new HashMap<String, Object>();
+			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			for (Entry<String, Object> entry : serialize().entrySet())
+			{
+				fc.set(entry.getKey(), entry.getValue());
+			}
+	
+			fc.save(file);
+		} catch (Throwable ex) { }
+	}
 
+	@Override
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> data = new HashMap<String, Object>();
+
+		try
+		{
 			for (Field field : getClass().getDeclaredFields())
 			{
 				if (Modifier.isTransient(field.getModifiers()))
@@ -240,15 +293,8 @@ public class ArenaConfig implements Reloadable
 
 				field.setAccessible(accessible);
 			}
-
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			for (Entry<String, Object> entry : data.entrySet())
-			{
-				fc.set(entry.getKey(), entry.getValue());
-			}
-
-			fc.save(file);
 		} catch (Throwable ex) { }
+		return data;
 	}
 
 	@Override

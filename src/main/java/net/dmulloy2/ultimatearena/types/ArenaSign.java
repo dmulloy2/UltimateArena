@@ -43,7 +43,7 @@ public class ArenaSign implements ConfigurationSerializable
 	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone az, int id)
 	{
 		this.id = id;
-		this.arenaName = az.getArenaName();
+		this.arenaName = az.getName();
 		this.loc = new ArenaLocation(loc);
 
 		this.getSign();
@@ -109,7 +109,7 @@ public class ArenaSign implements ConfigurationSerializable
 		}
 
 		sign.setLine(0, "[UltimateArena]");
-		sign.setLine(1, az.getArenaName());
+		sign.setLine(1, az.getName());
 
 		// Line 3
 		StringBuilder line = new StringBuilder();
@@ -230,7 +230,7 @@ public class ArenaSign implements ConfigurationSerializable
 		}
 
 		sign.setLine(0, "[UltimateArena]");
-		sign.setLine(1, az.getArenaName());
+		sign.setLine(1, az.getName());
 
 		if (az.isDisabled())
 		{
@@ -253,7 +253,7 @@ public class ArenaSign implements ConfigurationSerializable
 
 	private final Arena getArena()
 	{
-		return plugin.getArena(az.getArenaName());
+		return plugin.getArena(az.getName());
 	}
 
 	@Override

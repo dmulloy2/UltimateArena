@@ -115,7 +115,7 @@ public abstract class Arena implements Reloadable
 	{
 		this.az = az;
 		this.plugin = az.getPlugin();
-		this.name = az.getArenaName();
+		this.name = az.getName();
 		this.type = az.getType();
 		this.world = az.getWorld();
 		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
@@ -128,7 +128,7 @@ public abstract class Arena implements Reloadable
 
 		this.gameMode = Mode.LOBBY;
 
-		this.startTimer = az.getLobbyTime();
+		this.startTimer = az.getConfig().getLobbyTime();
 		this.inLobby = true;
 
 		this.reload();
@@ -142,19 +142,19 @@ public abstract class Arena implements Reloadable
 	@Override
 	public final void reload()
 	{
-		this.maxGameTime = az.getGameTime();
-		this.gameTimer = az.getGameTime();
-		this.maxDeaths = az.getMaxDeaths();
-		this.allowTeamKilling = az.isAllowTeamKilling();
-		this.maxWave = az.getMaxWave();
-		this.maxPoints = az.getMaxPoints();
-		this.countMobKills = az.isCountMobKills();
-		this.rewardBasedOnXp = az.isRewardBasedOnXp();
-		this.killStreaks = az.getKillStreaks();
-		this.giveRewards = az.isGiveRewards();
+		this.maxGameTime = az.getConfig().getGameTime();
+		this.gameTimer = az.getConfig().getGameTime();
+		this.maxDeaths = az.getConfig().getMaxDeaths();
+		this.allowTeamKilling = az.getConfig().isAllowTeamKilling();
+		this.maxWave = az.getConfig().getMaxWave();
+		this.maxPoints = az.getConfig().getMaxPoints();
+		this.countMobKills = az.getConfig().isCountMobKills();
+		this.rewardBasedOnXp = az.getConfig().isRewardBasedOnXp();
+		this.killStreaks = az.getConfig().getKillStreaks();
+		this.giveRewards = az.getConfig().isGiveRewards();
 
-		this.blacklistedClasses = az.getBlacklistedClasses();
-		this.whitelistedClasses = az.getWhitelistedClasses();
+		this.blacklistedClasses = az.getConfig().getBlacklistedClasses();
+		this.whitelistedClasses = az.getConfig().getWhitelistedClasses();
 
 		if (maxDeaths < 1)
 		{
@@ -268,7 +268,7 @@ public abstract class Arena implements Reloadable
 					}
 
 					player.sendMessage(plugin.getPrefix() +
-							FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getArenaName()));
+							FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getName()));
 				}
 			}
 		}
@@ -491,7 +491,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public void reward(ArenaPlayer ap)
 	{
-		if (az.isGiveRewards() && ap != null)
+		if (az.getConfig().isGiveRewards() && ap != null)
 			az.giveRewards(ap);
 	}
 
@@ -503,7 +503,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void rewardTeam(int team)
 	{
-		if (az.isGiveRewards())
+		if (az.getConfig().isGiveRewards())
 		{
 			for (ArenaPlayer ap : toReward)
 			{

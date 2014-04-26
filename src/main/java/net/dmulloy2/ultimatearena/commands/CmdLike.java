@@ -37,7 +37,7 @@ public class CmdLike extends UltimateArenaCommand
 			return;
 		}
 
-		sendpMessage("&aYou have voted for: {0}!", az.getArenaName());
+		sendpMessage("&aYou have voted for: {0}!", az.getName());
 
 		az.setLiked(az.getLiked() + 1);
 		az.getVoted().add(player.getName());

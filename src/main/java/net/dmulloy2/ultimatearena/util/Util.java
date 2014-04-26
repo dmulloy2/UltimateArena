@@ -2,6 +2,8 @@ package net.dmulloy2.ultimatearena.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -223,6 +225,35 @@ public class Util
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Filters duplicate entries from a {@link Map} according to the original
+	 * map.
+
+	 * @param map
+	 *        - {@link Map} to filter
+	 * @param original
+	 *        - Original map
+	 * @return Filtered map
+	 */
+	public static <K, V> Map<K, V> filterDuplicates(Map<K, V> map, Map<K, V> original)
+	{
+		for (Entry<K, V> entry : map.entrySet())
+		{
+			K key = entry.getKey();
+			if (original.containsKey(key))
+			{
+				V val = entry.getValue();
+				V val1 = original.get(key);
+				if (val.equals(val1))
+				{
+					original.remove(key);
+				}
+			}
+		}
+
+		return original;
 	}
 
 	@SuppressWarnings("deprecation")

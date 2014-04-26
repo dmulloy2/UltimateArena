@@ -499,7 +499,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 			ArenaZone az = new ArenaZone(this, file);
 			if (az.isLoaded())
 			{
-				debug("Successfully loaded arena {0}!", az.getArenaName());
+				debug("Successfully loaded arena {0}!", az.getName());
 				total++;
 			}
 		}
@@ -645,11 +645,16 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		outConsole("Loaded {0} signs!", signHandler.getSigns().size());
 	}
 
+	public ArenaConfig getConfig(FieldType type)
+	{
+		return getConfig(type.getName());
+	}
+
 	public ArenaConfig getConfig(String type)
 	{
 		for (ArenaConfig ac : Util.newList(configs))
 		{
-			if (ac.getArenaName().equalsIgnoreCase(type))
+			if (ac.getType().equalsIgnoreCase(type))
 				return ac;
 		}
 
@@ -734,7 +739,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 	{
 		ArenaZone az = getZoneInside(location);
 		if (az != null)
-			return getArena(az.getArenaName());
+			return getArena(az.getName());
 
 		return null;
 	}
@@ -806,7 +811,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 				StringBuilder matchString = new StringBuilder();
 				for (ArenaZone match : matches)
 				{
-					matchString.append("&e" + match.getArenaName() + "&3, ");
+					matchString.append("&e" + match.getName() + "&3, ");
 				}
 
 				matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(" "), "?");
@@ -1032,7 +1037,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		for (int i = 0; i < loadedArenas.size(); i++)
 		{
 			ArenaZone az = loadedArenas.get(i);
-			if (az.getArenaName().contains(partial))
+			if (az.getName().contains(partial))
 				ret.add(az);
 		}
 
@@ -1045,7 +1050,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		for (int i = 0; i < loadedArenas.size(); i++)
 		{
 			ArenaZone az = loadedArenas.get(i);
-			if (az.getArenaName().equalsIgnoreCase(name))
+			if (az.getName().equalsIgnoreCase(name))
 				return az;
 		}
 
@@ -1082,7 +1087,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		for (ArenaZone az : Util.newList(loadedArenas))
 		{
-			if (az.getArenaName().equalsIgnoreCase(name))
+			if (az.getName().equalsIgnoreCase(name))
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cAn arena by this name already exists!"));
 				return;

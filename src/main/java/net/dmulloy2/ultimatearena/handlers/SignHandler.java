@@ -262,7 +262,7 @@ public class SignHandler
 
 		for (ArenaSign sign : getSigns())
 		{
-			if (sign.getArenaName().equals(az.getArenaName()))
+			if (sign.getArenaName().equals(az.getName()))
 				ret.add(sign);
 		}
 

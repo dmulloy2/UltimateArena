@@ -225,9 +225,9 @@ public class PlayerListener implements Listener
 							{
 								for (ArenaZone az : plugin.getLoadedArenas())
 								{
-									if (az != null && az.getArenaName().equalsIgnoreCase(name))
+									if (az != null && az.getName().equalsIgnoreCase(name))
 									{
-										plugin.attemptJoin(player, az.getArenaName());
+										plugin.attemptJoin(player, az.getName());
 										found = true;
 									}
 								}
@@ -262,7 +262,7 @@ public class PlayerListener implements Listener
 									ArenaZone az = plugin.getLoadedArenas().get(0);
 									if (az != null)
 									{
-										plugin.attemptJoin(player, az.getArenaName());
+										plugin.attemptJoin(player, az.getName());
 										found = true;
 									}
 								}

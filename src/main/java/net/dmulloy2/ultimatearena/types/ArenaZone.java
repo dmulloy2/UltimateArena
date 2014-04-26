@@ -16,8 +16,6 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.io.FileSerialization;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.ItemUtil;
-import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -27,7 +25,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -55,7 +52,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected transient boolean loaded;
 
 	protected String worldName;
-	protected String arenaName = "";
 	protected String defaultClass;
 
 	protected transient FieldType type;
@@ -70,8 +66,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected ArenaLocation lobbyREDspawn;
 	protected ArenaLocation lobbyBLUspawn;
 
-	protected transient File file;
-
 	protected transient Field lobby;
 	protected transient Field arena;
 
@@ -80,7 +74,10 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected List<ArenaLocation> spawns = new ArrayList<ArenaLocation>();
 	protected List<ArenaLocation> flags = new ArrayList<ArenaLocation>();
 
+	protected transient File file;
 	protected transient World world;
+	protected transient String name;
+	protected transient ArenaConfig config;
 
 	protected transient final UltimateArena plugin;
 
@@ -93,7 +90,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		this.plugin = plugin;
 		this.file = file;
-		this.arenaName = FormatUtil.trimFileExtension(file, ".dat");
+		this.name = FormatUtil.trimFileExtension(file, ".dat");
 		this.initialize();
 	}
 
@@ -184,7 +181,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		List<String> lines = new ArrayList<String>();
 
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(arenaName)));
+		line.append(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(name)));
 		lines.add(line.toString());
 
 		// Calculate percentage
@@ -224,7 +221,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.WARNING, "Could not perform location check for arena {0}!", arenaName);
+			plugin.outConsole(Level.WARNING, "Could not perform location check for arena {0}!", name);
 			plugin.outConsole(Level.WARNING, "This is often caused by a null world!");
 			plugin.outConsole(Level.WARNING, "worldName = {0}, world = {1}", worldName, getWorld() == null ? "null" : getWorld().getName());
 			return false;
@@ -238,9 +235,12 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	public void giveRewards(ArenaPlayer ap)
 	{
+		if (! config.isGiveRewards())
+			return;
+
 		plugin.debug("Rewarding player {0}", ap.getName());
 
-		for (ItemStack stack : rewards)
+		for (ItemStack stack : config.getRewards())
 		{
 			if (stack == null)
 				continue;
@@ -248,7 +248,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			int amt = stack.getAmount();
 
 			// Gradient based, if applicable
-			if (rewardBasedOnXp)
+			if (config.isRewardBasedOnXp())
 				amt = (int) Math.round(ap.getGameXP() / 200.0D);
 
 			if (amt > 0)
@@ -264,8 +264,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			if (plugin.getEconomy() != null)
 			{
-				double money = (double) cashReward;
-				if (rewardBasedOnXp)
+				double money = config.getCashReward();
+				if (config.isRewardBasedOnXp())
 					money = money * (ap.getGameXP() / 250.0D);
 
 				if (money > 0.0D)
@@ -306,16 +306,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		// Load
 		for (Entry<String, Object> entry : values.entrySet())
 		{
-			// Configuration check
-			try
-			{
-				// This works because if the field does not exist, a
-				// NoSuchFieldException is thrown and we will never get to the
-				// continue statement
-				ArenaConfig.class.getDeclaredField(entry.getKey());
-				continue;
-			} catch (Exception e) { }
-
 			try
 			{
 				for (java.lang.reflect.Field field : getClass().getDeclaredFields())
@@ -348,7 +338,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 		catch (IOException e)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving arena " + arenaName));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving arena " + name));
 		}
 
 		saveConfiguration();
@@ -364,7 +354,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				folder.mkdirs();
 			}
 
-			file = new File(folder, arenaName + ".dat");
+			file = new File(folder, name + ".dat");
 		}
 	}
 
@@ -406,152 +396,22 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "converting " + arenaName));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "converting " + name));
 		}
 	}
 
 	// ---- Configuration
 
-	// Serializable variables
-	private int gameTime, lobbyTime, maxDeaths, maxWave, cashReward, maxPoints;
-
-	private boolean allowTeamKilling, countMobKills, rewardBasedOnXp, giveRewards;
-
-	private List<String> blacklistedClasses, whitelistedClasses;
-
-	// These have to be manually loaded, since they are not serializable
-	private transient List<ItemStack> rewards;
-	private transient HashMap<Integer, List<KillStreak>> killStreaks;
-
-	public void loadConfiguration()
+	public final void loadConfiguration()
 	{
-		try
-		{
-			ArenaConfig conf = plugin.getConfig(type.getName());
-
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			if (type.getName().equalsIgnoreCase("mob"))
-			{
-				this.maxWave = fc.getInt("maxWave", conf.getMaxWave());
-			}
-
-			if (type.getName().equalsIgnoreCase("koth"))
-			{
-				this.maxPoints = fc.getInt("maxPoints", conf.getMaxPoints());
-			}
-
-			this.gameTime = fc.getInt("gameTime", conf.getGameTime());
-			this.lobbyTime = fc.getInt("lobbyTime", conf.getLobbyTime());
-			this.maxDeaths = fc.getInt("maxDeaths", conf.getMaxDeaths());
-			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", conf.isAllowTeamKilling());
-			this.cashReward = fc.getInt("cashReward", conf.getCashReward());
-			this.countMobKills = fc.getBoolean("countMobKills", conf.isCountMobKills());
-			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", conf.isRewardBasedOnXp());
-
-			this.rewards = new ArrayList<ItemStack>();
-			if (fc.isSet("rewards"))
-			{
-				for (String reward : fc.getStringList("rewards"))
-				{
-					ItemStack stack = ItemUtil.readItem(reward);
-					if (stack != null)
-						rewards.add(stack);
-				}
-			}
-			else
-			{
-				this.rewards = conf.getRewards();
-			}
-
-			this.giveRewards = fc.getBoolean("giveRewards", conf.isGiveRewards());
-
-			this.blacklistedClasses = new ArrayList<String>();
-
-			if (fc.isSet("blacklistedClasses"))
-			{
-				blacklistedClasses.addAll(fc.getStringList("blacklistedClasses"));
-			}
-
-			this.whitelistedClasses = new ArrayList<String>();
-
-			if (fc.isSet("whitelistedClasses"))
-			{
-				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
-			}
-
-			if (fc.isSet("killStreaks"))
-			{
-				this.killStreaks = new HashMap<Integer, List<KillStreak>>();
-
-				Map<String, Object> map = fc.getConfigurationSection("killStreaks").getValues(true);
-
-				for (Entry<String, Object> entry : map.entrySet())
-				{
-					int kills = NumberUtil.toInt(entry.getKey());
-					if (kills < 0)
-						continue;
-
-					@SuppressWarnings("unchecked") // No way to check this :I
-					List<String> values = (List<String>) entry.getValue();
-
-					List<KillStreak> streaks = new ArrayList<KillStreak>();
-					for (String value : values)
-					{
-						value = value.trim();
-
-						// Determine type
-						String s = value.substring(0, value.indexOf(",")).trim();
-
-						KillStreak.Type type = null;
-						if (s.equalsIgnoreCase("mob"))
-							type = KillStreak.Type.MOB;
-						else if (s.equalsIgnoreCase("item"))
-							type = KillStreak.Type.ITEM;
-
-						if (type == KillStreak.Type.MOB)
-						{
-							String[] split = value.split(",");
-
-							String message = split[1].trim();
-							EntityType entityType = EntityType.valueOf(split[2].trim());
-							int amount = Integer.parseInt(split[3].trim());
-
-							streaks.add(new KillStreak(kills, message, entityType, amount));
-							continue;
-						}
-						else if (type == KillStreak.Type.ITEM)
-						{
-							// Yay substring and indexof!
-							s = value.substring(value.indexOf(",") + 1).trim();
-
-							String message = s.substring(0, s.indexOf(",")).trim();
-
-							s = s.substring(s.indexOf(",") + 1).trim();
-
-							ItemStack stack = ItemUtil.readItem(s);
-							if (stack != null)
-								streaks.add(new KillStreak(kills, message, stack));
-							continue;
-						}
-					}
-
-					killStreaks.put(kills, streaks);
-				}
-			}
-			else
-			{
-				this.killStreaks = conf.getKillStreaks();
-			}
-		}
-		catch (Exception e)
-		{
-			plugin.debug(Util.getUsefulStack(e, "loading config for \"" + arenaName + "\""));
-		}
+		config = new ArenaConfig(this);
+		config.load(file, plugin.getConfig(getType()));
 	}
 
 	public final void saveConfiguration()
 	{
-		Map<String, Object> data = serializeConfiguration();
+		Map<String, Object> def = plugin.getConfig(getType()).serialize();
+		Map<String, Object> data = Util.filterDuplicates(config.serialize(), def);
 		if (data == null || data.isEmpty())
 			return;
 
@@ -569,34 +429,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	@Override
 	public Map<String, Object> serialize()
-	{
-		Map<String, Object> data = new HashMap<String, Object>();
-
-		for (Entry<String, Object> entry : serializeAll().entrySet())
-		{
-			// Configuration check
-			if (! ArenaClass.isDeclaredField(entry.getKey()))
-				data.put(entry.getKey(), entry.getValue());
-		}
-
-		return data;
-	}
-
-	private Map<String, Object> serializeConfiguration()
-	{
-		Map<String, Object> data = new HashMap<String, Object>();
-
-		for (Entry<String, Object> entry : serializeAll().entrySet())
-		{
-			// Configuration check
-			if (ArenaClass.isDeclaredField(entry.getKey()))
-				data.put(entry.getKey(), entry.getValue());
-		}
-
-		return data;
-	}
-
-	private Map<String, Object> serializeAll()
 	{
 		Map<String, Object> data = new HashMap<String, Object>();
 
@@ -660,21 +492,14 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		if (! file.exists())
 		{
-			if (plugin.getArena(arenaName) != null)
+			if (plugin.getArena(name) != null)
 			{
-				plugin.getArena(arenaName).stop();
+				plugin.getArena(name).stop();
 			}
 
 			plugin.getLoadedArenas().remove(this);
 			return;
 		}
-
-		// Clear lists and maps
-		this.blacklistedClasses.clear();
-		this.whitelistedClasses.clear();
-		this.killStreaks.clear();
-		this.rewards.clear();
-		this.spawns.clear();
 
 		// Re-initialize
 		initialize();
@@ -685,7 +510,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	@Override
 	public String toString()
 	{
-		return arenaName;
+		return name;
 	}
 
 	@Override
@@ -694,7 +519,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		if (o instanceof ArenaZone)
 		{
 			ArenaZone that = (ArenaZone) o;
-			return this.arenaName.equals(that.arenaName);
+			return this.name.equals(that.name);
 		}
 
 		return false;
@@ -703,6 +528,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	@Override
 	public int hashCode()
 	{
-		return 71 * arenaName.hashCode();
+		return 71 * name.hashCode();
 	}
 }

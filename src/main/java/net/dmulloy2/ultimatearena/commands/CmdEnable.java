@@ -38,10 +38,10 @@ public class CmdEnable extends UltimateArenaCommand
 
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
-			if (az.getArenaName().equalsIgnoreCase(args[0]))
+			if (az.getName().equalsIgnoreCase(args[0]))
 			{
 				az.setDisabled(false);
-				sendpMessage("&aYou have enabled {0}!", az.getArenaName());
+				sendpMessage("&aYou have enabled {0}!", az.getName());
 				return;
 			}
 		}

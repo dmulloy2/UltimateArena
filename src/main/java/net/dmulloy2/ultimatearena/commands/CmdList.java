@@ -69,7 +69,7 @@ public class CmdList extends UltimateArenaCommand
 
 			line = new StringBuilder();
 			line.append("&3[&b" + az.getType().getStylized() + " &eArena&3]");
-			line.append("  " + "&b" + az.getArenaName() + "  ");
+			line.append("  " + "&b" + az.getName() + "  ");
 
 			if (az.isDisabled())
 			{
@@ -80,7 +80,7 @@ public class CmdList extends UltimateArenaCommand
 				boolean active = false;
 				for (Arena a : plugin.getActiveArenas())
 				{
-					if (a.getName().equals(az.getArenaName()))
+					if (a.getName().equals(az.getName()))
 					{
 						if (a.isInLobby())
 						{

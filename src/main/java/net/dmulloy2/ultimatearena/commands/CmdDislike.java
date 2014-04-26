@@ -38,7 +38,7 @@ public class CmdDislike extends UltimateArenaCommand
 			return;
 		}
 
-		sendpMessage("&cYou have disliked: " + az.getArenaName());
+		sendpMessage("&cYou have disliked: " + az.getName());
 
 		az.setDisliked(az.getDisliked() + 1);
 		az.getVoted().add(player.getName());

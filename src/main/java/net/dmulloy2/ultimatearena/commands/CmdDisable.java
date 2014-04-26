@@ -38,10 +38,10 @@ public class CmdDisable extends UltimateArenaCommand
 
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
-			if (az.getArenaName().equalsIgnoreCase(args[0]))
+			if (az.getName().equalsIgnoreCase(args[0]))
 			{
 				az.setDisabled(true);
-				sendpMessage("&cYou have disabled {0}!", az.getArenaName());
+				sendpMessage("&cYou have disabled {0}!", az.getName());
 				return;
 			}
 		}

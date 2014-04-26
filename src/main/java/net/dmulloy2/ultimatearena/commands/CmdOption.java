@@ -82,34 +82,34 @@ public class CmdOption extends UltimateArenaCommand
 			switch (option)
 			{
 				case "gameTime":
-					az.setGameTime(NumberUtil.toInt(value));
+					az.getConfig().setGameTime(NumberUtil.toInt(value));
 					break;
 				case "lobbyTime":
-					az.setLobbyTime(NumberUtil.toInt(value));
+					az.getConfig().setLobbyTime(NumberUtil.toInt(value));
 					break;
 				case "maxDeaths":
-					az.setMaxDeaths(NumberUtil.toInt(value));
+					az.getConfig().setMaxDeaths(NumberUtil.toInt(value));
 					break;
 				case "maxWave":
-					az.setMaxWave(NumberUtil.toInt(value));
+					az.getConfig().setMaxWave(NumberUtil.toInt(value));
 					break;
 				case "cashReward":
-					az.setCashReward(NumberUtil.toInt(value));
+					az.getConfig().setCashReward(NumberUtil.toInt(value));
 					break;
 				case "maxPoints":
-					az.setMaxPoints(NumberUtil.toInt(value));
+					az.getConfig().setMaxPoints(NumberUtil.toInt(value));
 					break;
 				case "allowTeamKilling":
-					az.setAllowTeamKilling((boolean) value);
+					az.getConfig().setAllowTeamKilling((boolean) value);
 					break;
 				case "countMobKills":
-					az.setCountMobKills((boolean) value);
+					az.getConfig().setCountMobKills((boolean) value);
 					break;
 				case "rewardBasedOnXp":
-					az.setRewardBasedOnXp((boolean) value);
+					az.getConfig().setRewardBasedOnXp((boolean) value);
 					break;
 				case "giveRewards":
-					az.setGiveRewards((boolean) value);
+					az.getConfig().setGiveRewards((boolean) value);
 					break;
 			}
 
@@ -117,7 +117,7 @@ public class CmdOption extends UltimateArenaCommand
 			az.saveToDisk();
 			az.reload();
 
-			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for arena &e{2}", option, value, az.getArenaName());
+			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for arena &e{2}", option, value, az.getName());
 		}
 		else if (args[0].equalsIgnoreCase("config"))
 		{
@@ -165,7 +165,7 @@ public class CmdOption extends UltimateArenaCommand
 			ac.save();
 			ac.reload();
 
-			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for type &e{2}", option, value, ac.getArenaName());
+			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for type &e{2}", option, value, ac.getType());
 		}
 		else
 		{

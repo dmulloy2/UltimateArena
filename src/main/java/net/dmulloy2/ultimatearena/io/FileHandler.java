@@ -298,7 +298,7 @@ public class FileHandler
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving Arena: " + az.getArenaName()));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving Arena: " + az.getName()));
 		}
 	}
 
@@ -313,12 +313,12 @@ public class FileHandler
 	@Deprecated
 	public void load(ArenaZone az)
 	{
-		plugin.debug("Loading Arena: {0}", az.getArenaName());
+		plugin.debug("Loading Arena: {0}", az.getName());
 
 		try
 		{
 			File folder = new File(plugin.getDataFolder(), "arenas");
-			File file = new File(folder, az.getArenaName() + ".dat");
+			File file = new File(folder, az.getName() + ".dat");
 
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
@@ -329,7 +329,7 @@ public class FileHandler
 			String worldName = fc.getString("world");
 			if (worldName == null || worldName.isEmpty())
 			{
-				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getArenaName());
+				plugin.outConsole(Level.SEVERE, "Could not load Arena {0}: World cannot be null!", az.getName());
 				az.setLoaded(false);
 				return;
 			}
@@ -486,7 +486,7 @@ public class FileHandler
 		}
 		catch (Exception e)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading Arena: " + az.getArenaName()));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading Arena: " + az.getName()));
 			az.setLoaded(false);
 		}
 	}

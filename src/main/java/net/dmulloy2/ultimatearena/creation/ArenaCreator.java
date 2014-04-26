@@ -55,7 +55,7 @@ public abstract class ArenaCreator
 
 		target = new ArenaZone(plugin);
 		target.setType(getType());
-		target.setArenaName(name);
+		target.setName(name);
 	}
 
 	/**
