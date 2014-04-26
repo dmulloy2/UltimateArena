@@ -248,12 +248,12 @@ public class Util
 				V val1 = original.get(key);
 				if (val.equals(val1))
 				{
-					original.remove(key);
+					map.remove(key);
 				}
 			}
 		}
 
-		return original;
+		return map;
 	}
 
 	@SuppressWarnings("deprecation")
