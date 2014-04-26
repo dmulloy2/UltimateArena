@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
+import net.dmulloy2.ultimatearena.flags.ConquestFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -31,7 +32,7 @@ public class CONQUESTArena extends Arena
 
 		for (ArenaLocation loc : az.getFlags())
 		{
-			flags.add(new ArenaFlag(this, loc, plugin));
+			flags.add(new ConquestFlag(this, loc, plugin));
 		}
 	}
 
