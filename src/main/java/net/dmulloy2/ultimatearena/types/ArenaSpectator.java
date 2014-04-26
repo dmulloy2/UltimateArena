@@ -21,14 +21,14 @@ import org.bukkit.potion.PotionEffect;
  */
 
 @Getter @Setter
-public class ArenaSpectator extends PlayerExtension
+public class ArenaSpectator
 {
 	private boolean active;
 
 	private Arena arena;
 
 	private String name;
-	// private final Player player;
+	private final Player player;
 	private final Location spawnBack;
 
 	private PlayerData playerData;
@@ -47,10 +47,9 @@ public class ArenaSpectator extends PlayerExtension
 	 */
 	public ArenaSpectator(Player player, Arena arena, UltimateArena plugin)
 	{
-		super(player);
-		// this.player = player;
+		this.player = player;
 		this.name = getName();
-		this.spawnBack = getLocation();
+		this.spawnBack = player.getLocation();
 
 		this.arena = arena;
 		this.plugin = plugin;
@@ -70,24 +69,24 @@ public class ArenaSpectator extends PlayerExtension
 		clearInventory();
 
 		// Make sure the player is in survival
-		setGameMode(GameMode.SURVIVAL);
+		player.setGameMode(GameMode.SURVIVAL);
 
 		// Heal up the Player
-		setFoodLevel(20);
-		setFireTicks(0);
-		setHealth(20);
+		player.setFoodLevel(20);
+		player.setFireTicks(0);
+		player.setHealth(20);
 
 		// Allow flight
-		setAllowFlight(true);
-		setFlySpeed(0.1F);
+		player.setAllowFlight(true);
+		player.setFlySpeed(0.1F);
 
 		// Give them a compass
-		getInventory().addItem(new ItemStack(Material.COMPASS));
+		player.getInventory().addItem(new ItemStack(Material.COMPASS));
 
 		// Hide the player
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
-			ap.hidePlayer(base);
+			ap.getPlayer().hidePlayer(player);
 		}
 
 		this.active = true;
@@ -99,14 +98,14 @@ public class ArenaSpectator extends PlayerExtension
 
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
-			ap.showPlayer(base);
+			ap.getPlayer().showPlayer(player);
 		}
 
 		for (ArenaPlayer ap : arena.getInactivePlayers())
 		{
-			if (ap != null && ap.isOnline())
+			if (ap != null && ap.getPlayer().isOnline())
 			{
-				ap.showPlayer(base);
+				ap.getPlayer().showPlayer(player);
 			}
 		}
 
@@ -120,9 +119,9 @@ public class ArenaSpectator extends PlayerExtension
 	 */
 	public void clearInventory()
 	{
-		PlayerInventory inv = getInventory();
+		PlayerInventory inv = player.getInventory();
 
-		closeInventory();
+		player.closeInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -136,21 +135,15 @@ public class ArenaSpectator extends PlayerExtension
 	 */
 	public void clearPotionEffects()
 	{
-		for (PotionEffect effect : getActivePotionEffects())
+		for (PotionEffect effect : player.getActivePotionEffects())
 		{
-			removePotionEffect(effect.getType());
+			player.removePotionEffect(effect.getType());
 		}
 	}
 
 	public void sendMessage(String string, Object... objects)
 	{
-		base.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
-	}
-
-	@Override
-	public void sendMessage(String string)
-	{
-		sendMessage(string, new Object[0]);
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
@@ -160,9 +153,9 @@ public class ArenaSpectator extends PlayerExtension
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
-	public final boolean teleport(Location location)
+	public final void teleport(Location location)
 	{
-		return base.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
 	public final void teleport(ArenaLocation location)
@@ -172,7 +165,7 @@ public class ArenaSpectator extends PlayerExtension
 
 	public final void savePlayerData()
 	{
-		this.playerData = new PlayerData(base);
+		this.playerData = new PlayerData(player);
 	}
 
 	public final void reset()

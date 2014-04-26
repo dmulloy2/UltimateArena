@@ -111,7 +111,7 @@ public class SpectatingHandler implements Listener
 	private void removeSpectator(ArenaSpectator spectator)
 	{
 		spectator.endPlayer();
-		closeInventory(spectator.getBase());
+		closeInventory(spectator.getPlayer());
 		spectating.get(spectator.getArena()).remove(spectator);
 	}
 

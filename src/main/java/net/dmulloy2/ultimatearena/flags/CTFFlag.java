@@ -115,7 +115,7 @@ public class CTFFlag
 		arena.tellPlayers("&e{0} &3has dropped the &e{1} &3flag!", riding.getName(), flagType);
 
 		this.timer = 15;
-		this.toloc = riding.getLocation();
+		this.toloc = riding.getPlayer().getLocation();
 		this.myloc = toloc.clone();
 		this.pickedUp = false;
 		this.riding = null;
@@ -147,7 +147,7 @@ public class CTFFlag
 		{
 			for (ArenaPlayer ap : arenaPlayers)
 			{
-				if (ap.getHealth() > 0.0D && ap.getLocation().distance(myloc) < 1.75D)
+				if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(myloc) < 1.75D)
 				{
 					if (ap.getTeam() != team)
 					{
@@ -155,8 +155,8 @@ public class CTFFlag
 						this.pickedUp = true;
 						this.riding = ap;
 
-						ap.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
-						ap.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
+						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
+						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
 						arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", ap.getName(), flagType);
 						return;
 					}
@@ -177,10 +177,10 @@ public class CTFFlag
 		}
 		else
 		{
-			if (riding.isOnline() && ! riding.isDead())
+			if (riding.getPlayer().isOnline() && ! riding.isDead())
 			{
 				// if player is alive
-				toloc = riding.getLocation().clone().add(0, 5, 0);
+				toloc = riding.getPlayer().getLocation().clone().add(0, 5, 0);
 			}
 			else
 			{

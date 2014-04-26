@@ -136,7 +136,7 @@ public class EssentialsHandler
 	{
 		try
 		{
-			com.earth2me.essentials.User user = getEssentialsUser(player.getBase());
+			com.earth2me.essentials.User user = getEssentialsUser(player.getPlayer());
 			if (user == null)
 			{
 				throw new Exception("Null user!");
@@ -147,11 +147,14 @@ public class EssentialsHandler
 					ac.getEssentialsKit());
 			com.earth2me.essentials.Kit.expandItems(getEssentials(), user, items);
 		}
+		catch (ClassNotFoundException | NoSuchMethodError e)
+		{
+			player.sendMessage("&4Error: &cCould not give Essentials kit: &4outdated Essentials&c!");
+			plugin.debug(Util.getUsefulStack(e, "giveKitItems(" + player.getName() + ")"));
+		}
 		catch (Throwable ex)
 		{
-			player.sendMessage("&cCould not give Essentials kit: {0}", ex instanceof ClassNotFoundException
-					|| ex instanceof NoSuchMethodError ? "outdated Essentials!" : ex.getMessage());
-
+			player.sendMessage("&4Error: &cCould not give Essentials kit: &4{0}", ex.getMessage());
 			plugin.debug(Util.getUsefulStack(ex, "giveKitItems(" + player.getName() + ")"));
 		}
 	}

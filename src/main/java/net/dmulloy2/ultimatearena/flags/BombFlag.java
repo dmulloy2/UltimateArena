@@ -86,7 +86,7 @@ public class BombFlag extends ArenaFlag
 		// List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap.getHealth() > 0.0D && ap.getLocation().distance(location) < 3.0D)
+			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(location) < 3.0D)
 			{
 				// players.add(ap);
 				capturer = ap;

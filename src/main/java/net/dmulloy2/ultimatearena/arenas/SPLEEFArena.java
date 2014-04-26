@@ -110,12 +110,12 @@ public class SPLEEFArena extends FFAArena
 			{
 				for (ArenaPlayer ap : getActivePlayers())
 				{
-					Location loc = ap.getLocation();
-					if (ap.getHealth() > 0.0D)
+					Location loc = ap.getPlayer().getLocation();
+					if (ap.getPlayer().getHealth() > 0.0D)
 					{
 						if (outZone.isUnder(loc))
 						{
-							ap.setHealth(0.0D);
+							ap.getPlayer().setHealth(0.0D);
 						}
 					}
 				}

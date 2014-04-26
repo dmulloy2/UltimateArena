@@ -26,12 +26,13 @@ public class ConquestFlag extends ArenaFlag
 		int team1 = 0;
 		int team2 = 0;
 
-		// Use a set so messages aren't displayed more than once
+		// TODO: Fix messages being sent more than once
+		
 		Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap.getHealth() > 0.0D && ap.getLocation().distance(location) < 4.5D)
+			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(location) < 4.5D)
 			{
 				players.add(ap);
 
@@ -55,9 +56,9 @@ public class ConquestFlag extends ArenaFlag
 				else
 					power -= added;
 
-				for (ArenaPlayer ap : players)
+				for (ArenaPlayer apl : players)
 				{
-					ap.sendMessage("&3Capping! &e{0}&3%", power);
+					apl.sendMessage("&3Capping! &e{0}&3%", power);
 				}
 
 				if (power == 0)
@@ -73,9 +74,9 @@ public class ConquestFlag extends ArenaFlag
 				else
 					power -= added;
 
-				for (ArenaPlayer ap : players)
+				for (ArenaPlayer apl : players)
 				{
-					ap.sendMessage("&3Capping! &e{0}&3%", power);
+					apl.sendMessage("&3Capping! &e{0}&3%", power);
 				}
 
 				if (power == 0)
@@ -94,16 +95,16 @@ public class ConquestFlag extends ArenaFlag
 				else
 					power += added;
 
-				for (ArenaPlayer ap : players)
+				for (ArenaPlayer apl : players)
 				{
-					ap.sendMessage("&3Capping! &e{0}&3%", power);
+					apl.sendMessage("&3Capping! &e{0}&3%", power);
 				}
 
 				if (power == 100)
 				{
-					for (ArenaPlayer ap : players)
+					for (ArenaPlayer apl : players)
 					{
-						ap.sendMessage("&3Capped!");
+						apl.sendMessage("&3Capped!");
 					}
 
 					capped = true;
@@ -118,16 +119,16 @@ public class ConquestFlag extends ArenaFlag
 				else
 					power += added;
 
-				for (ArenaPlayer ap : players)
+				for (ArenaPlayer apl : players)
 				{
-					ap.sendMessage("&3Capping! &e{0}&3%", power);
+					apl.sendMessage("&3Capping! &e{0}&3%", power);
 				}
 
 				if (power == 100)
 				{
-					for (ArenaPlayer ap : players)
+					for (ArenaPlayer apl : players)
 					{
-						ap.sendMessage("&3Capped!");
+						apl.sendMessage("&3Capped!");
 					}
 
 					capped = true;

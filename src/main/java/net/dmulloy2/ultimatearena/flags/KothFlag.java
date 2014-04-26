@@ -42,7 +42,7 @@ public class KothFlag extends ArenaFlag
 		// List<Player> players = new ArrayList<Player>();
 		for (ArenaPlayer ap : Util.newList(arenaPlayers))
 		{
-			if (ap.getHealth() > 0.0D && ap.getLocation().distance(location) < 3.0D)
+			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(location) < 3.0D)
 			{
 				// players.add(pl);
 				amt++;

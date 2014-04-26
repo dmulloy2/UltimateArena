@@ -49,7 +49,7 @@ public class FFAArena extends Arena
 		LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
 		meta.setColor(color);
 		itemStack.setItemMeta(meta);
-		ap.getInventory().setHelmet(itemStack);
+		ap.getPlayer().getInventory().setHelmet(itemStack);
 	}
 
 	@Override

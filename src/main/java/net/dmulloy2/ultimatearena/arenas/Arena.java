@@ -621,7 +621,7 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : inactive)
 		{
-			if (ap != null && ap.isOnline())
+			if (ap != null && ap.getPlayer().isOnline())
 			{
 				ap.sendMessage(string, objects);
 			}
@@ -642,8 +642,8 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : active)
 		{
-			if (ap.getHealth() > 0.0D && ap.getLocation().distance(loc) < rad)
-				ap.setHealth(0.0D);
+			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(loc) < rad)
+				ap.getPlayer().setHealth(0.0D);
 		}
 	}
 
@@ -907,7 +907,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// Make sure they're still online
-			if (! ap.isOnline())
+			if (! ap.getPlayer().isOnline())
 			{
 				// Attempt to end them
 				ap.leaveArena(LeaveReason.QUIT);
@@ -915,7 +915,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// End if they've reached the death limit and they're alive
-			if (ap.getDeaths() >= maxDeaths && ap.getHealth() > 0.0D)
+			if (ap.getDeaths() >= maxDeaths && ap.getPlayer().getHealth() > 0.0D)
 			{
 				ap.leaveArena(LeaveReason.DEATHS);
 				continue;
@@ -936,9 +936,9 @@ public abstract class Arena implements Reloadable
 				// Healing. TODO: Does anyone even use this anymore?
 				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 				{
-					if (ap.getHealth() > 0 && ap.getHealth() + 1 <= 20)
+					if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
 					{
-						ap.setHealth(ap.getHealth() + 1);
+						ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
 						ap.setHealTimer(2);
 					}
 				}
@@ -950,8 +950,8 @@ public abstract class Arena implements Reloadable
 					{
 						for (PotionEffect effect : ac.getPotionEffects())
 						{
-							if (! ap.hasPotionEffect(effect.getType()))
-								ap.addPotionEffect(effect);
+							if (! ap.getPlayer().hasPotionEffect(effect.getType()))
+								ap.getPlayer().addPotionEffect(effect);
 						}
 					}
 				}
@@ -1027,12 +1027,12 @@ public abstract class Arena implements Reloadable
 		{
 			if (isInGame())
 			{
-				ap.setLevel(gameTimer);
+				ap.getPlayer().setLevel(gameTimer);
 			}
 
 			if (isInLobby())
 			{
-				ap.setLevel(startTimer);
+				ap.getPlayer().setLevel(startTimer);
 			}
 		}
 	}

@@ -60,7 +60,7 @@ public class KillStreak
 				break;
 			case MOB:
 				for (int i = 0; i < mobAmount; i++)
-					ap.getWorld().spawnEntity(ap.getLocation(), mobType);
+					ap.getPlayer().getWorld().spawnEntity(ap.getPlayer().getLocation(), mobType);
 				break;
 		}
 

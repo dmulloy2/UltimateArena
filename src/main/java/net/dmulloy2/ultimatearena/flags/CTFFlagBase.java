@@ -62,7 +62,7 @@ public class CTFFlagBase extends FlagBase
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap.isOnline() && ap.getHealth() > 0.0D)
+			if (ap.getPlayer().isOnline() && ap.getPlayer().getHealth() > 0.0D)
 			{
 				if (ap.getTeam() == team)
 				{
@@ -70,22 +70,22 @@ public class CTFFlagBase extends FlagBase
 					if (enemyflag.getRiding().getName().equals(ap.getName()))
 					{
 						// If the player selected is carrying the enemy flag
-						if (ap.getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
+						if (ap.getPlayer().getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
 						{
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
 							ap.sendMessage("&aFlag Captured! &c+ 500 XP");
 
-							ap.removePotionEffect(PotionEffectType.SLOW);
-							ap.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+							ap.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+							ap.getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 
 							for (ArenaPlayer apl : Util.newList(arenaPlayers))
 							{
 								if (ap.getTeam() == apl.getTeam())
 								{
 									apl.sendMessage("&aUnlocked 10 seconds of crits!");
-									apl.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
-									apl.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
+									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
+									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
 								}
 							}
 

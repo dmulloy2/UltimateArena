@@ -37,7 +37,7 @@ public class INFECTArena extends PVPArena
 		if (tries < 16)
 		{
 			ArenaPlayer ap = active.get(Util.random(active.size()));
-			if (ap != null && ap.isOnline())
+			if (ap != null && ap.getPlayer().isOnline())
 			{
 				ap.setTeam(2);
 				ap.sendMessage("&3You have been chosen for the infected!");
@@ -66,10 +66,10 @@ public class INFECTArena extends PVPArena
 
 			spawn(ap, true);
 
-			ap.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
-			ap.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 3));
-			ap.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));
-			ap.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
+			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
+			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 3));
+			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));
+			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
 
 			ap.clearInventory();
 			ap.decideHat();

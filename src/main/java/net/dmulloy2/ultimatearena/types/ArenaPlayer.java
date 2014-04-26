@@ -29,7 +29,7 @@ import org.bukkit.potion.PotionEffect;
  */
 
 @Getter @Setter
-public class ArenaPlayer extends PlayerExtension
+public class ArenaPlayer
 {
 	private int kills;
 	private int deaths;
@@ -45,7 +45,7 @@ public class ArenaPlayer extends PlayerExtension
 	private boolean changeClassOnRespawn;
 
 	private String name;
-	// private Player player;
+	private Player player;
 	private PlayerData playerData;
 
 	private Arena arena;
@@ -69,8 +69,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
-		super(player);
-		// this.player = player;
+		this.player = player;
 		this.name = player.getName();
 		this.spawnBack = player.getLocation();
 
@@ -86,11 +85,11 @@ public class ArenaPlayer extends PlayerExtension
 	{
 		if (arenaClass != null && ! arenaClass.isUsesHelmet())
 		{
-			base.getInventory().setHelmet(null);
+			player.getInventory().setHelmet(null);
 			return;
 		}
 
-		if (base.getInventory().getHelmet() == null)
+		if (player.getInventory().getHelmet() == null)
 		{
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
@@ -98,7 +97,7 @@ public class ArenaPlayer extends PlayerExtension
 			if (team == 2) teamColor = Color.BLUE;
 			meta.setColor(teamColor);
 			itemStack.setItemMeta(meta);
-			base.getInventory().setHelmet(itemStack);
+			player.getInventory().setHelmet(itemStack);
 		}
 	}
 
@@ -110,7 +109,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void giveItem(ItemStack stack)
 	{
-		InventoryUtil.giveItem(base, stack);
+		InventoryUtil.giveItem(player, stack);
 	}
 
 	/**
@@ -127,15 +126,15 @@ public class ArenaPlayer extends PlayerExtension
 		{
 			if (slot == 0)
 			{
-				base.getInventory().setChestplate(stack);
+				player.getInventory().setChestplate(stack);
 			}
 			if (slot == 1)
 			{
-				base.getInventory().setLeggings(stack);
+				player.getInventory().setLeggings(stack);
 			}
 			if (slot == 2)
 			{
-				base.getInventory().setBoots(stack);
+				player.getInventory().setBoots(stack);
 			}
 		}
 	}
@@ -146,10 +145,10 @@ public class ArenaPlayer extends PlayerExtension
 	public final void clearInventory()
 	{
 		// Close any open inventories
-		base.closeInventory();
+		player.closeInventory();
 
 		// Clear their inventory
-		PlayerInventory inv = base.getInventory();
+		PlayerInventory inv = player.getInventory();
 
 		inv.setHelmet(null);
 		inv.setChestplate(null);
@@ -243,9 +242,9 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void clearPotionEffects()
 	{
-		for (PotionEffect effect : base.getActivePotionEffects())
+		for (PotionEffect effect : player.getActivePotionEffects())
 		{
-			base.removePotionEffect(effect.getType());
+			player.removePotionEffect(effect.getType());
 		}
 	}
 
@@ -259,13 +258,7 @@ public class ArenaPlayer extends PlayerExtension
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
-		base.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
-	}
-
-	@Override
-	public final void sendMessage(String string)
-	{
-		sendMessage(string, new Object[0]);
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
@@ -374,9 +367,9 @@ public class ArenaPlayer extends PlayerExtension
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
-	public final boolean teleport(Location location)
+	public final void teleport(Location location)
 	{
-		return base.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
 	public final void teleport(ArenaLocation location)
@@ -386,7 +379,7 @@ public class ArenaPlayer extends PlayerExtension
 
 	public final void savePlayerData()
 	{
-		this.playerData = new PlayerData(base);
+		this.playerData = new PlayerData(player);
 	}
 
 	public final void reset()
@@ -398,14 +391,6 @@ public class ArenaPlayer extends PlayerExtension
 
 	public final boolean hasPermission(Permission permission)
 	{
-		return plugin.getPermissionHandler().hasPermission(base, permission);
-	}
-
-	/**
-	 * @deprecated - It's dynamic now
-	 */
-	public final Player getPlayer()
-	{
-		return base;
+		return plugin.getPermissionHandler().hasPermission(player, permission);
 	}
 }

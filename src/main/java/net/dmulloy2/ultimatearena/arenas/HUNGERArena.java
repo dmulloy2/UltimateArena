@@ -49,7 +49,7 @@ public class HUNGERArena extends Arena
 		LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
 		meta.setColor(color);
 		itemStack.setItemMeta(meta);
-		ap.getInventory().setHelmet(itemStack);
+		ap.getPlayer().getInventory().setHelmet(itemStack);
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class HUNGERArena extends Arena
 	{
 		super.onPlayerDeath(pl);
 
-		pl.getWorld().strikeLightningEffect(pl.getLocation());
+		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
 		tellPlayers("&3Tribute &e{0} &3has fallen!", pl.getName());
 	}
 }
