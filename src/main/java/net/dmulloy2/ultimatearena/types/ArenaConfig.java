@@ -36,7 +36,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	protected double cashReward;
 
 	// Arena Specific
-	protected int maxWave;
+	protected int maxWave = 15;
 	protected int maxPoints = 60;
 
 	protected boolean allowTeamKilling, countMobKills, rewardBasedOnXp;
