@@ -47,7 +47,7 @@ public final class ArenaSpectator
 	public ArenaSpectator(@NonNull Player player, @NonNull Arena arena, @NonNull UltimateArena plugin)
 	{
 		this.player = player;
-		this.name = getName();
+		this.name = player.getName();
 		this.spawnBack = player.getLocation();
 
 		this.arena = arena;
