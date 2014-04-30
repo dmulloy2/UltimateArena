@@ -8,6 +8,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.InventoryUtil;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -357,8 +358,8 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Teleports the player to a given location. Will attempt to teleport the
-	 * player to the center of the block.
+	 * Teleports the player to a given {@link Location}. Will attempt to
+	 * teleport the player to the center of the block.
 	 * 
 	 * @param location
 	 *        - {@link Location} to teleport the player to
@@ -368,16 +369,30 @@ public final class ArenaPlayer
 		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
+	/**
+	 * Teleports the player to a given {@link ArenaLocation}. Will attempt to
+	 * teleport the player to the center of the block.
+	 * 
+	 * @param location
+	 *        - {@link ArenaLocation} to teleport the player to
+	 */
 	public final void teleport(@NonNull ArenaLocation location)
 	{
 		teleport(location.getLocation());
 	}
 
+	/**
+	 * Saves the player's data
+	 */
 	public final void savePlayerData()
 	{
+		Validate.isTrue(playerData == null, "PlayerData already saved!");
 		this.playerData = new PlayerData(player);
 	}
 
+	/**
+	 * Returns the player to their pre-join state
+	 */
 	public final void reset()
 	{
 		clearInventory();
