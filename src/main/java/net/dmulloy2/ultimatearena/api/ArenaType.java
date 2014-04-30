@@ -295,7 +295,7 @@ public abstract class ArenaType
 	@Override
 	public int hashCode()
 	{
-		int hash = 36;
+		int hash = 38;
 		hash *= getName().hashCode();
 		return hash;
 	}
