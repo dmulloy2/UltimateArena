@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.NonNull;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -38,7 +39,7 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 	private transient Location location;
 	private transient SimpleVector simpleVector;
 
-	public ArenaLocation(String worldName, int x, int y, int z)
+	public ArenaLocation(@NonNull String worldName, int x, int y, int z)
 	{
 		this.worldName = worldName;
 		this.x = x;
@@ -71,7 +72,7 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		this(player.getLocation());
 	}
 
-	public ArenaLocation(Map<String, Object> args)
+	public ArenaLocation(@NonNull Map<String, Object> args)
 	{
 		this.worldName = (String) args.get("worldName");
 		this.x = (int) args.get("x");
@@ -160,7 +161,7 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(@NonNull Object o)
 	{
 		if (! (o instanceof ArenaLocation))
 			return false;

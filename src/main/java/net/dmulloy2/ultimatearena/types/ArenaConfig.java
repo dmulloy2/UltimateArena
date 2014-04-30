@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
@@ -58,7 +59,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	
 	protected transient final UltimateArena plugin;
 
-	public ArenaConfig(UltimateArena plugin, String type, File file)
+	public ArenaConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
 	{
 		this.type = type;
 		this.file = file;
@@ -78,7 +79,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		}
 	}
 
-	public ArenaConfig(ArenaZone az)
+	public ArenaConfig(@NonNull ArenaZone az)
 	{
 		this.typeConfig = false;
 		this.type = az.getName() + " - Config";
@@ -91,10 +92,9 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		return load(file, this);
 	}
 
-	public final boolean load(File file, ArenaConfig def)
+	public final boolean load(@NonNull File file, @NonNull ArenaConfig def)
 	{
-		Validate.notNull(file, "File cannot be null!");
-		Validate.notNull(def, "Default config cannot be null!");
+		Validate.isTrue(! loaded, "Config has already been loaded!");
 
 		try
 		{
@@ -229,10 +229,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		save(file);
 	}
 
-	public final void save(File file)
+	public final void save(@NonNull File file)
 	{
-		Validate.notNull(file, "File cannot be null!");
-
 		try
 		{
 			if (! file.exists())
@@ -323,6 +321,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.rewards.clear();
 
 		// Load again
-		load();
+		this.loaded = false;
+		this.loaded = load();
 	}
 }
