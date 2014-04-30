@@ -405,13 +405,16 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	public final void loadConfiguration()
 	{
 		config = new ArenaConfig(this);
-		config.load(file, plugin.getConfig(getType()));
+		config.load(file, getDefaultConfig());
 	}
 
 	public final void saveConfiguration()
 	{
-		Map<String, Object> def = plugin.getConfig(getType()).serialize();
-		Map<String, Object> data = Util.filterDuplicates(config.serialize(), def);
+		if (config == null) // Config not initialized yet
+			return;
+
+		Map<String, Object> def = getDefaultConfig().serialize();
+		Map<String, Object> data = Util.filterDuplicateEntries(config.serialize(), def);
 		if (data == null || data.isEmpty())
 			return;
 
@@ -425,6 +428,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			fc.save(file);
 		} catch (Exception e) { }
+	}
+
+	private ArenaConfig getDefaultConfig()
+	{
+		return plugin.getConfig(getType());
 	}
 
 	@Override

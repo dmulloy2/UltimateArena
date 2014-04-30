@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -237,16 +238,16 @@ public class Util
 	 *        - Original map
 	 * @return Filtered map
 	 */
-	public static <K, V> Map<K, V> filterDuplicates(Map<K, V> map, Map<K, V> original)
+	public static <K, V> Map<K, V> filterDuplicateEntries(Map<K,V> map, Map<K, V> original)
 	{
-		for (Entry<K, V> entry : map.entrySet())
+		for (Entry<K, V> entry : new HashMap<K, V>(map).entrySet())
 		{
 			K key = entry.getKey();
 			if (original.containsKey(key))
 			{
 				V val = entry.getValue();
-				V val1 = original.get(key);
-				if (val.equals(val1))
+				V def = original.get(key);
+				if (val.equals(def))
 				{
 					map.remove(key);
 				}
