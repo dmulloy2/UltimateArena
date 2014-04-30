@@ -384,4 +384,42 @@ public final class ArenaPlayer
 		clearPotionEffects();
 		playerData.apply();
 	}
+
+	// ---- Generic Methods
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(@NonNull Object obj)
+	{
+		if (obj instanceof ArenaPlayer)
+		{
+			ArenaPlayer that = (ArenaPlayer) obj;
+			return that.name.equals(name) && that.arena.equals(arena);
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode()
+	{
+		int hash = 34;
+		hash *= name.hashCode();
+		hash *= arena.hashCode();
+		return hash;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

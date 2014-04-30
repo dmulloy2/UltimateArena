@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.creation;
 
+import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
@@ -44,7 +45,8 @@ public abstract class ArenaCreator
 	/**
 	 * Initializes the arena
 	 *
-	 * @throws IllegalStateException If the arena is already initialized
+	 * @throws IllegalStateException
+	 *         If the arena is already initialized
 	 */
 	public final void initializeArena()
 	{
@@ -172,5 +174,42 @@ public abstract class ArenaCreator
 	protected final void sendMessage(String string, Object... objects)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+	}
+
+	// ---- Generic Methods
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(@NonNull Object obj)
+	{
+		if (obj instanceof ArenaCreator)
+		{
+			ArenaCreator that = (ArenaCreator) obj;
+			return that.target.equals(target);
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode()
+	{
+		int hash = 37;
+		hash *= target.hashCode();
+		return hash;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return "ArenaCreator { name = " + name + ", player = " + player.getName() + ", type = " + getType() + " }";
 	}
 }

@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.io.FileSerialization;
@@ -515,27 +516,38 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- Generic Methods
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String toString()
+	public boolean equals(@NonNull Object obj)
 	{
-		return name;
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if (o instanceof ArenaZone)
+		if (obj instanceof ArenaZone)
 		{
-			ArenaZone that = (ArenaZone) o;
-			return this.name.equals(that.name);
+			ArenaZone that = (ArenaZone) obj;
+			return that.getName().equals(name);
 		}
 
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode()
 	{
-		return 71 * name.hashCode();
+		int hash = 36;
+		hash *= name.hashCode();
+		return hash;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }

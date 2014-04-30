@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
@@ -1274,24 +1275,12 @@ public abstract class Arena implements Reloadable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString()
+	public boolean equals(@NonNull Object obj)
 	{
-		return name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object o)
-	{
-		if (o == null)
-			return false;
-
-		if (o instanceof Arena)
+		if (obj instanceof Arena)
 		{
-			Arena that = (Arena) o;
-			return this.name.equals(that.name);
+			Arena that = (Arena) obj;
+			return that.getName().equals(name);
 		}
 
 		return false;
@@ -1303,6 +1292,17 @@ public abstract class Arena implements Reloadable
 	@Override
 	public int hashCode()
 	{
-		return 72 * name.hashCode();
+		int hash = 35;
+		hash *= name.hashCode();
+		return hash;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }

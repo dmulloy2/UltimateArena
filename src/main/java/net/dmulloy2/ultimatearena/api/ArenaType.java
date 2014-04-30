@@ -271,4 +271,41 @@ public abstract class ArenaType
 	{
 		plugin.getServer().getPluginManager().registerEvents(listener, plugin);
 	}
+
+	// ---- Generic Methods
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(@NonNull Object obj)
+	{
+		if (obj instanceof ArenaType)
+		{
+			ArenaType that = (ArenaType) obj;
+			return that.getName().equals(getName());
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode()
+	{
+		int hash = 36;
+		hash *= getName().hashCode();
+		return hash;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return getName();
+	}
 }
