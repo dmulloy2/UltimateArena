@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -21,18 +22,16 @@ import org.bukkit.potion.PotionEffect;
  */
 
 @Getter @Setter
-public class ArenaSpectator
+public final class ArenaSpectator
 {
 	private boolean active;
 
 	private Arena arena;
-
 	private String name;
-	private final Player player;
-	private final Location spawnBack;
-
 	private PlayerData playerData;
 
+	private final Player player;
+	private final Location spawnBack;
 	private final UltimateArena plugin;
 
 	/**
@@ -45,7 +44,7 @@ public class ArenaSpectator
 	 * @param plugin
 	 *        - {@link UltimateArena} plugin instance
 	 */
-	public ArenaSpectator(Player player, Arena arena, UltimateArena plugin)
+	public ArenaSpectator(@NonNull Player player, @NonNull Arena arena, @NonNull UltimateArena plugin)
 	{
 		this.player = player;
 		this.name = getName();
@@ -58,7 +57,7 @@ public class ArenaSpectator
 	/**
 	 * Spawns the player
 	 */
-	public void spawn()
+	public final void spawn()
 	{
 		teleport(arena.getSpawn(arena.getActivePlayers().get(0)));
 
@@ -92,7 +91,7 @@ public class ArenaSpectator
 		this.active = true;
 	}
 
-	public void endPlayer()
+	public final void endPlayer()
 	{
 		reset();
 
@@ -117,7 +116,7 @@ public class ArenaSpectator
 	/**
 	 * Clears the player's inventory
 	 */
-	public void clearInventory()
+	public final void clearInventory()
 	{
 		PlayerInventory inv = player.getInventory();
 
@@ -133,7 +132,7 @@ public class ArenaSpectator
 	/**
 	 * Clears a player's potion effects
 	 */
-	public void clearPotionEffects()
+	public final void clearPotionEffects()
 	{
 		for (PotionEffect effect : player.getActivePotionEffects())
 		{

@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
  */
 
 @Getter
-public class PlayerData
+public final class PlayerData
 {
 	private boolean allowFlight;
 	private float exhaustion;

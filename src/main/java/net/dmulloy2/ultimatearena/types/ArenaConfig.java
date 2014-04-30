@@ -19,6 +19,7 @@ import net.dmulloy2.ultimatearena.util.ItemUtil;
 import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.EntityType;
@@ -92,6 +93,9 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 	public final boolean load(File file, ArenaConfig def)
 	{
+		Validate.notNull(file, "File cannot be null!");
+		Validate.notNull(def, "Default config cannot be null!");
+
 		try
 		{
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
@@ -227,14 +231,19 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 	public final void save(File file)
 	{
+		Validate.notNull(file, "File cannot be null!");
+
 		try
 		{
+			if (! file.exists())
+				file.createNewFile();
+
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 			for (Entry<String, Object> entry : serialize().entrySet())
 			{
 				fc.set(entry.getKey(), entry.getValue());
 			}
-	
+
 			fc.save(file);
 		} catch (Throwable ex) { }
 	}

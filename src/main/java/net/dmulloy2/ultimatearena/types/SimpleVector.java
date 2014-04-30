@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
  */
 
 @SerializableAs("net.dmulloy2.SimpleVector")
-public class SimpleVector implements ConfigurationSerializable
+public final class SimpleVector implements ConfigurationSerializable
 {
 	private int x, y, z;
 

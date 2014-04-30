@@ -30,7 +30,7 @@ public class Field
 
 	public Field()
 	{
-
+		//
 	}
 
 	public void setParam(ArenaLocation point1, ArenaLocation point2)

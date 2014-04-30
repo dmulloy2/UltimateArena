@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -29,7 +30,7 @@ import org.bukkit.potion.PotionEffect;
  */
 
 @Getter @Setter
-public class ArenaPlayer
+public final class ArenaPlayer
 {
 	private int kills;
 	private int deaths;
@@ -44,30 +45,26 @@ public class ArenaPlayer
 	private boolean canReward;
 	private boolean changeClassOnRespawn;
 
-	private String name;
-	private Player player;
 	private PlayerData playerData;
-
-	private Arena arena;
 	private ArenaClass arenaClass;
-	private Location spawnBack;
 
+	private final String name;
+	private final Arena arena;
+	private final Player player;
+	private final Location spawnBack;
 	private final UltimateArena plugin;
-
-	private ItemStack[] inventoryContents;
-	private ItemStack[] armorContents;
 
 	/**
 	 * Creates a new ArenaPlayer instance
 	 * 
 	 * @param player
-	 *            - Base {@link Player} to create the arena player around
+	 *        - Base {@link Player} to create the arena player around
 	 * @param arena
-	 *            - {@link Arena} the player is in
+	 *        - {@link Arena} the player is in
 	 * @param plugin
-	 *            - {@link UltimateArena} plugin instance
+	 *        - {@link UltimateArena} plugin instance
 	 */
-	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
+	public ArenaPlayer(@NonNull Player player, @NonNull Arena arena, @NonNull UltimateArena plugin)
 	{
 		this.player = player;
 		this.name = player.getName();
@@ -94,7 +91,8 @@ public class ArenaPlayer
 			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
 			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
 			Color teamColor = Color.RED;
-			if (team == 2) teamColor = Color.BLUE;
+			if (team == 2)
+				teamColor = Color.BLUE;
 			meta.setColor(teamColor);
 			itemStack.setItemMeta(meta);
 			player.getInventory().setHelmet(itemStack);
@@ -105,9 +103,9 @@ public class ArenaPlayer
 	 * Gives the player an item
 	 * 
 	 * @param stack
-	 *            - {@link ItemStack} to give the player
+	 *        - {@link ItemStack} to give the player
 	 */
-	public final void giveItem(ItemStack stack)
+	public final void giveItem(@NonNull ItemStack stack)
 	{
 		InventoryUtil.giveItem(player, stack);
 	}
@@ -116,9 +114,9 @@ public class ArenaPlayer
 	 * Gives the player armor
 	 * 
 	 * @param slot
-	 *            - Armor slot to put. Must be between 0 and 3
+	 *        - Armor slot to put. Must be between 0 and 3
 	 * @param stack
-	 *            - {@link ItemStack} to give as armor
+	 *        - {@link ItemStack} to give as armor
 	 */
 	public final void giveArmor(int slot, ItemStack stack)
 	{
@@ -178,16 +176,14 @@ public class ArenaPlayer
 	 * Sets a player's class
 	 * 
 	 * @param ac
-	 *            - {@link ArenaClass} to set the player's class to
-	 * 
+	 *        - {@link ArenaClass} to set the player's class to
 	 * @return Whether or not the operation was successful
 	 */
-	public final boolean setClass(ArenaClass ac)
+	public final boolean setClass(@NonNull ArenaClass ac)
 	{
 		if (arena.isValidClass(ac))
 		{
 			this.arenaClass = ac;
-
 			this.changeClassOnRespawn = true;
 
 			clearPotionEffects();
@@ -252,9 +248,9 @@ public class ArenaPlayer
 	 * Sends the player a message
 	 * 
 	 * @param string
-	 *            - Base message
+	 *        - Base message
 	 * @param objects
-	 *            - Objects to format in
+	 *        - Objects to format in
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
@@ -265,7 +261,7 @@ public class ArenaPlayer
 	 * Gives the player xp
 	 * 
 	 * @param xp
-	 *            - XP to give the player
+	 *        - XP to give the player
 	 */
 	public final void addXP(int xp)
 	{
@@ -276,7 +272,7 @@ public class ArenaPlayer
 	 * Subtracts xp from the player
 	 * 
 	 * @param xp
-	 *            - XP to subtract
+	 *        - XP to subtract
 	 */
 	public final void subtractXP(int xp)
 	{
@@ -307,7 +303,7 @@ public class ArenaPlayer
 	 */
 	public final boolean isDead()
 	{
-		return (System.currentTimeMillis() - deathTime) < 60L;
+		return System.currentTimeMillis() - deathTime <= 60L;
 	}
 
 	/**
@@ -326,7 +322,7 @@ public class ArenaPlayer
 	 * Makes the player leave their {@link Arena}
 	 * 
 	 * @param reason
-	 *            - Reason the player is leaving
+	 *        - Reason the player is leaving
 	 */
 	public final void leaveArena(LeaveReason reason)
 	{
@@ -367,14 +363,14 @@ public class ArenaPlayer
 	 * @param location
 	 *        - {@link Location} to teleport the player to
 	 */
-	public final void teleport(Location location)
+	public final void teleport(@NonNull Location location)
 	{
 		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
-	public final void teleport(ArenaLocation location)
+	public final void teleport(@NonNull ArenaLocation location)
 	{
-		 teleport(location.getLocation());
+		teleport(location.getLocation());
 	}
 
 	public final void savePlayerData()
@@ -387,10 +383,5 @@ public class ArenaPlayer
 		clearInventory();
 		clearPotionEffects();
 		playerData.apply();
-	}
-
-	public final boolean hasPermission(Permission permission)
-	{
-		return plugin.getPermissionHandler().hasPermission(player, permission);
 	}
 }

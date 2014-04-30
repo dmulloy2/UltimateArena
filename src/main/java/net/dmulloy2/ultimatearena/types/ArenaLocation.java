@@ -26,17 +26,17 @@ import org.bukkit.entity.Player;
 
 @Getter
 @SerializableAs("net.dmulloy2.ArenaLocation")
-public class ArenaLocation implements ConfigurationSerializable, Cloneable
+public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 {
+	private final int x;
+	private final int y;
+	private final int z;
+
+	private final String worldName;
+
 	private transient World world;
 	private transient Location location;
 	private transient SimpleVector simpleVector;
-
-	private String worldName;
-
-	private int x;
-	private int y;
-	private int z;
 
 	public ArenaLocation(String worldName, int x, int y, int z)
 	{

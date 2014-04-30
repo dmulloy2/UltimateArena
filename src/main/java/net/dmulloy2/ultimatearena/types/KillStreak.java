@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.Getter;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
 
 import org.bukkit.Material;
@@ -14,7 +15,8 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-public class KillStreak
+@Getter
+public final class KillStreak
 {
 	public static enum Type
 	{

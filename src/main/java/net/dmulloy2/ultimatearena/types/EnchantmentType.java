@@ -53,6 +53,7 @@ public enum EnchantmentType
 
 		return null;
 	}
+
 	public static String toName(Enchantment enchant)
 	{
 		for (EnchantmentType e : EnchantmentType.values())

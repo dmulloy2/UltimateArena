@@ -111,9 +111,7 @@ public class ArenaLoader
 
 			String name = (String) map.get("name");
 			Validate.notNull(name, "Name cannot be null");
-
-			if (! name.matches("^[A-Za-z0-9 _.-]+$"))
-				throw new Exception("Name '" + name + "' contains invalid characters");
+			Validate.isTrue(name.matches("^[A-Za-z0-9 _.-]+$"), "Name '" + name + "' contains invalid chargacters");
 
 			String main = (String) map.get("main");
 			Validate.notNull(main, "Main class cannot be null");
@@ -125,7 +123,11 @@ public class ArenaLoader
 			if (author == null)
 				author = "";
 
-			return new ArenaDescriptionFile(name, main, version, author);
+			String stylized = (String) map.get("stylized");
+			if (stylized == null)
+				stylized = name;
+
+			return new ArenaDescriptionFile(name, main, stylized, version, author);
 		}
 		catch (Exception e)
 		{
@@ -136,18 +138,12 @@ public class ArenaLoader
 			try
 			{
 				jar.close();
-			}
-			catch (Exception e)
-			{
-			}
+			} catch (Throwable ex) { }
 
 			try
 			{
 				stream.close();
-			}
-			catch (Exception e)
-			{
-			}
+			} catch (Throwable ex) { }
 		}
 	}
 
@@ -164,10 +160,7 @@ public class ArenaLoader
 				try
 				{
 					cachedClass = loader.findClass(name, false);
-				}
-				catch (ClassNotFoundException e)
-				{
-				}
+				} catch (ClassNotFoundException e) { }
 			}
 		}
 

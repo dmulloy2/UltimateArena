@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.ItemUtil;
@@ -16,6 +18,7 @@ import net.dmulloy2.ultimatearena.util.MaterialUtil;
 import net.dmulloy2.ultimatearena.util.NumberUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -29,9 +32,8 @@ import org.bukkit.potion.PotionEffectType;
  */
 
 @Getter
-public class ArenaClass implements Reloadable
+public final class ArenaClass implements Reloadable
 {
-	private String name;
 	private String permissionNode;
 
 	private List<ItemStack> armor = new ArrayList<ItemStack>();
@@ -49,10 +51,11 @@ public class ArenaClass implements Reloadable
 	private boolean hasPotionEffects;
 	private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 
-	private File file;
+	private final File file;
+	private final String name;
 	private final UltimateArena plugin;
 
-	public ArenaClass(UltimateArena plugin, File file)
+	public ArenaClass(@NonNull UltimateArena plugin, @NonNull File file)
 	{
 		this.plugin = plugin;
 		this.file = file;
@@ -65,25 +68,26 @@ public class ArenaClass implements Reloadable
 		}
 	}
 
-	public boolean load()
+	/**
+	 * Attempts to load this class
+	 * 
+	 * @return Whether or not loading was successful
+	 */
+	public final boolean load()
 	{
+		Validate.isTrue(! loaded, "Class has already been loaded!");
+
 		try
 		{
-			boolean save = false;
-
+			boolean changes = false;
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
-			String[] armor = new String[]
-			{
-					"chestplate", "leggings", "boots"
-			};
-
-			for (String armorPath : armor)
+			// TODO: Rewrite this?
+			for (String armorPath : armorTypes)
 			{
 				if (fc.isSet("armor." + armorPath))
 				{
 					Material mat = null;
-
 					Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 
 					String arm = fc.getString("armor." + armorPath);
@@ -139,7 +143,7 @@ public class ArenaClass implements Reloadable
 								plugin.debug("Detected deprecated potion entry. Converting!");
 
 								fc.set(path, stack.getType().toString() + ":" + stack.getDurability() + "," + stack.getAmount());
-								save = true;
+								changes = true;
 
 								weapons.add(stack);
 							}
@@ -176,7 +180,7 @@ public class ArenaClass implements Reloadable
 				usesEssentials = false;
 				fc.set("useEssentials", false);
 				fc.set("essentialsKit", "");
-				save = true;
+				changes = true;
 			}
 
 			hasPotionEffects = fc.getBoolean("hasPotionEffects", false);
@@ -191,7 +195,8 @@ public class ArenaClass implements Reloadable
 			permissionNode = fc.getString("permissionNode", "");
 
 			// Save the file if changes were made
-			if (save) fc.save(file);
+			if (changes)
+				fc.save(file);
 		}
 		catch (Throwable ex)
 		{
@@ -203,7 +208,12 @@ public class ArenaClass implements Reloadable
 		return true;
 	}
 
-	public List<PotionEffect> readPotionEffects(String str)
+	private final List<String> armorTypes = Arrays.asList(new String[]
+	{
+			"chestplate", "leggings", "boots"
+	});
+
+	private final List<PotionEffect> readPotionEffects(String str)
 	{
 		List<PotionEffect> ret = new ArrayList<PotionEffect>();
 
@@ -242,16 +252,11 @@ public class ArenaClass implements Reloadable
 					}
 				}
 			}
-		}
-		catch (Exception e)
-		{
-			//
-		}
-
+		} catch (Throwable ex) { }
 		return ret;
 	}
 
-	public Map<Enchantment, Integer> readArmorEnchantments(String string)
+	private final Map<Enchantment, Integer> readArmorEnchantments(String string)
 	{
 		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 
@@ -268,16 +273,11 @@ public class ArenaClass implements Reloadable
 					enchants.put(enchantment, level);
 				}
 			}
-		}
-		catch (Exception e)
-		{
-			//
-		}
-
+		} catch (Throwable ex) { }
 		return enchants;
 	}
 
-	public boolean checkPermission(Player player)
+	public final boolean checkPermission(Player player)
 	{
 		if (permissionNode.equals(""))
 			return true;
@@ -285,7 +285,7 @@ public class ArenaClass implements Reloadable
 		return plugin.getPermissionHandler().hasPermission(player, permissionNode);
 	}
 
-	public ItemStack getArmor(int index)
+	public final ItemStack getArmor(int index)
 	{
 		if (armor.size() >= index)
 		{
@@ -293,26 +293,6 @@ public class ArenaClass implements Reloadable
 		}
 
 		return null;
-	}
-
-	public ItemStack getWeapon(int index)
-	{
-		if (weapons.size() >= index)
-		{
-			return weapons.get(index);
-		}
-
-		return null;
-	}
-
-	public static boolean isDeclaredField(String name)
-	{
-		try
-		{
-			ArenaClass.class.getDeclaredField(name);
-			return true;
-		} catch (Throwable ex) { }
-		return false;
 	}
 
 	@Override
@@ -334,6 +314,7 @@ public class ArenaClass implements Reloadable
 		this.essKitName = "";
 
 		// Load the class again
-		load();
+		this.loaded = false;
+		this.loaded = load();
 	}
 }

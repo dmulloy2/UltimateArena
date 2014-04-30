@@ -257,6 +257,16 @@ public class Util
 		return map;
 	}
 
+	public static boolean isDeclaredField(Class<?> clazz, String name)
+	{
+		try
+		{
+			clazz.getDeclaredField(name);
+			return true;
+		} catch (Throwable ex) { }
+		return false;
+	}
+
 	@SuppressWarnings("deprecation")
 	public static void setData(Block block, MaterialData data)
 	{

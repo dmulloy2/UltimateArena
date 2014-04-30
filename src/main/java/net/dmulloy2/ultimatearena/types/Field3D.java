@@ -11,7 +11,7 @@ import org.bukkit.block.Block;
  */
 
 @Getter
-public class Field3D extends Field
+public final class Field3D extends Field
 {
 	protected int maxY;
 	protected int minY;
@@ -23,7 +23,7 @@ public class Field3D extends Field
 
 	public Field3D()
 	{
-
+		//
 	}
 
 	@Override

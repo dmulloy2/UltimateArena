@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
@@ -18,11 +19,11 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
  */
 
 @Getter
-public class ArenaSign implements ConfigurationSerializable
+public final class ArenaSign implements ConfigurationSerializable
 {
-	private int id;
-	private String arenaName;
-	private ArenaLocation loc;
+	private final int id;
+	private final String arenaName;
+	private final ArenaLocation loc;
 
 	private transient Sign sign;
 	private transient ArenaZone az;
@@ -40,7 +41,7 @@ public class ArenaSign implements ConfigurationSerializable
 	 * @param id
 	 *        - The sign's ID
 	 */
-	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone az, int id)
+	public ArenaSign(@NonNull UltimateArena plugin, @NonNull Location loc, @NonNull ArenaZone az, int id)
 	{
 		this.id = id;
 		this.arenaName = az.getName();
@@ -54,7 +55,7 @@ public class ArenaSign implements ConfigurationSerializable
 	/**
 	 * Constructs an ArenaSign from configuration
 	 */
-	public ArenaSign(UltimateArena plugin, Map<String, Object> args)
+	public ArenaSign(@NonNull UltimateArena plugin, @NonNull Map<String, Object> args)
 	{
 		this.id = (int) args.get("id");
 		this.arenaName = (String) args.get("arenaName");
@@ -63,23 +64,6 @@ public class ArenaSign implements ConfigurationSerializable
 		this.getSign();
 		this.az = plugin.getArenaZone(arenaName);
 		this.plugin = plugin;
-	}
-
-	/**
-	 * Gets the {@link Sign} instance
-	 *
-	 * @return {@link Sign} instance
-	 */
-	public final void getSign()
-	{
-		Block block = loc.getWorld().getBlockAt(loc.getLocation());
-		if (block.getState() instanceof Sign)
-		{
-			this.sign = (Sign) block.getState();
-			return;
-		}
-
-		this.sign = null;
 	}
 
 	/**
@@ -206,6 +190,21 @@ public class ArenaSign implements ConfigurationSerializable
 		sign.update();
 	}
 
+	private final void getSign()
+	{
+		Block block = loc.getWorld().getBlockAt(loc.getLocation());
+		if (block.getState() instanceof Sign)
+		{
+			this.sign = (Sign) block.getState();
+			return;
+		}
+
+		this.sign = null;
+	}
+
+	/**
+	 * Clears the sign
+	 */
 	public final void clear()
 	{
 		// Update the sign
@@ -256,12 +255,18 @@ public class ArenaSign implements ConfigurationSerializable
 		return plugin.getArena(az.getName());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString()
 	{
 		return "ArenaSign { id = " + id + ", arenaName = " + arenaName + ", loc = " + loc + " }";
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, Object> serialize()
 	{

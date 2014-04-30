@@ -983,7 +983,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		List<ArenaPlayer> totalPlayers = arena.getActivePlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
-			if (! ap.hasPermission(Permission.JOIN_FORCE))
+			if (! permissionHandler.hasPermission(ap.getPlayer(), Permission.JOIN_FORCE))
 			{
 				validPlayers.add(ap);
 			}
