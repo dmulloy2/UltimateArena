@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 
 import org.apache.commons.lang.Validate;
@@ -37,10 +38,8 @@ public class ArenaLoader
 		this.loaders = Maps.newHashMap();
 	}
 
-	public final ArenaType loadArenaType(File file) throws Exception
+	public final ArenaType loadArenaType(@NonNull File file) throws Exception
 	{
-		Validate.notNull(file, "File cannot be null");
-
 		if (! file.exists())
 		{
 			throw new FileNotFoundException(file.getPath() + " does not exist");
@@ -76,7 +75,7 @@ public class ArenaLoader
 		return type;
 	}
 
-	private final ArenaClassLoader loadClasses(String key, File file) throws Exception
+	private final ArenaClassLoader loadClasses(@NonNull String key, @NonNull File file) throws Exception
 	{
 		ArenaClassLoader loader = null;
 
@@ -90,10 +89,8 @@ public class ArenaLoader
 		return loader;
 	}
 
-	public final ArenaDescriptionFile getArenaDescription(File file) throws InvalidArenaException
+	public final ArenaDescriptionFile getArenaDescription(@NonNull File file) throws InvalidArenaException
 	{
-		Validate.notNull(file, "File cannot be null");
-
 		JarFile jar = null;
 		InputStream stream = null;
 
@@ -147,7 +144,7 @@ public class ArenaLoader
 		}
 	}
 
-	public final Class<?> getClassByName(String name)
+	public final Class<?> getClassByName(@NonNull String name)
 	{
 		Class<?> cachedClass = classes.get(name);
 
@@ -167,7 +164,7 @@ public class ArenaLoader
 		return cachedClass;
 	}
 
-	public final void setClass(String name, Class<?> clazz)
+	public final void setClass(@NonNull String name, @NonNull Class<?> clazz)
 	{
 		if (! classes.containsKey(name))
 		{

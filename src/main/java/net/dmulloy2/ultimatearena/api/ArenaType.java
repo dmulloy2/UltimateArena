@@ -22,6 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 /**
+ * Represents an arena type.
+ * 
  * @author dmulloy2
  */
 
@@ -37,10 +39,8 @@ public abstract class ArenaType
 	private ArenaClassLoader classLoader;
 	private ArenaDescriptionFile description;
 
-	public ArenaType()
-	{
-		//
-	}
+	// Base Constructor
+	public ArenaType() { }
 
 	// ---- Optional Hooks
 
@@ -244,10 +244,8 @@ public abstract class ArenaType
 	 *        Filename of the resource
 	 * @return File if found, otherwise null
 	 */
-	protected final InputStream getResource(String filename)
+	protected final InputStream getResource(@NonNull String filename)
 	{
-		Validate.notNull(filename, "Filename cannot be null!");
-
 		try
 		{
 			URL url = getClassLoader().getResource(filename);
@@ -267,7 +265,7 @@ public abstract class ArenaType
 	 * @param listener
 	 *        - {@link Listener} to register
 	 */
-	protected final void registerListener(Listener listener)
+	protected final void registerListener(@NonNull Listener listener)
 	{
 		plugin.getServer().getPluginManager().registerEvents(listener, plugin);
 	}

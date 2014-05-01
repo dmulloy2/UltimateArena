@@ -1,12 +1,15 @@
 package net.dmulloy2.ultimatearena.api;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.apache.commons.lang.Validate;
+
+import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.types.Reloadable;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import com.google.common.collect.Maps;
@@ -15,7 +18,7 @@ import com.google.common.collect.Maps;
  * @author dmulloy2
  */
 
-public class ArenaHandler
+public class ArenaHandler implements Reloadable
 {
 	private final Map<String, ArenaType> arenaTypes;
 	private final UltimateArena plugin;
@@ -26,44 +29,56 @@ public class ArenaHandler
 		this.arenaTypes = Maps.newHashMap();
 	}
 
-	public final void loadArenasFromDisk()
+	public final ArenaType getArenaType(@NonNull String name)
 	{
+		Validate.notEmpty(name, "Name cannot be empty!");
 
+		for (ArenaType type : arenaTypes.values())
+		{
+			if (type.getName().equalsIgnoreCase(name))
+				return type;
+		}
+
+		return null;
 	}
-
-	// ---- Arena Types
 
 	public final void loadArenaTypes()
 	{
 		File directory = new File(plugin.getDataFolder(), "arenas");
 		if (! directory.exists())
+			directory.mkdirs();
+
+		File[] files = directory.listFiles(new FileFilter()
 		{
-			directory.mkdir();
-			// TODO: Generate default arenas
+			@Override
+			public boolean accept(File file)
+			{
+				return file.getName().endsWith(".jar");
+			}
+		});
+
+		if (files == null || files.length == 0)
+		{
+			// TODO Generate default arenas
+			return;
 		}
 
-		Pattern filter = Pattern.compile("\\.jar$");
 		ArenaLoader loader = new ArenaLoader(plugin);
 
-		for (File file : directory.listFiles())
+		for (File file : files)
 		{
-			Matcher match = filter.matcher(file.getName());
-			if (! match.find()) continue;
-
-			ArenaType arenaType;
-
 			try
 			{
-				arenaType = loader.loadArenaType(file);
+				ArenaType arenaType = loader.loadArenaType(file);
 				arenaType.onLoad();
+
+				arenaTypes.put(arenaType.getName(), arenaType);
 			}
-			catch (Exception e)
+			catch (Throwable ex)
 			{
-				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "loading arena type '" + file.getName() + "'"));
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading arena type '" + file.getName() + "'"));
 				continue;
 			}
-
-			arenaTypes.put(arenaType.getName(), arenaType);
 		}
 	}
 
@@ -75,9 +90,9 @@ public class ArenaHandler
 			{
 				type.onEnable();
 			}
-			catch (Exception e)
+			catch (Throwable ex)
 			{
-				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "enabling arena type '" + type.getName() + "'"));
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "enabling arena type '" + type.getName() + "'"));
 			}
 		}
 	}
@@ -90,12 +105,28 @@ public class ArenaHandler
 			{
 				type.onDisable();
 			}
-			catch (Exception e)
+			catch (Throwable ex)
 			{
-				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "disabling arena type '" + type.getName() + "'"));
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "disabling arena type '" + type.getName() + "'"));
 			}
 		}
 
 		arenaTypes.clear();
+	}
+
+	@Override
+	public void reload()
+	{
+		for (ArenaType type : arenaTypes.values())
+		{
+			try
+			{
+				type.onReload();
+			}
+			catch (Throwable ex)
+			{
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "reloading arena type '" + type.getName() + "'"));
+			}
+		}
 	}
 }
