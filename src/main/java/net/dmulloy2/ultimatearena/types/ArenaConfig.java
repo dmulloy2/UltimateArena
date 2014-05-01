@@ -52,8 +52,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	// ---- Transient
 	protected transient File file;
 
-	protected transient boolean loaded;
-	protected transient boolean typeConfig;
+	protected transient boolean loaded = false;
+	protected transient boolean typeConfig = true;
 
 	protected transient String type;
 	

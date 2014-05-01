@@ -39,7 +39,7 @@ public final class ArenaClass implements Reloadable
 	private List<ItemStack> armor = new ArrayList<ItemStack>();
 	private List<ItemStack> weapons = new ArrayList<ItemStack>();
 
-	private boolean loaded = true;
+	private boolean loaded = false;
 	private boolean usesHelmet = true;
 
 	// Essentials Integration
