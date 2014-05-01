@@ -51,12 +51,9 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 	// ---- Transient
 	protected transient File file;
-
-	protected transient boolean loaded = false;
-	protected transient boolean typeConfig = true;
-
 	protected transient String type;
-	
+	protected transient boolean loaded;
+
 	protected transient final UltimateArena plugin;
 
 	public ArenaConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
@@ -72,16 +69,12 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
 		this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(type.toUpperCase()));
 
+		// Load
 		this.loaded = load();
-		if (! loaded)
-		{
-			plugin.outConsole(Level.SEVERE, "Could not load config for " + type + "!");
-		}
 	}
 
 	public ArenaConfig(@NonNull ArenaZone az)
 	{
-		this.typeConfig = false;
 		this.type = az.getName() + " - Config";
 		this.plugin = az.getPlugin();
 		this.file = az.getFile();
@@ -215,7 +208,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			return false;
 		}
 
-		plugin.debug("Loaded ArenaConfig for type: {0}!", type);
+		plugin.debug("Successfully loaded config for {0}!", type);
 		return true;
 	}
 

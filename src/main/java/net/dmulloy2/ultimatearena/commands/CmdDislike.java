@@ -32,7 +32,7 @@ public class CmdDislike extends UltimateArenaCommand
 			return;
 		}
 
-		if (! az.canLike(player))
+		if (az.hasVoted(player))
 		{
 			err("You already voted for this arena!");
 			return;

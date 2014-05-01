@@ -39,7 +39,6 @@ public final class ArenaClass implements Reloadable
 	private List<ItemStack> armor = new ArrayList<ItemStack>();
 	private List<ItemStack> weapons = new ArrayList<ItemStack>();
 
-	private boolean loaded = false;
 	private boolean usesHelmet = true;
 
 	// Essentials Integration
@@ -51,9 +50,12 @@ public final class ArenaClass implements Reloadable
 	private boolean hasPotionEffects;
 	private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 
-	private final File file;
-	private final String name;
-	private final UltimateArena plugin;
+	// ---- Transient
+	private transient File file;
+	private transient String name;
+	private transient boolean loaded;
+
+	private transient final UltimateArena plugin;
 
 	public ArenaClass(@NonNull UltimateArena plugin, @NonNull File file)
 	{
@@ -61,11 +63,8 @@ public final class ArenaClass implements Reloadable
 		this.file = file;
 		this.name = FormatUtil.trimFileExtension(file, ".yml");
 
+		// Load
 		this.loaded = load();
-		if (! loaded)
-		{
-			plugin.outConsole(Level.WARNING, "Failed to load class {0}!", name);
-		}
 	}
 
 	/**
@@ -200,7 +199,7 @@ public final class ArenaClass implements Reloadable
 		}
 		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading class: \"" + name + "\""));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading class \"" + name + "\""));
 			return false;
 		}
 

@@ -29,10 +29,7 @@ import org.bukkit.entity.Player;
 @SerializableAs("net.dmulloy2.ArenaLocation")
 public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 {
-	private final int x;
-	private final int y;
-	private final int z;
-
+	private final int x, y, z;
 	private final String worldName;
 
 	private transient World world;

@@ -6,6 +6,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.util.FormatUtil;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
 /**
@@ -50,10 +51,7 @@ public abstract class ArenaCreator
 	 */
 	public final void initializeArena()
 	{
-		if (target != null)
-		{
-			throw new IllegalStateException("Arena already initialized");
-		}
+		Validate.isTrue(target == null, "Arena already initialized!");
 
 		target = new ArenaZone(plugin);
 		target.setType(getType());

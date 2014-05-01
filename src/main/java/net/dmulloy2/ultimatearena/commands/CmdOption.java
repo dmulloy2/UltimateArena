@@ -113,7 +113,6 @@ public class CmdOption extends UltimateArenaCommand
 					break;
 			}
 
-			az.saveConfiguration();
 			az.saveToDisk();
 			az.reload();
 

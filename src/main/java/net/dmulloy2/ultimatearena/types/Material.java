@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Map;
 
+import lombok.NonNull;
+
 import org.bukkit.map.MapView;
 import org.bukkit.material.Bed;
 import org.bukkit.material.Button;
@@ -519,7 +521,7 @@ public enum Material
 	 *        Initial data to construct the MaterialData with
 	 * @return New MaterialData with the given data
 	 */
-	public MaterialData getNewData(final byte raw)
+	public MaterialData getNewData(byte raw)
 	{
 		try
 		{
@@ -551,7 +553,7 @@ public enum Material
 	 *        ID of the material to get
 	 * @return Material if found, or null
 	 */
-	public static Material getMaterial(final int id)
+	public static Material getMaterial(int id)
 	{
 		if (byId.length > id && id >= 0)
 		{
@@ -571,7 +573,7 @@ public enum Material
 	 *        Name of the material to get
 	 * @return Material if found, or null
 	 */
-	public static Material getMaterial(final String name)
+	public static Material getMaterial(@NonNull String name)
 	{
 		return matchMaterial(name);
 	}
@@ -587,19 +589,14 @@ public enum Material
 	 *        Name of the material to get
 	 * @return Material if found, or null
 	 */
-	public static Material matchMaterial(final String name)
+	public static Material matchMaterial(@NonNull String name)
 	{
 		Material result = null;
-		if (name == null)
-			return result;
 
 		try
 		{
 			result = getMaterial(Integer.parseInt(name));
-		}
-		catch (NumberFormatException ex)
-		{
-		}
+		} catch (Throwable ex) { }
 
 		if (result == null)
 		{
@@ -638,7 +635,7 @@ public enum Material
 		return org.bukkit.Material.matchMaterial(toString().toUpperCase());
 	}
 
-	public static Material getByBukkitMaterial(org.bukkit.Material bukkitMaterial)
+	public static Material getByBukkitMaterial(@NonNull org.bukkit.Material bukkitMaterial)
 	{
 		return matchMaterial(bukkitMaterial.toString());
 	}

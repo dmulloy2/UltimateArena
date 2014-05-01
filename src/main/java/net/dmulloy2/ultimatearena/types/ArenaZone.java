@@ -20,6 +20,7 @@ import net.dmulloy2.ultimatearena.util.FormatUtil;
 import net.dmulloy2.ultimatearena.util.Util;
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -38,26 +39,29 @@ import com.google.common.io.Files;
 @Getter @Setter
 public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
-	private static transient final int CURRENT_VERSION = 3;
+	protected static transient final int CURRENT_VERSION = 3;
 
 	protected int maxPlayers = 24;
 
+	// ---- Stats
 	protected int liked;
 	protected int disliked;
 	protected int timesPlayed;
 
-	protected transient Material specialType; // Spleef
+	// ---- Spleef
+	protected transient Material specialType;
 	protected String specialTypeString;
 
 	protected boolean disabled;
-	protected transient boolean loaded;
 
 	protected String worldName;
 	protected String defaultClass;
 
+	// ---- Type
 	protected transient FieldType type;
 	protected String typeString;
 
+	// ---- Locations
 	protected ArenaLocation lobby1;
 	protected ArenaLocation lobby2;
 	protected ArenaLocation arena1;
@@ -67,6 +71,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected ArenaLocation lobbyREDspawn;
 	protected ArenaLocation lobbyBLUspawn;
 
+	// ---- Fields
 	protected transient Field lobby;
 	protected transient Field arena;
 
@@ -75,13 +80,16 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected List<ArenaLocation> spawns = new ArrayList<ArenaLocation>();
 	protected List<ArenaLocation> flags = new ArrayList<ArenaLocation>();
 
+	// ---- Transient
 	protected transient File file;
-	protected transient World world;
 	protected transient String name;
+	protected transient World world;
+	protected transient boolean loaded;
 	protected transient ArenaConfig config;
 
 	protected transient final UltimateArena plugin;
 
+	// Base Constructor
 	public ArenaZone(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -89,12 +97,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	public ArenaZone(UltimateArena plugin, File file)
 	{
-		this.plugin = plugin;
+		this(plugin);
 		this.file = file;
 		this.name = FormatUtil.trimFileExtension(file, ".dat");
 		this.initialize();
 	}
 
+	/**
+	 * Initializes this arena
+	 * 
+	 * @return Whether or not the initialization was successful
+	 */
 	public final boolean initialize()
 	{
 		// Fields
@@ -135,6 +148,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- Getters and Setters
 
+	/**
+	 * @return The {@link World} this arena is in
+	 */
 	public final World getWorld()
 	{
 		if (world == null)
@@ -143,12 +159,24 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return world;
 	}
 
+	/**
+	 * Sets the {@link World} this arena is in.
+	 * <p>
+	 * Should only be used in arena creation
+	 * 
+	 * @param world
+	 *        - World this arena is in
+	 */
 	public final void setWorld(World world)
 	{
-		this.world = world;
+		Validate.isTrue(worldName == null, "World already set!");
 		this.worldName = world.getName();
+		this.world = world;
 	}
 
+	/**
+	 * @return This arena's type
+	 */
 	public final FieldType getType()
 	{
 		if (type == null)
@@ -157,12 +185,26 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return type;
 	}
 
+	/**
+	 * Sets this arena's type.
+	 * <p>
+	 * Should only be used in arena creation
+	 * 
+	 * @param type
+	 *        - The arena's {@link FieldType}
+	 */
 	public final void setType(FieldType type)
 	{
-		this.type = type;
+		Validate.isTrue(typeString == null, "Type already set!");
 		this.typeString = type.getName();
+		this.type = type;
 	}
 
+	/**
+	 * @return Spleef special type.
+	 * @throws NullPointerException
+	 *         If this isn't a spleef arena
+	 */
 	public final Material getSpecialType()
 	{
 		if (specialType == null)
@@ -171,12 +213,25 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return specialType;
 	}
 
+	/**
+	 * Sets the spleef special type
+	 * <p>
+	 * Should only be used in arena creation
+	 * 
+	 * @param specialType
+	 *        - Spleef special type
+	 */
 	public final void setSpecialType(Material specialType)
 	{
-		this.specialType = specialType;
+		Validate.isTrue(specialTypeString == null, "Special Type already set!");
 		this.specialTypeString = specialType.toString();
+		this.specialType = specialType;
+		
 	}
 
+	/**
+	 * @return Arena statistics
+	 */
 	public final List<String> getStats()
 	{
 		List<String> lines = new ArrayList<String>();
@@ -214,6 +269,13 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- Utility Methods
 
+	/**
+	 * Checks if a location is inside this arena.
+	 * 
+	 * @param loc
+	 *        - {@link Location} to check
+	 * @return Whether or not the location is inside this arena.
+	 */
 	public final boolean checkLocation(Location loc)
 	{
 		try
@@ -229,11 +291,23 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 	}
 
-	public final boolean canLike(Player player)
+	/**
+	 * Whether or not a player has voted
+	 * 
+	 * @param player
+	 *        - {@link Player} voting
+	 */
+	public final boolean hasVoted(Player player)
 	{
-		return ! voted.contains(player.getName());
+		return voted.contains(player.getName());
 	}
 
+	/**
+	 * Gives a player rewards (if enabled)
+	 * 
+	 * @param ap
+	 *        - {@link ArenaPlayer} to give rewards to
+	 */
 	public void giveRewards(ArenaPlayer ap)
 	{
 		if (! config.isGiveRewards())
@@ -288,7 +362,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- I/O
 
-	public final void loadFromDisk()
+	protected final void loadFromDisk()
 	{
 		checkFile();
 
@@ -329,6 +403,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		loadConfiguration();
 	}
 
+	/**
+	 * Saves this arena to disk
+	 */
 	public final void saveToDisk()
 	{
 		checkFile();
@@ -345,7 +422,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		saveConfiguration();
 	}
 
-	private final void checkFile()
+	protected final void checkFile()
 	{
 		if (file == null)
 		{
@@ -361,7 +438,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- Conversion
 
-	public final boolean checkConversion(int version)
+	private final boolean checkConversion(int version)
 	{
 		if (version != CURRENT_VERSION)
 		{
@@ -373,10 +450,12 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	@Deprecated
-	public final void convert()
+	private final void convert()
 	{
 		try
 		{
+			preConvert();
+
 			// Make backup
 			File backup = new File(file.getAbsolutePath() + "_old");
 			Files.copy(file, backup);
@@ -394,6 +473,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 			// Load
 			loadFromDisk();
+
+			postConvert();
 		}
 		catch (Exception e)
 		{
@@ -401,15 +482,31 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 	}
 
+	/**
+	 * Called before conversion
+	 */
+	protected void preConvert() { }
+
+	/**
+	 * Called after conversion
+	 */
+	protected void postConvert() { }
+
 	// ---- Configuration
 
-	public final void loadConfiguration()
+	/**
+	 * Loads configuration settings
+	 */
+	protected final void loadConfiguration()
 	{
 		config = new ArenaConfig(this);
 		config.load(file, getDefaultConfig());
 	}
 
-	public final void saveConfiguration()
+	/**
+	 * Saves configuration settings
+	 */
+	protected final void saveConfiguration()
 	{
 		if (config == null) // Config not initialized yet
 			return;
@@ -431,11 +528,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		} catch (Exception e) { }
 	}
 
-	private ArenaConfig getDefaultConfig()
+	/**
+	 * @return The default config for this type.
+	 */
+	protected ArenaConfig getDefaultConfig()
 	{
 		return plugin.getConfig(getType());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, Object> serialize()
 	{
@@ -496,6 +599,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		return data;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reload()
 	{
