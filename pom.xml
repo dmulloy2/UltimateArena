@@ -13,16 +13,8 @@
 
   <repositories>
     <repository>
-      <id>vault-repo</id>
-	  <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-    </repository>
-    <repository>
       <id>md_5-repo</id>
       <url>http://repo.md-5.net/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>drtshock-repo</id>
-      <url>http://ci.drtshock.com/plugin/repository/everything/</url>
     </repository>
     <repository>
       <id>sk89q-repo</id>
@@ -126,7 +118,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.31</version>
+      <version>1.2.32</version>
     </dependency>
     <dependency>
       <groupId>com.sk89q</groupId>
