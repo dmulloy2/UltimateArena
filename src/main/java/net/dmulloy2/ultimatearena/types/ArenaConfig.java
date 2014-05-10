@@ -142,6 +142,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
 			}
 
+			this.killStreaks = def.getKillStreaks();
+
 			if (fc.isSet("killStreaks"))
 			{
 				this.killStreaks = new HashMap<Integer, List<KillStreak>>();

@@ -500,8 +500,16 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	protected final void loadConfiguration()
 	{
-		config = new ArenaConfig(this);
+		newConfig();
 		config.load(file, getDefaultConfig());
+	}
+
+	/**
+	 * Creates a new config
+	 */
+	protected void newConfig()
+	{
+		config = new ArenaConfig(this);
 	}
 
 	/**
