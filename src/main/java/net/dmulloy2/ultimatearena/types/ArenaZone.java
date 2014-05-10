@@ -396,7 +396,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			} catch (Exception e) { }
 		}
 
-		this.specialType = Material.matchMaterial(specialTypeString);
+		if (getType() == FieldType.SPLEEF)
+			this.specialType = Material.matchMaterial(specialTypeString);
 		this.type = FieldType.getByName(typeString);
 		this.loaded = true;
 
