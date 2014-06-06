@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -16,8 +17,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
-
-import com.google.common.collect.Maps;
 
 /**
  * @author dmulloy2
@@ -34,8 +33,8 @@ public class ArenaLoader
 	{
 		this.plugin = plugin;
 		this.yaml = new Yaml(new SafeConstructor());
-		this.classes = Maps.newHashMap();
-		this.loaders = Maps.newHashMap();
+		this.classes = new HashMap<>();
+		this.loaders = new HashMap<>();
 	}
 
 	public final ArenaType loadArenaType(@NonNull File file) throws Exception

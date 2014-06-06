@@ -18,7 +18,7 @@ public class ArenaClassLoader extends URLClassLoader
 	{
 		super(urls, parent);
 		this.loader = loader;
-		this.classes = new HashMap<String, Class<?>>();
+		this.classes = new HashMap<>();
 	}
 
 	@Override

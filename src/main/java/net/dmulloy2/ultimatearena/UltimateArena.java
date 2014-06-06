@@ -723,7 +723,8 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		}
 	}
 
-	// ---- Locational Checks ---- //
+	// ---- Locational Checks
+
 	public ArenaZone getZoneInside(Location location)
 	{
 		for (ArenaZone az : Util.newList(loadedArenas))
@@ -1057,7 +1058,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		return null;
 	}
 
-	// ---- Arena Creation ----//
+	// ---- Arena Creation
 
 	/**
 	 * Attempts to create a new {@link Arena}

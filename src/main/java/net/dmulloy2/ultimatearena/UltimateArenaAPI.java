@@ -2,7 +2,6 @@ package net.dmulloy2.ultimatearena;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -22,11 +21,16 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author dmulloy2
  */
-@AllArgsConstructor
 public class UltimateArenaAPI
 {
 	protected final UltimateArena ultimateArena;
 	protected final Plugin accessingPlugin;
+
+	private UltimateArenaAPI(UltimateArena ua, Plugin plugin)
+	{
+		this.ultimateArena = ua;
+		this.accessingPlugin = plugin;
+	}
 
 	/**
 	 * Whether or not a {@link Player} is playing an {@link Arena}
@@ -196,8 +200,7 @@ public class UltimateArenaAPI
 		return null;
 	}
 
-	// ---- Deprecated Legacy Methods ---- //
-	// Due to be removed ~1.8
+	// ---- Deprecated Legacy Methods
 
 	/**
 	 * Gets whether or not a {@link Player} is playing an {@link Arena}

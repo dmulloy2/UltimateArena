@@ -209,7 +209,6 @@ public class PlayerListener implements Listener
 						String name = s.getLine(1);
 						if (plugin.getArenaZone(name) != null)
 						{
-							boolean found = false;
 							for (Arena a : plugin.getActiveArenas())
 							{
 								if (a.getName().equalsIgnoreCase(name))
@@ -217,33 +216,28 @@ public class PlayerListener implements Listener
 									if (a.isInLobby())
 									{
 										plugin.attemptJoin(player, a.getName());
-										found = true;
+										return;
 									}
 								}
 							}
-							if (! found)
+
+							for (ArenaZone az : plugin.getLoadedArenas())
 							{
-								for (ArenaZone az : plugin.getLoadedArenas())
+								if (az != null && az.getName().equalsIgnoreCase(name))
 								{
-									if (az != null && az.getName().equalsIgnoreCase(name))
-									{
-										plugin.attemptJoin(player, az.getName());
-										found = true;
-									}
-								}
-								if (! found)
-								{
-									player.sendMessage(plugin.getPrefix() +
-											FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
+									plugin.attemptJoin(player, az.getName());
+									return;
 								}
 							}
+
+							player.sendMessage(plugin.getPrefix() +
+									FormatUtil.format("&cNo arena by the name of \"{0}\" exists!", name));
 						}
 					}
 					else
 					{
 						if (s.getLine(2).equalsIgnoreCase("Auto assign"))
 						{
-							boolean found = false;
 							if (! plugin.getActiveArenas().isEmpty())
 							{
 								for (Arena a : plugin.getActiveArenas())
@@ -251,20 +245,18 @@ public class PlayerListener implements Listener
 									if (a.isInLobby())
 									{
 										plugin.attemptJoin(player, a.getName());
-										found = true;
+										return;
 									}
 								}
 							}
-							if (! found)
+
+							if (! plugin.getLoadedArenas().isEmpty())
 							{
-								if (! plugin.getLoadedArenas().isEmpty())
+								ArenaZone az = plugin.getLoadedArenas().get(0);
+								if (az != null)
 								{
-									ArenaZone az = plugin.getLoadedArenas().get(0);
-									if (az != null)
-									{
-										plugin.attemptJoin(player, az.getName());
-										found = true;
-									}
+									plugin.attemptJoin(player, az.getName());
+									return;
 								}
 							}
 						}

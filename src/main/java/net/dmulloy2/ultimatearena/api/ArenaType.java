@@ -55,7 +55,7 @@ public abstract class ArenaType
 	public void onEnable() { }
 
 	/**
-	 * Called when this ArenType is disabled
+	 * Called when this ArenaType is disabled
 	 */
 	public void onDisable() { }
 
@@ -294,7 +294,7 @@ public abstract class ArenaType
 	public int hashCode()
 	{
 		int hash = 38;
-		hash *= getName().hashCode();
+		hash *= 1 + getName().hashCode();
 		return hash;
 	}
 

@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.api;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -11,8 +12,6 @@ import net.dmulloy2.ultimatearena.types.Reloadable;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.apache.commons.lang.Validate;
-
-import com.google.common.collect.Maps;
 
 /**
  * @author dmulloy2
@@ -26,7 +25,7 @@ public class ArenaHandler implements Reloadable
 	public ArenaHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		this.arenaTypes = Maps.newHashMap();
+		this.arenaTypes = new HashMap<>();
 	}
 
 	public final ArenaType getArenaType(@NonNull String name)
