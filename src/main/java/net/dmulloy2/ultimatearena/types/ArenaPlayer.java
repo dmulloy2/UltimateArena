@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 
 /**
@@ -171,6 +172,9 @@ public final class ArenaPlayer
 		clearPotionEffects();
 
 		giveClassItems();
+
+		if (! player.hasMetadata("UA"))
+			player.setMetadata("UA", new FixedMetadataValue(plugin, true));
 	}
 
 	/**
@@ -398,6 +402,9 @@ public final class ArenaPlayer
 		clearInventory();
 		clearPotionEffects();
 		playerData.apply();
+
+		if (player.hasMetadata("UA"))
+			player.removeMetadata("UA", plugin);
 	}
 
 	// ---- Generic Methods

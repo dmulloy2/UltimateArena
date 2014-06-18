@@ -78,6 +78,9 @@ public class PlayerListener implements Listener
 		{
 			plugin.getSpectatingHandler().removeSpectator(player);
 		}
+
+		if (player.hasMetadata("UA"))
+			player.removeMetadata("UA", plugin);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

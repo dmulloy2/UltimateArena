@@ -33,6 +33,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -192,6 +193,9 @@ public abstract class Arena implements Reloadable
 
 		// Save vital data
 		pl.savePlayerData();
+
+		// Add metadata
+		player.setMetadata("UA", new FixedMetadataValue(plugin, true));
 
 		// Clear Inventory
 		pl.clearInventory();
