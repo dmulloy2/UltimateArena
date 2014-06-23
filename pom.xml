@@ -65,7 +65,7 @@
     </plugins>
     <resources>
       <resource>
-  	    <targetPath>.</targetPath>
+        <targetPath>.</targetPath>
         <directory>${basedir}/src/main/resources/</directory>
         <filtering>true</filtering>
         <includes>
@@ -73,7 +73,7 @@
         </includes>
       </resource>
       <resource>
-  	    <targetPath>classes/</targetPath>
+        <targetPath>classes/</targetPath>
         <directory>${basedir}/src/main/resources/classes/</directory>
         <filtering>true</filtering>
         <includes>
@@ -81,7 +81,7 @@
         </includes>
       </resource>
       <resource>
-  	    <targetPath>configs/</targetPath>
+        <targetPath>configs/</targetPath>
         <directory>${basedir}/src/main/resources/configs/</directory>
         <filtering>true</filtering>
         <includes>
@@ -105,7 +105,7 @@
       <version>1.7.9-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
- 	  <groupId>org.projectlombok</groupId>
+      <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>0.12.0</version>
       <scope>provided</scope>
@@ -118,7 +118,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.32</version>
+      <version>1.4.1</version>
     </dependency>
     <dependency>
       <groupId>com.sk89q</groupId>

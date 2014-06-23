@@ -138,7 +138,7 @@ public class MOBArena extends Arena
 			Economy eco = plugin.getEconomy();
 			if (eco != null)
 			{
-				eco.depositPlayer(pl.getName(), amtCash);
+				eco.depositPlayer(pl.getPlayer(), amtCash);
 
 				String cash = eco.format(amtCash);
 				pl.sendMessage("&a{0} has been added to your balance!", cash);

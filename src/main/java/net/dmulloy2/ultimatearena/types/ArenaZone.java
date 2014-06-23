@@ -345,7 +345,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 				if (money > 0.0D)
 				{
-					EconomyResponse er = plugin.getEconomy().depositPlayer(ap.getName(), money);
+					EconomyResponse er = plugin.getEconomy().depositPlayer(ap.getPlayer(), money);
 					if (er.transactionSuccess())
 					{
 						String format = plugin.getEconomy().format(money);
