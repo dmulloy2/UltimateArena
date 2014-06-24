@@ -4,8 +4,8 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 
 import org.bukkit.entity.Player;
 
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sk89q.worldedit.regions.CuboidRegionSelector;
 
 /**
  * Handles WorldEdit selections and such
@@ -72,6 +72,6 @@ public class WorldEditHandler
 	 */
 	public final boolean isCuboidSelection(Selection sel)
 	{
-		return sel.getRegionSelector() instanceof CuboidRegionSelector;
+		return sel instanceof CuboidSelection;
 	}
 }
