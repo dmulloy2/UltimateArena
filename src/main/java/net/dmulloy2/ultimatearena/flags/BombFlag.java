@@ -13,6 +13,7 @@ import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -83,12 +84,12 @@ public class BombFlag extends ArenaFlag
 		boolean defuse = false;
 		ArenaPlayer capturer = null;
 
-		// List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(location) < 3.0D)
+			Player player = ap.getPlayer();
+			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld())
+					&& player.getLocation().distance(location) < 3.0D)
 			{
-				// players.add(ap);
 				capturer = ap;
 				if (ap.getTeam() == 1)
 					fuse = true;

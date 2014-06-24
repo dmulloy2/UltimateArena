@@ -13,6 +13,7 @@ import net.dmulloy2.ultimatearena.util.TeamHelper;
 import net.dmulloy2.ultimatearena.util.Util;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -62,7 +63,8 @@ public class CTFFlagBase extends FlagBase
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap.getPlayer().isOnline() && ap.getPlayer().getHealth() > 0.0D)
+			Player player = ap.getPlayer();
+			if (ap.getPlayer().isOnline() && player.getHealth() > 0.0D)
 			{
 				if (ap.getTeam() == team)
 				{
@@ -70,7 +72,8 @@ public class CTFFlagBase extends FlagBase
 					if (enemyflag.getRiding().getName().equals(ap.getName()))
 					{
 						// If the player selected is carrying the enemy flag
-						if (ap.getPlayer().getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
+						if (player.getWorld().getUID().equals(location.getWorld().getUID()) 
+								&& player.getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
 						{
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();

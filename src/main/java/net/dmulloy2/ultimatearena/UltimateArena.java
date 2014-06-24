@@ -1336,7 +1336,14 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		{
 			for (Arena arena : getActiveArenas())
 			{
-				arena.update();
+				try
+				{
+					arena.update();
+				}
+				catch (Throwable ex)
+				{
+					logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "updating " + arena.getName()));
+				}
 			}
 		}
 	}

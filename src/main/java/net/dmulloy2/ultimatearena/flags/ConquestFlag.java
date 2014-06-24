@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.entity.Player;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
@@ -32,7 +34,9 @@ public class ConquestFlag extends ArenaFlag
 
 		for (ArenaPlayer ap : arenaPlayers)
 		{
-			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(location) < 4.5D)
+			Player player = ap.getPlayer();
+			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld())
+					&& player.getLocation().distance(location) < 4.5D)
 			{
 				players.add(ap);
 

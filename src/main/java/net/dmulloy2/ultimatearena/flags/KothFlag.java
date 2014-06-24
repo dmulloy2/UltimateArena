@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.entity.Player;
+
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -39,12 +41,13 @@ public class KothFlag extends ArenaFlag
 
 		int amt = 0;
 		ArenaPlayer capturer = null;
-		// List<Player> players = new ArrayList<Player>();
+
 		for (ArenaPlayer ap : Util.newList(arenaPlayers))
 		{
-			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(location) < 3.0D)
+			Player player = ap.getPlayer();
+			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld())
+					&& player.getLocation().distance(location) < 3.0D)
 			{
-				// players.add(pl);
 				amt++;
 				capturer = ap;
 			}

@@ -13,6 +13,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -147,7 +148,9 @@ public class CTFFlag
 		{
 			for (ArenaPlayer ap : arenaPlayers)
 			{
-				if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(myloc) < 1.75D)
+				Player player = ap.getPlayer();
+				if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(myloc.getWorld())
+						&& player.getLocation().distance(myloc) < 1.75D)
 				{
 					if (ap.getTeam() != team)
 					{
