@@ -7,7 +7,7 @@ import java.util.Map;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 

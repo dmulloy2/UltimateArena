@@ -4,6 +4,8 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.Permission;
 
+import org.apache.commons.lang.WordUtils;
+
 /**
  * @author dmulloy2
  */
@@ -18,7 +20,6 @@ public class CmdInfo extends UltimateArenaCommand
 		this.optionalArgs.add("arena");
 		this.description = "view info on the arena you are in";
 		this.permission = Permission.INFO;
-
 		this.mustBePlayer = true;
 	}
 
@@ -48,7 +49,7 @@ public class CmdInfo extends UltimateArenaCommand
 			return;
 		}
 
-		sendMessage("&3====[ &e{0} &3]====", capitalize(arena.getName()));
+		sendMessage("&3====[ &e{0} &3]====", WordUtils.capitalize(arena.getName()));
 
 		sendMessage(""); // Empty line
 

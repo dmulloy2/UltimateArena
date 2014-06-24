@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.util;
+package net.dmulloy2.ultimatearena.types;
 
 import org.bukkit.ChatColor;
 

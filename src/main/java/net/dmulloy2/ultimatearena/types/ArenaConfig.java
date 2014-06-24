@@ -15,10 +15,11 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.util.ItemUtil;
-import net.dmulloy2.ultimatearena.util.NumberUtil;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.ItemUtil;
+import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;

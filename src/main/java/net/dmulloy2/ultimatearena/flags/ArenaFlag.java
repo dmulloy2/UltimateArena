@@ -8,10 +8,12 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
 /**
@@ -33,7 +35,13 @@ public abstract class ArenaFlag extends FlagBase
 
 		Wool wool = new Wool();
 		wool.setColor(getColor(8));
-		Util.setData(notify, wool);
+		setData(notify, wool);
+	}
+
+	@SuppressWarnings("deprecation")
+	private final void setData(Block block, MaterialData data)
+	{
+		Util.setData(block, data);
 	}
 
 	@Override
@@ -52,7 +60,7 @@ public abstract class ArenaFlag extends FlagBase
 
 		Wool wool = new Wool();
 		wool.setColor(getColor(team == 1 ? 14 : 11));
-		Util.setData(notify, wool);
+		setData(notify, wool);
 	}
 
 	protected final DyeColor getColor(int color)

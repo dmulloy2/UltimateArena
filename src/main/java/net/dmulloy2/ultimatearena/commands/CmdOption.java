@@ -8,7 +8,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.util.NumberUtil;
+import net.dmulloy2.util.NumberUtil;
 
 /**
  * @author dmulloy2

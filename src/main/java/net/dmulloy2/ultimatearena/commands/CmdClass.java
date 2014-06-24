@@ -4,7 +4,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 /**
  * @author dmulloy2
@@ -20,14 +20,18 @@ public class CmdClass extends UltimateArenaCommand
 		this.optionalArgs.add("class");
 		this.description = "Switch UltimateArena classes";
 		this.permission = Permission.CLASS;
-
-		this.mustBeInArena = true;
+		this.mustBePlayer = true;
 	}
 
 	@Override
 	public void perform()
 	{
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap == null)
+		{
+			err("You must be in an arena to do this!");
+			return;
+		}
 
 		if (args.length == 0)
 		{

@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;

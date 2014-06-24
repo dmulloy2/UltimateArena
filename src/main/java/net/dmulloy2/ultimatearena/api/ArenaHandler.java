@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import lombok.NonNull;
+import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.types.Reloadable;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 

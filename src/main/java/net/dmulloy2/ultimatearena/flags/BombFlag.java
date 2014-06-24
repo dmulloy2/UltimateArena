@@ -9,7 +9,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;

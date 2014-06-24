@@ -25,6 +25,13 @@ import java.util.List;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import net.dmulloy2.SwornPlugin;
+import net.dmulloy2.commands.CmdHelp;
+import net.dmulloy2.handlers.CommandHandler;
+import net.dmulloy2.handlers.LogHandler;
+import net.dmulloy2.handlers.PermissionHandler;
+import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.types.SimpleVector;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.arenas.CONQUESTArena;
@@ -45,7 +52,6 @@ import net.dmulloy2.ultimatearena.commands.CmdDislike;
 import net.dmulloy2.ultimatearena.commands.CmdDone;
 import net.dmulloy2.ultimatearena.commands.CmdEnable;
 import net.dmulloy2.ultimatearena.commands.CmdForceStop;
-import net.dmulloy2.ultimatearena.commands.CmdHelp;
 import net.dmulloy2.ultimatearena.commands.CmdInfo;
 import net.dmulloy2.ultimatearena.commands.CmdJoin;
 import net.dmulloy2.ultimatearena.commands.CmdKick;
@@ -73,10 +79,7 @@ import net.dmulloy2.ultimatearena.creation.KOTHCreator;
 import net.dmulloy2.ultimatearena.creation.MobCreator;
 import net.dmulloy2.ultimatearena.creation.PvPCreator;
 import net.dmulloy2.ultimatearena.creation.SpleefCreator;
-import net.dmulloy2.ultimatearena.handlers.CommandHandler;
 import net.dmulloy2.ultimatearena.handlers.EssentialsHandler;
-import net.dmulloy2.ultimatearena.handlers.LogHandler;
-import net.dmulloy2.ultimatearena.handlers.PermissionHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
@@ -94,12 +97,10 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.types.Reloadable;
-import net.dmulloy2.ultimatearena.types.SimpleVector;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryUtil;
-import net.dmulloy2.ultimatearena.util.TimeUtil;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.InventoryUtil;
+import net.dmulloy2.util.TimeUtil;
+import net.dmulloy2.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Location;
@@ -119,15 +120,12 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
  * @author dmulloy2
  */
 
-public class UltimateArena extends JavaPlugin implements Reloadable
+public class UltimateArena extends SwornPlugin implements Reloadable
 {
 	// Handlers
-	private @Getter PermissionHandler permissionHandler;
 	private @Getter SpectatingHandler spectatingHandler;
-	private @Getter CommandHandler commandHandler;
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
-	private @Getter LogHandler logHandler;
 
 	// Integration
 	private @Getter Economy economy;
@@ -186,32 +184,32 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 
 		// Register Commands
 		commandHandler.setCommandPrefix("ua");
-		commandHandler.registerCommand(new CmdClass(this));
-		commandHandler.registerCommand(new CmdClassList(this));
-		commandHandler.registerCommand(new CmdCreate(this));
-		commandHandler.registerCommand(new CmdDelete(this));
-		commandHandler.registerCommand(new CmdDisable(this));
-		commandHandler.registerCommand(new CmdDislike(this));
-		commandHandler.registerCommand(new CmdDone(this));
-		commandHandler.registerCommand(new CmdEnable(this));
-		commandHandler.registerCommand(new CmdForceStop(this));
-		commandHandler.registerCommand(new CmdHelp(this));
-		commandHandler.registerCommand(new CmdInfo(this));
-		commandHandler.registerCommand(new CmdJoin(this));
-		commandHandler.registerCommand(new CmdKick(this));
-		commandHandler.registerCommand(new CmdLeave(this));
-		commandHandler.registerCommand(new CmdLike(this));
-		commandHandler.registerCommand(new CmdList(this));
-		commandHandler.registerCommand(new CmdOption(this));
-		commandHandler.registerCommand(new CmdPause(this));
-		commandHandler.registerCommand(new CmdReload(this));
-		commandHandler.registerCommand(new CmdSetPoint(this));
-		commandHandler.registerCommand(new CmdSpectate(this));
-		commandHandler.registerCommand(new CmdStart(this));
-		commandHandler.registerCommand(new CmdStats(this));
-		commandHandler.registerCommand(new CmdStop(this));
-		commandHandler.registerCommand(new CmdUndo(this));
-		commandHandler.registerCommand(new CmdVersion(this));
+		commandHandler.registerPrefixedCommand(new CmdClass(this));
+		commandHandler.registerPrefixedCommand(new CmdClassList(this));
+		commandHandler.registerPrefixedCommand(new CmdCreate(this));
+		commandHandler.registerPrefixedCommand(new CmdDelete(this));
+		commandHandler.registerPrefixedCommand(new CmdDisable(this));
+		commandHandler.registerPrefixedCommand(new CmdDislike(this));
+		commandHandler.registerPrefixedCommand(new CmdDone(this));
+		commandHandler.registerPrefixedCommand(new CmdEnable(this));
+		commandHandler.registerPrefixedCommand(new CmdForceStop(this));
+		commandHandler.registerPrefixedCommand(new CmdHelp(this));
+		commandHandler.registerPrefixedCommand(new CmdInfo(this));
+		commandHandler.registerPrefixedCommand(new CmdJoin(this));
+		commandHandler.registerPrefixedCommand(new CmdKick(this));
+		commandHandler.registerPrefixedCommand(new CmdLeave(this));
+		commandHandler.registerPrefixedCommand(new CmdLike(this));
+		commandHandler.registerPrefixedCommand(new CmdList(this));
+		commandHandler.registerPrefixedCommand(new CmdOption(this));
+		commandHandler.registerPrefixedCommand(new CmdPause(this));
+		commandHandler.registerPrefixedCommand(new CmdReload(this));
+		commandHandler.registerPrefixedCommand(new CmdSetPoint(this));
+		commandHandler.registerPrefixedCommand(new CmdSpectate(this));
+		commandHandler.registerPrefixedCommand(new CmdStart(this));
+		commandHandler.registerPrefixedCommand(new CmdStats(this));
+		commandHandler.registerPrefixedCommand(new CmdStop(this));
+		commandHandler.registerPrefixedCommand(new CmdUndo(this));
+		commandHandler.registerPrefixedCommand(new CmdVersion(this));
 
 		// Register Listeners
 		PluginManager pm = getServer().getPluginManager();
@@ -228,7 +226,7 @@ public class UltimateArena extends JavaPlugin implements Reloadable
 		loadFiles();
 
 		// Arena Updater, runs every second
-		new ArenaUpdateTask().runTaskTimer(this, 2L, TimeUtil.toTicks(1));
+		new ArenaUpdateTask().runTaskTimer(this, TimeUtil.toTicks(1), TimeUtil.toTicks(1));
 
 		outConsole("{0} has been enabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}

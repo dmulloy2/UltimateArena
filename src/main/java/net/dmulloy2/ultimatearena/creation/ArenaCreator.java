@@ -4,7 +4,7 @@ import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;

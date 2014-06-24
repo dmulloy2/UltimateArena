@@ -5,8 +5,8 @@ import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.InventoryUtil;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.InventoryUtil;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;

@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.arenas;
 
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.ultimatearena.util.TeamHelper;
+import net.dmulloy2.ultimatearena.types.TeamHelper;
 
 /**
  * @author dmulloy2

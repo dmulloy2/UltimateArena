@@ -1,5 +1,9 @@
 package net.dmulloy2.ultimatearena.listeners;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -13,7 +17,8 @@ import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.ReflectionUtil;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,6 +29,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -269,7 +275,7 @@ public class PlayerListener implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerRespawn(PlayerRespawnEvent event)
 	{
 		// If the player is in an arena, respawn them a second later,
@@ -290,9 +296,54 @@ public class PlayerListener implements Listener
 					{
 						arena.spawn(ap);
 					}
-				}.runTaskLater(plugin, 20L);
+				}.runTaskLater(plugin, 1L);
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerDeath(PlayerDeathEvent event)
+	{
+		final Player player = event.getEntity();
+
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				if (player.isDead())
+				{
+					try
+					{
+						// Get the EntityPlayer
+						Object entityPlayer = ReflectionUtil.getHandle(player);
+						Class<?> entityPlayerClass = ReflectionUtil.getNMSClass("EntityPlayer");
+
+						// Get their player connection
+						Field playerConnectionField = ReflectionUtil.getField(entityPlayerClass, "playerConnection");
+						playerConnectionField.setAccessible(true);
+						Object playerConnection = playerConnectionField.get(entityPlayer);
+						Class<?> playerConnectionClass = playerConnection.getClass();
+
+						// Get the method and packet
+						Class<?> packetClass = ReflectionUtil.getNMSClass("PacketPlayInClientCommand");
+						Method a = ReflectionUtil.getMethod(playerConnectionClass, "a", packetClass);
+
+						// Get the client command
+						Class<?> enumClientCommand = ReflectionUtil.getNMSClass("EnumClientCommand");
+						Field performRespawnField = ReflectionUtil.getField(enumClientCommand, "PERFORM_RESPAWN");
+						Object performRespawn = performRespawnField.get(null);
+
+						// Construct the packet
+						Constructor<?> packetConstructor = packetClass.getConstructor(enumClientCommand);
+						Object packet = packetConstructor.newInstance(performRespawn);
+
+						// Invoke the method
+						a.invoke(playerConnection, packet);
+					} catch (Throwable ex) { }
+				}
+			}
+		}.runTaskLater(plugin, 1L);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

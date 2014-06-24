@@ -8,6 +8,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.NonNull;
+import net.dmulloy2.types.SimpleVector;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

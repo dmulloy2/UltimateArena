@@ -3,12 +3,12 @@ package net.dmulloy2.ultimatearena.io;
 import java.io.File;
 import java.util.logging.Level;
 
+import net.dmulloy2.types.Material;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.ultimatearena.types.Material;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 

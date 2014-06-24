@@ -14,10 +14,12 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import net.dmulloy2.types.Material;
+import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.io.FileSerialization;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
-import net.dmulloy2.ultimatearena.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.apache.commons.lang.Validate;

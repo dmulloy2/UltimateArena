@@ -6,7 +6,7 @@ import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
