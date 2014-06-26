@@ -217,7 +217,7 @@ public final class ArenaPlayer
 			return;
 		}
 
-		if (arenaClass.isUsesEssentials() && plugin.useEssentials())
+		if (arenaClass.isUsesEssentials() && plugin.getEssentialsHandler().useEssentials())
 		{
 			plugin.getEssentialsHandler().giveKitItems(this);
 		}

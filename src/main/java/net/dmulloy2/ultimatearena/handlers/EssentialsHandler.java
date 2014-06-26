@@ -4,12 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+import net.dmulloy2.integration.IntegrationHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.Kit;
+import com.earth2me.essentials.User;
 
 /**
  * Handles integration with Essentials.
@@ -21,34 +28,32 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public class EssentialsHandler
+public class EssentialsHandler extends IntegrationHandler
 {
-	private Object essentials;
-	private boolean useEssentials;
+	private @Getter Essentials essentials;
+	private @Getter boolean enabled;
 
 	private final UltimateArena plugin;
 	public EssentialsHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		this.essentials = null;
-		this.useEssentials = false;
+		this.setup();
 	}
 
-	/**
-	 * Returns Essentials. Stored in an object because integration with it is
-	 * nearly impossible
-	 */
-	public final com.earth2me.essentials.Essentials getEssentials()
+	@Override
+	public void setup()
 	{
-		return (com.earth2me.essentials.Essentials) essentials;
-	}
+		try
+		{
+			PluginManager pm = plugin.getServer().getPluginManager();
+			if (pm.getPlugin("Essentials") != null)
+			{
+				essentials = (Essentials) pm.getPlugin("Essentials");
+				enabled = true;
 
-	/**
-	 * Sets the Essentials instance
-	 */
-	public final void setEssentials(Object essentials)
-	{
-		this.essentials = essentials;
+				plugin.getLogHandler().log("Integration with Essentials successful!");
+			}
+		} catch (Throwable ex) { }
 	}
 
 	/**
@@ -58,24 +63,13 @@ public class EssentialsHandler
 	{
 		try
 		{
-			return useEssentials && essentials != null;
+			return enabled && essentials != null;
 		}
 		catch (Throwable ex)
 		{
 			plugin.getLogHandler().debug(Util.getUsefulStack(ex, "useEssentials()"));
 			return false;
 		}
-	}
-
-	/**
-	 * Sets whether or not to use essentials
-	 *
-	 * @param useEssentials
-	 *        - Whether or not to use Essentials
-	 */
-	public final void setUseEssentials(boolean useEssentials)
-	{
-		this.useEssentials = useEssentials;
 	}
 
 	/**
@@ -90,7 +84,7 @@ public class EssentialsHandler
 		{
 			if (useEssentials())
 			{
-				com.earth2me.essentials.User user = getEssentialsUser(player);
+				User user = getEssentialsUser(player);
 				if (user != null)
 				{
 					user.setGodModeEnabled(false);
@@ -109,7 +103,7 @@ public class EssentialsHandler
 	 * @param player
 	 *        - {@link Player} to get Essentials user for
 	 */
-	public final com.earth2me.essentials.User getEssentialsUser(Player player)
+	public final User getEssentialsUser(Player player)
 	{
 		try
 		{
@@ -136,16 +130,15 @@ public class EssentialsHandler
 	{
 		try
 		{
-			com.earth2me.essentials.User user = getEssentialsUser(player.getPlayer());
+			User user = getEssentialsUser(player.getPlayer());
 			if (user == null)
 			{
 				throw new Exception("Null user!");
 			}
 
 			ArenaClass ac = player.getArenaClass();
-			List<String> items = com.earth2me.essentials.Kit.getItems(getEssentials(), user, ac.getEssKitName(),
-					ac.getEssentialsKit());
-			com.earth2me.essentials.Kit.expandItems(getEssentials(), user, items);
+			List<String> items = Kit.getItems(getEssentials(), user, ac.getEssKitName(), ac.getEssentialsKit());
+			Kit.expandItems(getEssentials(), user, items);
 		}
 		catch (ClassNotFoundException | NoSuchMethodError e)
 		{

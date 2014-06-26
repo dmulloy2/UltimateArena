@@ -22,6 +22,7 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -113,7 +114,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.earth2me.essentials.Essentials;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 /**
@@ -134,7 +134,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter EssentialsHandler essentialsHandler;
 
 	// Lists and Maps
-	private @Getter HashMap<String, ArenaJoinTask> waiting = new HashMap<String, ArenaJoinTask>();
+	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<String, ArenaJoinTask>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
 	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
@@ -152,7 +152,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	@Override
 	public void onLoad()
 	{
-		// Register Serializables
+		SwornPlugin.checkRegistrations();
 		ConfigurationSerialization.registerClass(ArenaLocation.class);
 	}
 
@@ -178,8 +178,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		fileHandler = new FileHandler(this);
 
 		// Integration
+		essentialsHandler = new EssentialsHandler(this);
+
 		setupVaultIntegration();
-		setupEssentialsIntegration();
 		setupWorldEditIntegration();
 
 		// Register Commands
@@ -380,44 +381,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 				}
 			}
 		} catch (Throwable ex) { }
-	}
-
-	/**
-	 * Sets up integration with Essentials
-	 */
-	private void setupEssentialsIntegration()
-	{
-		try
-		{
-			essentialsHandler = new EssentialsHandler(this);
-
-			PluginManager pm = getServer().getPluginManager();
-			if (pm.isPluginEnabled("Essentials"))
-			{
-				Plugin plugin = pm.getPlugin("Essentials");
-				if (plugin instanceof Essentials)
-				{
-					essentialsHandler.setEssentials(plugin);
-					essentialsHandler.setUseEssentials(true);
-					outConsole("Integration with Essentials successful!");
-				}
-			}
-		} catch (Exception e) { }
-	}
-
-	/**
-	 * Returns whether or not to use Essentials
-	 */
-	public final boolean useEssentials()
-	{
-		try
-		{
-			return essentialsHandler.useEssentials();
-		}
-		catch (Throwable ex)
-		{
-			return false;
-		}
 	}
 
 	/**

@@ -167,7 +167,7 @@ public final class ArenaClass implements Reloadable
 
 			usesEssentials = fc.getBoolean("useEssentials", false);
 
-			if (usesEssentials && plugin.useEssentials())
+			if (usesEssentials && plugin.getEssentialsHandler().useEssentials())
 			{
 				essKitName = fc.getString("essentialsKit", "");
 				if (! essKitName.isEmpty())
