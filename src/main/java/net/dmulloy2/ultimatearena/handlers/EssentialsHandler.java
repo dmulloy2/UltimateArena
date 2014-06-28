@@ -1,7 +1,6 @@
 package net.dmulloy2.ultimatearena.handlers;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -137,17 +136,12 @@ public class EssentialsHandler extends IntegrationHandler
 			}
 
 			ArenaClass ac = player.getArenaClass();
-			List<String> items = Kit.getItems(getEssentials(), user, ac.getEssKitName(), ac.getEssentialsKit());
-			Kit.expandItems(getEssentials(), user, items);
-		}
-		catch (ClassNotFoundException | NoSuchMethodError e)
-		{
-			player.sendMessage("&4Error: &cCould not give Essentials kit: &4outdated Essentials&c!");
-			plugin.debug(Util.getUsefulStack(e, "giveKitItems(" + player.getName() + ")"));
+			Kit kit = new Kit(ac.getEssKitName(), essentials);
+			kit.expandItems(user);
 		}
 		catch (Throwable ex)
 		{
-			player.sendMessage("&4Error: &cCould not give Essentials kit: &4{0}", ex.getMessage());
+			player.sendMessage("&4Error: &cCould not give Essentials kit: &4{0}", ex.toString());
 			plugin.debug(Util.getUsefulStack(ex, "giveKitItems(" + player.getName() + ")"));
 		}
 	}
