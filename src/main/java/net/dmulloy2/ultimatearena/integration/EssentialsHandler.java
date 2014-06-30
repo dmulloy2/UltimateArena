@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.handlers;
+package net.dmulloy2.ultimatearena.integration;
 
 import java.util.HashMap;
 import java.util.Map;

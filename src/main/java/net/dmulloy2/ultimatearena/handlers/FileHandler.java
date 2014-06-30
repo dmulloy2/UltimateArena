@@ -1,4 +1,4 @@
-package net.dmulloy2.ultimatearena.io;
+package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.util.logging.Level;

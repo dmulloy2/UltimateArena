@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.creation;
 
 import net.dmulloy2.types.Material;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
+import net.dmulloy2.ultimatearena.integration.WorldEditHandler;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.util.FormatUtil;

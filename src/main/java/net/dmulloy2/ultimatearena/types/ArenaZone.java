@@ -1,7 +1,6 @@
 package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,10 +13,11 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import net.dmulloy2.io.FileSerialization;
 import net.dmulloy2.types.Material;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.io.FileSerialization;
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -339,7 +339,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 		if (plugin.getConfig().getBoolean("moneyrewards", true))
 		{
-			if (plugin.getEconomy() != null)
+			VaultHandler vault = plugin.getVaultHandler();
+			if (vault.isEnabled())
 			{
 				double money = config.getCashReward();
 				if (config.isRewardBasedOnXp())
@@ -347,10 +348,10 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 				if (money > 0.0D)
 				{
-					EconomyResponse er = plugin.getEconomy().depositPlayer(ap.getPlayer(), money);
+					EconomyResponse er = vault.depositPlayer(ap.getPlayer(), money);
 					if (er.transactionSuccess())
 					{
-						String format = plugin.getEconomy().format(money);
+						String format = vault.getEconomy().format(money);
 						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
 					}
 					else
@@ -413,14 +414,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		checkFile();
 
-		try
-		{
-			FileSerialization.save(this, file);
-		}
-		catch (IOException e)
-		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving arena " + name));
-		}
+		FileSerialization.save(this, file);
 
 		saveConfiguration();
 	}

@@ -3,11 +3,11 @@ package net.dmulloy2.ultimatearena.arenas;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.util.Util;
-import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -135,12 +135,12 @@ public class MOBArena extends Arena
 
 		if (amtCash > 0 && plugin.getConfig().getBoolean("moneyrewards"))
 		{
-			Economy eco = plugin.getEconomy();
-			if (eco != null)
+			VaultHandler vault = plugin.getVaultHandler();
+			if (vault.isEnabled())
 			{
-				eco.depositPlayer(pl.getPlayer(), amtCash);
+				vault.depositPlayer(pl.getPlayer(), amtCash);
 
-				String cash = eco.format(amtCash);
+				String cash = vault.getEconomy().format(amtCash);
 				pl.sendMessage("&a{0} has been added to your balance!", cash);
 			}
 		}

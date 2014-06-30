@@ -81,11 +81,12 @@ import net.dmulloy2.ultimatearena.creation.KOTHCreator;
 import net.dmulloy2.ultimatearena.creation.MobCreator;
 import net.dmulloy2.ultimatearena.creation.PvPCreator;
 import net.dmulloy2.ultimatearena.creation.SpleefCreator;
-import net.dmulloy2.ultimatearena.handlers.EssentialsHandler;
+import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
-import net.dmulloy2.ultimatearena.handlers.WorldEditHandler;
-import net.dmulloy2.ultimatearena.io.FileHandler;
+import net.dmulloy2.ultimatearena.integration.EssentialsHandler;
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
+import net.dmulloy2.ultimatearena.integration.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
@@ -103,7 +104,6 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
-import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -111,11 +111,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 /**
  * @author dmulloy2
@@ -129,10 +126,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter SignHandler signHandler;
 
 	// Integration
-	private @Getter Economy economy;
-	private @Getter WorldEditPlugin worldEdit;
-	private @Getter WorldEditHandler worldEditHandler;
 	private @Getter EssentialsHandler essentialsHandler;
+	private @Getter WorldEditHandler worldEditHandler;
+	private @Getter VaultHandler vaultHandler;
 
 	// Lists and Maps
 	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<String, ArenaJoinTask>();
@@ -180,9 +176,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Integration
 		essentialsHandler = new EssentialsHandler(this);
-
-		setupVaultIntegration();
-		setupWorldEditIntegration();
+		worldEditHandler = new WorldEditHandler(this);
+		vaultHandler = new VaultHandler(this);
 
 		// Register Commands
 		commandHandler.setCommandPrefix("ua");
@@ -335,68 +330,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Load any new classes
 		loadClasses();
-	}
-
-	/**
-	 * Sets up integration with Vault Economy
-	 */
-	public void setupVaultIntegration()
-	{
-		try
-		{
-			PluginManager pm = getServer().getPluginManager();
-			if (pm.isPluginEnabled("Vault"))
-			{
-				RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-				if (economyProvider != null)
-				{
-					economy = economyProvider.getProvider();
-					outConsole("Economy integration through {0}!", economy.getName());
-				}
-				else
-				{
-					outConsole("Failed to hook into Vault economy.");
-				}
-			}
-		} catch (Throwable ex) { }
-	}
-
-	/**
-	 * Sets up integration with WorldEdit
-	 */
-	private void setupWorldEditIntegration()
-	{
-		try
-		{
-			worldEditHandler = new WorldEditHandler(this);
-
-			PluginManager pm = getServer().getPluginManager();
-			if (pm.isPluginEnabled("WorldEdit"))
-			{
-				Plugin plugin = pm.getPlugin("WorldEdit");
-				if (plugin instanceof WorldEditPlugin)
-				{
-					worldEdit = (WorldEditPlugin) plugin;
-					worldEditHandler.setUseWorldEdit(getConfig().getBoolean("useWorldEdit", true));
-					outConsole("Integration with WorldEdit successful!");
-				}
-			}
-		} catch (Throwable ex) { }
-	}
-
-	/**
-	 * Returns whether or not to use WorldEdit
-	 */
-	public final boolean useWorldEdit()
-	{
-		try
-		{
-			return worldEditHandler.useWorldEdit();
-		}
-		catch (Throwable ex)
-		{
-			return false;
-		}
 	}
 
 	// Create Directories
