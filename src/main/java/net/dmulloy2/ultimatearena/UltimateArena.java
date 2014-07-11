@@ -99,7 +99,6 @@ import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
-import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.TimeUtil;
@@ -109,6 +108,8 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -457,6 +458,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return false;
 	}
 
+	private Map<ArenaClass, Permission> classPermissions = new HashMap<>();
+
 	private void loadClasses()
 	{
 		File folder = new File(getDataFolder(), "classes");
@@ -493,6 +496,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			{
 				classes.add(ac);
 				total++;
+
+				if (ac.isNeedsPermission())
+				{
+					Permission perm = new Permission(ac.getPermissionNode(), PermissionDefault.OP);
+					getServer().getPluginManager().addPermission(perm);
+					classPermissions.put(ac, perm);
+				}
 			}
 		}
 
@@ -675,7 +685,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public void attemptJoin(Player player, String arena)
 	{
-		if (! permissionHandler.hasPermission(player, Permission.JOIN))
+		if (! permissionHandler.hasPermission(player, net.dmulloy2.ultimatearena.types.Permission.JOIN))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to do this!"));
 			return;
@@ -771,7 +781,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public void join(Player player, String name)
 	{
-		boolean forced = permissionHandler.hasPermission(player, Permission.JOIN_FORCE);
+		boolean forced = permissionHandler.hasPermission(player, net.dmulloy2.ultimatearena.types.Permission.JOIN_FORCE);
 
 		ArenaZone az = getArenaZone(name);
 		Arena a = getArena(name);
@@ -879,7 +889,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		List<ArenaPlayer> totalPlayers = arena.getActivePlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
-			if (! permissionHandler.hasPermission(ap.getPlayer(), Permission.JOIN_FORCE))
+			if (! permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FORCE))
 			{
 				validPlayers.add(ap);
 			}

@@ -36,6 +36,7 @@ import org.bukkit.potion.PotionEffectType;
 @Getter
 public final class ArenaClass implements Reloadable
 {
+	private boolean needsPermission;
 	private String permissionNode;
 
 	private List<ItemStack> armor = new ArrayList<ItemStack>();
@@ -71,7 +72,7 @@ public final class ArenaClass implements Reloadable
 
 	/**
 	 * Attempts to load this class
-	 * 
+	 *
 	 * @return Whether or not loading was successful
 	 */
 	public final boolean load()
@@ -158,9 +159,9 @@ public final class ArenaClass implements Reloadable
 							}
 						}
 					}
-					catch (Exception e)
+					catch (Throwable ex)
 					{
-						plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "parsing item \"" + fc.getString(path) + "\""));
+						plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "parsing item \"" + fc.getString(path) + "\""));
 					}
 				}
 			}
@@ -185,7 +186,6 @@ public final class ArenaClass implements Reloadable
 			}
 
 			hasPotionEffects = fc.getBoolean("hasPotionEffects", false);
-
 			if (hasPotionEffects)
 			{
 				potionEffects = readPotionEffects(fc.getString("potionEffects"));
@@ -193,11 +193,28 @@ public final class ArenaClass implements Reloadable
 
 			usesHelmet = fc.getBoolean("useHelmet", true);
 
-			permissionNode = fc.getString("permissionNode", "");
+			if (fc.isSet("permissionNode"))
+			{
+				if (! fc.getString("permissionNode").isEmpty())
+					fc.set("needsPermission", true);
 
-			// Save the file if changes were made
-			if (changes)
-				fc.save(file);
+				fc.set("permissionNode", null);
+				changes = true;
+			}
+
+			needsPermission = fc.getBoolean("needsPermission", false);
+			permissionNode = "ultimatearena.class." + name.toLowerCase();
+
+			// Attempt to save the file
+			try
+			{
+				if (changes)
+					fc.save(file);
+			}
+			catch (Throwable ex)
+			{
+				plugin.outConsole(Level.WARNING, Util.getUsefulStack(ex, "saving changes for class \"" + name + "\""));
+			}
 		}
 		catch (Throwable ex)
 		{
@@ -232,7 +249,7 @@ public final class ArenaClass implements Reloadable
 						PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
 						int strength = NumberUtil.toInt(split1[1]);
 
-						if (type != null && strength > 0)
+						if (type != null && strength >= 0)
 						{
 							ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 						}
@@ -247,7 +264,7 @@ public final class ArenaClass implements Reloadable
 					PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
 					int strength = NumberUtil.toInt(split1[1]);
 
-					if (type != null && strength > 0)
+					if (type != null && strength >= 0)
 					{
 						ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 					}
@@ -280,7 +297,7 @@ public final class ArenaClass implements Reloadable
 
 	public final boolean checkPermission(Player player)
 	{
-		if (permissionNode.equals(""))
+		if (! needsPermission)
 			return true;
 
 		return plugin.getPermissionHandler().hasPermission(player, permissionNode);
@@ -301,6 +318,7 @@ public final class ArenaClass implements Reloadable
 	{
 		// Boolean defaults
 		this.hasPotionEffects = false;
+		this.needsPermission = false;
 		this.usesEssentials = false;
 		this.usesHelmet = true;
 
