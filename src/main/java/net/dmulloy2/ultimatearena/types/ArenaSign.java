@@ -32,14 +32,10 @@ public final class ArenaSign implements ConfigurationSerializable
 	/**
 	 * Creates a new {@link ArenaSign}
 	 *
-	 * @param plugin
-	 *        - {@link UltimateArena} plugin instance
-	 * @param loc
-	 *        - {@link Location} of the spawn
-	 * @param zone
-	 *        - {@link ArenaZone} that the sign is for
-	 * @param id
-	 *        - The sign's ID
+	 * @param plugin {@link UltimateArena} plugin instance
+	 * @param loc {@link Location} of the spawn
+	 * @param zone {@link ArenaZone} that the sign is for
+	 * @param id The sign's ID
 	 */
 	public ArenaSign(@NonNull UltimateArena plugin, @NonNull Location loc, @NonNull ArenaZone az, int id)
 	{
@@ -97,7 +93,7 @@ public final class ArenaSign implements ConfigurationSerializable
 
 		// Line 3
 		StringBuilder line = new StringBuilder();
-		if (isActive())
+		if (az.isActive())
 		{
 			Arena ar = getArena();
 			switch (ar.getGameMode())
@@ -130,7 +126,7 @@ public final class ArenaSign implements ConfigurationSerializable
 
 		// Line 4
 		line = new StringBuilder();
-		if (isActive())
+		if (az.isActive())
 		{
 			Arena ar = getArena();
 
@@ -243,11 +239,6 @@ public final class ArenaSign implements ConfigurationSerializable
 		}
 
 		sign.update();
-	}
-
-	private final boolean isActive()
-	{
-		return getArena() != null;
 	}
 
 	private final Arena getArena()

@@ -17,6 +17,7 @@ import net.dmulloy2.io.FileSerialization;
 import net.dmulloy2.types.Material;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
@@ -107,7 +108,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	/**
 	 * Initializes this arena
-	 * 
+	 *
 	 * @return Whether or not the initialization was successful
 	 */
 	public final boolean initialize()
@@ -165,9 +166,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 * Sets the {@link World} this arena is in.
 	 * <p>
 	 * Should only be used in arena creation
-	 * 
-	 * @param world
-	 *        - World this arena is in
+	 *
+	 * @param world World this arena is in
 	 */
 	public final void setWorld(World world)
 	{
@@ -191,9 +191,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 * Sets this arena's type.
 	 * <p>
 	 * Should only be used in arena creation
-	 * 
-	 * @param type
-	 *        - The arena's {@link FieldType}
+	 *
+	 * @param type The arena's {@link FieldType}
 	 */
 	public final void setType(FieldType type)
 	{
@@ -204,8 +203,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	/**
 	 * @return Spleef special type.
-	 * @throws NullPointerException
-	 *         If this isn't a spleef arena
+	 * @throws NullPointerException If this isn't a spleef arena
 	 */
 	public final Material getSpecialType()
 	{
@@ -219,16 +217,15 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 * Sets the spleef special type
 	 * <p>
 	 * Should only be used in arena creation
-	 * 
-	 * @param specialType
-	 *        - Spleef special type
+	 *
+	 * @param specialType Spleef special type
 	 */
 	public final void setSpecialType(Material specialType)
 	{
 		Validate.isTrue(specialTypeString == null, "Special Type already set!");
 		this.specialTypeString = specialType.toString();
 		this.specialType = specialType;
-		
+
 	}
 
 	/**
@@ -273,9 +270,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	/**
 	 * Checks if a location is inside this arena.
-	 * 
-	 * @param loc
-	 *        - {@link Location} to check
+	 *
+	 * @param loc {@link Location} to check
 	 * @return Whether or not the location is inside this arena.
 	 */
 	public final boolean checkLocation(Location loc)
@@ -284,20 +280,27 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			return lobby.isInside(loc) || arena.isInside(loc);
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.WARNING, "Could not perform location check for arena {0}!", name);
-			plugin.outConsole(Level.WARNING, "This is often caused by a null world!");
-			plugin.outConsole(Level.WARNING, "worldName = {0}, world = {1}", worldName, getWorld() == null ? "null" : getWorld().getName());
+			if (! locationStackPrinted)
+			{
+				plugin.outConsole(Level.WARNING, "Could not perform location check for arena {0}!", name);
+				plugin.outConsole(Level.WARNING, "This is often caused by a null world!");
+				plugin.outConsole(Level.WARNING, "worldName = {0}, world = {1}", worldName,
+						getWorld() == null ? "null" : getWorld().getName());
+				locationStackPrinted = true;
+			}
+
 			return false;
 		}
 	}
 
+	private boolean locationStackPrinted;
+
 	/**
 	 * Whether or not a player has voted
-	 * 
-	 * @param player
-	 *        - {@link Player} voting
+	 *
+	 * @param player {@link Player} voting
 	 */
 	public final boolean hasVoted(Player player)
 	{
@@ -305,10 +308,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	/**
+	 * @return Whether or not this Arena is active
+	 */
+	public final boolean isActive()
+	{
+		return plugin.getArena(name) != null;
+	}
+
+	/**
 	 * Gives a player rewards (if enabled)
-	 * 
-	 * @param ap
-	 *        - {@link ArenaPlayer} to give rewards to
+	 *
+	 * @param ap {@link ArenaPlayer} to give rewards to
 	 */
 	public void giveRewards(ArenaPlayer ap)
 	{
@@ -322,6 +332,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			if (stack == null)
 				continue;
 
+			stack = stack.clone();
 			int amt = stack.getAmount();
 
 			// Gradient based, if applicable
@@ -396,7 +407,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 						field.setAccessible(accessible);
 					}
 				}
-			} catch (Exception e) { }
+			} catch (Throwable ex) { }
 		}
 
 		this.type = FieldType.getByName(typeString);
@@ -451,43 +462,28 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		try
 		{
-			preConvert();
-
 			// Make backup
 			File backup = new File(file.getAbsolutePath() + "_old");
 			Files.copy(file, backup);
 
 			// Load legacy arena zone
-			loadConfiguration();
 			plugin.getFileHandler().load(this);
+			loadConfiguration();
 
 			// Delete
 			file.delete();
 
 			// Save
 			saveToDisk();
-			saveConfiguration();
 
 			// Load
 			loadFromDisk();
-
-			postConvert();
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "converting " + name));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "converting " + name));
 		}
 	}
-
-	/**
-	 * Called before conversion
-	 */
-	protected void preConvert() { }
-
-	/**
-	 * Called after conversion
-	 */
-	protected void postConvert() { }
 
 	// ---- Configuration
 
@@ -530,7 +526,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		try
 		{
 			fc.save(file);
-		} catch (Exception e) { }
+		} catch (Throwable ex) { }
 	}
 
 	/**
@@ -597,7 +593,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 
 				field.setAccessible(accessible);
-			} catch (Exception e) { }
+			} catch (Throwable ex) { }
 		}
 
 		data.put("version", CURRENT_VERSION);
@@ -612,10 +608,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		if (! file.exists())
 		{
-			if (plugin.getArena(name) != null)
-			{
-				plugin.getArena(name).stop();
-			}
+			Arena arena = plugin.getArena(name);
+			if (arena != null)
+				arena.stop();
 
 			plugin.getLoadedArenas().remove(this);
 			return;
@@ -649,7 +644,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	public int hashCode()
 	{
 		int hash = 36;
-		hash *= name.hashCode();
+		hash *= 1 + name.hashCode();
 		return hash;
 	}
 
