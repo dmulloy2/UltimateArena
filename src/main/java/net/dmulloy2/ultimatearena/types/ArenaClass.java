@@ -84,7 +84,7 @@ public final class ArenaClass implements Reloadable
 			boolean changes = false;
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
-			// TODO: Rewrite this?
+			// TODO: Rewrite this.
 			for (String armorPath : armorTypes)
 			{
 				if (fc.isSet("armor." + armorPath))
@@ -136,28 +136,9 @@ public final class ArenaClass implements Reloadable
 					try
 					{
 						String entry = fc.getString(path);
-						entry = entry.replaceAll(" ", "");
-						if (entry.startsWith("potion:"))
-						{
-							ItemStack stack = ItemUtil.readPotion(entry);
-							if (stack != null)
-							{
-								plugin.debug("Detected deprecated potion entry. Converting!");
-
-								fc.set(path, stack.getType().toString() + ":" + stack.getDurability() + "," + stack.getAmount());
-								changes = true;
-
-								weapons.add(stack);
-							}
-						}
-						else
-						{
-							ItemStack stack = ItemUtil.readItem(entry);
-							if (stack != null)
-							{
-								weapons.add(stack);
-							}
-						}
+						ItemStack stack = ItemUtil.readItem(entry);
+						if (stack != null)
+							weapons.add(stack);
 					}
 					catch (Throwable ex)
 					{

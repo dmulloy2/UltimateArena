@@ -115,9 +115,16 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			{
 				for (String reward : fc.getStringList("rewards"))
 				{
-					ItemStack stack = ItemUtil.readItem(reward);
-					if (stack != null)
-						rewards.add(stack);
+					try
+					{
+						ItemStack stack = ItemUtil.readItem(reward);
+						if (stack != null)
+							rewards.add(stack);
+					}
+					catch (Throwable ex)
+					{
+						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + reward + "\""));
+					}
 				}
 			}
 			else

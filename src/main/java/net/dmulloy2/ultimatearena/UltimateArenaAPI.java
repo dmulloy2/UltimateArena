@@ -33,10 +33,9 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Whether or not a {@link Player} is playing an {@link Arena}
+	 * Whether or not a {@link Player} is playing an {@link Arena}.
 	 *
-	 * @param player
-	 *        - {@link Player} in question
+	 * @param player {@link Player} in question
 	 */
 	public final boolean isInArena(Player player)
 	{
@@ -44,10 +43,9 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Gets whether or not a {@link Location} is in an {@link Arena}
+	 * Gets whether or not a {@link Location} is in an {@link Arena}.
 	 *
-	 * @param location
-	 *        - {@link Location} in question
+	 * @param loc {@link Location} in question
 	 */
 	public final boolean isInArena(Location loc)
 	{
@@ -55,15 +53,14 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Returns a {@link Player}'s {@link ArenaPlayer} instance
+	 * Returns a {@link Player}'s {@link ArenaPlayer} instance.
 	 *
-	 * @param p
-	 *        - {@link Player} instance
-	 * @return The player's {@link ArenaPlayer} instance
+	 * @param player {@link Player} instance
+	 * @return The player's {@link ArenaPlayer} instance, may be null
 	 */
-	public final ArenaPlayer getArenaPlayer(Player p)
+	public final ArenaPlayer getArenaPlayer(Player player)
 	{
-		return ultimateArena.getArenaPlayer(p);
+		return ultimateArena.getArenaPlayer(player);
 	}
 
 	/**
@@ -77,7 +74,7 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Gets all loaded {@link ArenaZone}s
+	 * Gets all loaded {@link ArenaZone}s. The list returned is not modifiable.
 	 *
 	 * @return {@link List} of all loaded {@link ArenaZone}s
 	 */
@@ -87,7 +84,7 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Gets all loaded {@link ArenaZone}s
+	 * Gets all loaded {@link ArenaZone}s. The list returned is not modifiable.
 	 *
 	 * @return {@link List} of all loaded {@link ArenaZone}s
 	 */
@@ -97,10 +94,9 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Gets an {@link ArenaClass} based upon name
+	 * Gets an {@link ArenaClass} by name.
 	 *
-	 * @param name
-	 *        - Name of the {@link ArenaClass}
+	 * @param name Name of the {@link ArenaClass}
 	 * @return {@link ArenaClass} based upon name
 	 */
 	public final ArenaClass getArenaClass(String name)
@@ -109,10 +105,9 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Gets an {@link ArenaZone} based upon name
+	 * Gets an {@link ArenaZone} by name.
 	 *
-	 * @param name
-	 *        - Name of the {@link ArenaZone}
+	 * @param name Name of the {@link ArenaZone}
 	 * @return {@link ArenaZone} based upon name
 	 */
 	public final ArenaZone getArenaZone(String name)
@@ -121,10 +116,9 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Gets an {@link Arena} by its name
+	 * Gets an {@link Arena} by name.
 	 *
-	 * @param name
-	 *        - Name of the Arena
+	 * @param name Name of the Arena
 	 */
 	public final Arena getArena(String name)
 	{
@@ -132,7 +126,7 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Stops all running arenas
+	 * Stops all running arenas.
 	 */
 	public final void stopArenas()
 	{
@@ -141,7 +135,7 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Dumps current API registrations
+	 * Dumps current API registrations.
 	 */
 	public final void dumpRegistrations()
 	{
@@ -150,10 +144,9 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Kicks a given player from their current {@link Arena} (if any)
+	 * Kicks a given player from their current {@link Arena} (if any).
 	 *
-	 * @param player
-	 *        - {@link Player} to kick
+	 * @param player {@link Player} to kick
 	 */
 	public final void kickPlayer(Player player)
 	{
@@ -170,10 +163,9 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Returns a new instance of {@link UltimateArenaAPI}
+	 * Returns a new instance of {@link UltimateArenaAPI}.
 	 *
-	 * @param plugin
-	 *        - {@link JavaPlugin} to hook into {@link UltimateArena} with
+	 * @param plugin {@link JavaPlugin} to hook into {@link UltimateArena} with
 	 * @return New instance of {@link UltimateArenaAPI}
 	 */
 	public static UltimateArenaAPI hookIntoUA(Plugin plugin)
@@ -205,8 +197,7 @@ public class UltimateArenaAPI
 	/**
 	 * Gets whether or not a {@link Player} is playing an {@link Arena}
 	 *
-	 * @param p
-	 *        - {@link Player} in question
+	 * @param p {@link Player} in question
 	 * @return whether or not they're playing in an arena
 	 * @deprecated In favor of {@link UltimateArenaAPI#isInArena(Player)}
 	 */
@@ -219,8 +210,7 @@ public class UltimateArenaAPI
 	/**
 	 * Gets whether or not a {@link Player} is standing in an {@link Arena}
 	 *
-	 * @param p
-	 *        - {@link Player} in question
+	 * @param p {@link Player} in question
 	 * @return whether or not they are standing in an {@link Arena}
 	 * @deprecated In favor of {@link UltimateArenaAPI#isInArena(Location)}
 	 */
@@ -233,8 +223,7 @@ public class UltimateArenaAPI
 	/**
 	 * Returns whether or not a {@link Location} is inside an {@link Arena}
 	 *
-	 * @param loc
-	 *        - {@link Location} in question
+	 * @param loc {@link Location} in question
 	 * @return Whether or not a {@link Location} is inside an {@link Arena}
 	 * @deprecated In favor of {@link UltimateArenaAPI#isInArena(Location)}
 	 */
@@ -247,8 +236,7 @@ public class UltimateArenaAPI
 	/**
 	 * Returns the amount of kills a {@link ArenaPlayer} has
 	 *
-	 * @param a
-	 *        - {@link ArenaPlayer} to get kills for
+	 * @param a {@link ArenaPlayer} to get kills for
 	 * @return The amount of kills a {@link ArenaPlayer} has
 	 * @deprecated In favor of {@link ArenaPlayer#getKills()}
 	 */
@@ -261,10 +249,9 @@ public class UltimateArenaAPI
 	/**
 	 * Returns the amount of deaths a {@link ArenaPlayer} has
 	 *
-	 * @param a
-	 *        - {@link ArenaPlayer} to get deaths for
+	 * @param a {@link ArenaPlayer} to get deaths for
 	 * @return The amount of deaths a {@link ArenaPlayer} has
-	 * @deprecated In favor of {@Link ArenaPlayer#getDeaths()}
+	 * @deprecated In favor of {@link ArenaPlayer#getDeaths()}
 	 */
 	@Deprecated
 	public final int getDeaths(ArenaPlayer a)
@@ -275,10 +262,9 @@ public class UltimateArenaAPI
 	/**
 	 * Returns the team an {@link ArenaPlayer} is on
 	 *
-	 * @param a
-	 *        - {@link ArenaPlayer} to get team
+	 * @param a {@link ArenaPlayer} to get team
 	 * @return The team an {@link ArenaPlayer} is on
-	 * @deprecated In favor of {@Link ArenaPlayer#getTeam()}
+	 * @deprecated In favor of {@link ArenaPlayer#getTeam()}
 	 */
 	@Deprecated
 	public final int getTeam(ArenaPlayer a)
@@ -289,10 +275,9 @@ public class UltimateArenaAPI
 	/**
 	 * Returns an {@link ArenaPlayer}'s current killstreak
 	 *
-	 * @param a
-	 *        - {@link ArenaPlayer} to get killstreak
+	 * @param a {@link ArenaPlayer} to get killstreak
 	 * @return An {@link ArenaPlayer}'s current killstreak
-	 * @deprecated In favor of {@Link ArenaPlayer#getKillStreak()}
+	 * @deprecated In favor of {@link ArenaPlayer#getKillStreak()}
 	 */
 	@Deprecated
 	public final int getKillStreak(ArenaPlayer a)
@@ -303,10 +288,9 @@ public class UltimateArenaAPI
 	/**
 	 * Gets the name of the {@link Arena} an {@link ArenaPlayer} is in
 	 *
-	 * @param a
-	 *        - {@link ArenaPlayer} instance
+	 * @param a {@link ArenaPlayer} instance
 	 * @return The name of the {@link Arena} the player is in
-	 * @deprecated In favor of {@Link Arena#getName()}
+	 * @deprecated In favor of {@link Arena#getName()}
 	 */
 	@Deprecated
 	public String getArenaName(ArenaPlayer a)
@@ -318,10 +302,9 @@ public class UltimateArenaAPI
 	 * Gets the {@link FieldType} of the {@link Arena} an {@link ArenaPlayer} is
 	 * in
 	 *
-	 * @param a
-	 *        - {@link ArenaPlayer} instance
+	 * @param a {@link ArenaPlayer} instance
 	 * @return The {@link FieldType} of the {@link Arena} the player is in
-	 * @deprecated In favor of {@Link Arena#getType()}
+	 * @deprecated In favor of {@link Arena#getType()}
 	 */
 	@Deprecated
 	public FieldType getArenaType(ArenaPlayer a)
