@@ -45,7 +45,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * can be used to create a functional arena.
  * <p>
  * The simplest example of a functional arena is the {@link PVPArena}
- * 
+ *
  * @author dmulloy2
  */
 
@@ -109,7 +109,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Base {@link Arena} constructor. All constructors should reference this.
-	 * 
+	 *
 	 * @param az
 	 *        - {@link ArenaZone} to base the {@link Arena} around.
 	 */
@@ -233,7 +233,7 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * Called when an {@link ArenaPlayer} joins the arena.
-	 * 
+	 *
 	 * @param ap
 	 *        - {@link ArenaPlayer} who joined
 	 */
@@ -254,7 +254,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void announce()
 	{
-		for (Player player : plugin.getServer().getOnlinePlayers())
+		for (Player player : Util.getOnlinePlayers())
 		{
 			if (! plugin.isInArena(player))
 			{
