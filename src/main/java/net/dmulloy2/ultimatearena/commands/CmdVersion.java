@@ -15,7 +15,6 @@ public class CmdVersion extends UltimateArenaCommand
 		this.name = "version";
 		this.aliases.add("v");
 		this.description = "Displays version information";
-
 		this.permission = Permission.VERSION;
 	}
 
@@ -23,8 +22,8 @@ public class CmdVersion extends UltimateArenaCommand
 	public void perform()
 	{
 		sendMessage("&3====[ &eUltimateArena &3]====");
-		sendMessage("&bAuthor: &edmulloy2");
-		sendMessage("&bVersion: &e{0}", plugin.getDescription().getVersion());
-		sendMessage("&bBukkitDev Link:&e http://dev.bukkit.org/bukkit-plugins/ultimatearena");
+		sendMessage("&bVersion&e: {0}", plugin.getDescription().getVersion());
+		sendMessage("&bAuthor&e: dmulloy2");
+		sendMessage("&bIssues&e: https://github.com/MineSworn/UltimateArena/issues");
 	}
 }
