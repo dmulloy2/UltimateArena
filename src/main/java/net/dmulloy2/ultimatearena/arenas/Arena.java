@@ -139,7 +139,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Reloads the Arena's settings
+	 * Reloads the Arena's settings.
 	 */
 	@Override
 	public final void reload()
@@ -297,28 +297,30 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Returns a {@link Player}'s {@link ArenaPlayer} instance.
+	 * Gets a {@link Player}'s {@link ArenaPlayer} instance.
 	 * <p>
 	 * Every player who has joined this arena will have an ArenaPlayer instance.
 	 * It is important to note, however, that players who are out will still
-	 * have arena player instances until the arena concludes.
+	 * have arena player instances until the arena concludes. Use
+	 * {@link ArenaPlayer#isOut()} to check if they're still in the arena.
 	 *
-	 * @param p Player instance
-	 * @param checkInactive - Whether or not to check the inactive list as well
+	 * @param player Player
+	 * @param checkInactive Whether or not to check the inactive list as well
+	 * @return The player's ArenaPlayer instance, or null if not found
 	 */
-	public final ArenaPlayer getArenaPlayer(Player p, boolean checkInactive)
+	public final ArenaPlayer getArenaPlayer(Player player, boolean checkInactive)
 	{
-		for (ArenaPlayer ap : active)
+		for (ArenaPlayer ap : getActivePlayers())
 		{
-			if (ap.getName().equalsIgnoreCase(p.getName()))
+			if (ap.getUniqueId().equals(player.getUniqueId()))
 				return ap;
 		}
 
 		if (checkInactive)
 		{
-			for (ArenaPlayer ap : inactive)
+			for (ArenaPlayer ap : getInactivePlayers())
 			{
-				if (ap.getName().equalsIgnoreCase(p.getName()))
+				if (ap.getUniqueId().equals(player.getUniqueId()))
 					return ap;
 			}
 		}
@@ -327,19 +329,19 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Alias for {@link #getArenaPlayer(Player, boolean)}
+	 * Alias for {@link #getArenaPlayer(Player, boolean)}.
 	 * <p>
-	 * Has the same effect as <code>getArenaPlayer(p, true)</code>
+	 * Has the same effect as <code>getArenaPlayer(player, false)</code>
 	 *
-	 * @param p Player instance
+	 * @param player Player
 	 */
-	public final ArenaPlayer getArenaPlayer(Player p)
+	public final ArenaPlayer getArenaPlayer(Player player)
 	{
-		return getArenaPlayer(p, false);
+		return getArenaPlayer(player, false);
 	}
 
 	/**
-	 * Spawns all players in an arena.
+	 * Spawns all players in the arena.
 	 */
 	public final void spawnAll()
 	{
@@ -420,7 +422,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Alias for {@link #spawn(Player, Boolean)}
+	 * Alias for {@link #spawn(Player, Boolean)}.
 	 * <p>
 	 * Has the same effect of <code>spawn(player, false)</code>
 	 *
@@ -434,12 +436,12 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Called when a player is spawned.
 	 *
-	 * @param ap - {@link ArenaPlayer} who was spawned
+	 * @param ap {@link ArenaPlayer} who was spawned
 	 */
 	public void onSpawn(ArenaPlayer ap) { }
 
 	/**
-	 * Spawns an {@link ArenaPlayer} into the lobby
+	 * Spawns an {@link ArenaPlayer} into the lobby.
 	 *
 	 * @param ap {@link ArenaPlayer} to spawn
 	 */
@@ -509,15 +511,14 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void setWinningTeam(int team)
 	{
-		this.toReward = new ArrayList<ArenaPlayer>();
+		this.toReward = new ArrayList<>();
 
 		for (ArenaPlayer ap : active)
 		{
 			ap.setCanReward(false);
-			if (ap.getTeam() == team || team == - 1)
+			if (ap.getTeam() == team || team == -1)
 			{
 				ap.setCanReward(true);
-
 				toReward.add(ap);
 			}
 		}
@@ -666,7 +667,7 @@ public abstract class Arena implements Reloadable
 	{
 		tellPlayers("&cThis arena has been disabled!");
 
-		this.gameTimer = - 1;
+		this.gameTimer = -1;
 
 		stop();
 
