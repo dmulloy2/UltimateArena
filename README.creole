@@ -1,9 +1,9 @@
-<<center>> <<size 24px>>UltimateArena<</size>><</center>>
-<<center>> ** UltimateArena is a fully-featured PvP arena plugin with 10 different arena types. Players fight to the death and are rewarded with configurable rewards and money! Almost every aspect of this plugin is configurable. ** <</center>>
+== UltimateArena
+** UltimateArena is a fully-featured PvP arena plugin with 10 different arena types. Players fight to the death and are rewarded with configurable rewards and money! Almost every aspect of this plugin is configurable. **
 
-<<center>> <<size 24px>>| [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Commands|Commands]] | [[https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/plugin.yml#L14|Permissions]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Configuration|Configuration]] | <</size>> <</center>>
-<<center>> <<size 24px>>| [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Creating Arenas|Creation]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Signs|Signs]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Tutorials|Video Tutorials]] | <</size>> <</center>>
-<<center>> <<size 24px>>| [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Developers|Developers]] | [[https://github.com/MineSworn/UltimateArena|Source]] | [[https://github.com/MineSworn/UltimateArena/issues?state=open|Issues]] | <</size>> <</center>>
+=== | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Commands|Commands]] | [[https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/plugin.yml#L14|Permissions]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Configuration|Configuration]] |
+| [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Creating Arenas|Creation]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Signs|Signs]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Tutorials|Video Tutorials]] |
+| [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Developers|Developers]] | [[https://github.com/MineSworn/UltimateArena|Source]] | [[https://github.com/MineSworn/UltimateArena/issues?state=open|Issues]] |
 
 == Development Builds
 ** Development Builds can be found at our Continuous Integration server. ** \\
@@ -37,14 +37,8 @@
 == Official UltimateArena Servers
 ** Try out UltimateArena here! ** \\
 \\
-[[http://shadowvolt.com|{{http://shadowvolt.com/media/banner.gif}}]]
-[[http://minesworn.com|{{http://minesworn.com/images/Minestatussworn.gif}}]]
-----
-
-== Donations!
-If UltimateArena has made a significant impact on your server and you feel like donating, click the button below! (Please do not donate more than you can afford!)
-
-<<center>> [[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AUPCFVSZQVDU2|{{https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif}}]]<</center>>
+{{http://shadowvolt.com/media/banner.gif}}
+{{http://minesworn.com/images/Minestatussworn.gif}}
 ----
 
 == Bug Reporting
