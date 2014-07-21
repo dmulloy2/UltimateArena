@@ -1,13 +1,21 @@
 == UltimateArena
 ** UltimateArena is a fully-featured PvP arena plugin with 10 different arena types. Players fight to the death and are rewarded with configurable rewards and money! Almost every aspect of this plugin is configurable. **
-
-=== | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Commands|Commands]] | [[https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/plugin.yml#L14|Permissions]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Configuration|Configuration]] |
-| [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Creating Arenas|Creation]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Signs|Signs]] | [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Tutorials|Video Tutorials]] |
-| [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Developers|Developers]] | [[https://github.com/MineSworn/UltimateArena|Source]] | [[https://github.com/MineSworn/UltimateArena/issues?state=open|Issues]] |
+----
 
 == Development Builds
 ** Development Builds can be found at our Continuous Integration server. ** \\
 ** http://ci.minesworn.com/job/UltimateArena/ **
+----
+
+== Useful Links
+* [[https://github.com/MineSworn/UltimateArena/issues?state=open|Issues]]
+* [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Commands|Commands]]
+* [[https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/plugin.yml#L14|Permissions]]
+* [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Configuration|Configuration]]
+* [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Creating Arenas|Creation]]
+* [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Signs|Signs]]
+* [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Tutorials|Video Tutorials]]
+* [[http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/Developers|Developers]]
 ----
 
 == Features
