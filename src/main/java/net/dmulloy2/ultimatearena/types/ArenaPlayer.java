@@ -1,5 +1,7 @@
 package net.dmulloy2.ultimatearena.types;
 
+import java.util.UUID;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -24,10 +26,9 @@ import org.bukkit.potion.PotionEffect;
  * <p>
  * Every player who has joined this arena will have an ArenaPlayer instance. It
  * is important to note, however, that players who are out will still have arena
- * player instances until the arena concludes. Use
- * {@link Arena#checkValid(ArenaPlayer)} to make sure the player is actually in
- * the arena.
- * 
+ * player instances until the arena concludes. Use {@link ArenaPlayer#isOut()}
+ * to make sure the player is actually in the arena.
+ *
  * @author dmulloy2
  */
 
@@ -48,28 +49,29 @@ public final class ArenaPlayer
 	private boolean changeClassOnRespawn;
 
 	private PlayerData playerData;
-	private ArenaClass arenaClass;
+	private final Location spawnBack;
 
 	private final String name;
-	private final Arena arena;
+	private final UUID uniqueId;
 	private final Player player;
-	private final Location spawnBack;
+
+	private ArenaClass arenaClass;
+
+	private final Arena arena;
 	private final UltimateArena plugin;
 
 	/**
 	 * Creates a new ArenaPlayer instance
-	 * 
-	 * @param player
-	 *        - Base {@link Player} to create the arena player around
-	 * @param arena
-	 *        - {@link Arena} the player is in
-	 * @param plugin
-	 *        - {@link UltimateArena} plugin instance
+	 *
+	 * @param player Base {@link Player} to create the arena player around
+	 * @param arena {@link Arena} the player is in
+	 * @param plugin {@link UltimateArena} plugin instance
 	 */
 	public ArenaPlayer(@NonNull Player player, @NonNull Arena arena, @NonNull UltimateArena plugin)
 	{
 		this.player = player;
 		this.name = player.getName();
+		this.uniqueId = player.getUniqueId();
 		this.spawnBack = player.getLocation();
 
 		this.arena = arena;
@@ -103,9 +105,8 @@ public final class ArenaPlayer
 
 	/**
 	 * Gives the player an item
-	 * 
-	 * @param stack
-	 *        - {@link ItemStack} to give the player
+	 *
+	 * @param stack {@link ItemStack} to give the player
 	 */
 	public final void giveItem(@NonNull ItemStack stack)
 	{
@@ -114,28 +115,23 @@ public final class ArenaPlayer
 
 	/**
 	 * Gives the player armor
-	 * 
-	 * @param slot
-	 *        - Armor slot to put. Must be between 0 and 3
-	 * @param stack
-	 *        - {@link ItemStack} to give as armor
+	 *
+	 * @param slot Armor slot to put. Must be between 0 and 3
+	 * @param stack {@link ItemStack} to give as armor
 	 */
-	public final void giveArmor(int slot, ItemStack stack)
+	public final void giveArmor(int slot, @NonNull ItemStack stack)
 	{
-		if (stack != null)
+		switch (slot)
 		{
-			if (slot == 0)
-			{
+			case 0:
 				player.getInventory().setChestplate(stack);
-			}
-			if (slot == 1)
-			{
+				return;
+			case 1:
 				player.getInventory().setLeggings(stack);
-			}
-			if (slot == 2)
-			{
+				return;
+			case 2:
 				player.getInventory().setBoots(stack);
-			}
+				return;
 		}
 	}
 
@@ -179,9 +175,8 @@ public final class ArenaPlayer
 
 	/**
 	 * Sets a player's class
-	 * 
-	 * @param ac
-	 *        - {@link ArenaClass} to set the player's class to
+	 *
+	 * @param ac {@link ArenaClass} to set the player's class to
 	 * @return Whether or not the operation was successful
 	 */
 	public final boolean setClass(@NonNull ArenaClass ac)
@@ -204,7 +199,11 @@ public final class ArenaPlayer
 	public final void giveClassItems()
 	{
 		if (! arena.isInGame())
+		{
+			if (arena.isInLobby())
+				decideHat();
 			return;
+		}
 
 		decideHat();
 
@@ -229,17 +228,17 @@ public final class ArenaPlayer
 				giveArmor(i, stack);
 		}
 
-		for (ItemStack weapon : arenaClass.getWeapons())
+		for (ItemStack tool : arenaClass.getTools())
 		{
-			if (weapon != null)
-				giveItem(weapon);
+			if (tool != null)
+				giveItem(tool);
 		}
 
 		this.changeClassOnRespawn = false;
 	}
 
 	/**
-	 * Clears a player's potion effects
+	 * Clears the player's potion effects
 	 */
 	public final void clearPotionEffects()
 	{
@@ -251,11 +250,9 @@ public final class ArenaPlayer
 
 	/**
 	 * Sends the player a message
-	 * 
-	 * @param string
-	 *        - Base message
-	 * @param objects
-	 *        - Objects to format in
+	 *
+	 * @param string Base message
+	 * @param objects Objects to format in
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
@@ -264,9 +261,8 @@ public final class ArenaPlayer
 
 	/**
 	 * Gives the player xp
-	 * 
-	 * @param xp
-	 *        - XP to give the player
+	 *
+	 * @param xp XP to give the player
 	 */
 	public final void addXP(int xp)
 	{
@@ -275,9 +271,8 @@ public final class ArenaPlayer
 
 	/**
 	 * Subtracts xp from the player
-	 * 
-	 * @param xp
-	 *        - XP to subtract
+	 *
+	 * @param xp XP to subtract
 	 */
 	public final void subtractXP(int xp)
 	{
@@ -286,16 +281,16 @@ public final class ArenaPlayer
 
 	/**
 	 * Gets a player's KDR (Kill-Death Ratio)
-	 * 
+	 *
 	 * @return KDR
 	 */
 	public final double getKDR()
 	{
-		double k = (double) kills;
+		double k = kills;
 		if (deaths == 0)
 			return k;
 
-		double d = (double) deaths;
+		double d = deaths;
 		return k / d;
 	}
 
@@ -303,12 +298,12 @@ public final class ArenaPlayer
 
 	/**
 	 * Returns whether or not the player is dead
-	 * 
+	 *
 	 * @return Whether or not the player is dead
 	 */
 	public final boolean isDead()
 	{
-		return System.currentTimeMillis() - deathTime <= 60L;
+		return (System.currentTimeMillis() - deathTime) <= 60L;
 	}
 
 	/**
@@ -325,9 +320,8 @@ public final class ArenaPlayer
 
 	/**
 	 * Makes the player leave their {@link Arena}
-	 * 
-	 * @param reason
-	 *        - Reason the player is leaving
+	 *
+	 * @param reason Reason the player is leaving
 	 */
 	public final void leaveArena(LeaveReason reason)
 	{
@@ -364,9 +358,8 @@ public final class ArenaPlayer
 	/**
 	 * Teleports the player to a given {@link Location}. Will attempt to
 	 * teleport the player to the center of the block.
-	 * 
-	 * @param location
-	 *        - {@link Location} to teleport the player to
+	 *
+	 * @param location {@link Location} to teleport the player to
 	 */
 	public final void teleport(@NonNull Location location)
 	{
@@ -376,9 +369,8 @@ public final class ArenaPlayer
 	/**
 	 * Teleports the player to a given {@link ArenaLocation}. Will attempt to
 	 * teleport the player to the center of the block.
-	 * 
-	 * @param location
-	 *        - {@link ArenaLocation} to teleport the player to
+	 *
+	 * @param location {@link ArenaLocation} to teleport the player to
 	 */
 	public final void teleport(@NonNull ArenaLocation location)
 	{
@@ -418,7 +410,7 @@ public final class ArenaPlayer
 		if (obj instanceof ArenaPlayer)
 		{
 			ArenaPlayer that = (ArenaPlayer) obj;
-			return that.name.equals(name) && that.arena.equals(arena);
+			return that.uniqueId.equals(uniqueId) && that.arena.equals(arena);
 		}
 
 		return false;
@@ -431,7 +423,7 @@ public final class ArenaPlayer
 	public int hashCode()
 	{
 		int hash = 34;
-		hash *= name.hashCode();
+		hash *= uniqueId.hashCode();
 		hash *= arena.hashCode();
 		return hash;
 	}

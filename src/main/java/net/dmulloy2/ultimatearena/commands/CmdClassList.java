@@ -31,8 +31,8 @@ public class CmdClassList extends UltimateArenaCommand
 		for (ArenaClass ac : plugin.getClasses())
 		{
 			String name = WordUtils.capitalize(ac.getName());
-			sendMessage("&3===[ &e{0} &3]===", name);
-			for (ItemStack weapon : ac.getWeapons())
+			sendMessage("&3[ &e{0} &3]", name);
+			for (ItemStack weapon : ac.getTools())
 			{
 				name = FormatUtil.getFriendlyName(weapon.getType());
 				sendMessage("&b- &e{0} &bx &e{1}", name, weapon.getAmount());

@@ -1,10 +1,12 @@
 package net.dmulloy2.ultimatearena.types;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
+import lombok.NonNull;
 import net.dmulloy2.util.ItemUtil;
 
 import org.bukkit.Material;
@@ -23,8 +25,9 @@ public final class KillStreak
 		ITEM, MOB;
 	}
 
-	private String message;
-	private Type type;
+	private final int kills;
+	private final String message;
+	private final Type type;
 
 	// Mob Stuff
 	private EntityType mobType;
@@ -33,21 +36,27 @@ public final class KillStreak
 	// Item
 	private ItemStack item;
 
-	// Mob Constructor
-	public KillStreak(int kills, String message, EntityType mobType, int mobAmount)
+	// Base constructor
+	private KillStreak(int kills, @NonNull String message, @NonNull Type type)
 	{
-		this.type = Type.MOB;
+		this.kills = kills;
+		this.message = message;
+		this.type = type;
+	}
+
+	// Mob Constructor
+	public KillStreak(int kills, @NonNull String message, @NonNull EntityType mobType, int mobAmount)
+	{
+		this(kills, message, Type.MOB);
 		this.mobType = mobType;
 		this.mobAmount = mobAmount;
-		this.message = message;
 	}
 
 	// Item Constructor
-	public KillStreak(int kills, String message, ItemStack item)
+	public KillStreak(int kills, @NonNull String message, @NonNull ItemStack item)
 	{
-		this.type = Type.ITEM;
+		this(kills, message, Type.ITEM);
 		this.item = item;
-		this.message = message;
 	}
 
 	/**
@@ -58,7 +67,7 @@ public final class KillStreak
 		switch (type)
 		{
 			case ITEM:
-				ap.giveItem(item);
+				ap.giveItem(item.clone());
 				break;
 			case MOB:
 				for (int i = 0; i < mobAmount; i++)
@@ -69,9 +78,9 @@ public final class KillStreak
 		ap.sendMessage(message);
 	}
 
-	public static HashMap<Integer, List<KillStreak>> defaultKillStreak(FieldType type)
+	public static Map<Integer, List<KillStreak>> defaultKillStreak(FieldType type)
 	{
-		HashMap<Integer, List<KillStreak>> ret = new HashMap<Integer, List<KillStreak>>();
+		Map<Integer, List<KillStreak>> ret = new LinkedHashMap<>();
 
 		switch (type)
 		{
@@ -94,8 +103,11 @@ public final class KillStreak
 						new KillStreak(12, "&e12 &3kills! Unlocked regen potion!", ItemUtil.readPotion("regen, 1, 1, false")),
 						new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
 				}));
+
+				break;
 			case HUNGER:
 				// Do nothing
+				break;
 			case KOTH:
 				ret.put(2, Arrays.asList(new KillStreak[] {
 						new KillStreak(2, "&e2 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))
@@ -110,6 +122,8 @@ public final class KillStreak
 						new KillStreak(12, "&e12 &3kills! Unlocked regen potion!", ItemUtil.readPotion("regen, 1, 1, false")),
 						new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
 				}));
+
+				break;
 			case MOB:
 				ret.put(8, Arrays.asList(new KillStreak[] {
 						new KillStreak(8, "&e8 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))
@@ -144,6 +158,8 @@ public final class KillStreak
 				ret.put(112, Arrays.asList(new KillStreak[] {
 						new KillStreak(112, "&e112 &3kills! Unlocked Golden Apples!", new ItemStack(Material.GOLDEN_APPLE, 2))
 				}));
+
+				break;
 			default:
 				ret.put(2, Arrays.asList(new KillStreak[] {
 						new KillStreak(2, "&e2 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))
@@ -166,6 +182,8 @@ public final class KillStreak
 						new KillStreak(12, "&e12 &3kills! Unlocked regen potion!", ItemUtil.readPotion("regen, 1, 1, false")),
 						new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
 				}));
+
+				break;
 		}
 
 		return ret;

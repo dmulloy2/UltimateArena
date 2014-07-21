@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Getter;
@@ -67,7 +68,7 @@ public abstract class Arena implements Reloadable
 	private List<String> blacklistedClasses;
 	private List<String> whitelistedClasses;
 
-	private HashMap<Integer, List<KillStreak>> killStreaks;
+	private Map<Integer, List<KillStreak>> killStreaks;
 
 	protected int broadcastTimer = 45;
 	protected int winningTeam = 999;
@@ -104,14 +105,13 @@ public abstract class Arena implements Reloadable
 	protected FieldType type;
 	protected String name;
 
-	protected final UltimateArena plugin;
 	protected final ArenaZone az;
+	protected final UltimateArena plugin;
 
 	/**
-	 * Base {@link Arena} constructor. All constructors should reference this.
+	 * Base {@link Arena} constructor. All constructors must reference this.
 	 *
-	 * @param az
-	 *        - {@link ArenaZone} to base the {@link Arena} around.
+	 * @param az {@link ArenaZone} to base the {@link Arena} around.
 	 */
 	public Arena(ArenaZone az)
 	{
@@ -122,11 +122,11 @@ public abstract class Arena implements Reloadable
 		this.world = az.getWorld();
 		this.az.setTimesPlayed(az.getTimesPlayed() + 1);
 
-		this.active = new ArrayList<ArenaPlayer>();
-		this.inactive = new ArrayList<ArenaPlayer>();
+		this.active = new ArrayList<>();
+		this.inactive = new ArrayList<>();
 
-		this.flags = new ArrayList<ArenaFlag>();
-		this.spawns = new ArrayList<ArenaLocation>();
+		this.flags = new ArrayList<>();
+		this.spawns = new ArrayList<>();
 
 		this.gameMode = Mode.LOBBY;
 
@@ -158,11 +158,6 @@ public abstract class Arena implements Reloadable
 		this.blacklistedClasses = az.getConfig().getBlacklistedClasses();
 		this.whitelistedClasses = az.getConfig().getWhitelistedClasses();
 
-		if (maxDeaths < 1)
-		{
-			this.maxDeaths = 1;
-		}
-
 		onReload();
 	}
 
@@ -174,8 +169,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Adds a player to the {@link Arena}.
 	 *
-	 * @param player
-	 *        - {@link Player} to add to an arena
+	 * @param player {@link Player} to add to an arena
 	 */
 	public final void addPlayer(Player player)
 	{
@@ -234,8 +228,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Called when an {@link ArenaPlayer} joins the arena.
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} who joined
+	 * @param ap {@link ArenaPlayer} who joined
 	 */
 	public void onJoin(ArenaPlayer ap) { }
 
@@ -271,8 +264,7 @@ public abstract class Arena implements Reloadable
 								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getStylized()));
 					}
 
-					player.sendMessage(plugin.getPrefix() +
-							FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getName()));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getName()));
 				}
 			}
 		}
@@ -311,10 +303,8 @@ public abstract class Arena implements Reloadable
 	 * It is important to note, however, that players who are out will still
 	 * have arena player instances until the arena concludes.
 	 *
-	 * @param p
-	 *        - Player instance
-	 * @param checkInactive
-	 *        - Whether or not to check the inactive list as well
+	 * @param p Player instance
+	 * @param checkInactive - Whether or not to check the inactive list as well
 	 */
 	public final ArenaPlayer getArenaPlayer(Player p, boolean checkInactive)
 	{
@@ -341,8 +331,7 @@ public abstract class Arena implements Reloadable
 	 * <p>
 	 * Has the same effect as <code>getArenaPlayer(p, true)</code>
 	 *
-	 * @param p
-	 *        - Player instance
+	 * @param p Player instance
 	 */
 	public final ArenaPlayer getArenaPlayer(Player p)
 	{
@@ -367,8 +356,7 @@ public abstract class Arena implements Reloadable
 	 * <p>
 	 * Can be overriden under certain circumstances
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} instance
+	 * @param ap {@link ArenaPlayer} instance
 	 */
 	public Location getSpawn(ArenaPlayer ap)
 	{
@@ -392,10 +380,8 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Spawns a player in the {@link Arena}.
 	 *
-	 * @param ap
-	 *        - Player to spawn
-	 * @param alreadySpawned
-	 *        - Whether or not they've already spawned
+	 * @param ap Player to spawn
+	 * @param alreadySpawned Whether or not they've already spawned
 	 */
 	public final void spawn(ArenaPlayer ap, boolean alreadySpawned)
 	{
@@ -438,8 +424,7 @@ public abstract class Arena implements Reloadable
 	 * <p>
 	 * Has the same effect of <code>spawn(player, false)</code>
 	 *
-	 * @param ap
-	 *        - Player to spawn
+	 * @param ap Player to spawn
 	 */
 	public final void spawn(ArenaPlayer ap)
 	{
@@ -449,16 +434,14 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Called when a player is spawned.
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} who was spawned
+	 * @param ap - {@link ArenaPlayer} who was spawned
 	 */
 	public void onSpawn(ArenaPlayer ap) { }
 
 	/**
 	 * Spawns an {@link ArenaPlayer} into the lobby
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} to spawn
+	 * @param ap {@link ArenaPlayer} to spawn
 	 */
 	public final void spawnLobby(ArenaPlayer ap)
 	{
@@ -479,8 +462,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Called when a player dies.
 	 *
-	 * @param pl
-	 *        - {@link ArenaPlayer} who died
+	 * @param pl {@link ArenaPlayer} who died
 	 */
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
@@ -490,8 +472,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Default rewarding system. May be overriden in some cases.
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} to reward
+	 * @param ap {@link ArenaPlayer} to reward
 	 */
 	public void reward(ArenaPlayer ap)
 	{
@@ -502,8 +483,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Rewards an entire team.
 	 *
-	 * @param team
-	 *        - Team to reward
+	 * @param team Team to reward
 	 */
 	public final void rewardTeam(int team)
 	{
@@ -514,9 +494,7 @@ public abstract class Arena implements Reloadable
 				if (ap.isCanReward())
 				{
 					if (ap.getTeam() == team || team == -1)
-					{
 						reward(ap);
-					}
 				}
 			}
 		}
@@ -527,8 +505,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Sets the winning team.
 	 *
-	 * @param team
-	 *        - Winning team
+	 * @param team Winning team
 	 */
 	public final void setWinningTeam(int team)
 	{
@@ -537,7 +514,7 @@ public abstract class Arena implements Reloadable
 		for (ArenaPlayer ap : active)
 		{
 			ap.setCanReward(false);
-			if (ap.getTeam() == team || team == -1)
+			if (ap.getTeam() == team || team == - 1)
 			{
 				ap.setCanReward(true);
 
@@ -551,8 +528,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Checks if a player has enough points to win.
 	 *
-	 * @param max
-	 *        - Max points for an arena
+	 * @param max Max points for an arena
 	 */
 	public final void checkPlayerPoints(int max)
 	{
@@ -596,10 +572,8 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Tells all active players in the arena a message.
 	 *
-	 * @param string
-	 *        - Base message
-	 * @param objects
-	 *        - Objects to format in
+	 * @param string Base message
+	 * @param objects Objects to format in
 	 */
 	public final void tellPlayers(String string, Object... objects)
 	{
@@ -614,10 +588,8 @@ public abstract class Arena implements Reloadable
 	 * <p>
 	 * Includes inactive players
 	 *
-	 * @param string
-	 *        - Base message
-	 * @param objects
-	 *        - Objects to format in
+	 * @param string Base message
+	 * @param objects Objects to format in
 	 */
 	public final void tellAllPlayers(String string, Object... objects)
 	{
@@ -635,10 +607,8 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Kills all players within a certain radius of a {@link Location}
 	 *
-	 * @param loc
-	 *        - Center {@link Location}
-	 * @param rad
-	 *        - Radius to kill within
+	 * @param loc Center {@link Location}
+	 * @param rad Radius to kill within
 	 */
 	public final void killAllNear(Location loc, double rad)
 	{
@@ -654,8 +624,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Returns a random spawn for an {@link ArenaPlayer}.
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} to get spawn for
+	 * @param ap {@link ArenaPlayer} to get spawn for
 	 */
 	public Location getRandomSpawn(ArenaPlayer ap)
 	{
@@ -672,8 +641,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Handles an {@link ArenaPlayer}'s kill streak (if applicable)
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} to handle kill streak for
+	 * @param ap {@link ArenaPlayer} to handle kill streak for
 	 */
 	public final void handleKillStreak(ArenaPlayer ap)
 	{
@@ -692,13 +660,13 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Disables this arena
+	 * Disables this arena.
 	 */
 	public final void disable()
 	{
 		tellPlayers("&cThis arena has been disabled!");
 
-		this.gameTimer = -1;
+		this.gameTimer = - 1;
 
 		stop();
 
@@ -715,11 +683,12 @@ public abstract class Arena implements Reloadable
 	public void onDisable() { }
 
 	/**
-	 * Ends the arena
+	 * Ends the arena.
 	 */
 	public final void stop()
 	{
-		if (stopped) return; // No need to stop multiple times
+		if (stopped)
+			return; // No need to stop multiple times
 
 		plugin.outConsole("Stopping arena {0}!", name);
 
@@ -745,7 +714,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Called when an arena is stopped
+	 * Called when the arena is stopped.
 	 */
 	public void onStop() { }
 
@@ -769,18 +738,18 @@ public abstract class Arena implements Reloadable
 
 	private final void conclude()
 	{
-		if (! disabled) this.gameMode = Mode.IDLE;
+		if (! disabled)
+			this.gameMode = Mode.IDLE;
+
 		plugin.removeActiveArena(this);
 		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
 	}
 
 	/**
-	 * Ends an {@link ArenaPlayer}
+	 * Ends an {@link ArenaPlayer}.
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} to end
-	 * @param dead
-	 *        - Whether or not a player died
+	 * @param ap {@link ArenaPlayer} to end
+	 * @param dead Whether or not the player died
 	 */
 	public void endPlayer(ArenaPlayer ap, boolean dead)
 	{
@@ -810,7 +779,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Basic timer checker.
 	 * <p>
-	 * Should not be overriden.
+	 * Can not be overriden.
 	 */
 	public final void checkTimers()
 	{
@@ -847,19 +816,19 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Called right before an arena runs out of time.
+	 * Called right before the arena runs out of time.
 	 */
 	public void onPreOutOfTime() { }
 
 	/**
-	 * Called when an arena runs out of time.
+	 * Called after the arena runs out of time.
 	 */
 	public void onOutOfTime() { }
 
 	/**
 	 * Starts the arena.
 	 * <p>
-	 * Should not be overriden.
+	 * Can not be overriden.
 	 */
 	public final void start()
 	{
@@ -884,12 +853,12 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Called when an arena starts
+	 * Called when the arena starts.
 	 */
 	public void onStart() { }
 
 	/**
-	 * Arena Updater
+	 * Arena Updater.
 	 */
 	public final void update()
 	{
@@ -1020,10 +989,9 @@ public abstract class Arena implements Reloadable
 	public void check() { }
 
 	/**
-	 * Decides the timer xp bar for an {@link ArenaPlayer}
+	 * Decides the timer xp bar for an {@link ArenaPlayer}.
 	 *
-	 * @param ap
-	 *        - {@link ArenaPlayer} to decide xp bar for
+	 * @param ap {@link ArenaPlayer} to decide xp bar for
 	 */
 	public final void decideXPBar(ArenaPlayer ap)
 	{
@@ -1042,17 +1010,15 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Forces the start of an arena
+	 * Forces the start of the arena.
 	 *
-	 * @param player
-	 *        - {@link Player} forcing the start of the arena
+	 * @param player {@link Player} forcing the start of the arena
 	 */
 	public final void forceStart(Player player)
 	{
 		if (isInGame())
 		{
-			player.sendMessage(plugin.getPrefix() +
-					FormatUtil.format("&cThis arena is already in progress!"));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cThis arena is already in progress!"));
 			return;
 		}
 
@@ -1062,8 +1028,7 @@ public abstract class Arena implements Reloadable
 
 		gameTimer--;
 
-		player.sendMessage(plugin.getPrefix() +
-				FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
 	/**
@@ -1096,33 +1061,30 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
-
 	/**
-	 * Returns a customized in-game leaderboard
+	 * Returns a customized in-game leaderboard.
 	 *
-	 * @param player
-	 *        - Player to get leaderboard for
+	 * @param player Player to get leaderboard for
 	 */
-	// TODO: Use the side scoreboard
 	public List<String> getLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
 
 		// Build kills map
-		HashMap<String, Double> kdrMap = new HashMap<String, Double>();
+		Map<String, Double> kdrMap = new HashMap<>();
 
 		for (ArenaPlayer ap : getActivePlayers())
 		{
 			kdrMap.put(ap.getName(), ap.getKDR());
 		}
 
-		List<Entry<String, Double>> sortedEntries = new ArrayList<Entry<String, Double>>(kdrMap.entrySet());
+		List<Entry<String, Double>> sortedEntries = new ArrayList<>(kdrMap.entrySet());
 		Collections.sort(sortedEntries, new Comparator<Entry<String, Double>>()
 		{
 			@Override
 			public int compare(Entry<String, Double> entry1, Entry<String, Double> entry2)
 			{
-				return -entry1.getValue().compareTo(entry2.getValue());
+				return - entry1.getValue().compareTo(entry2.getValue());
 			}
 		});
 
@@ -1150,10 +1112,9 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Decides a player's team color
+	 * Decides a player's team color.
 	 *
-	 * @param pl
-	 *        - Player to decide team color for
+	 * @param pl Player to decide team color for
 	 */
 	protected String decideColor(ArenaPlayer pl)
 	{
@@ -1172,7 +1133,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Updates the signs for the arena
+	 * Updates the signs for the arena.
 	 */
 	protected final void updateSigns()
 	{
@@ -1180,7 +1141,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Clears the signs for the arena
+	 * Clears the signs for the arena.
 	 */
 	protected final void clearSigns()
 	{
@@ -1188,7 +1149,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Announces the winner of the arena
+	 * Announces the winner of the arena.
 	 */
 	protected void announceWinner()
 	{
@@ -1207,10 +1168,11 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Returns whether or not a class can be used in this arena
+	 * Whether or not a class can be used in this arena. This method compares
+	 * the class against whitelisted and blacklisted classes.
 	 *
-	 * @param ac
-	 *        - Class to check
+	 * @param ac Class to check
+	 * @return True if the class can be used in this arena, false if not.
 	 */
 	public final boolean isValidClass(ArenaClass ac)
 	{
@@ -1230,7 +1192,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Workaround for concurrency issues.
 	 * <p>
-	 * Should not be used for adding or removing players.
+	 * Can not be used for adding or removing players.
 	 */
 	public final List<ArenaPlayer> getActivePlayers()
 	{
@@ -1240,7 +1202,7 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Workaround for concurrency issues.
 	 * <p>
-	 * Should not be used for adding or removing players.
+	 * Can not be used for adding or removing players.
 	 */
 	public final List<ArenaPlayer> getInactivePlayers()
 	{
@@ -1248,7 +1210,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Returns the amount of players currently in the arena
+	 * @return the amount of players currently in the arena
 	 */
 	public final int getPlayerCount()
 	{
@@ -1256,7 +1218,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Updates teams
+	 * Updates teams.
 	 */
 	private final void updateTeams()
 	{

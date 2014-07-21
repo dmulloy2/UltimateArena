@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,6 +17,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
@@ -48,7 +49,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	protected List<String> blacklistedClasses, whitelistedClasses;
 
 	protected transient List<ItemStack> rewards;
-	protected transient HashMap<Integer, List<KillStreak>> killStreaks;
+	protected transient Map<Integer, List<KillStreak>> killStreaks;
 
 	// ---- Transient
 	protected transient File file;
@@ -64,9 +65,10 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.plugin = plugin;
 
 		// Initialize some variables
-		this.rewards = new ArrayList<ItemStack>();
-		this.blacklistedClasses = new ArrayList<String>();
-		this.whitelistedClasses = new ArrayList<String>();
+		this.rewards = new ArrayList<>();
+		this.blacklistedClasses = new ArrayList<>();
+		this.whitelistedClasses = new ArrayList<>();
+		this.countMobKills = type.toLowerCase().equals("mob");
 		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
 		this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(type.toUpperCase()));
 
@@ -105,12 +107,12 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 			this.gameTime = fc.getInt("gameTime", def.getGameTime());
 			this.lobbyTime = fc.getInt("lobbyTime", def.getLobbyTime());
-			this.maxDeaths = fc.getInt("maxDeaths", def.getMaxDeaths());
+			this.maxDeaths = Math.max(1, fc.getInt("maxDeaths", def.getMaxDeaths()));
 			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", def.isAllowTeamKilling());
 			this.cashReward = fc.getDouble("cashReward", def.getCashReward());
 			this.countMobKills = fc.getBoolean("countMobKills", def.isCountMobKills());
 
-			this.rewards = new ArrayList<ItemStack>();
+			this.rewards = new ArrayList<>();
 			if (fc.isSet("rewards"))
 			{
 				for (String reward : fc.getStringList("rewards"))
@@ -133,78 +135,72 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			}
 
 			this.giveRewards = fc.getBoolean("giveRewards", def.isGiveRewards());
-
 			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", def.isRewardBasedOnXp());
 
 			this.blacklistedClasses = def.getBlacklistedClasses();
-
 			if (fc.isSet("blacklistedClasses"))
 			{
 				blacklistedClasses.addAll(fc.getStringList("blacklistedClasses"));
 			}
 
 			this.whitelistedClasses = def.getWhitelistedClasses();
-
 			if (fc.isSet("whitelistedClasses"))
 			{
 				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
 			}
 
 			this.killStreaks = def.getKillStreaks();
-
 			if (fc.isSet("killStreaks"))
 			{
-				this.killStreaks = new HashMap<Integer, List<KillStreak>>();
+				this.killStreaks = new LinkedHashMap<>();
 
-				Map<String, Object> map = fc.getConfigurationSection("killStreaks").getValues(true);
-
-				for (Entry<String, Object> entry : map.entrySet())
+				Map<String, Object> values = fc.getConfigurationSection("killStreaks").getValues(true);
+				for (Entry<String, Object> entry : values.entrySet())
 				{
 					int kills = NumberUtil.toInt(entry.getKey());
 					if (kills < 0)
 						continue;
 
-					@SuppressWarnings("unchecked") // No way to check this :I
-					List<String> values = (List<String>) entry.getValue();
+					List<KillStreak> streaks = new ArrayList<>();
 
-					List<KillStreak> streaks = new ArrayList<KillStreak>();
-					for (String value : values)
+					@SuppressWarnings("unchecked")
+					List<String> list = (List<String>) entry.getValue();
+					for (String string : list)
 					{
-						value = value.trim();
+						// Normalize string
+						string = string.replaceAll(",", " ");
+						string = string.replaceAll("  ", " ");
+
+						String[] split = string.split(" ");
 
 						// Determine type
-						String s = value.substring(0, value.indexOf(",")).trim();
+						KillStreak.Type type = split[0].equalsIgnoreCase("mob") ? KillStreak.Type.MOB : KillStreak.Type.ITEM;
 
-						KillStreak.Type type = null;
-						if (s.equalsIgnoreCase("mob"))
-							type = KillStreak.Type.MOB;
-						else if (s.equalsIgnoreCase("item"))
-							type = KillStreak.Type.ITEM;
+						// Load settings
+						String message = split[1].trim();
 
+						// Load specific settings
 						if (type == KillStreak.Type.MOB)
 						{
-							String[] split = value.split(",");
-
-							String message = split[1].trim();
-							EntityType entityType = EntityType.valueOf(split[2].trim());
-							int amount = Integer.parseInt(split[3].trim());
+							EntityType entityType = EntityType.valueOf(split[2].toUpperCase());
+							int amount = NumberUtil.toInt(split[3]);
 
 							streaks.add(new KillStreak(kills, message, entityType, amount));
-							continue;
 						}
-						else if (type == KillStreak.Type.ITEM)
+						else
 						{
-							// Yay substring and indexof!
-							s = value.substring(value.indexOf(",") + 1).trim();
+							String item = FormatUtil.join(" ", Arrays.copyOfRange(split, 2, split.length));
 
-							String message = s.substring(0, s.indexOf(",")).trim();
-
-							s = s.substring(s.indexOf(",") + 1).trim();
-
-							ItemStack stack = ItemUtil.readItem(s);
-							if (stack != null)
-								streaks.add(new KillStreak(kills, message, stack));
-							continue;
+							try
+							{
+								ItemStack stack = ItemUtil.readItem(item);
+								if (stack != null)
+									streaks.add(new KillStreak(kills, message, stack));
+							}
+							catch (Throwable ex)
+							{
+								plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + item + "\""));
+							}
 						}
 					}
 
@@ -212,13 +208,13 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 				}
 			}
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "loading config for \"" + type + "\""));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading config for \"" + type + "\""));
 			return false;
 		}
 
-		plugin.debug("Successfully loaded config for {0}!", type);
+		plugin.getLogHandler().debug("Successfully loaded config for {0}!", type);
 		return true;
 	}
 
@@ -252,7 +248,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new LinkedHashMap<>();
 
 		try
 		{

@@ -12,11 +12,11 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.NonNull;
 import net.dmulloy2.types.EnchantmentType;
+import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
-import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
@@ -39,19 +39,19 @@ public final class ArenaClass implements Reloadable
 	private boolean needsPermission;
 	private String permissionNode;
 
-	private List<ItemStack> armor = new ArrayList<ItemStack>();
-	private List<ItemStack> weapons = new ArrayList<ItemStack>();
+	private List<ItemStack> armor = new ArrayList<>();
+	private List<ItemStack> tools = new ArrayList<>();
 
 	private boolean usesHelmet = true;
 
 	// Essentials Integration
 	private String essKitName;
 	private boolean usesEssentials;
-	private Map<String, Object> essentialsKit = new HashMap<String, Object>();
+	private Map<String, Object> essentialsKit = new HashMap<>();
 
 	// Potion Effects
 	private boolean hasPotionEffects;
-	private List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
+	private List<PotionEffect> potionEffects = new ArrayList<>();
 
 	// ---- Transient
 	private transient File file;
@@ -84,65 +84,77 @@ public final class ArenaClass implements Reloadable
 			boolean changes = false;
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
-			// TODO: Rewrite this.
-			for (String armorPath : armorTypes)
+			if (fc.isSet("armor"))
 			{
-				if (fc.isSet("armor." + armorPath))
+				Map<String, Object> values = fc.getConfigurationSection("armor").getValues(false);
+				for (Entry<String, Object> entry : values.entrySet())
 				{
-					Material mat = null;
-					Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+					String value = entry.getValue().toString();
+					ItemStack item = null;
 
-					String arm = fc.getString("armor." + armorPath);
-					if (arm.contains(","))
+					try
 					{
-						String[] split = arm.split(",");
+						// Attempt to parse regularly
+						item = ItemUtil.readItem(value);
+					} catch (Throwable ex) { }
 
-						mat = MaterialUtil.getMaterial(split[0]);
+					if (item != null)
+					{
+						armor.add(item);
+						continue;
+					}
 
-						StringBuilder line = new StringBuilder();
-						for (int i = 1; i < split.length; i++)
-						{
-							line.append(split[i] + " ");
-						}
+					// Read legacy
+					Material material = null;
+					short data = 0;
 
-						line.delete(line.length() - 1, line.length());
+					Map<Enchantment, Integer> enchants = new HashMap<>();
 
-						enchants = readArmorEnchantments(line.toString());
+					value = value.replaceAll(" ", "");
+					if (value.contains(","))
+					{
+						String str = value.substring(0, value.indexOf(","));
+						MyMaterial myMat = MyMaterial.fromString(str);
+						material = myMat.getMaterial();
+						data = myMat.isIgnoreData() ? 0 : myMat.getData();
+						enchants = readArmorEnchantments(value.substring(value.indexOf(",") + 1));
 					}
 					else
 					{
-						mat = MaterialUtil.getMaterial(arm);
+						MyMaterial myMat = MyMaterial.fromString(value);
+						material = myMat.getMaterial();
+						data = myMat.isIgnoreData() ? 0 : myMat.getData();
 					}
 
-					ItemStack stack = new ItemStack(mat, 1);
+					item = new ItemStack(material, data);
 
 					if (! enchants.isEmpty())
-					{
-						for (Entry<Enchantment, Integer> entry : enchants.entrySet())
-						{
-							stack.addUnsafeEnchantment(entry.getKey(), entry.getValue());
-						}
-					}
+						item.addUnsafeEnchantments(enchants);
 
-					this.armor.add(stack);
+					armor.add(item);
+
+					// Convert
+					fc.set("armor." + entry.getKey().toLowerCase(), ItemUtil.serialize(item));
+					changes = true;
 				}
 			}
 
-			for (int i = 0; i < 9; i++)
+			if (fc.isSet("tools"))
 			{
-				String path = "tools." + i;
-				if (fc.isSet(path))
+				Map<String, Object> values = fc.getConfigurationSection("tools").getValues(false);
+				for (Entry<String, Object> entry : values.entrySet())
 				{
+					String value = entry.getValue().toString();
+
 					try
 					{
-						String entry = fc.getString(path);
-						ItemStack stack = ItemUtil.readItem(entry);
+						ItemStack stack = ItemUtil.readItem(value);
 						if (stack != null)
-							weapons.add(stack);
+							tools.add(stack);
 					}
 					catch (Throwable ex)
 					{
-						plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "parsing item \"" + fc.getString(path) + "\""));
+						plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "parsing item \"" + value + "\""));
 					}
 				}
 			}
@@ -186,7 +198,6 @@ public final class ArenaClass implements Reloadable
 			needsPermission = fc.getBoolean("needsPermission", false);
 			permissionNode = "ultimatearena.class." + name.toLowerCase();
 
-			// Attempt to save the file
 			try
 			{
 				if (changes)
@@ -212,76 +223,52 @@ public final class ArenaClass implements Reloadable
 			"chestplate", "leggings", "boots"
 	});
 
-	private final List<PotionEffect> readPotionEffects(String str)
+	private final List<PotionEffect> readPotionEffects(String str) throws Throwable
 	{
-		List<PotionEffect> ret = new ArrayList<PotionEffect>();
+		List<PotionEffect> ret = new ArrayList<>();
 
-		try
+		str = str.replaceAll(" ", "");
+		String[] split = str.split(",");
+		for (String s : split)
 		{
-			str = str.replaceAll(" ", "");
-			if (str.contains(","))
+			if (s.contains(":"))
 			{
-				String[] split = str.split(",");
-				for (String s : split)
-				{
-					if (s.contains(":"))
-					{
-						String[] split1 = s.split(":");
-						PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
-						int strength = NumberUtil.toInt(split1[1]);
+				String[] split1 = s.split(":");
+				PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
+				int strength = NumberUtil.toInt(split1[1]);
 
-						if (type != null && strength >= 0)
-						{
-							ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
-						}
-					}
+				if (type != null && strength >= 0)
+				{
+					ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
 				}
 			}
-			else
-			{
-				if (str.contains(":"))
-				{
-					String[] split1 = str.split(":");
-					PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
-					int strength = NumberUtil.toInt(split1[1]);
+		}
 
-					if (type != null && strength >= 0)
-					{
-						ret.add(new PotionEffect(type, Integer.MAX_VALUE, strength));
-					}
-				}
-			}
-		} catch (Throwable ex) { }
 		return ret;
 	}
 
-	private final Map<Enchantment, Integer> readArmorEnchantments(String string)
+	private final Map<Enchantment, Integer> readArmorEnchantments(String string) throws Throwable
 	{
 		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 
-		try
+		if (string.contains(":"))
 		{
-			if (string.contains(":"))
-			{
-				String[] split2 = string.split(":");
-				Enchantment enchantment = EnchantmentType.toEnchantment(split2[0]);
-				int level = NumberUtil.toInt(split2[1]);
+			String[] split2 = string.split(":");
+			Enchantment enchantment = EnchantmentType.toEnchantment(split2[0]);
+			int level = NumberUtil.toInt(split2[1]);
 
-				if (enchantment != null && level > 0)
-				{
-					enchants.put(enchantment, level);
-				}
+			if (enchantment != null && level > 0)
+			{
+				enchants.put(enchantment, level);
 			}
-		} catch (Throwable ex) { }
+		}
+
 		return enchants;
 	}
 
 	public final boolean checkPermission(Player player)
 	{
-		if (! needsPermission)
-			return true;
-
-		return plugin.getPermissionHandler().hasPermission(player, permissionNode);
+		return ! needsPermission || plugin.getPermissionHandler().hasPermission(player, permissionNode);
 	}
 
 	public final ItemStack getArmor(int index)
@@ -306,8 +293,8 @@ public final class ArenaClass implements Reloadable
 		// Clear lists and maps
 		this.essentialsKit.clear();
 		this.potionEffects.clear();
-		this.weapons.clear();
 		this.armor.clear();
+		this.tools.clear();
 
 		// Empty strings
 		this.permissionNode = "";
