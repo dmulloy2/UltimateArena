@@ -126,7 +126,7 @@ public final class ArenaClass implements Reloadable
 						data = myMat.isIgnoreData() ? 0 : myMat.getData();
 					}
 
-					item = new ItemStack(material, data);
+					item = new ItemStack(material, 1, data);
 
 					if (! enchants.isEmpty())
 						item.addUnsafeEnchantments(enchants);
@@ -251,15 +251,20 @@ public final class ArenaClass implements Reloadable
 	{
 		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 
-		if (string.contains(":"))
+		string = string.replaceAll(" ", "");
+		String[] split = string.split(",");
+		for (String s : split)
 		{
-			String[] split2 = string.split(":");
-			Enchantment enchantment = EnchantmentType.toEnchantment(split2[0]);
-			int level = NumberUtil.toInt(split2[1]);
-
-			if (enchantment != null && level > 0)
+			if (s.contains(":"))
 			{
-				enchants.put(enchantment, level);
+				String[] split2 = s.split(":");
+				Enchantment enchantment = EnchantmentType.toEnchantment(split2[0]);
+				int level = NumberUtil.toInt(split2[1]);
+
+				if (enchantment != null && level > 0)
+				{
+					enchants.put(enchantment, level);
+				}
 			}
 		}
 
