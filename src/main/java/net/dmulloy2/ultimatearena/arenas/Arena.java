@@ -744,6 +744,7 @@ public abstract class Arena implements Reloadable
 
 		plugin.removeActiveArena(this);
 		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
+		updateSigns();
 	}
 
 	/**
