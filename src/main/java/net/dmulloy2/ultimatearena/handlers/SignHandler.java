@@ -40,7 +40,7 @@ public class SignHandler
 	public SignHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		this.signs = new ArrayList<ArenaSign>();
+		this.signs = new ArrayList<>();
 		this.loadFromDisk();
 	}
 
@@ -268,7 +268,6 @@ public class SignHandler
 	 */
 	public final List<ArenaSign> getSigns()
 	{
-		// TODO: Better solution to this
 		return Util.newList(signs);
 	}
 

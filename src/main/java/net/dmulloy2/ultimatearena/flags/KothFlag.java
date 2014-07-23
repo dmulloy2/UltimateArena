@@ -42,7 +42,7 @@ public class KothFlag extends ArenaFlag
 		int amt = 0;
 		ArenaPlayer capturer = null;
 
-		for (ArenaPlayer ap : Util.newList(arenaPlayers))
+		for (ArenaPlayer ap : arenaPlayers)
 		{
 			Player player = ap.getPlayer();
 			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld())

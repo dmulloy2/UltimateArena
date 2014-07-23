@@ -184,7 +184,8 @@ public class CONQUESTArena extends Arena
 	@Override
 	public void check()
 	{
-		for (ArenaPlayer ap : getActivePlayers())
+		List<ArenaPlayer> active = getActivePlayers();
+		for (ArenaPlayer ap : active)
 		{
 			if (blueTeamPower <= 0)
 			{
@@ -212,10 +213,9 @@ public class CONQUESTArena extends Arena
 			setWinningTeam(2);
 		}
 
-		// TODO: Make sure this only fires once per second
 		for (ArenaFlag flag : Util.newList(flags))
 		{
-			flag.checkNear(getActivePlayers());
+			flag.checkNear(active);
 		}
 
 		if (startTimer <= 0)

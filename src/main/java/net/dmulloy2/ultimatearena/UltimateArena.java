@@ -557,7 +557,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public ArenaConfig getConfig(String type)
 	{
-		for (ArenaConfig ac : Util.newList(configs))
+		for (ArenaConfig ac : configs)
 		{
 			if (ac.getType().equalsIgnoreCase(type))
 				return ac;
@@ -968,12 +968,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	/**
 	 * Attempts to create a new {@link Arena}
 	 *
-	 * @param player
-	 *        - {@link Player} who is creating the arena
-	 * @param name
-	 *        - Name of the new arena
-	 * @param type
-	 *        - Type of the new arena
+	 * @param player {@link Player} who is creating the arena
+	 * @param name Name of the new arena
+	 * @param type Type of the new arena
 	 */
 	public void createArena(Player player, String name, String type)
 	{
@@ -991,7 +988,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		FieldType fieldType = FieldType.getByName(type);
 
-		for (ArenaZone az : Util.newList(loadedArenas))
+		for (ArenaZone az : loadedArenas)
 		{
 			if (az.getName().equalsIgnoreCase(name))
 			{
@@ -1052,14 +1049,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 * <p>
 	 * Will return <code>null</code> if the player is not creating an arena.
 	 *
-	 * @param player
-	 *        - {@link Player} to get {@link ArenaCreator} instance for.
-	 *
+	 * @param player {@link Player} to get {@link ArenaCreator} instance for.
 	 * @return The player's {@link ArenaCreator} instance
 	 */
 	public ArenaCreator getArenaCreator(Player player)
 	{
-		for (ArenaCreator ac : Util.newList(makingArena))
+		for (ArenaCreator ac : makingArena)
 		{
 			if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
 				return ac;
@@ -1211,7 +1206,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	/**
 	 * Returns a list of active arenas
 	 * <p>
-	 * Should not be used to add or remove
+	 * Can not be used for modification
 	 */
 	public final List<Arena> getActiveArenas()
 	{

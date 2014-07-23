@@ -10,7 +10,6 @@ import net.dmulloy2.ultimatearena.arenas.CTFArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.TeamHelper;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -72,7 +71,7 @@ public class CTFFlagBase extends FlagBase
 					if (enemyflag.getRiding().getName().equals(ap.getName()))
 					{
 						// If the player selected is carrying the enemy flag
-						if (player.getWorld().getUID().equals(location.getWorld().getUID()) 
+						if (player.getWorld().getUID().equals(location.getWorld().getUID())
 								&& player.getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
 						{
 							// If hes close to my flag stand, REWARD!
@@ -82,7 +81,7 @@ public class CTFFlagBase extends FlagBase
 							ap.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 							ap.getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 
-							for (ArenaPlayer apl : Util.newList(arenaPlayers))
+							for (ArenaPlayer apl : arenaPlayers)
 							{
 								if (ap.getTeam() == apl.getTeam())
 								{
