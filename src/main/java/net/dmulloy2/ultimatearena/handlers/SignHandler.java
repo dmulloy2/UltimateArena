@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,7 +67,8 @@ public class SignHandler
 			{
 				if (value.getKey().equals("version"))
 				{
-					// Normally, we would do some sort of conversion here, but signs were broken beyond repair before this.
+					// Normally, we would do some sort of conversion here, but
+					// signs were broken beyond repair before this.
 					continue;
 				}
 
@@ -89,7 +90,7 @@ public class SignHandler
 				}
 			}.runTaskLater(plugin, 120L);
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
 			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading signs"));
 		}
@@ -111,9 +112,9 @@ public class SignHandler
 			signsSave.set("version", CURRENT_VERSION);
 			signsSave.save(file);
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "saving signs"));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "saving signs"));
 		}
 	}
 
@@ -128,9 +129,9 @@ public class SignHandler
 			signsSave = YamlConfiguration.loadConfiguration(file);
 			return true;
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "creating new sign save"));
+			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "creating new sign save"));
 			return false;
 		}
 	}
@@ -158,8 +159,7 @@ public class SignHandler
 	/**
 	 * Attempts to get an {@link ArenaSign} based on location
 	 *
-	 * @param loc
-	 *        - Location
+	 * @param loc Location
 	 */
 	public final ArenaSign getSign(Location loc)
 	{
@@ -175,8 +175,7 @@ public class SignHandler
 	/**
 	 * Attempts to get an {@link ArenaSign} based on location
 	 *
-	 * @param loc
-	 *        - {@link ArenaLocation}
+	 * @param loc {@link ArenaLocation}
 	 */
 	public final ArenaSign getLocation(ArenaLocation loc)
 	{
@@ -192,8 +191,7 @@ public class SignHandler
 	/**
 	 * Adds a sign to track and save
 	 *
-	 * @param sign
-	 *        - {@link ArenaSign} to add
+	 * @param sign {@link ArenaSign} to add
 	 */
 	public final void addSign(final ArenaSign sign)
 	{
@@ -213,8 +211,7 @@ public class SignHandler
 	/**
 	 * Deletes a sign
 	 *
-	 * @param sign
-	 *        - {@link ArenaSign} to delete
+	 * @param sign {@link ArenaSign} to delete
 	 */
 	public final void deleteSign(ArenaSign sign)
 	{
@@ -225,8 +222,7 @@ public class SignHandler
 	/**
 	 * Updates an {@link ArenaZone}'s signs
 	 *
-	 * @param az
-	 *        - {@link ArenaZone}
+	 * @param az {@link ArenaZone}
 	 */
 	public final void updateSigns(ArenaZone az)
 	{
@@ -239,8 +235,7 @@ public class SignHandler
 	/**
 	 * Clears an {@link ArenaZone}'s signs
 	 *
-	 * @param az
-	 *        - {@link ArenaZone}
+	 * @param az {@link ArenaZone}
 	 */
 	public final void clearSigns(ArenaZone az)
 	{
@@ -253,12 +248,11 @@ public class SignHandler
 	/**
 	 * Gets the signs associated with a given arena
 	 *
-	 * @param az
-	 *        - {@link ArenaZone}
+	 * @param az {@link ArenaZone}
 	 */
 	public final List<ArenaSign> getSigns(ArenaZone az)
 	{
-		List<ArenaSign> ret = new ArrayList<ArenaSign>();
+		List<ArenaSign> ret = new ArrayList<>();
 
 		for (ArenaSign sign : getSigns())
 		{
@@ -274,16 +268,16 @@ public class SignHandler
 	 */
 	public final List<ArenaSign> getSigns()
 	{
+		// TODO: Better solution to this
 		return Util.newList(signs);
 	}
 
-	// ---- ID Related Stuff ---- //
+	// ---- ID Related Stuff
 
 	/**
 	 * Gets the lowest free id
 	 *
-	 * @param start
-	 *        - Start index
+	 * @param start Starting index
 	 */
 	public final int getFreeId(int start)
 	{
@@ -313,7 +307,8 @@ public class SignHandler
 
 	private final Map<Integer, ArenaSign> getById()
 	{
-		Map<Integer, ArenaSign> ret = new HashMap<Integer, ArenaSign>();
+		Map<Integer, ArenaSign> ret = new LinkedHashMap<>();
+
 		for (ArenaSign sign : getSigns())
 		{
 			ret.put(sign.getId(), sign);

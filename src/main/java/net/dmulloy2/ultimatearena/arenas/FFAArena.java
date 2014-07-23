@@ -42,6 +42,12 @@ public class FFAArena extends Arena
 	@Override
 	public void onSpawn(ArenaPlayer ap)
 	{
+		if (ap.getArenaClass() != null && ! ap.getArenaClass().isUseHelmet())
+		{
+			ap.getPlayer().getInventory().setHelmet(null);
+			return;
+		}
+
 		DyeColor rand = DyeColor.values()[Util.random(DyeColor.values().length)];
 		Color color = rand.getColor();
 

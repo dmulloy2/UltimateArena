@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -8,7 +9,6 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -66,31 +66,31 @@ public class UltimateArenaAPI
 	/**
 	 * Gets all active {@link Arena}s. The list returned is not modifiable.
 	 *
-	 * @return {@link List} of all active {@link Arena}s
+	 * @return An unmodifiable {@link List} of all active {@link Arena}s
 	 */
 	public final List<Arena> getActiveArenas()
 	{
-		return ultimateArena.getActiveArenas();
+		return Collections.unmodifiableList(ultimateArena.getActiveArenas());
 	}
 
 	/**
 	 * Gets all loaded {@link ArenaZone}s. The list returned is not modifiable.
 	 *
-	 * @return {@link List} of all loaded {@link ArenaZone}s
+	 * @return An unmodifiable {@link List} of all loaded {@link ArenaZone}s
 	 */
 	public final List<ArenaZone> getLoadedArenas()
 	{
-		return Util.newList(ultimateArena.getLoadedArenas());
+		return Collections.unmodifiableList(ultimateArena.getLoadedArenas());
 	}
 
 	/**
-	 * Gets all loaded {@link ArenaZone}s. The list returned is not modifiable.
+	 * Gets all loaded {@link ArenaClass}es. The list returned is not modifiable.
 	 *
-	 * @return {@link List} of all loaded {@link ArenaZone}s
+	 * @return An unmodifiable {@link List} of all loaded {@link ArenaClass}es
 	 */
 	public final List<ArenaClass> getClasses()
 	{
-		return Util.newList(ultimateArena.getClasses());
+		return Collections.unmodifiableList(ultimateArena.getClasses());
 	}
 
 	/**

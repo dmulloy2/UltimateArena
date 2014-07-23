@@ -2,7 +2,6 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +41,11 @@ public final class ArenaClass implements Reloadable
 	private List<ItemStack> armor = new ArrayList<>();
 	private List<ItemStack> tools = new ArrayList<>();
 
-	private boolean usesHelmet = true;
+	private boolean useHelmet = true;
 
 	// Essentials Integration
 	private String essKitName;
-	private boolean usesEssentials;
+	private boolean useEssentials;
 	private Map<String, Object> essentialsKit = new HashMap<>();
 
 	// Potion Effects
@@ -159,9 +158,8 @@ public final class ArenaClass implements Reloadable
 				}
 			}
 
-			usesEssentials = fc.getBoolean("useEssentials", false);
-
-			if (usesEssentials && plugin.getEssentialsHandler().useEssentials())
+			useEssentials = fc.getBoolean("useEssentials", false);
+			if (useEssentials && plugin.getEssentialsHandler().useEssentials())
 			{
 				essKitName = fc.getString("essentialsKit", "");
 				if (! essKitName.isEmpty())
@@ -170,21 +168,13 @@ public final class ArenaClass implements Reloadable
 				}
 			}
 
-			if (usesEssentials && (essentialsKit.isEmpty() || essKitName.isEmpty()))
-			{
-				usesEssentials = false;
-				fc.set("useEssentials", false);
-				fc.set("essentialsKit", "");
-				changes = true;
-			}
-
 			hasPotionEffects = fc.getBoolean("hasPotionEffects", false);
 			if (hasPotionEffects)
 			{
 				potionEffects = readPotionEffects(fc.getString("potionEffects"));
 			}
 
-			usesHelmet = fc.getBoolean("useHelmet", true);
+			useHelmet = fc.getBoolean("useHelmet", true);
 
 			if (fc.isSet("permissionNode"))
 			{
@@ -217,11 +207,6 @@ public final class ArenaClass implements Reloadable
 		plugin.debug("Successfully loaded class {0}!", name);
 		return true;
 	}
-
-	private final List<String> armorTypes = Arrays.asList(new String[]
-	{
-			"chestplate", "leggings", "boots"
-	});
 
 	private final List<PotionEffect> readPotionEffects(String str) throws Throwable
 	{
@@ -292,8 +277,8 @@ public final class ArenaClass implements Reloadable
 		// Boolean defaults
 		this.hasPotionEffects = false;
 		this.needsPermission = false;
-		this.usesEssentials = false;
-		this.usesHelmet = true;
+		this.useEssentials = false;
+		this.useHelmet = true;
 
 		// Clear lists and maps
 		this.essentialsKit.clear();

@@ -84,7 +84,7 @@ public final class ArenaPlayer
 	 */
 	public final void decideHat()
 	{
-		if (arenaClass != null && ! arenaClass.isUsesHelmet())
+		if (arenaClass != null && ! arenaClass.isUseHelmet())
 		{
 			player.getInventory().setHelmet(null);
 			return;
@@ -216,7 +216,7 @@ public final class ArenaPlayer
 			return;
 		}
 
-		if (arenaClass.isUsesEssentials() && plugin.getEssentialsHandler().useEssentials())
+		if (arenaClass.isUseEssentials() && plugin.getEssentialsHandler().useEssentials())
 		{
 			plugin.getEssentialsHandler().giveKitItems(this);
 		}
