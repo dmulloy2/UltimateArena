@@ -1,14 +1,13 @@
 armor:
-  chestplate: 299,prot:1
-  leggings: 300,prot:1
-  boots: 301,prot:1
+  chestplate: LEATHER_CHESTPLATE, 1, prot:1
+  leggings: LEATHER_LEGGINGS, 1, prot:1
+  boots: LEATHER_BOOTS, 1, prot:1
 tools:
-  '1': 283,1,prot:4
-  '2': 259,1,fireprot:4
-  '3': 373,2
+  '1': GOLD_SWORD, 1, prot:4
+  '2': FLINT_AND_STEEL, 1, fireprot:4
+  '3': POTION, 2
 useEssentials: false
 essentialsKit: ''
 useHelmet: true
-permissionNode: ''
 hasPotionEffects: false
 potionEffects: ''

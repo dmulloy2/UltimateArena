@@ -1,12 +1,11 @@
 armor:
-  chestplate: 307,prot:1
-  leggings: 308,prot:1
-  boots: 309,prot:1
+  chestplate: IRON_CHESTPLATE, 1, prot:1
+  leggings: IRON_LEGGINGS, 1, prot:1
+  boots: IRON_BOOTS, 1, prot:1
 tools:
-  '1': 277,1,eff:5
+  '1': DIAMOND_SPADE, 1, eff:5
 useEssentials: false
 essentialsKit: ''
 useHelmet: true
-permissionNode: ''
 hasPotionEffects: false
 potionEffects: ''
