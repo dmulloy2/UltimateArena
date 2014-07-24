@@ -26,7 +26,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -290,26 +289,6 @@ public class PlayerListener implements Listener
 				}
 				else
 				{
-					event.setCancelled(true);
-				}
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onFoodLevelChange(FoodLevelChangeEvent event)
-	{
-		if (event.getEntity() instanceof Player)
-		{
-			Player player = (Player) event.getEntity();
-			ArenaPlayer ap = plugin.getArenaPlayer(player);
-			if (ap != null)
-			{
-				Arena a = ap.getArena();
-				if (a.isInLobby())
-				{
-					// Prevent food level change
-					player.setFoodLevel(20);
 					event.setCancelled(true);
 				}
 			}

@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -42,6 +43,26 @@ public class EntityListener implements Listener
 		{
 			// Prevent block damage in arenas
 			event.blockList().clear();
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onFoodLevelChange(FoodLevelChangeEvent event)
+	{
+		if (event.getEntity() instanceof Player)
+		{
+			Player player = (Player) event.getEntity();
+			ArenaPlayer ap = plugin.getArenaPlayer(player);
+			if (ap != null)
+			{
+				Arena a = ap.getArena();
+				if (a.isInLobby())
+				{
+					// Prevent food level change
+					player.setFoodLevel(20);
+					event.setCancelled(true);
+				}
+			}
 		}
 	}
 
@@ -68,82 +89,54 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamageByEntityHighest(EntityDamageByEntityEvent event)
 	{
-		// This will disable PvP in certain circumstances, like lobby PvP, team killing, etc.
-		if (event.getDamage() > 0.0D)
+		Player attacker = getPlayer(event.getDamager());
+		if (attacker == null)
+			return;
+
+		Player defender = getPlayer(event.getEntity());
+		if (defender == null)
+			return;
+
+		ArenaPlayer ap = plugin.getArenaPlayer(attacker);
+		if (ap != null)
 		{
-			Entity attacker = event.getDamager();
-			Entity defender = event.getEntity();
-
-			// Decide players
-			Player att = null;
-			Player def = null;
-
-			// Attacker
-			if (attacker instanceof Player)
+			ArenaPlayer dp = plugin.getArenaPlayer(defender);
+			if (dp != null)
 			{
-				att = (Player) attacker;
-			}
-			else if (attacker instanceof Projectile)
-			{
-				Projectile proj = (Projectile) attacker;
-				if (proj.getShooter() instanceof Player)
-					att = (Player) proj.getShooter();
-			}
-
-			// Defender
-			if (defender instanceof Player)
-			{
-				def = (Player) defender;
-			}
-			else if (defender instanceof Projectile)
-			{
-				Projectile proj = (Projectile) defender;
-				if (proj.getShooter() instanceof Player)
-					def = (Player) proj.getShooter();
-			}
-
-			if (att == null || def == null)
-				return;
-
-			ArenaPlayer ap = plugin.getArenaPlayer(att);
-			if (ap != null)
-			{
-				ArenaPlayer dp = plugin.getArenaPlayer(def);
-				if (dp != null)
+				Arena arena = ap.getArena();
+				if (arena.isInLobby())
 				{
-					Arena arena = ap.getArena();
-					if (arena.isInLobby())
+					// Prevent lobby PvP
+					ap.sendMessage("&cYou cannot PvP in the lobby!");
+					event.setCancelled(true);
+					return;
+				}
+
+				// Prevent team killing
+				if (! arena.isAllowTeamKilling())
+				{
+					if (dp.getTeam() == ap.getTeam())
 					{
-						ap.sendMessage("&cYou cannot PVP in the lobby!");
+						ap.sendMessage("&cYou cannot hurt your team mate!");
 						event.setCancelled(true);
 						return;
 					}
-
-					if (! arena.isAllowTeamKilling())
-					{
-						if (dp.getTeam() == ap.getTeam())
-						{
-							ap.sendMessage("&cYou cannot hurt your team mate!");
-							event.setCancelled(true);
-							return;
-						}
-					}
-				}
-				else
-				{
-					ap.sendMessage("&cYou cannot hurt players not in the arena!");
-					event.setCancelled(true);
-					return;
 				}
 			}
 			else
 			{
-				if (plugin.isInArena(def))
-				{
-					att.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
-					event.setCancelled(true);
-					return;
-				}
+				ap.sendMessage("&cYou cannot hurt players not in the arena!");
+				event.setCancelled(true);
+				return;
+			}
+		}
+		else
+		{
+			if (plugin.isInArena(defender))
+			{
+				attacker.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
+				event.setCancelled(true);
+				return;
 			}
 		}
 	}
@@ -151,35 +144,38 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageByEntityMonitor(EntityDamageByEntityEvent event)
 	{
-		// Repairs armor and items if in an arena
-		// Also handles healer class
-		if (event.getDamager() instanceof Player)
+		Player player = getPlayer(event.getDamager());
+		if (player == null)
+			return;
+
+		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap != null)
 		{
-			Player player = (Player) event.getDamager();
-			ArenaPlayer ap = plugin.getArenaPlayer(player);
-			if (ap != null)
+			// Repair in-hand item
+			ItemStack inHand = player.getItemInHand();
+			if (inHand != null && inHand.getType() != Material.AIR)
 			{
-				ItemStack inHand = player.getItemInHand();
-				if (inHand != null && inHand.getType() != Material.AIR)
+				if (inHand.getType().getMaxDurability() != 0)
 				{
-					if (inHand.getType().getMaxDurability() != 0)
-					{
-						inHand.setDurability((short) 0);
-					}
+					inHand.setDurability((short) 0);
 				}
+			}
 
-				for (ItemStack armor : player.getInventory().getArmorContents())
+			// Repair armor
+			for (ItemStack armor : player.getInventory().getArmorContents())
+			{
+				if (armor != null && armor.getType() != Material.AIR)
 				{
-					if (armor != null && armor.getType() != Material.AIR)
-					{
-						armor.setDurability((short) 0);
-					}
+					armor.setDurability((short) 0);
 				}
+			}
 
-				// Healer
-				if (event.getEntity() instanceof Player)
+			// Healer class
+			if (inHand != null && inHand.getType() == Material.GOLD_AXE)
+			{
+				Player damaged = getPlayer(event.getEntity());
+				if (damaged != null)
 				{
-					Player damaged = (Player) event.getEntity();
 					ArenaPlayer dp = plugin.getArenaPlayer(damaged);
 					if (dp != null)
 					{
@@ -188,13 +184,10 @@ public class EntityListener implements Listener
 							ArenaClass ac = ap.getArenaClass();
 							if (ac != null && ac.getName().equalsIgnoreCase("healer"))
 							{
-								if (inHand != null && inHand.getType() == Material.GOLD_AXE)
+								if (dp.getPlayer().getHealth() > 0.0D && dp.getPlayer().getHealth() <= 18.0D)
 								{
-									if (dp.getPlayer().getHealth() > 0.0D && dp.getPlayer().getHealth() + 2.0D <= 20.0D)
-									{
-										dp.getPlayer().setHealth(dp.getPlayer().getHealth() + 2.0D);
-										ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", dp.getName());
-									}
+									dp.getPlayer().setHealth(dp.getPlayer().getHealth() + 2.0D);
+									ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", dp.getName());
 								}
 							}
 						}
@@ -644,13 +637,7 @@ public class EntityListener implements Listener
 
 	// Line count for onEntityDeath = 416
 
-	/**
-	 * Gets the weapon that a player has
-	 *
-	 * @param player {@link Player} to get weapon for
-	 * @return The player's weapon
-	 */
-	private String getWeapon(Player player)
+	private final String getWeapon(Player player)
 	{
 		StringBuilder ret = new StringBuilder();
 
@@ -667,5 +654,22 @@ public class EntityListener implements Listener
 		}
 
 		return ret.toString();
+	}
+
+	private final Player getPlayer(Entity entity)
+	{
+		if (entity instanceof Player)
+		{
+			return (Player) entity;
+		}
+
+		if (entity instanceof Projectile)
+		{
+			Projectile proj = (Projectile) entity;
+			if (proj.getShooter() instanceof Player)
+				return (Player) proj.getShooter();
+		}
+
+		return null;
 	}
 }
