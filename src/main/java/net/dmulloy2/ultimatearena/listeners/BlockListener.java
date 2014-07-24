@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.listeners;
 import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
@@ -28,29 +29,25 @@ public class BlockListener implements Listener
 {
 	private final UltimateArena plugin;
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		if (event.isCancelled())
-			return;
-
-		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		if (plugin.isInArena(block.getLocation()))
 		{
-			/** The player is in an arena **/
-			if (plugin.isInArena(player))
+			ArenaPlayer ap = plugin.getArenaPlayer(event.getPlayer());
+			if (ap != null)
 			{
-				Arena arena = plugin.getArena(player);
+				Arena arena = ap.getArena();
 				if (arena.getType() != FieldType.HUNGER)
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
+					ap.sendMessage("&cYou cannot break this!");
 					event.setCancelled(true);
 				}
 			}
 			else
 			{
-				/** The player is at the site of the arena, but not in it **/
+				Player player = event.getPlayer();
 				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
@@ -63,26 +60,22 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		if (event.isCancelled())
-			return;
-
-		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		if (plugin.isInArena(block.getLocation()))
 		{
-			/** The player is in an arena **/
-			if (plugin.isInArena(player))
+			ArenaPlayer ap = plugin.getArenaPlayer(event.getPlayer());
+			if (ap != null)
 			{
-				Arena arena = plugin.getArena(player);
+				Arena arena = ap.getArena();
 				if (arena.getType() != FieldType.HUNGER)
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot place this!"));
+					ap.sendMessage("&cYou cannot place this!");
 					event.setCancelled(true);
 				}
 			}
 			else
 			{
-				/** The player is at the site of the arena, but not in it **/
+				Player player = event.getPlayer();
 				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot place this!"));

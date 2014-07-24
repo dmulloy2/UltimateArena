@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.listeners;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
@@ -29,55 +30,46 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
+@AllArgsConstructor
 public class EntityListener implements Listener
 {
 	private final UltimateArena plugin;
-	public EntityListener(UltimateArena plugin)
-	{
-		this.plugin = plugin;
-	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event)
 	{
-		// This will disable block damage via explosions
-		// if it occurs in an arena
-		if (! event.isCancelled())
+		if (plugin.isInArena(event.getLocation()))
 		{
-			if (plugin.isInArena(event.getLocation()))
-			{
-				if (!event.blockList().isEmpty())
-				{
-					event.setCancelled(true);
-				}
-			}
+			// Prevent block damage in arenas
+			event.blockList().clear();
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityCombust(EntityCombustEvent event)
 	{
-		Entity combusted = event.getEntity();
-		if (combusted instanceof Player)
+		Entity entity = event.getEntity();
+		if (entity instanceof Player)
 		{
-			Player combustedPlayer = (Player) combusted;
-			if (plugin.isInArena(combustedPlayer))
+			Player player = (Player) entity;
+			ArenaPlayer ap = plugin.getArenaPlayer(player);
+			if (ap != null)
 			{
-				Arena a = plugin.getArena(combustedPlayer);
-				if (a.isInLobby())
+				Arena arena = ap.getArena();
+				if (arena.isInLobby())
 				{
+					player.setFireTicks(0);
 					event.setCancelled(true);
 				}
 			}
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamageByEntityHighest(EntityDamageByEntityEvent event)
 	{
-		// This will disable PvP in certain circumstances, like lobby PvP,
-		// team killing, etc.
-		if (! event.isCancelled() && event.getDamage() > 0.0D)
+		// This will disable PvP in certain circumstances, like lobby PvP, team killing, etc.
+		if (event.getDamage() > 0.0D)
 		{
 			Entity attacker = event.getDamager();
 			Entity defender = event.getEntity();
@@ -113,12 +105,12 @@ public class EntityListener implements Listener
 			if (att == null || def == null)
 				return;
 
-			if (plugin.isInArena(att))
+			ArenaPlayer ap = plugin.getArenaPlayer(att);
+			if (ap != null)
 			{
-				ArenaPlayer ap = plugin.getArenaPlayer(att);
-				if (plugin.isInArena(def))
+				ArenaPlayer dp = plugin.getArenaPlayer(def);
+				if (dp != null)
 				{
-					ArenaPlayer dp = plugin.getArenaPlayer(def);
 					Arena arena = ap.getArena();
 					if (arena.isInLobby())
 					{
@@ -148,8 +140,7 @@ public class EntityListener implements Listener
 			{
 				if (plugin.isInArena(def))
 				{
-					att.sendMessage(plugin.getPrefix() +
-							FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
+					att.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
 					event.setCancelled(true);
 					return;
 				}
@@ -165,7 +156,8 @@ public class EntityListener implements Listener
 		if (event.getDamager() instanceof Player)
 		{
 			Player player = (Player) event.getDamager();
-			if (plugin.isInArena(player))
+			ArenaPlayer ap = plugin.getArenaPlayer(player);
+			if (ap != null)
 			{
 				ItemStack inHand = player.getItemInHand();
 				if (inHand != null && inHand.getType() != Material.AIR)
@@ -188,10 +180,9 @@ public class EntityListener implements Listener
 				if (event.getEntity() instanceof Player)
 				{
 					Player damaged = (Player) event.getEntity();
-					if (plugin.isInArena(damaged))
+					ArenaPlayer dp = plugin.getArenaPlayer(damaged);
+					if (dp != null)
 					{
-						ArenaPlayer dp = plugin.getArenaPlayer(damaged);
-						ArenaPlayer ap = plugin.getArenaPlayer(player);
 						if (ap.getTeam() == dp.getTeam())
 						{
 							ArenaClass ac = ap.getArenaClass();
@@ -213,22 +204,20 @@ public class EntityListener implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
 		// Cancels all forms of damage in the lobby
-		if (! event.isCancelled())
+		if (event.getEntity() instanceof Player)
 		{
-			if (event.getEntity() instanceof Player)
+			Player player = (Player) event.getEntity();
+			ArenaPlayer ap = plugin.getArenaPlayer(player);
+			if (ap != null)
 			{
-				Player player = (Player) event.getEntity();
-				if (plugin.isInArena(player))
+				Arena arena = ap.getArena();
+				if (arena.isInLobby())
 				{
-					Arena arena = plugin.getArena(player);
-					if (arena.isInLobby())
-					{
-						event.setCancelled(true);
-					}
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -658,8 +647,7 @@ public class EntityListener implements Listener
 	/**
 	 * Gets the weapon that a player has
 	 *
-	 * @param player
-	 *        - {@link Player} to get weapon for
+	 * @param player {@link Player} to get weapon for
 	 * @return The player's weapon
 	 */
 	private String getWeapon(Player player)
@@ -669,7 +657,7 @@ public class EntityListener implements Listener
 		ItemStack inHand = player.getItemInHand();
 		if (inHand == null || inHand.getType() == Material.AIR)
 		{
-			ret.append("his fists");
+			ret.append("their fists");
 		}
 		else
 		{
