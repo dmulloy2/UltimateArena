@@ -1,4 +1,4 @@
-# Main Configuration for the Spleef Arena Type
+# Main configuration file for the spleef arena type
 # http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
 
 gameTime: 600
@@ -9,5 +9,5 @@ countMobKills: false
 rewardBasedOnXp: false
 cashReward: 100
 rewards:
-- 266,3
-- 46,1
+- GOLD_INGOT, 3
+- TNT, 1

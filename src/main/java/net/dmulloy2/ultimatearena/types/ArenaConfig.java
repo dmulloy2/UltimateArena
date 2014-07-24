@@ -218,7 +218,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		return true;
 	}
 
-	private final List<String> xpBasedTypes = Arrays.asList(new String[]
+	private static final List<String> xpBasedTypes = Arrays.asList(new String[]
 	{
 			"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
 	});

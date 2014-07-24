@@ -1,4 +1,4 @@
-# Main Configuration for the Conquest Arena Type
+# Main configuration file for the cq arena type
 # http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
 
 gameTime: 1200
@@ -9,5 +9,5 @@ countMobKills: false
 rewardBasedOnXp: true
 cashReward: 100
 rewards:
-- 266,3
-- 46,1
+- GOLD_INGOT, 3
+- TNT, 1

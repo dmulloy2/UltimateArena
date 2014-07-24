@@ -1,4 +1,4 @@
-# Main Configuration for the KOTH Arena Type
+# Main configuration file for the koth arena type
 # http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
 
 gameTime: 1200
@@ -10,5 +10,5 @@ countMobKills: false
 cashReward: 100
 maxPoints: 60
 rewards:
-- 266,3
-- 46,1
+- GOLD_INGOT, 3
+- TNT, 1

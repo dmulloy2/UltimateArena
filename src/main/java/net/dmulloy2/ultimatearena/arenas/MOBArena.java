@@ -40,12 +40,12 @@ public class MOBArena extends Arena
 		this.wave = 0;
 		this.winningTeam = -1;
 
-		this.spawning = new ArrayList<String>();
+		this.spawning = new ArrayList<>();
 		spawning.add("ZOMBIE");
 		spawning.add("ZOMBIE");
 		spawning.add("ZOMBIE");
 
-		this.mobs = new ArrayList<LivingEntity>();
+		this.mobs = new ArrayList<>();
 
 		newWave();
 	}
@@ -284,5 +284,12 @@ public class MOBArena extends Arena
 				tellPlayers("&3You survived the MobArena!");
 			}
 		}
+	}
+
+	@Override
+	public void onReload()
+	{
+		// Always count mob kills in MOB arena
+		this.countMobKills = true;
 	}
 }
