@@ -84,7 +84,7 @@ public class PlayerListener implements Listener
 			player.removeMetadata("UA", plugin);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event)
 	{
 		ArenaPlayer ap = plugin.getArenaPlayer(event.getPlayer());

@@ -57,7 +57,7 @@ public class BlockListener implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		Block block = event.getBlock();
@@ -85,7 +85,7 @@ public class BlockListener implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onSignChange(SignChangeEvent event)
 	{
 		if (event.getLine(0).equalsIgnoreCase("[UltimateArena]"))
@@ -151,7 +151,7 @@ public class BlockListener implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onSignBreak(BlockBreakEvent event)
 	{
 		Block block = event.getBlock();
