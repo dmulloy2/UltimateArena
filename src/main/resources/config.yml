@@ -41,6 +41,9 @@ debug: false
 # Default - false; Input - boolean
 timerXPBar: true
 
-# Force Respawn
-# Default - false; Input - boolean
-forceRespawn: false
+# Class Selection GUI
+# title - Inventory title
+# automatic - Open automatically in lobby
+classSelector:
+  title: "         &l&nSelect a class!&r"
+  automatic: true

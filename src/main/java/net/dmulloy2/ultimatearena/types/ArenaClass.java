@@ -212,7 +212,7 @@ public final class ArenaClass implements Reloadable
 				icon = new ItemStack(Material.PAPER, 1);
 			}
 
-			title = fc.getString("title", "&e" + WordUtils.capitalize(name));
+			title = FormatUtil.format(fc.getString("title", "&e" + WordUtils.capitalize(name)));
 
 			if (fc.isSet("description"))
 			{

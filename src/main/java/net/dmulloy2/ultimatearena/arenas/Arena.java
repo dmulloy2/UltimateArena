@@ -12,9 +12,11 @@ import java.util.Map.Entry;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
+import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -216,11 +218,18 @@ public abstract class Arena implements Reloadable
 		// Decide Hat
 		pl.decideHat();
 
-		// Finally add the player
-		active.add(pl);
+		// Open Class Selector
+		if (plugin.getConfig().getBoolean("classSelector.automatic", true))
+		{
+			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
+			GUIHandler.openGUI(player, csGUI);
+		}
 
 		// API
 		onJoin(pl);
+
+		// Finally add the player
+		active.add(pl);
 
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), az.getMaxPlayers());
 	}

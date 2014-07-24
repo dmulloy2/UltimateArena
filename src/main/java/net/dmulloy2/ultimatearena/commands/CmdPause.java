@@ -14,7 +14,7 @@ public class CmdPause extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "pause";
-		this.requiredArgs.add("arena");
+		this.optionalArgs.add("arena");
 		this.description = "pause the start timer on an arena";
 		this.permission = Permission.PAUSE;
 
@@ -24,10 +24,10 @@ public class CmdPause extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		Arena arena = plugin.getArena(args[0]);
+		Arena arena = getArena(0);
 		if (arena == null)
 		{
-			err("Could not find an Arena by the name of \"&c{0}&4\"!");
+			err("Please specify a valid arena!");
 			return;
 		}
 

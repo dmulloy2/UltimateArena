@@ -24,19 +24,7 @@ public class CmdStart extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		Arena arena = null;
-		if (isPlayer())
-		{
-			if (args.length == 0)
-				arena = plugin.getArena(player);
-			else
-				arena = plugin.getArena(args[0]);
-		}
-		else
-		{
-			arena = plugin.getArena(args[0]);
-		}
-
+		Arena arena = getArena(0);
 		if (arena == null)
 		{
 			err("Please specify a valid arena!");
@@ -44,7 +32,6 @@ public class CmdStart extends UltimateArenaCommand
 		}
 
 		sendpMessage("&3Force starting arena &e{0}&3...", arena.getName());
-
 		arena.forceStart(player);
 	}
 }

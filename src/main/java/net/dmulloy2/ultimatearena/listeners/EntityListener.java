@@ -552,10 +552,10 @@ public class EntityListener implements Listener
 
 											List<String> deadlines = new ArrayList<String>();
 											deadlines.add(FormatUtil.format("&3----------------------------"));
-											deadlines.add(FormatUtil.format("&cKills: &e{0}", dp.getKills()));
-											deadlines.add(FormatUtil.format("&cDeaths: &e{0}", dp.getDeaths()));
-											deadlines.add(FormatUtil.format("&cStreak: &e{0}", dp.getKillStreak()));
-											deadlines.add(FormatUtil.format("&cGameXP: &e{0}", dp.getGameXP()));
+											deadlines.add(FormatUtil.format("&3Kills: &e{0}", dp.getKills()));
+											deadlines.add(FormatUtil.format("&3Deaths: &e{0}", dp.getDeaths()));
+											deadlines.add(FormatUtil.format("&3Streak: &e{0}", dp.getKillStreak()));
+											deadlines.add(FormatUtil.format("&3GameXP: &e{0}", dp.getGameXP()));
 											deadlines.add(FormatUtil.format("&3----------------------------"));
 
 											for (String deadline : deadlines)

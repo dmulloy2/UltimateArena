@@ -5,6 +5,7 @@ package net.dmulloy2.ultimatearena.gui;
 
 import net.dmulloy2.gui.AbstractGUI;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.FormatUtil;
@@ -37,16 +38,21 @@ public class ClassSelectionGUI extends AbstractGUI
 	@Override
 	public String getTitle()
 	{
-		return FormatUtil.format(plugin.getConfig().getString("classSelector.title", "Select a class!"));
+		return FormatUtil.format(plugin.getConfig().getString("classSelector.title", "         &l&nSelect a class!&r"));
 	}
 
 	@Override
 	public void stock(Inventory inventory)
 	{
-		for (ArenaClass ac : plugin.getClasses())
+		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap != null)
 		{
-			if (ac.checkPermission(player))
-				inventory.addItem(ac.getIcon());
+			Arena arena = ap.getArena();
+			for (ArenaClass ac : plugin.getClasses())
+			{
+				if (ac.checkPermission(player) && arena.isValidClass(ac))
+					inventory.addItem(ac.getIcon());
+			}
 		}
 	}
 
@@ -54,9 +60,9 @@ public class ClassSelectionGUI extends AbstractGUI
 	public void onInventoryClick(InventoryClickEvent event)
 	{
 		Player player = (Player) event.getWhoClicked();
-		if (plugin.isInArena(player))
+		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap != null)
 		{
-			ArenaPlayer ap = plugin.getArenaPlayer(player);
 			ItemStack current = event.getCurrentItem();
 			if (current != null)
 			{

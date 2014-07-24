@@ -23,24 +23,21 @@ public class CmdForceStop extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		if (args.length > 0)
+		Arena arena = getArena(0);
+		if (arena == null)
 		{
-			Arena a = plugin.getArena(args[0]);
-			if (a == null)
+			if (args.length != 0)
 			{
-				err("This arena is not currently active!");
+				err("Please specify a valid arena!");
 				return;
 			}
 
-			sendpMessage("&3Stopping arena: &e{0}", a.getName());
-
-			a.stop();
-		}
-		else
-		{
 			sendpMessage("&3Stopping all arenas!");
-
 			plugin.stopAll();
+			return;
 		}
+
+		sendpMessage("&3Stopping arena &e{0}&3!", arena.getName());
+		arena.stop();
 	}
 }
