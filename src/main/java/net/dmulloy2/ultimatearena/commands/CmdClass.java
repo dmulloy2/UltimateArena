@@ -1,6 +1,8 @@
 package net.dmulloy2.ultimatearena.commands;
 
+import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Permission;
@@ -35,46 +37,40 @@ public class CmdClass extends UltimateArenaCommand
 
 		if (args.length == 0)
 		{
-			if (ap.getArenaClass() == null)
-			{
-				err("You do not have a class!");
-				return;
-			}
-
-			sendpMessage("&3Your current class is: &e{0}", ap.getArenaClass().getName());
+			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
+			GUIHandler.openGUI(player, csGUI);
+			return;
 		}
-		else if (args.length == 1)
+
+		ArenaClass cl = plugin.getArenaClass(args[0]);
+		if (cl == null)
 		{
-			ArenaClass cl = plugin.getArenaClass(args[0]);
-			if (cl == null)
-			{
-				err("Could not find a class by the name of \"&c{0}&4\"!", args[0]);
-				return;
-			}
+			err("Could not find a class by the name of \"&c{0}&4\"!", args[0]);
+			return;
+		}
 
-			if (! cl.checkPermission(player))
-			{
-				err("You do not have permissions for this class.");
-				return;
-			}
+		if (! cl.checkPermission(player))
+		{
+			err("You do not have permissions for this class.");
+			return;
+		}
 
-			if (! ap.setClass(cl))
-			{
-				err("You cannot use this class in this arena.");
-				return;
-			}
+		if (! ap.setClass(cl))
+		{
+			err("You cannot use this class in this arena.");
+			return;
+		}
 
-			String name = cl.getName();
-			String article = FormatUtil.getArticle(name);
+		String name = cl.getName();
+		String article = FormatUtil.getArticle(name);
 
-			if (ap.getArena().isInLobby())
-			{
-				sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
-			}
-			else
-			{
-				sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
-			}
+		if (ap.getArena().isInLobby())
+		{
+			sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
+		}
+		else
+		{
+			sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
 		}
 	}
 }

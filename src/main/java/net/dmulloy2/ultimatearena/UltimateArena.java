@@ -29,6 +29,7 @@ import lombok.Getter;
 import net.dmulloy2.SwornAPI;
 import net.dmulloy2.SwornPlugin;
 import net.dmulloy2.commands.CmdHelp;
+import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.handlers.CommandHandler;
 import net.dmulloy2.handlers.LogHandler;
 import net.dmulloy2.handlers.PermissionHandler;
@@ -108,6 +109,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
@@ -132,15 +134,15 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter VaultHandler vaultHandler;
 
 	// Lists and Maps
-	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<String, ArenaJoinTask>();
-	private @Getter List<ArenaCreator> makingArena = new ArrayList<ArenaCreator>();
-	private @Getter List<ArenaConfig> configs = new ArrayList<ArenaConfig>();
-	private @Getter List<ArenaClass> classes = new ArrayList<ArenaClass>();
-	private @Getter List<ArenaZone> loadedArenas = new ArrayList<ArenaZone>();
-	private @Getter List<String> whitelistedCommands = new ArrayList<String>();
-	private @Getter List<String> pluginsUsingAPI = new ArrayList<String>();
+	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<>();
+	private @Getter List<ArenaCreator> makingArena = new ArrayList<>();
+	private @Getter List<ArenaConfig> configs = new ArrayList<>();
+	private @Getter List<ArenaClass> classes = new ArrayList<>();
+	private @Getter List<ArenaZone> loadedArenas = new ArrayList<>();
+	private @Getter List<String> whitelistedCommands = new ArrayList<>();
+	private @Getter List<String> pluginsUsingAPI = new ArrayList<>();
 
-	private List<Arena> activeArenas = new ArrayList<Arena>();
+	private List<Arena> activeArenas = new ArrayList<>();
 
 	private @Getter boolean stopping;
 
@@ -150,8 +152,11 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	@Override
 	public void onLoad()
 	{
+		// Serializables
 		SwornAPI.checkRegistrations();
 		ConfigurationSerialization.registerClass(ArenaLocation.class);
+		ConfigurationSerialization.registerClass(SimpleVector.class);
+		ConfigurationSerialization.registerClass(ArenaSign.class);
 	}
 
 	@Override
@@ -215,10 +220,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
 
-		// Register serializables
-		ConfigurationSerialization.registerClass(ArenaLocation.class);
-		ConfigurationSerialization.registerClass(SimpleVector.class);
-		ConfigurationSerialization.registerClass(ArenaSign.class);
+		GUIHandler.registerEvents(this);
 
 		// Load files
 		loadFiles();
@@ -576,11 +578,22 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		activeArenas.clear();
 	}
 
-	public ArenaClass getArenaClass(String line)
+	public final ArenaClass getArenaClass(String name)
 	{
-		for (ArenaClass ac : Util.newList(classes))
+		for (ArenaClass ac : classes)
 		{
-			if (ac.getName().equalsIgnoreCase(line))
+			if (ac.getName().equalsIgnoreCase(name))
+				return ac;
+		}
+
+		return null;
+	}
+
+	public final ArenaClass getArenaClass(ItemStack icon)
+	{
+		for (ArenaClass ac : classes)
+		{
+			if (ac.getIcon().equals(icon))
 				return ac;
 		}
 

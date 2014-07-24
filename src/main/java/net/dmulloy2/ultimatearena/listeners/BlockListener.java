@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.listeners;
 
+import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
@@ -22,13 +23,10 @@ import org.bukkit.event.block.SignChangeEvent;
  * @author dmulloy2
  */
 
+@AllArgsConstructor
 public class BlockListener implements Listener
 {
 	private final UltimateArena plugin;
-	public BlockListener(UltimateArena plugin)
-	{
-		this.plugin = plugin;
-	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event)
@@ -114,8 +112,7 @@ public class BlockListener implements Listener
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);
 
-						event.getPlayer().sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&aCreated new Join Sign!"));
+						event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
 					}
 					else
 					{
@@ -124,6 +121,11 @@ public class BlockListener implements Listener
 						event.setLine(2, "");
 						event.setLine(3, "");
 					}
+				}
+				else if (event.getLine(1).equalsIgnoreCase("Classes"))
+				{
+					// This will open a class selection gui
+					return;
 				}
 				else
 				{
@@ -135,8 +137,7 @@ public class BlockListener implements Listener
 						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);
 
-						event.getPlayer().sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&aCreated new Join Sign!"));
+						event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
 					}
 					else
 					{
@@ -173,14 +174,12 @@ public class BlockListener implements Listener
 					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 					{
 						plugin.getSignHandler().deleteSign(sign);
-						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&cDeleted Join sign!"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cDeleted Join sign!"));
 					}
 					else
 					{
 						event.setCancelled(true);
-						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&cPermission denied!"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cPermission denied!"));
 					}
 				}
 			}

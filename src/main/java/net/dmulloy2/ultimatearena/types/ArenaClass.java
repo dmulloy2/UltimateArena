@@ -20,11 +20,13 @@ import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -51,6 +53,11 @@ public final class ArenaClass implements Reloadable
 	// Potion Effects
 	private boolean hasPotionEffects;
 	private List<PotionEffect> potionEffects = new ArrayList<>();
+
+	// GUI
+	private String title;
+	private ItemStack icon;
+	private List<String> description = new ArrayList<>();
 
 	// ---- Transient
 	private transient File file;
@@ -188,6 +195,36 @@ public final class ArenaClass implements Reloadable
 			needsPermission = fc.getBoolean("needsPermission", false);
 			permissionNode = "ultimatearena.class." + name.toLowerCase();
 
+			if (fc.isSet("icon"))
+			{
+				try
+				{
+					icon = ItemUtil.readItem(fc.getString("icon"));
+				}
+				catch (Throwable ex)
+				{
+					plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item " + fc.getString("icon")));
+				}
+			}
+
+			if (icon == null)
+			{
+				icon = new ItemStack(Material.PAPER, 1);
+			}
+
+			title = fc.getString("title", "&e" + WordUtils.capitalize(name));
+
+			if (fc.isSet("description"))
+			{
+				for (String line : fc.getStringList("description"))
+					description.add(FormatUtil.format("&7" + line));
+			}
+
+			ItemMeta meta = icon.getItemMeta();
+			meta.setDisplayName(title);
+			meta.setLore(description);
+			icon.setItemMeta(meta);
+
 			try
 			{
 				if (changes)
@@ -269,6 +306,11 @@ public final class ArenaClass implements Reloadable
 		}
 
 		return null;
+	}
+
+	public final ItemStack getIcon()
+	{
+		return icon.clone();
 	}
 
 	@Override

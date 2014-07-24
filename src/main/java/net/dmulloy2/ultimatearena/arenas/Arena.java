@@ -1219,9 +1219,6 @@ public abstract class Arena implements Reloadable
 		return active.size();
 	}
 
-	/**
-	 * Updates teams.
-	 */
 	private final void updateTeams()
 	{
 		this.team1size = 0;
@@ -1234,6 +1231,11 @@ public abstract class Arena implements Reloadable
 			else
 				team2size++;
 		}
+	}
+
+	public final boolean isInside(Location location)
+	{
+		return az.checkLocation(location);
 	}
 
 	// ---- Generic Methods
