@@ -9,6 +9,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
+import net.dmulloy2.util.NumberUtil;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
@@ -221,11 +222,12 @@ public final class ArenaPlayer
 			plugin.getEssentialsHandler().giveKitItems(this);
 		}
 
-		for (int i = 0; i < arenaClass.getArmor().size(); i++)
+		int i = 0;
+		for (ItemStack stack : arenaClass.getArmor())
 		{
-			ItemStack stack = arenaClass.getArmor(i);
 			if (stack != null)
 				giveArmor(i, stack);
+			i++;
 		}
 
 		for (ItemStack tool : arenaClass.getTools())
@@ -286,11 +288,11 @@ public final class ArenaPlayer
 	 */
 	public final double getKDR()
 	{
-		double k = kills;
+		double k = NumberUtil.toDouble(kills);
 		if (deaths == 0)
 			return k;
 
-		double d = deaths;
+		double d = NumberUtil.toDouble(deaths);
 		return k / d;
 	}
 

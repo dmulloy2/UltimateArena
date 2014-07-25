@@ -13,3 +13,4 @@ essentialsKit: ''
 useHelmet: true
 hasPotionEffects: false
 potionEffects: ''
+icon: STONE_HOE, 1

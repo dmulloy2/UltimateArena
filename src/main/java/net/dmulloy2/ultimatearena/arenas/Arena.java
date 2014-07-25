@@ -218,18 +218,18 @@ public abstract class Arena implements Reloadable
 		// Decide Hat
 		pl.decideHat();
 
+		// API
+		onJoin(pl);
+
+		// Add the player
+		active.add(pl);
+
 		// Open Class Selector
 		if (plugin.getConfig().getBoolean("classSelector.automatic", true))
 		{
 			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
 			GUIHandler.openGUI(player, csGUI);
 		}
-
-		// API
-		onJoin(pl);
-
-		// Finally add the player
-		active.add(pl);
 
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), az.getMaxPlayers());
 	}
@@ -1095,7 +1095,7 @@ public abstract class Arena implements Reloadable
 			@Override
 			public int compare(Entry<String, Double> entry1, Entry<String, Double> entry2)
 			{
-				return - entry1.getValue().compareTo(entry2.getValue());
+				return -entry1.getValue().compareTo(entry2.getValue());
 			}
 		});
 

@@ -63,14 +63,8 @@ public class CmdClass extends UltimateArenaCommand
 
 		String name = cl.getName();
 		String article = FormatUtil.getArticle(name);
+		String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-		if (ap.getArena().isInLobby())
-		{
-			sendpMessage("&3You will spawn as {0}: &e{1}", article, name);
-		}
-		else
-		{
-			sendpMessage("&3You will respawn as {0}: &e{1}", article, name);
-		}
+		sendpMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
 	}
 }

@@ -40,24 +40,23 @@ public final class ArenaClass implements Reloadable
 	private boolean needsPermission;
 	private String permissionNode;
 
-	private List<ItemStack> armor = new ArrayList<>();
-	private List<ItemStack> tools = new ArrayList<>();
+	private List<ItemStack> armor, tools;
 
 	private boolean useHelmet = true;
 
 	// Essentials Integration
 	private String essKitName;
 	private boolean useEssentials;
-	private Map<String, Object> essentialsKit = new HashMap<>();
+	private Map<String, Object> essentialsKit;
 
 	// Potion Effects
 	private boolean hasPotionEffects;
-	private List<PotionEffect> potionEffects = new ArrayList<>();
+	private List<PotionEffect> potionEffects;
 
 	// GUI
 	private String title;
 	private ItemStack icon;
-	private List<String> description = new ArrayList<>();
+	private List<String> description;
 
 	// ---- Transient
 	private transient File file;
@@ -84,6 +83,10 @@ public final class ArenaClass implements Reloadable
 	public final boolean load()
 	{
 		Validate.isTrue(! loaded, "Class has already been loaded!");
+
+		// Initialize variables
+		this.armor = new ArrayList<>();
+		this.tools = new ArrayList<>();
 
 		try
 		{
@@ -160,22 +163,31 @@ public final class ArenaClass implements Reloadable
 					}
 					catch (Throwable ex)
 					{
-						plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "parsing item \"" + value + "\""));
+						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + value + "\""));
 					}
 				}
 			}
 
-			useEssentials = fc.getBoolean("useEssentials", false);
-			if (useEssentials && plugin.getEssentialsHandler().useEssentials())
+			if (fc.isSet("useEssentials"))
 			{
-				essKitName = fc.getString("essentialsKit", "");
-				if (! essKitName.isEmpty())
-				{
-					essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(essKitName);
-				}
+				fc.set("useEssentials", null);
+				changes = true;
 			}
 
-			hasPotionEffects = fc.getBoolean("hasPotionEffects", false);
+			essKitName = fc.getString("essentialsKit", "");
+			useEssentials = ! essKitName.isEmpty() && plugin.getEssentialsHandler().useEssentials();
+			if (useEssentials)
+			{
+				essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(essKitName);
+			}
+
+			if (fc.isSet("hasPotionEffects"))
+			{
+				fc.set("hasPotionEffects", null);
+				changes = true;
+			}
+
+			hasPotionEffects = ! fc.getString("potionEffects").isEmpty();
 			if (hasPotionEffects)
 			{
 				potionEffects = readPotionEffects(fc.getString("potionEffects"));
@@ -232,16 +244,16 @@ public final class ArenaClass implements Reloadable
 			}
 			catch (Throwable ex)
 			{
-				plugin.outConsole(Level.WARNING, Util.getUsefulStack(ex, "saving changes for class \"" + name + "\""));
+				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "saving changes for class \"" + name + "\""));
 			}
 		}
 		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading class \"" + name + "\""));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading class \"" + name + "\""));
 			return false;
 		}
 
-		plugin.debug("Successfully loaded class {0}!", name);
+		plugin.getLogHandler().debug("Successfully loaded class {0}!", name);
 		return true;
 	}
 
@@ -298,16 +310,6 @@ public final class ArenaClass implements Reloadable
 		return ! needsPermission || plugin.getPermissionHandler().hasPermission(player, permissionNode);
 	}
 
-	public final ItemStack getArmor(int index)
-	{
-		if (armor.size() >= index)
-		{
-			return armor.get(index);
-		}
-
-		return null;
-	}
-
 	public final ItemStack getIcon()
 	{
 		return icon.clone();
@@ -323,10 +325,10 @@ public final class ArenaClass implements Reloadable
 		this.useHelmet = true;
 
 		// Clear lists and maps
-		this.essentialsKit.clear();
-		this.potionEffects.clear();
-		this.armor.clear();
-		this.tools.clear();
+		this.essentialsKit = null;
+		this.potionEffects = null;
+		this.armor = null;
+		this.tools = null;
 
 		// Empty strings
 		this.permissionNode = "";

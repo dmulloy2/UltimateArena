@@ -13,3 +13,4 @@ essentialsKit: ''
 useHelmet: true
 hasPotionEffects: true
 potionEffects: SPEED:1,JUMP:1
+icon: BOW, 1

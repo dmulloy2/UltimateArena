@@ -68,7 +68,18 @@ public class ClassSelectionGUI extends AbstractGUI
 			{
 				ArenaClass ac = plugin.getArenaClass(current);
 				if (ac != null)
+				{
 					ap.setClass(ac);
+
+					if (ap.getArena().isInLobby())
+					{
+						String name = ac.getName();
+						String article = FormatUtil.getArticle(name);
+						String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
+
+						sendpMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
+					}
+				}
 			}
 		}
 

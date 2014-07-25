@@ -193,8 +193,9 @@ public class PlayerListener implements Listener
 								{
 									String name = ac.getName();
 									String article = FormatUtil.getArticle(name);
+									String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-									ap.sendMessage("&3You will spawn as {0} &e{1}&3!", article, name);
+									ap.sendMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
 									return;
 								}
 
