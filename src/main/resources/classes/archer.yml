@@ -8,9 +8,7 @@ tools:
   '3': IRON_SWORD, 1, sharp:2
   '4': GOLDEN_APPLE, 2
   '5': SLIME_BALL, 3
-useEssentials: false
 essentialsKit: ''
 useHelmet: true
-hasPotionEffects: true
 potionEffects: SPEED:1,JUMP:1
 icon: BOW, 1

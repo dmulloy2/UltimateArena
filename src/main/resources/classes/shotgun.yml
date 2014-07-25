@@ -8,9 +8,7 @@ tools:
   '3': SLIME_BALL, 3
   '4': GOLDEN_APPLE, 2
   '5': IRON_SWORD, 1, sharp:2
-useEssentials: false
 essentialsKit: ''
 useHelmet: true
-hasPotionEffects: false
 potionEffects: ''
 icon: STONE_HOE, 1

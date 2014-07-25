@@ -7,9 +7,7 @@ tools:
   '2': WOOD_HOE, 1
   '3': GOLDEN_APPLE, 2
   '4': SLIME_BALL, 3
-useEssentials: false
 essentialsKit: ''
 useHelmet: true
-hasPotionEffects: false
 potionEffects: ''
 icon: GOLD_AXE, 1

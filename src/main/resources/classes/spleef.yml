@@ -4,9 +4,7 @@ armor:
   boots: IRON_BOOTS, 1, prot:1
 tools:
   '1': DIAMOND_SPADE, 1, eff:5
-useEssentials: false
 essentialsKit: ''
 useHelmet: true
-hasPotionEffects: false
 potionEffects: ''
 icon: DIAMOND_SPADE, 1

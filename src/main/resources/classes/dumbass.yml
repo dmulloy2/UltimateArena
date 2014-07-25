@@ -6,9 +6,7 @@ tools:
   '1': GOLD_SWORD, 1, prot:4
   '2': FLINT_AND_STEEL, 1, fireprot:4
   '3': POTION, 2
-useEssentials: false
 essentialsKit: ''
 useHelmet: true
-hasPotionEffects: false
 potionEffects: ''
 icon: GOLD_SWORD, 1
