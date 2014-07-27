@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import lombok.NonNull;
 import net.dmulloy2.SwornAPI;
 import net.dmulloy2.SwornPlugin;
 import net.dmulloy2.commands.CmdHelp;
@@ -109,7 +110,6 @@ import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -136,15 +136,16 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter WorldEditHandler worldEditHandler;
 	private @Getter VaultHandler vaultHandler;
 
-	// Lists and Maps
+	// Public lists and maps
 	private @Getter Map<UUID, ArenaJoinTask> waiting = new HashMap<>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<>();
+	private @Getter List<String> pluginsUsingAPI = new ArrayList<>();
+	private @Getter List<ArenaZone> loadedArenas = new ArrayList<>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<>();
 	private @Getter List<ArenaClass> classes = new ArrayList<>();
-	private @Getter List<ArenaZone> loadedArenas = new ArrayList<>();
-	private @Getter List<String> whitelistedCommands = new ArrayList<>();
-	private @Getter List<String> pluginsUsingAPI = new ArrayList<>();
 
+	// Private lists
+	private List<String> whitelistedCommands;
 	private List<Arena> activeArenas = new ArrayList<>();
 
 	private @Getter boolean stopping;
@@ -170,8 +171,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Register LogHandler
 		logHandler = new LogHandler(this);
 
-		// Directories
-		checkDirectories();
+		// I / O
+		checkFiles();
 
 		// Configuration
 		saveDefaultConfig();
@@ -231,7 +232,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Arena Updater, runs every second
 		new ArenaUpdateTask().runTaskTimer(this, TimeUtil.toTicks(1), TimeUtil.toTicks(1));
 
-		outConsole("{0} has been enabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been enabled ({1} ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	@Override
@@ -260,7 +261,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Clear Memory
 		clearMemory();
 
-		outConsole("{0} has been disabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been disabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	// Console logging
@@ -335,37 +336,42 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		loadClasses();
 	}
 
-	// Create Directories
-	private final void checkDirectories()
+	private final void checkFiles()
 	{
-		debug("Checking directories!");
-
-		File dataFile = getDataFolder();
-		if (! dataFile.exists())
+		File dataFolder = getDataFolder();
+		if (! dataFolder.exists())
 		{
-			dataFile.mkdir();
-			debug("Created data file!");
+			dataFolder.mkdirs();
 		}
 
-		File arenaFile = new File(getDataFolder(), "arenas");
+		File arenaFile = new File(dataFolder, "arenas");
 		if (! arenaFile.exists())
 		{
 			arenaFile.mkdir();
-			debug("Created arenas directory!");
 		}
 
-		File classFile = new File(getDataFolder(), "classes");
+		File classFile = new File(dataFolder, "classes");
 		if (! classFile.exists())
 		{
 			classFile.mkdir();
-			debug("Created classes directory!");
 		}
 
-		File configsFile = new File(getDataFolder(), "configs");
+		File configsFile = new File(dataFolder, "configs");
 		if (! configsFile.exists())
 		{
 			configsFile.mkdir();
-			debug("Created configs directory!");
+		}
+
+//		File typesFile = new File(dataFolder(), "types");
+//		if (! typesFile.exists())
+//		{
+//			typesFile.mkdir();
+//		}
+
+		File whitelistedCommands = new File(dataFolder, "whiteListedCommands.yml");
+		if (whitelistedCommands.exists())
+		{
+			whitelistedCommands.delete();
 		}
 	}
 
@@ -415,8 +421,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		debug("Loaded {0} arena configs!", total);
-
-		loadWhiteListedCommands();
 	}
 
 	private boolean loadConfig(String str)
@@ -437,27 +441,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		return false;
-	}
-
-	private final void loadWhiteListedCommands()
-	{
-		File file = new File(getDataFolder(), "whiteListedCommands.yml");
-		if (! file.exists())
-		{
-			generateWhitelistedCommands();
-
-			debug("Generating Whitelisted Commands file!");
-		}
-
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-
-		for (String cmd : fc.getStringList("whiteListedCmds"))
-		{
-			if (! cmd.startsWith("/")) cmd = "/" + cmd;
-			whitelistedCommands.add(cmd);
-		}
-
-		debug("Loaded {0} whitelisted commands!", fc.getStringList("whiteListedCmds").size());
 	}
 
 	private void loadClasses()
@@ -512,11 +495,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		outConsole("Loaded {0} classes!", total);
-	}
-
-	private final void generateWhitelistedCommands()
-	{
-		saveResource("whiteListedCommands.yml", false);
 	}
 
 	private final void generateArenaConfig(String field)
@@ -1156,12 +1134,32 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 *
 	 * @param command Command to check
 	 * @return True if the command is whitelisted, false if not
+	 * @throws NullPointerException if command is null
 	 */
-	public final boolean isWhitelistedCommand(String command)
+	public final boolean isWhitelistedCommand(@NonNull String command)
 	{
+		// Lazy-load whitelistedCommands
+		if (whitelistedCommands == null)
+		{
+			whitelistedCommands = new ArrayList<>();
+			for (String whitelisted : getConfig().getStringList("whitelistedCommands"))
+			{
+				// Normalize whitelisted
+				if (! whitelisted.startsWith("/"))
+					whitelisted = "/" + whitelisted;
+				whitelistedCommands.add(whitelisted.toLowerCase());
+			}
+		}
+
+		// Normalize command
+		command = command.toLowerCase();
+		if (! command.startsWith("/"))
+			command = "/" + command;
+
+		// Iterate to find a match
 		for (String cmd : whitelistedCommands)
 		{
-			if (command.matches(cmd + ".*"))
+			if (command.startsWith(cmd))
 				return true;
 		}
 

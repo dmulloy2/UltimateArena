@@ -47,3 +47,14 @@ timerXPBar: true
 classSelector:
   title: "         &l&nSelect a class!&r"
   automatic: true
+
+# Whitelisted Commands
+whitelistedCommands:
+- "/f c"
+- "/msg"
+- "/r"
+- "/who"
+- "/god off"
+- "/list"
+- "/t"
+- "/tell"

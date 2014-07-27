@@ -318,7 +318,7 @@ public class PlayerListener implements Listener
 		{
 			if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 			{
-				String cmd = event.getMessage().toLowerCase();
+				String cmd = event.getMessage();
 				if (! cmd.contains("/ua") && ! plugin.isWhitelistedCommand(cmd))
 				{
 					ap.sendMessage("&3You cannot use non-ua commands in an arena!");
