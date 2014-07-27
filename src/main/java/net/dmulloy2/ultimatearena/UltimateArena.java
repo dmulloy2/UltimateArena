@@ -1138,6 +1138,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 */
 	public final boolean isWhitelistedCommand(@NonNull String command)
 	{
+		if (! getConfig().getBoolean("restrictCommands", true))
+			return true;
+
 		// Lazy-load whitelistedCommands
 		if (whitelistedCommands == null)
 		{

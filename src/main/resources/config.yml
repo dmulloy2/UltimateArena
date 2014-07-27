@@ -48,7 +48,16 @@ classSelector:
   title: "         &l&nSelect a class!&r"
   automatic: true
 
+# Restrict commands
+# Whether or not to restrict commands
+# See: whitelistedCommands
+# Default - true; Input - boolean
+restrictCommands: true
+
 # Whitelisted Commands
+# Commands players can use in arenas
+# # See: restrictCommands
+# Input - List<String>
 whitelistedCommands:
 - "/f c"
 - "/msg"
