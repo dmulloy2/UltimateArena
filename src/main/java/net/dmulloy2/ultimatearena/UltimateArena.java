@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -35,6 +36,7 @@ import net.dmulloy2.handlers.LogHandler;
 import net.dmulloy2.handlers.PermissionHandler;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.types.SimpleVector;
+import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.BOMBArena;
 import net.dmulloy2.ultimatearena.arenas.CONQUESTArena;
@@ -105,6 +107,7 @@ import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -134,7 +137,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter VaultHandler vaultHandler;
 
 	// Lists and Maps
-	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<>();
+	private @Getter Map<UUID, ArenaJoinTask> waiting = new HashMap<>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<>();
 	private @Getter List<ArenaConfig> configs = new ArrayList<>();
 	private @Getter List<ArenaClass> classes = new ArrayList<>();
@@ -284,10 +287,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		debug("Broadcasted message: {0}", broadcast);
 	}
 
-	/**
-	 * Loads all files.
-	 */
-	public void loadFiles()
+	private final void loadFiles()
 	{
 		loadClasses();
 		loadConfigs();
@@ -336,7 +336,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// Create Directories
-	private void checkDirectories()
+	private final void checkDirectories()
 	{
 		debug("Checking directories!");
 
@@ -370,7 +370,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// Load Stuff
-	private void loadArenas()
+	private final void loadArenas()
 	{
 		File folder = new File(getDataFolder(), "arenas");
 		File[] children = folder.listFiles(new FileFilter()
@@ -405,7 +405,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		outConsole("Loaded {0} arenas!", total);
 	}
 
-	private void loadConfigs()
+	private final void loadConfigs()
 	{
 		int total = 0;
 		for (FieldType type : FieldType.values())
@@ -417,27 +417,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		debug("Loaded {0} arena configs!", total);
 
 		loadWhiteListedCommands();
-	}
-
-	private void loadWhiteListedCommands()
-	{
-		File file = new File(getDataFolder(), "whiteListedCommands.yml");
-		if (! file.exists())
-		{
-			generateWhitelistedCommands();
-
-			debug("Generating Whitelisted Commands file!");
-		}
-
-		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-
-		for (String cmd : fc.getStringList("whiteListedCmds"))
-		{
-			if (! cmd.startsWith("/")) cmd = "/" + cmd;
-			whitelistedCommands.add(cmd);
-		}
-
-		debug("Loaded {0} whitelisted commands!", fc.getStringList("whiteListedCmds").size());
 	}
 
 	private boolean loadConfig(String str)
@@ -460,7 +439,26 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return false;
 	}
 
-	private Map<ArenaClass, Permission> classPermissions = new HashMap<>();
+	private final void loadWhiteListedCommands()
+	{
+		File file = new File(getDataFolder(), "whiteListedCommands.yml");
+		if (! file.exists())
+		{
+			generateWhitelistedCommands();
+
+			debug("Generating Whitelisted Commands file!");
+		}
+
+		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+
+		for (String cmd : fc.getStringList("whiteListedCmds"))
+		{
+			if (! cmd.startsWith("/")) cmd = "/" + cmd;
+			whitelistedCommands.add(cmd);
+		}
+
+		debug("Loaded {0} whitelisted commands!", fc.getStringList("whiteListedCmds").size());
+	}
 
 	private void loadClasses()
 	{
@@ -491,7 +489,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 					alreadyLoaded = true;
 			}
 
-			if (alreadyLoaded) continue;
+			if (alreadyLoaded)
+				continue;
 
 			ArenaClass ac = new ArenaClass(this, file);
 			if (ac.isLoaded())
@@ -501,9 +500,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 				if (ac.isNeedsPermission())
 				{
-					Permission perm = new Permission(ac.getPermissionNode(), PermissionDefault.OP);
-					getServer().getPluginManager().addPermission(perm);
-					classPermissions.put(ac, perm);
+					PluginManager pm = getServer().getPluginManager();
+					Permission perm = pm.getPermission(ac.getPermissionNode());
+					if (perm == null)
+					{
+						perm = new Permission(ac.getPermissionNode(), PermissionDefault.OP);
+						pm.addPermission(perm);
+					}
 				}
 			}
 		}
@@ -511,29 +514,17 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		outConsole("Loaded {0} classes!", total);
 	}
 
-	/**
-	 * Generates the WhiteListedCommands file
-	 */
-	private void generateWhitelistedCommands()
+	private final void generateWhitelistedCommands()
 	{
 		saveResource("whiteListedCommands.yml", false);
 	}
 
-	/**
-	 * Generates an arena config for a particular field
-	 *
-	 * @param field
-	 *        - Field to generate config for
-	 */
-	private void generateArenaConfig(String field)
+	private final void generateArenaConfig(String field)
 	{
 		saveResource("configs" + File.separator + field + "Config.yml", false);
 	}
 
-	/**
-	 * Generates stock classes
-	 */
-	private void generateStockClasses()
+	private final void generateStockClasses()
 	{
 		String[] stockClasses = new String[]
 		{
@@ -546,18 +537,20 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 	}
 
-	private void loadSigns()
+	private final void loadSigns()
 	{
 		signHandler = new SignHandler(this);
 		outConsole("Loaded {0} signs!", signHandler.getSigns().size());
 	}
 
-	public ArenaConfig getConfig(FieldType type)
+	// TODO: JavaDoc need - start
+
+	public final ArenaConfig getConfig(FieldType type)
 	{
 		return getConfig(type.getName());
 	}
 
-	public ArenaConfig getConfig(String type)
+	public final ArenaConfig getConfig(String type)
 	{
 		for (ArenaConfig ac : configs)
 		{
@@ -568,9 +561,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
-	public void stopAll()
+	public final void stopAll()
 	{
-		for (Arena a : Util.newList(activeArenas))
+		for (Arena a : getActiveArenas())
 		{
 			a.stop();
 		}
@@ -600,8 +593,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
-	// Delete Stuff!
-	public void deleteArena(Player player, String str)
+	public final void deleteArena(Player player, String str)
 	{
 		ArenaZone az = getArenaZone(str);
 		if (az != null)
@@ -643,45 +635,52 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	// ---- Locational Checks
 
-	public ArenaZone getZoneInside(Location location)
+	public final ArenaZone getZoneInside(Location location)
 	{
-		for (ArenaZone az : Util.newList(loadedArenas))
+		for (ArenaZone az : loadedArenas)
 		{
-			if (az.checkLocation(location))
+			if (az.isInside(location))
 				return az;
 		}
 
 		return null;
 	}
 
-	public Arena getArenaInside(Location location)
+	public final Arena getArenaInside(Location location)
 	{
-		ArenaZone az = getZoneInside(location);
-		if (az != null)
-			return getArena(az.getName());
+		for (Arena arena : getActiveArenas())
+		{
+			if (arena.isInside(location))
+				return arena;
+		}
 
 		return null;
 	}
 
-	public boolean isInArena(Location loc)
+	public final boolean isInArena(Location loc)
 	{
 		return getZoneInside(loc) != null;
 	}
 
-	public boolean isInArena(ArenaLocation loc)
+	public final boolean isInArena(ArenaLocation loc)
 	{
 		return isInArena(loc.getLocation());
 	}
 
 	// Special case for player
-	public boolean isInArena(Player player)
+	public final boolean isInArena(Player player)
 	{
 		return getArenaPlayer(player) != null;
 	}
 
-	public ArenaPlayer getArenaPlayer(Player player, boolean inactive)
+	public final ArenaPlayer getArenaPlayer(Player player)
 	{
-		for (Arena a : Util.newList(activeArenas))
+		return getArenaPlayer(player, false);
+	}
+
+	public final ArenaPlayer getArenaPlayer(Player player, boolean inactive)
+	{
+		for (Arena a : getActiveArenas())
 		{
 			ArenaPlayer ap = a.getArenaPlayer(player, inactive);
 			if (ap != null)
@@ -691,12 +690,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
-	public ArenaPlayer getArenaPlayer(Player player)
-	{
-		return getArenaPlayer(player, false);
-	}
-
-	public void attemptJoin(Player player, String arena)
+	public final void attemptJoin(Player player, String arena)
 	{
 		if (! permissionHandler.hasPermission(player, net.dmulloy2.ultimatearena.types.Permission.JOIN))
 		{
@@ -727,20 +721,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			List<ArenaZone> matches = matchArena(arena);
 			if (matches.size() > 0)
 			{
-				StringBuilder matchString = new StringBuilder();
+				StringJoiner joiner = new StringJoiner("&3, &e");
 				for (ArenaZone match : matches)
 				{
-					matchString.append("&e" + match.getName() + "&3, ");
+					joiner.append(match.getName());
 				}
 
-				matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(" "), "?");
-
-				if (matchString.lastIndexOf(",") >= 0)
-				{
-					matchString.replace(matchString.lastIndexOf(","), matchString.lastIndexOf(","), "or");
-				}
-
-				player.sendMessage(prefix + FormatUtil.format("&3Did you mean {0}", matchString.toString()));
+				player.sendMessage(prefix + FormatUtil.format("&3Did you mean: &e{0}&3?", joiner.toString()));
 			}
 
 			return;
@@ -775,14 +762,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
-		ArenaJoinTask join = new ArenaJoinTask(player.getName(), arena, this);
+		ArenaJoinTask join = new ArenaJoinTask(player.getUniqueId(), arena, this);
 		if (getConfig().getBoolean("joinTimer.enabled"))
 		{
 			int seconds = getConfig().getInt("joinTimer.wait");
 			int wait = seconds * 20;
 
 			join.runTaskLater(this, wait);
-			waiting.put(player.getName(), join);
+			waiting.put(player.getUniqueId(), join);
 
 			player.sendMessage(prefix + FormatUtil.format("&3Please stand still for &e{0} &3seconds!", seconds));
 		}
@@ -792,7 +779,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 	}
 
-	public void join(Player player, String name)
+	public final void join(Player player, String name)
 	{
 		boolean forced = permissionHandler.hasPermission(player, net.dmulloy2.ultimatearena.types.Permission.JOIN_FORCE);
 
@@ -895,10 +882,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// Kicks a random player if the arena is full
-	// This will only be called if someone with forcejoin joins
-	public boolean kickRandomPlayer(Arena arena)
+	private final boolean kickRandomPlayer(Arena arena)
 	{
-		List<ArenaPlayer> validPlayers = new ArrayList<ArenaPlayer>();
+		List<ArenaPlayer> validPlayers = new ArrayList<>();
 		List<ArenaPlayer> totalPlayers = arena.getActivePlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
@@ -919,17 +905,16 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return false;
 	}
 
-	// Gets the arena a player is in
-	public Arena getArena(Player player)
+	// Gets the arena by an active player
+	public final Arena getArena(Player player)
 	{
-		for (int i = 0; i < activeArenas.size(); i++)
+		for (Arena arena : getActiveArenas())
 		{
-			Arena a = activeArenas.get(i);
-			ArenaPlayer ap = a.getArenaPlayer(player);
+			ArenaPlayer ap = arena.getArenaPlayer(player);
 			if (ap != null)
 			{
-				if (ap.getName().equals(player.getName()))
-					return a;
+				if (ap.getUniqueId().equals(player.getUniqueId()))
+					return arena;
 			}
 		}
 
@@ -937,25 +922,23 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// Gets an arena by its name
-	public Arena getArena(String name)
+	public final Arena getArena(String name)
 	{
-		for (int i = 0; i < activeArenas.size(); i++)
+		for (Arena arena : getActiveArenas())
 		{
-			Arena ac = activeArenas.get(i);
-			if (ac.getName().equalsIgnoreCase(name))
-				return ac;
+			if (arena.getName().equalsIgnoreCase(name))
+				return arena;
 		}
 
 		return null;
 	}
 
-	public List<ArenaZone> matchArena(String partial)
+	private final List<ArenaZone> matchArena(String partial)
 	{
-		List<ArenaZone> ret = new ArrayList<ArenaZone>();
+		List<ArenaZone> ret = new ArrayList<>();
 
-		for (int i = 0; i < loadedArenas.size(); i++)
+		for (ArenaZone az : loadedArenas)
 		{
-			ArenaZone az = loadedArenas.get(i);
 			if (az.getName().contains(partial))
 				ret.add(az);
 		}
@@ -964,17 +947,18 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// Gets an arena zone by its name
-	public ArenaZone getArenaZone(String name)
+	public final ArenaZone getArenaZone(String name)
 	{
-		for (int i = 0; i < loadedArenas.size(); i++)
+		for (ArenaZone az : loadedArenas)
 		{
-			ArenaZone az = loadedArenas.get(i);
 			if (az.getName().equalsIgnoreCase(name))
 				return az;
 		}
 
 		return null;
 	}
+
+	// TODO: JavaDoc need - end
 
 	// ---- Arena Creation
 
@@ -985,7 +969,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 * @param name Name of the new arena
 	 * @param type Type of the new arena
 	 */
-	public void createArena(Player player, String name, String type)
+	public final void createArena(Player player, String name, String type)
 	{
 		if (isCreatingArena(player))
 		{
@@ -1058,18 +1042,16 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Returns a player's {@link ArenaCreator} instance
-	 * <p>
-	 * Will return <code>null</code> if the player is not creating an arena.
+	 * Gets a player's {@link ArenaCreator} instance.
 	 *
 	 * @param player {@link Player} to get {@link ArenaCreator} instance for.
-	 * @return The player's {@link ArenaCreator} instance
+	 * @return The player's {@link ArenaCreator} instance, or null if none
 	 */
-	public ArenaCreator getArenaCreator(Player player)
+	public final ArenaCreator getArenaCreator(Player player)
 	{
 		for (ArenaCreator ac : makingArena)
 		{
-			if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
+			if (ac.getPlayer().getUniqueId().equals(player.getUniqueId()))
 				return ac;
 		}
 
@@ -1077,13 +1059,15 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Returns whether or not a {@link Player} is creating an arena.
+	 * Whether or not a {@link Player} is creating an arena.
+	 * <p>
+	 * If you are going to use their ArenaCreator instance for other purposes,
+	 * get their instance, then use a null check.
 	 *
-	 * @param player
-	 *        - {@link Player} to check
-	 * @return Whether or not a {@link Player} is creating an arena.
+	 * @param player {@link Player} to check
+	 * @return True if they are creating an arena, false if not.
 	 */
-	public boolean isCreatingArena(Player player)
+	public final boolean isCreatingArena(Player player)
 	{
 		return getArenaCreator(player) != null;
 	}
@@ -1091,10 +1075,10 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	/**
 	 * Sets a point in the arena creation process
 	 *
-	 * @param player
-	 *        - {@link Player} setting the point
+	 * @param player {@link Player} setting the point
+	 * @param args Command-line args, if any
 	 */
-	public void setPoint(Player player, String[] args)
+	public final void setPoint(Player player, String[] args)
 	{
 		if (! isCreatingArena(player))
 		{
@@ -1107,15 +1091,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Stops the creation of an arena
+	 * Stops the creation of an arena.
 	 *
-	 * @param player
-	 *        - {@link Player} who is stopping
+	 * @param player {@link Player} who is stopping
 	 */
 	public void stopCreatingArena(Player player)
 	{
 		ArenaCreator ac = getArenaCreator(player);
-		if (ac.getPlayer().getName().equalsIgnoreCase(player.getName()))
+		if (ac != null)
 		{
 			makingArena.remove(ac);
 			player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
@@ -1123,9 +1106,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Clears memory
+	 * Clears lists and maps.
 	 */
-	public void clearMemory()
+	public final void clearMemory()
 	{
 		whitelistedCommands.clear();
 
@@ -1138,48 +1121,41 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Accepts registration from a {@link JavaPlugin}
+	 * Accepts registration from a {@link JavaPlugin}.
 	 *
-	 * @param plugin
-	 *        - {@link JavaPlugin} to accept the registration from
+	 * @param plugin {@link Plugin} to accept the registration from
 	 */
 	public void acceptRegistration(Plugin plugin)
 	{
-		outConsole("Accepted API registration from {0}", plugin.getName());
-
+		logHandler.log("Accepted API registration from {0}", plugin.getName());
 		pluginsUsingAPI.add(plugin.getName());
 	}
 
 	/**
-	 * Dumps plugins currently using the UltimateArena API
+	 * Dumps plugins currently using the UltimateArena API to console.
+	 *
+	 * @return Plugins using the API, or null if none
 	 */
-	public void dumpRegistrations()
+	public final List<String> dumpRegistrations()
 	{
 		if (pluginsUsingAPI.isEmpty())
 		{
-			outConsole("No plugins currently using the UltimateArena API");
-			return;
+			logHandler.log("No plugins currently using the UltimateArena API");
+			return null;
 		}
 
-		StringBuilder line = new StringBuilder();
-		line.append("Plugins currently using the UltimateArena API: ");
+		StringJoiner joiner = new StringJoiner(", ");
+		joiner.appendAll(pluginsUsingAPI);
 
-		for (String name : pluginsUsingAPI)
-		{
-			line.append(name + ", ");
-		}
-
-		line.replace(line.lastIndexOf(","), line.lastIndexOf(" "), "");
-
-		outConsole(line.toString());
+		logHandler.log("Plugins using the API: {0}", joiner.toString());
+		return pluginsUsingAPI;
 	}
 
 	/**
-	 * Returns whether or not a command is whitelisted
+	 * Whether or not a command is whitelisted.
 	 *
-	 * @param command
-	 *        - Command to check
-	 * @return Whether or not a command is whitelisted
+	 * @param command Command to check
+	 * @return True if the command is whitelisted, false if not
 	 */
 	public final boolean isWhitelistedCommand(String command)
 	{
@@ -1192,17 +1168,21 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return false;
 	}
 
+	/**
+	 * Gets whether or not a {@link Player} is waiting to join an arena.
+	 *
+	 * @param player Player to check
+	 * @return True if they are waiting, false if not
+	 */
 	public final boolean isPlayerWaiting(Player player)
 	{
-		return waiting.containsKey(player.getName());
+		return waiting.containsKey(player.getUniqueId());
 	}
 
 	/**
-	 * Returns how many arenas have been played
-	 * <p>
-	 * Will return 1 if none have been played
+	 * Gets how many arenas have been played.
 	 *
-	 * @return How many arenas have been played
+	 * @return How many arenas have been played, or 1 if none
 	 */
 	public final int getTotalArenasPlayed()
 	{
@@ -1213,13 +1193,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			ret += az.getTimesPlayed();
 		}
 
-		return ret > 0 ? ret : 1;
+		return Math.max(1, ret);
 	}
 
 	/**
-	 * Returns a list of active arenas
+	 * Gets a list of active arenas.
 	 * <p>
-	 * Can not be used for modification
+	 * Can not be used for modification.
 	 */
 	public final List<Arena> getActiveArenas()
 	{
@@ -1227,20 +1207,20 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Removes an active {@link Arena}
+	 * Removes an active {@link Arena}.
 	 *
-	 * @param a
-	 *        - Arena to remove
+	 * @param arena Arena to remove
 	 */
-	public final void removeActiveArena(Arena a)
+	public final void removeActiveArena(Arena arena)
 	{
-		activeArenas.remove(a);
+		Validate.isTrue(arena.isStopped(), "You cannot remove an arena that hasn't stopped yet!");
+		activeArenas.remove(arena);
 	}
 
 	/**
 	 * Arena Update Task
 	 * <p>
-	 * While I hate to use it, it works.
+	 * While I hate to use it, it works well enough.
 	 */
 	public class ArenaUpdateTask extends BukkitRunnable
 	{

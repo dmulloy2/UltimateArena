@@ -12,7 +12,6 @@ import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
-import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
@@ -68,10 +67,10 @@ public class PlayerListener implements Listener
 
 		if (plugin.isPlayerWaiting(player))
 		{
-			ArenaJoinTask task = plugin.getWaiting().get(player.getName());
+			ArenaJoinTask task = plugin.getWaiting().get(player.getUniqueId());
 
 			task.cancel();
-			plugin.getWaiting().remove(player.getName());
+			plugin.getWaiting().remove(player.getUniqueId());
 		}
 
 		if (plugin.getSpectatingHandler().isSpectating(player))
@@ -90,7 +89,7 @@ public class PlayerListener implements Listener
 		if (ap != null)
 		{
 			Arena arena = ap.getArena();
-			if (arena.getType() != FieldType.HUNGER)
+			if (! arena.getConfig().isCanModifyWorld())
 			{
 				event.setCancelled(true);
 
@@ -109,7 +108,7 @@ public class PlayerListener implements Listener
 		if (ap != null)
 		{
 			Arena arena = ap.getArena();
-			if (arena.getType() != FieldType.HUNGER)
+			if (! arena.getConfig().isCanModifyWorld())
 			{
 				event.setCancelled(true);
 			}
@@ -266,10 +265,10 @@ public class PlayerListener implements Listener
 		Player player = event.getPlayer();
 		if (plugin.isPlayerWaiting(player))
 		{
-			ArenaJoinTask task = plugin.getWaiting().get(player.getName());
+			ArenaJoinTask task = plugin.getWaiting().get(player.getUniqueId());
 
 			task.cancel();
-			plugin.getWaiting().remove(player.getName());
+			plugin.getWaiting().remove(player.getUniqueId());
 
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCancelled!"));
 		}

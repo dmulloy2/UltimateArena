@@ -25,7 +25,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class MOBArena extends Arena
 {
-	private int mobtimer, mobspawn, mobPerWave;
+	private int mobTimer, mobSpawn, mobPerWave;
+	private int maxWave, wave;
 
 	private List<LivingEntity> mobs;
 	private List<String> spawning;
@@ -35,8 +36,8 @@ public class MOBArena extends Arena
 		super(az);
 		this.type = FieldType.MOB;
 
-		this.mobspawn = 0;
-		this.mobtimer = 0;
+		this.mobSpawn = 0;
+		this.mobTimer = 0;
 		this.wave = 0;
 		this.winningTeam = -1;
 
@@ -50,22 +51,22 @@ public class MOBArena extends Arena
 		newWave();
 	}
 
-	public void newWave()
+	private final void newWave()
 	{
 		if (wave > 0)
 		{
 			tellPlayers("&aYou survived the wave!");
-			tellPlayers("&aNow going to wave &c{0}&a!", getWave());
+			tellPlayers("&aNow going to wave &c{0}&a!", wave);
 		}
 
 		this.wave++;
 		this.mobPerWave = 4 + ((int) (wave * 1.5)) + (active.size() * 3);
-		this.mobtimer = (wave * 4) + 20;
+		this.mobTimer = (wave * 4) + 20;
 
-		// TODO: Make entities spawned configurable?
+		// TODO: Make entities spawned configurable
 		if (wave <= 1)
 		{
-			mobtimer = 1;
+			mobTimer = 1;
 		}
 		if (wave > 1)
 		{
@@ -158,11 +159,11 @@ public class MOBArena extends Arena
 	{
 		if (startTimer <= 0)
 		{
-			mobtimer--;
-			mobspawn--;
-			if (mobspawn < 0)
+			mobTimer--;
+			mobSpawn--;
+			if (mobSpawn < 0)
 			{
-				if (mobtimer < 0)
+				if (mobTimer < 0)
 				{
 					newWave();
 					synchronized (mobs)
@@ -289,7 +290,7 @@ public class MOBArena extends Arena
 	@Override
 	public void onReload()
 	{
-		// Always count mob kills in MOB arena
 		this.countMobKills = true;
+		this.maxWave = getConfig().getMaxWave();
 	}
 }

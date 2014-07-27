@@ -23,7 +23,7 @@ import org.bukkit.event.Listener;
 
 /**
  * Represents an arena type.
- * 
+ *
  * @author dmulloy2
  */
 
@@ -45,35 +45,33 @@ public abstract class ArenaType
 	// ---- Optional Hooks
 
 	/**
-	 * Called when this ArenaType is loaded
+	 * Called when this ArenaType is loaded.
 	 */
 	public void onLoad() { }
 
 	/**
-	 * Called when this ArenaType is enabled
+	 * Called when this ArenaType is enabled.
 	 */
 	public void onEnable() { }
 
 	/**
-	 * Called when this ArenaType is disabled
+	 * Called when this ArenaType is disabled.
 	 */
 	public void onDisable() { }
 
 	/**
-	 * Called when UltimateArena is reloaded
+	 * Called when UltimateArena is reloaded.
 	 */
 	public void onReload() { }
 
 	/**
 	 * Gets the {@link ArenaZone} associated with this ArenaType. Will return a
 	 * default ArenaZone if this method is not overriden.
-	 * 
-	 * @param plugin
-	 *        - UltimateArena instance
-	 * @param file
-	 *        - Data file
+	 *
+	 * @param plugin UltimateArena instance
+	 * @param file Data file
 	 */
-	public ArenaZone getArenaZone(UltimateArena plugin, File file)
+	public ArenaZone getArenaZone(File file)
 	{
 		return new ArenaZone(plugin, file);
 	}
@@ -84,7 +82,7 @@ public abstract class ArenaType
 	 */
 	public ArenaConfig newConfig()
 	{
-		return new ArenaConfig(getPlugin(), getName().toLowerCase(), new File(getDataFolder(), "config.yml"));
+		return new ArenaConfig(plugin, getName().toLowerCase(), new File(dataFolder, "config.yml"));
 	}
 
 	// ---- Required Hooks
@@ -92,25 +90,23 @@ public abstract class ArenaType
 	/**
 	 * Gets the {@link ArenaCreator} associated with this ArenaType. Must be
 	 * overriden.
-	 * 
-	 * @param player
-	 *        - {@link Player} creating the arena
-	 * @param name
-	 *        - Name of the arena
-	 * @param plugin
-	 *        - UltimateArena instance
+	 *
+	 * @param player {@link Player} creating the arena
+	 * @param name Name of the arena
+	 * @param plugin UltimateArena instance
 	 */
 	public abstract ArenaCreator newCreator(Player player, String name, UltimateArena plugin);
 
 	/**
 	 * Gets the {@link Arena} associated with this ArenaType. Must be overriden.
-	 * 
-	 * @param az
-	 *        - Underlying {@link ArenaZone}
+	 *
+	 * @param az Underlying {@link ArenaZone}
 	 */
 	public abstract Arena newArena(ArenaZone az);
 
 	/**
+	 * Gets the name of this ArenaType.
+	 *
 	 * @return The name of this ArenaType
 	 */
 	public final String getName()
@@ -119,6 +115,8 @@ public abstract class ArenaType
 	}
 
 	/**
+	 * Gets the stylized name of this ArenaType.
+	 *
 	 * @return The stylized name of this ArenaType
 	 */
 	public final String getStylizedName()
@@ -126,6 +124,11 @@ public abstract class ArenaType
 		return description.getStylized();
 	}
 
+	/**
+	 * Initializes this ArenaType.
+	 *
+	 * @throws IllegalArgumentException If this ArenaType is already initialized
+	 */
 	protected final void initialize(UltimateArena plugin, ArenaDescriptionFile description, ArenaClassLoader classLoader, File file,
 			File dataFolder)
 	{
@@ -143,7 +146,7 @@ public abstract class ArenaType
 	// ---- Configuration
 
 	/**
-	 * Saves the default config for this ArenaType
+	 * Saves the default config for this ArenaType.
 	 */
 	public final void saveDefaultConfig()
 	{
@@ -155,7 +158,9 @@ public abstract class ArenaType
 	protected ArenaConfig config;
 
 	/**
-	 * @return The config
+	 * Gets this ArenaType's configuration.
+	 *
+	 * @return This ArenaType's configuration
 	 */
 	public final ArenaConfig getConfig()
 	{
@@ -169,7 +174,7 @@ public abstract class ArenaType
 	}
 
 	/**
-	 * Reloads the config
+	 * Reloads this ArenaType's configuration.
 	 */
 	public final void reloadConfig()
 	{
@@ -186,15 +191,13 @@ public abstract class ArenaType
 	 * The resource is saved into the plugin's data folder using the same
 	 * hierarchy as the .jar file (subdirectories are preserved).
 	 *
-	 * @param resourcePath
-	 *        the embedded resource path to look for within the plugin's .jar
-	 *        file. (No preceding slash).
-	 * @param replace
-	 *        if true, the embedded resource will overwrite the contents of an
-	 *        existing file.
-	 * @throws IllegalArgumentException
-	 *         if the resource path is null, empty, or points to a nonexistent
-	 *         resource.
+	 * @param resourcePath the embedded resource path to look for within the
+	 *        plugin's .jar file. (No preceding slash).
+	 * @param replace if true, the embedded resource will overwrite the contents
+	 *        of an existing file.
+	 * @throws NullPointerException if resourcePath is null
+	 * @throws IllegalArgumentException if the resource path is empty or
+	 *         points to a nonexistent resource.
 	 */
 	protected final void saveResource(@NonNull String resourcePath, boolean replace)
 	{
@@ -238,17 +241,17 @@ public abstract class ArenaType
 	}
 
 	/**
-	 * Gets an embedded resource in this plugin
+	 * Gets an embedded resource in this plugin.
 	 *
-	 * @param filename
-	 *        Filename of the resource
-	 * @return File if found, otherwise null
+	 * @param filename Filename of the resource
+	 * @return File, or null if it cannot be found
+	 * @throws NullPointerException if fileName is null
 	 */
-	protected final InputStream getResource(@NonNull String filename)
+	protected final InputStream getResource(@NonNull String fileName)
 	{
 		try
 		{
-			URL url = getClassLoader().getResource(filename);
+			URL url = getClassLoader().getResource(fileName);
 			if (url == null)
 				return null;
 
@@ -260,10 +263,10 @@ public abstract class ArenaType
 	}
 
 	/**
-	 * Registers an Event {@link Listener} via UltimateArena
-	 * 
-	 * @param listener
-	 *        - {@link Listener} to register
+	 * Registers a {@link Listener} via UltimateArena
+	 *
+	 * @param listener {@link Listener} to register
+	 * @throws NullPointerException if listener is null
 	 */
 	protected final void registerListener(@NonNull Listener listener)
 	{

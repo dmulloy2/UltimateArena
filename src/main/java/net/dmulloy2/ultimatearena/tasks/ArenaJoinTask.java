@@ -1,7 +1,9 @@
 package net.dmulloy2.ultimatearena.tasks;
 
+import java.util.UUID;
+
+import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -10,17 +12,12 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
+@AllArgsConstructor
 public class ArenaJoinTask extends BukkitRunnable
 {
+	private final UUID uniqueId;
 	private final String arenaName;
-	private final String playerName;
 	private final UltimateArena plugin;
-	public ArenaJoinTask(String playerName, String arenaName, UltimateArena plugin)
-	{
-		this.playerName = playerName;
-		this.arenaName = arenaName;
-		this.plugin = plugin;
-	}
 
 	@Override
 	public void run()
@@ -31,11 +28,11 @@ public class ArenaJoinTask extends BukkitRunnable
 			plugin.join(player, arenaName);
 		}
 
-		plugin.getWaiting().remove(playerName);
+		plugin.getWaiting().remove(uniqueId);
 	}
 
 	public final Player getPlayer()
 	{
-		return Util.matchPlayer(playerName);
+		return plugin.getServer().getPlayer(uniqueId);
 	}
 }

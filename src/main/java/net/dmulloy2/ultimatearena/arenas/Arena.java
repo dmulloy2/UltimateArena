@@ -18,6 +18,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -74,9 +75,7 @@ public abstract class Arena implements Reloadable
 
 	protected int broadcastTimer = 45;
 	protected int winningTeam = 999;
-	protected int maxPoints = 60;
 	protected int maxDeaths = 1;
-	protected int maxWave = 15;
 
 	protected int startingAmount;
 	protected int maxGameTime;
@@ -85,23 +84,21 @@ public abstract class Arena implements Reloadable
 	protected int team1size;
 	protected int team2size;
 	protected int announced;
-	protected int wave;
 
 	protected boolean allowTeamKilling;
 	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
 	protected boolean countMobKills;
 	protected boolean giveRewards;
-	protected boolean forceStop;
 	protected boolean stopped;
-	protected boolean start;
+	protected boolean started;
 
 	protected boolean updatedTeams;
 	protected boolean disabled;
 	protected boolean inLobby;
 	protected boolean inGame;
 
-	protected Mode gameMode = Mode.DISABLED;
+	protected Mode gameMode = Mode.IDLE;
 
 	protected final World world;
 	protected FieldType type;
@@ -150,8 +147,6 @@ public abstract class Arena implements Reloadable
 		this.gameTimer = az.getConfig().getGameTime();
 		this.maxDeaths = az.getConfig().getMaxDeaths();
 		this.allowTeamKilling = az.getConfig().isAllowTeamKilling();
-		this.maxWave = az.getConfig().getMaxWave();
-		this.maxPoints = az.getConfig().getMaxPoints();
 		this.countMobKills = az.getConfig().isCountMobKills();
 		this.rewardBasedOnXp = az.getConfig().isRewardBasedOnXp();
 		this.killStreaks = az.getConfig().getKillStreaks();
@@ -843,11 +838,11 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void start()
 	{
-		if (! start)
+		if (! started)
 		{
 			plugin.outConsole("Starting arena {0} with {1} players", name, active.size());
 
-			this.start = true;
+			this.started = true;
 			this.inGame = true;
 			this.inLobby = false;
 
@@ -1049,18 +1044,13 @@ public abstract class Arena implements Reloadable
 	{
 		plugin.debug("Clearing entities in arena {0}", name);
 
-		List<EntityType> persistentEntities = Arrays.asList(new EntityType[]
-		{
-				EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
-		});
-
 		for (Entity entity : world.getEntities())
 		{
 			if (entity != null && entity.isValid())
 			{
-				if (az.checkLocation(entity.getLocation()))
+				if (! persistentEntities.contains(entity.getType()))
 				{
-					if (! persistentEntities.contains(entity.getType()))
+					if (isInside(entity.getLocation()))
 					{
 						if (entity instanceof LivingEntity)
 							((LivingEntity) entity).setHealth(0.0D);
@@ -1072,6 +1062,11 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
+	private static final List<EntityType> persistentEntities = Arrays.asList(new EntityType[]
+	{
+			EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
+	});
+
 	/**
 	 * Returns a customized in-game leaderboard.
 	 *
@@ -1079,7 +1074,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public List<String> getLeaderboard(Player player)
 	{
-		List<String> leaderboard = new ArrayList<String>();
+		List<String> leaderboard = new ArrayList<>();
 
 		// Build kills map
 		Map<String, Double> kdrMap = new HashMap<>();
@@ -1242,9 +1237,25 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
+	/**
+	 * Checks whether or not a {@link Location} is inside this arena.
+	 *
+	 * @param location Location to check
+	 * @return True if inside, false if not
+	 */
 	public final boolean isInside(Location location)
 	{
-		return az.checkLocation(location);
+		return az.isInside(location);
+	}
+
+	/**
+	 * Gets this Arena's configuration.
+	 *
+	 * @return This arena's configuration
+	 */
+	public final ArenaConfig getConfig()
+	{
+		return az.getConfig();
 	}
 
 	// ---- Generic Methods

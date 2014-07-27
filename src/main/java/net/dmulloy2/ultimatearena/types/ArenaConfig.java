@@ -43,7 +43,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	protected int maxWave = 15;
 	protected int maxPoints = 60;
 
-	protected boolean allowTeamKilling, countMobKills, rewardBasedOnXp;
+	protected boolean allowTeamKilling, countMobKills, rewardBasedOnXp, canModifyWorld, unlimitedAmmo;
 	protected boolean giveRewards = true;
 
 	protected List<String> blacklistedClasses, whitelistedClasses;
@@ -69,6 +69,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
 		this.countMobKills = type.toLowerCase().equals("mob");
+		this.canModifyWorld = type.toLowerCase().equals("hunger");
+		this.unlimitedAmmo = ! type.toLowerCase().equals("hunger");
 		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
 		this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(type.toUpperCase()));
 
@@ -111,6 +113,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", def.isAllowTeamKilling());
 			this.cashReward = fc.getDouble("cashReward", def.getCashReward());
 			this.countMobKills = fc.getBoolean("countMobKills", def.isCountMobKills());
+			this.canModifyWorld = fc.getBoolean("canModifyWorld", def.isCanModifyWorld());
+			this.unlimitedAmmo = fc.getBoolean("unlimitedAmmo", def.isUnlimitedAmmo());
 
 			this.rewards = new ArrayList<>();
 			if (fc.isSet("rewards"))

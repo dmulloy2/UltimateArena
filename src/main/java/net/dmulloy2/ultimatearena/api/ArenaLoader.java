@@ -11,6 +11,7 @@ import java.util.jar.JarFile;
 
 import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -82,9 +83,7 @@ public class ArenaLoader
 		urls[0] = file.toURI().toURL();
 
 		loader = new ArenaClassLoader(this, urls, getClass().getClassLoader());
-
 		loaders.put(key, loader);
-
 		return loader;
 	}
 
@@ -117,7 +116,7 @@ public class ArenaLoader
 
 			String author = (String) map.get("author");
 			if (author == null)
-				author = "";
+				author = "Unascribed";
 
 			String stylized = (String) map.get("stylized");
 			if (stylized == null)
@@ -125,21 +124,14 @@ public class ArenaLoader
 
 			return new ArenaDescriptionFile(name, main, stylized, version, author);
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			throw new InvalidArenaException(e);
+			throw InvalidArenaException.fromThrowable(ex);
 		}
 		finally
 		{
-			try
-			{
-				jar.close();
-			} catch (Throwable ex) { }
-
-			try
-			{
-				stream.close();
-			} catch (Throwable ex) { }
+			Util.closeQuietly(jar);
+			Util.closeQuietly(stream);
 		}
 	}
 

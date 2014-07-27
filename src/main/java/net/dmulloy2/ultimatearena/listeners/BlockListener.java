@@ -6,7 +6,6 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
 
@@ -39,7 +38,7 @@ public class BlockListener implements Listener
 			if (ap != null)
 			{
 				Arena arena = ap.getArena();
-				if (arena.getType() != FieldType.HUNGER)
+				if (! arena.getConfig().isCanModifyWorld())
 				{
 					ap.sendMessage("&cYou cannot break this!");
 					event.setCancelled(true);
@@ -67,7 +66,7 @@ public class BlockListener implements Listener
 			if (ap != null)
 			{
 				Arena arena = ap.getArena();
-				if (arena.getType() != FieldType.HUNGER)
+				if (! arena.getConfig().isCanModifyWorld())
 				{
 					ap.sendMessage("&cYou cannot place this!");
 					event.setCancelled(true);

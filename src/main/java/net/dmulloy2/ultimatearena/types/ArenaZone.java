@@ -4,7 +4,7 @@ import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,6 +17,7 @@ import net.dmulloy2.io.FileSerialization;
 import net.dmulloy2.types.Material;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.util.FormatUtil;
@@ -101,6 +102,14 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	public ArenaZone(UltimateArena plugin, File file)
 	{
 		this(plugin);
+		this.file = file;
+		this.name = FormatUtil.trimFileExtension(file, ".dat");
+		this.initialize();
+	}
+
+	public ArenaZone(ArenaType type, File file)
+	{
+		this(type.getPlugin());
 		this.file = file;
 		this.name = FormatUtil.trimFileExtension(file, ".dat");
 		this.initialize();
@@ -272,30 +281,32 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 * Checks if a location is inside this arena.
 	 *
 	 * @param loc {@link Location} to check
-	 * @return Whether or not the location is inside this arena.
+	 * @return True if the location is inside the arena, false if not
 	 */
-	public final boolean checkLocation(Location loc)
+	public boolean isInside(Location location)
 	{
 		try
 		{
-			return lobby.isInside(loc) || arena.isInside(loc);
+			return lobby.isInside(location) || arena.isInside(location);
 		}
 		catch (Throwable ex)
 		{
-			if (! locationStackPrinted)
+			if (! insideStackPrinted)
 			{
-				plugin.outConsole(Level.WARNING, "Could not perform location check for arena {0}!", name);
-				plugin.outConsole(Level.WARNING, "This is often caused by a null world!");
-				plugin.outConsole(Level.WARNING, "worldName = {0}, world = {1}", worldName,
-						getWorld() == null ? "null" : getWorld().getName());
-				locationStackPrinted = true;
+				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "performing location check for " + name));
+
+				World world = getWorld();
+				if (world == null)
+					plugin.getLogHandler().log(Level.WARNING, "This is caused by a null world. Does world {0} exist?", worldName);
+
+				insideStackPrinted = true;
 			}
 
 			return false;
 		}
 	}
 
-	private boolean locationStackPrinted;
+	private transient boolean insideStackPrinted;
 
 	/**
 	 * Whether or not a player has voted
@@ -467,7 +478,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			Files.copy(file, backup);
 
 			// Load legacy arena zone
-			plugin.getFileHandler().load(this);
+			plugin.getFileHandler().loadLegacy(this);
 			loadConfiguration();
 
 			// Delete
@@ -481,7 +492,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "converting " + name));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "converting " + name));
 		}
 	}
 
@@ -514,7 +525,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 		Map<String, Object> def = getDefaultConfig().serialize();
 		Map<String, Object> data = Util.filterDuplicateEntries(config.serialize(), def);
-		if (data == null || data.isEmpty())
+		if (data.isEmpty())
 			return;
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
@@ -543,7 +554,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new LinkedHashMap<>();
 
 		for (java.lang.reflect.Field field : getClass().getDeclaredFields())
 		{

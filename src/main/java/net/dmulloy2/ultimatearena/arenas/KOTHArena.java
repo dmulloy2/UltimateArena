@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import lombok.Getter;
 import net.dmulloy2.ultimatearena.flags.ArenaFlag;
 import net.dmulloy2.ultimatearena.flags.KothFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
@@ -25,6 +26,8 @@ import org.bukkit.entity.Player;
 
 public class KOTHArena extends Arena
 {
+	private @Getter int maxPoints;
+
 	public KOTHArena(ArenaZone az)
 	{
 		super(az);
@@ -123,5 +126,11 @@ public class KOTHArena extends Arena
 	public void announceWinner()
 	{
 		//
+	}
+
+	@Override
+	public void onReload()
+	{
+		this.maxPoints = getConfig().getMaxPoints();
 	}
 }
