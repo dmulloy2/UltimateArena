@@ -1,5 +1,6 @@
 package net.dmulloy2.ultimatearena.types;
 
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import lombok.Getter;
@@ -117,20 +118,23 @@ public final class ArenaPlayer
 	/**
 	 * Gives the player armor
 	 *
-	 * @param slot Armor slot to put. Must be between 0 and 3
+	 * @param string Armor slot to put. Must be between 0 and 3
 	 * @param stack {@link ItemStack} to give as armor
 	 */
-	public final void giveArmor(int slot, @NonNull ItemStack stack)
+	public final void giveArmor(String string, @NonNull ItemStack stack)
 	{
-		switch (slot)
+		switch (string.toLowerCase())
 		{
-			case 0:
+			case "helmet":
+				player.getInventory().setHelmet(stack);
+				return;
+			case "chestplate":
 				player.getInventory().setChestplate(stack);
 				return;
-			case 1:
+			case "leggings":
 				player.getInventory().setLeggings(stack);
 				return;
-			case 2:
+			case "boots":
 				player.getInventory().setBoots(stack);
 				return;
 		}
@@ -210,9 +214,9 @@ public final class ArenaPlayer
 
 		if (arenaClass == null)
 		{
-			giveArmor(0, new ItemStack(Material.IRON_CHESTPLATE));
-			giveArmor(1, new ItemStack(Material.IRON_LEGGINGS));
-			giveArmor(2, new ItemStack(Material.IRON_BOOTS));
+			giveArmor("chestplate", new ItemStack(Material.IRON_CHESTPLATE));
+			giveArmor("leggings", new ItemStack(Material.IRON_LEGGINGS));
+			giveArmor("boots", new ItemStack(Material.IRON_BOOTS));
 			giveItem(new ItemStack(Material.DIAMOND_SWORD));
 			return;
 		}
@@ -222,12 +226,11 @@ public final class ArenaPlayer
 			plugin.getEssentialsHandler().giveKitItems(this);
 		}
 
-		int i = 0;
-		for (ItemStack stack : arenaClass.getArmor())
+		for (Entry<String, ItemStack> armor : arenaClass.getArmor().entrySet())
 		{
-			if (stack != null)
-				giveArmor(i, stack);
-			i++;
+			ItemStack item = armor.getValue();
+			if (item != null)
+				giveArmor(armor.getKey(), item);
 		}
 
 		for (ItemStack tool : arenaClass.getTools())

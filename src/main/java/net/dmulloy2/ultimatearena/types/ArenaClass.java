@@ -40,7 +40,8 @@ public final class ArenaClass implements Reloadable
 	private boolean needsPermission;
 	private String permissionNode;
 
-	private List<ItemStack> armor, tools;
+	private List<ItemStack> tools;
+	private Map<String, ItemStack> armor;
 
 	private boolean useHelmet = true;
 
@@ -85,7 +86,7 @@ public final class ArenaClass implements Reloadable
 		Validate.isTrue(! loaded, "Class has already been loaded!");
 
 		// Initialize variables
-		this.armor = new ArrayList<>();
+		this.armor = new HashMap<>();
 		this.tools = new ArrayList<>();
 
 		try
@@ -109,7 +110,7 @@ public final class ArenaClass implements Reloadable
 
 					if (item != null)
 					{
-						armor.add(item);
+						armor.put(entry.getKey(), item);
 						continue;
 					}
 
@@ -140,7 +141,7 @@ public final class ArenaClass implements Reloadable
 					if (! enchants.isEmpty())
 						item.addUnsafeEnchantments(enchants);
 
-					armor.add(item);
+					armor.put(entry.getKey(), item);
 
 					// Convert
 					fc.set("armor." + entry.getKey().toLowerCase(), ItemUtil.serialize(item));
