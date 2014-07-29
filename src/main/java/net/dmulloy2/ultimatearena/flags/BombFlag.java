@@ -45,7 +45,7 @@ public class BombFlag extends ArenaFlag
 
 			if (timer == 30 || timer == 20 || timer == 10 || timer <= 5)
 			{
-				arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{0} &3seconds!", bombNumber, timer);
+				arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{1} &3seconds!", bombNumber, timer);
 			}
 
 			if (timer < 1)

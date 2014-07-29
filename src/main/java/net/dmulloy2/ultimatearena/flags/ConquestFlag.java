@@ -1,13 +1,13 @@
 package net.dmulloy2.ultimatearena.flags;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -28,10 +28,7 @@ public class ConquestFlag extends ArenaFlag
 		int team1 = 0;
 		int team2 = 0;
 
-		// TODO: Fix messages being sent more than once
-		
-		Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
-
+		List<ArenaPlayer> players = new ArrayList<>();
 		for (ArenaPlayer ap : arenaPlayers)
 		{
 			Player player = ap.getPlayer();
@@ -47,6 +44,8 @@ public class ConquestFlag extends ArenaFlag
 			}
 		}
 
+		// Remove any duplicates
+		players = Util.removeDuplicates(players);
 		cappingTeam = team1 > team2 ? 1 : 2;
 
 		// The other team is trying to cap
