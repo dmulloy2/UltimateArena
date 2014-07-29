@@ -118,12 +118,12 @@ public final class ArenaPlayer
 	/**
 	 * Gives the player armor
 	 *
-	 * @param string Armor slot to put. Must be between 0 and 3
+	 * @param slot Armor slot (helmet, chestplate, etc.)
 	 * @param stack {@link ItemStack} to give as armor
 	 */
-	public final void giveArmor(String string, @NonNull ItemStack stack)
+	public final void giveArmor(String slot, @NonNull ItemStack stack)
 	{
-		switch (string.toLowerCase())
+		switch (slot.toLowerCase())
 		{
 			case "helmet":
 				player.getInventory().setHelmet(stack);
