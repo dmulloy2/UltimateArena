@@ -109,7 +109,7 @@ public class BombFlag extends ArenaFlag
 						// team 1 is fusing
 						fuser++;
 						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", bombNumber, fuser);
-						if (fuser > 10)
+						if (fuser >= 10)
 						{
 							fuser = 0;
 							fused = true;
@@ -124,7 +124,7 @@ public class BombFlag extends ArenaFlag
 					{
 						fuser++;
 						capturer.sendMessage("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", bombNumber, fuser);
-						if (fuser > 10)
+						if (fuser >= 10)
 						{
 							fuser = 0;
 							fused = false;

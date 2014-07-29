@@ -35,15 +35,7 @@ public class BOMBArena extends Arena
 	@Override
 	public void onStart()
 	{
-		this.redTeamPower = active.size() * 3;
-		if (redTeamPower < 10)
-		{
-			this.redTeamPower = 10;
-		}
-		if (redTeamPower > 150)
-		{
-			this.redTeamPower = 150;
-		}
+		this.redTeamPower = Math.min(150, Math.max(10, active.size() * 3));
 	}
 
 	@Override
