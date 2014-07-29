@@ -1,10 +1,13 @@
 package net.dmulloy2.ultimatearena.arenas;
 
+import java.util.List;
+
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.flags.BombFlag;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.util.Util;
 
 /**
  * @author dmulloy2
@@ -109,5 +112,11 @@ public class BOMBArena extends Arena
 			rewardTeam(2);
 			return;
 		}
+	}
+
+	@Override
+	public List<String> getExtraInfo()
+	{
+		return Util.toList("&3Red Team Power: &e" + redTeamPower);
 	}
 }

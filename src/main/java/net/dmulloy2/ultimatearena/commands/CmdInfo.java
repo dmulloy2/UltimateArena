@@ -26,23 +26,7 @@ public class CmdInfo extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		Arena arena = null;
-
-		if (args.length == 0)
-		{
-			if (! plugin.isInArena(player))
-			{
-				err("You are not in an arena!");
-				return;
-			}
-
-			arena = plugin.getArena(player);
-		}
-		else
-		{
-			arena = plugin.getArena(args[0]);
-		}
-
+		Arena arena = getArena(0);
 		if (arena == null)
 		{
 			err("Please specify a valid arena!");
@@ -50,6 +34,12 @@ public class CmdInfo extends UltimateArenaCommand
 		}
 
 		sendMessage("&3====[ &e{0} &3]====", WordUtils.capitalize(arena.getName()));
+
+		if (arena.getExtraInfo() != null)
+		{
+			for (String extraInfo : arena.getExtraInfo())
+				sendMessage(extraInfo);
+		}
 
 		sendMessage(""); // Empty line
 

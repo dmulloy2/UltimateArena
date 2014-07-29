@@ -1258,6 +1258,16 @@ public abstract class Arena implements Reloadable
 		return az.getConfig();
 	}
 
+	/**
+	 * Gets extra info for /ua info
+	 *
+	 * @return Extra info, or null if none
+	 */
+	public List<String> getExtraInfo()
+	{
+		return null;
+	}
+
 	// ---- Generic Methods
 
 	/**

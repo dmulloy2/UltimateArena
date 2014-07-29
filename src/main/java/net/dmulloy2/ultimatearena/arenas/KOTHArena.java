@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Getter;
@@ -80,13 +81,13 @@ public class KOTHArena extends Arena
 		List<String> leaderboard = new ArrayList<String>();
 
 		// Build kills map
-		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
+		Map<String, Integer> pointsMap = new HashMap<>();
 		for (ArenaPlayer ap : active)
 		{
 			pointsMap.put(ap.getName(), ap.getPoints());
 		}
 
-		List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(pointsMap.entrySet());
+		List<Entry<String, Integer>> sortedEntries = new ArrayList<>(pointsMap.entrySet());
 		Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
 		{
 			@Override
