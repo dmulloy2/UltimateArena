@@ -1088,7 +1088,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 */
 	public final void clearMemory()
 	{
-		whitelistedCommands.clear();
+		whitelistedCommands = null;
 
 		loadedArenas.clear();
 		activeArenas.clear();
