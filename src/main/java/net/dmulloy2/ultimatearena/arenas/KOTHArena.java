@@ -16,7 +16,6 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -76,6 +75,34 @@ public class KOTHArena extends Arena
 	}
 
 	@Override
+	public List<ArenaPlayer> getLeaderboard()
+	{
+		Map<ArenaPlayer, Integer> pointsMap = new HashMap<>();
+		for (ArenaPlayer ap : getActivePlayers())
+		{
+			pointsMap.put(ap, ap.getPoints());
+		}
+
+		List<Entry<ArenaPlayer, Integer>> sortedEntries = new ArrayList<>(pointsMap.entrySet());
+		Collections.sort(sortedEntries, new Comparator<Entry<ArenaPlayer, Integer>>()
+		{
+			@Override
+			public int compare(Entry<ArenaPlayer, Integer> entry1, Entry<ArenaPlayer, Integer> entry2)
+			{
+				return -entry1.getValue().compareTo(entry2.getValue());
+			}
+		});
+
+		List<ArenaPlayer> leaderboard = new ArrayList<>();
+		for (Entry<ArenaPlayer, Integer> entry : sortedEntries)
+		{
+			leaderboard.add(entry.getKey());
+		}
+
+		return leaderboard;
+	}
+
+	@Override
 	public List<String> getLeaderboard(Player player)
 	{
 		List<String> leaderboard = new ArrayList<String>();
@@ -98,20 +125,18 @@ public class KOTHArena extends Arena
 		});
 
 		int pos = 1;
-		for (Entry<String, Integer> entry : sortedEntries)
+		for (ArenaPlayer ap : getLeaderboard())
 		{
-			String string = entry.getKey();
-			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
-			if (apl != null)
+			if (ap != null)
 			{
 				StringBuilder line = new StringBuilder();
 				line.append(FormatUtil.format("&3#{0}. ", pos));
-				line.append(FormatUtil.format(decideColor(apl)));
-				line.append(FormatUtil.format(apl.getName().equals(player.getName()) ? "&l" : ""));
-				line.append(FormatUtil.format(apl.getName() + "&r"));
-				line.append(FormatUtil.format("  &3Kills: &e{0}", apl.getKills()));
-				line.append(FormatUtil.format("  &3Deaths: &e{0}", apl.getDeaths()));
-				line.append(FormatUtil.format("  &3Points: &e{0}", entry.getValue()));
+				line.append(FormatUtil.format(decideColor(ap)));
+				line.append(FormatUtil.format(ap.getName().equals(player.getName()) ? "&l" : ""));
+				line.append(FormatUtil.format(ap.getName() + "&r"));
+				line.append(FormatUtil.format("  &3Kills: &e{0}", ap.getKills()));
+				line.append(FormatUtil.format("  &3Deaths: &e{0}", ap.getDeaths()));
+				line.append(FormatUtil.format("  &3Points: &e{0}", ap.getPoints()));
 				leaderboard.add(line.toString());
 				pos++;
 			}

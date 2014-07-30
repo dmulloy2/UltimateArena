@@ -9,8 +9,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.dmulloy2.util.ItemUtil;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Tameable;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -60,22 +66,56 @@ public final class KillStreak
 	}
 
 	/**
-	 * Performs this kill streak
+	 * Performs this KillStreak for an {@link ArenaPlayer}.
+	 *
+	 * @param ap Player to perform this streak for
 	 */
 	public final void perform(ArenaPlayer ap)
 	{
-		switch (type)
+		if (type == Type.ITEM)
 		{
-			case ITEM:
-				ap.giveItem(item.clone());
-				break;
-			case MOB:
-				for (int i = 0; i < mobAmount; i++)
-					ap.getPlayer().getWorld().spawnEntity(ap.getPlayer().getLocation(), mobType);
-				break;
+			ap.giveItem(item.clone());
+			ap.sendMessage(message);
+		}
+		else if (type == Type.MOB)
+		{
+			World world = ap.getPlayer().getWorld();
+			Location location = ap.getPlayer().getLocation();
+
+			LivingEntity target = getTarget(ap);
+			for (int i = 0; i < mobAmount; i++)
+			{
+				Entity entity = world.spawnEntity(location, mobType);
+				if (entity instanceof Tameable)
+				{
+					Tameable tame = (Tameable) entity;
+					tame.setTamed(true);
+					tame.setOwner(ap.getPlayer());
+				}
+
+				if (target != null && entity instanceof Monster)
+				{
+					((Monster) entity).setTarget(target);
+				}
+			}
+
+			ap.sendMessage(message);
+		}
+		else
+		{
+			throw new UnsupportedOperationException("Type " + type);
+		}
+	}
+
+	private final LivingEntity getTarget(ArenaPlayer ap)
+	{
+		for (ArenaPlayer target : ap.getArena().getLeaderboard())
+		{
+			if (target.getTeam() != ap.getTeam())
+				return target.getPlayer();
 		}
 
-		ap.sendMessage(message);
+		return null;
 	}
 
 	public static Map<Integer, List<KillStreak>> defaultKillStreak(FieldType type)

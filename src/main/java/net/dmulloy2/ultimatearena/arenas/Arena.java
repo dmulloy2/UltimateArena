@@ -1066,47 +1066,61 @@ public abstract class Arena implements Reloadable
 	});
 
 	/**
-	 * Returns a customized in-game leaderboard.
+	 * Gets a sorted list of players, based on KDR
 	 *
-	 * @param player Player to get leaderboard for
+	 * @return The list
 	 */
-	public List<String> getLeaderboard(Player player)
+	public List<ArenaPlayer> getLeaderboard()
 	{
-		List<String> leaderboard = new ArrayList<>();
-
-		// Build kills map
-		Map<String, Double> kdrMap = new HashMap<>();
-
+		Map<ArenaPlayer, Double> kdrMap = new HashMap<>();
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			kdrMap.put(ap.getName(), ap.getKDR());
+			kdrMap.put(ap, ap.getKDR());
 		}
 
-		List<Entry<String, Double>> sortedEntries = new ArrayList<>(kdrMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Entry<String, Double>>()
+		List<Entry<ArenaPlayer, Double>> sortedEntries = new ArrayList<>(kdrMap.entrySet());
+		Collections.sort(sortedEntries, new Comparator<Entry<ArenaPlayer, Double>>()
 		{
 			@Override
-			public int compare(Entry<String, Double> entry1, Entry<String, Double> entry2)
+			public int compare(Entry<ArenaPlayer, Double> entry1, Entry<ArenaPlayer, Double> entry2)
 			{
 				return -entry1.getValue().compareTo(entry2.getValue());
 			}
 		});
 
-		int pos = 1;
-		for (Entry<String, Double> entry : sortedEntries)
+		List<ArenaPlayer> leaderboard = new ArrayList<>();
+		for (Entry<ArenaPlayer, Double> entry : sortedEntries)
 		{
-			String string = entry.getKey();
-			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
-			if (apl != null)
+			leaderboard.add(entry.getKey());
+		}
+
+		return leaderboard;
+	}
+
+	/**
+	 * Gets a customized in-game leaderboard for a given player
+	 *
+	 * @param player Player to get the leaderboard for
+	 * @return Leaderboard
+	 * @see {@link #getLeaderboard()}
+	 */
+	public List<String> getLeaderboard(Player player)
+	{
+		List<String> leaderboard = new ArrayList<>();
+
+		int pos = 1;
+		for (ArenaPlayer ap : getLeaderboard())
+		{
+			if (ap != null)
 			{
 				StringBuilder line = new StringBuilder();
 				line.append(FormatUtil.format("&3#{0}. ", pos));
-				line.append(FormatUtil.format(decideColor(apl)));
-				line.append(FormatUtil.format(apl.getName().equals(player.getName()) ? "&l" : ""));
-				line.append(FormatUtil.format(apl.getName() + "&r"));
-				line.append(FormatUtil.format("  &3Kills: &e{0}", apl.getKills()));
-				line.append(FormatUtil.format("  &3Deaths: &e{0}", apl.getDeaths()));
-				line.append(FormatUtil.format("  &3KDR: &e{0}", entry.getValue()));
+				line.append(FormatUtil.format(decideColor(ap)));
+				line.append(FormatUtil.format(ap.getName().equals(player.getName()) ? "&l" : ""));
+				line.append(FormatUtil.format(ap.getName() + "&r"));
+				line.append(FormatUtil.format("  &3Kills: &e{0}", ap.getKills()));
+				line.append(FormatUtil.format("  &3Deaths: &e{0}", ap.getDeaths()));
+				line.append(FormatUtil.format("  &3KDR: &e{0}", ap.getKDR()));
 				leaderboard.add(line.toString());
 				pos++;
 			}

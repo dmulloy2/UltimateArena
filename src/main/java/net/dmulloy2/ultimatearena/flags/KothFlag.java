@@ -1,11 +1,6 @@
 package net.dmulloy2.ultimatearena.flags;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +8,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.KOTHArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -64,41 +58,16 @@ public class KothFlag extends ArenaFlag
 		}
 	}
 
-	private void leadChange()
+	private final void leadChange()
 	{
-		HashMap<String, Integer> pointsMap = new HashMap<String, Integer>();
-		for (ArenaPlayer ap : arena.getActivePlayers())
+		List<ArenaPlayer> lb = arena.getLeaderboard();
+		ArenaPlayer ap = lb.get(0);
+		if (ap != null)
 		{
-			pointsMap.put(ap.getName(), ap.getPoints());
-		}
-
-		List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(pointsMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
-		{
-			@Override
-			public int compare(Entry<String, Integer> entry1, Entry<String, Integer> entry2)
+			if (leader == null || ! ap.getUniqueId().equals(leader.getUniqueId()))
 			{
-				return -entry1.getValue().compareTo(entry2.getValue());
-			}
-		});
-
-		int pos = 1;
-		for (Entry<String, Integer> entry : sortedEntries)
-		{
-			if (pos > 1)
-				return;
-
-			String string = entry.getKey();
-			ArenaPlayer apl = plugin.getArenaPlayer(Util.matchPlayer(string));
-			if (apl != null)
-			{
-				if (leader == null || ! apl.getName().equals(leader.getName()))
-				{
-					arena.tellPlayers("&e{0} &3has taken the lead!", apl.getName());
-					leader = apl;
-				}
-
-				pos++;
+				arena.tellPlayers("&e{0} &3has taken the lead!", ap.getName());
+				leader = ap;
 			}
 		}
 	}
