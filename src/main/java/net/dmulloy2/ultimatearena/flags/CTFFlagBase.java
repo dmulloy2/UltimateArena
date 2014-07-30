@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.CTFArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -23,24 +22,27 @@ import org.bukkit.potion.PotionEffectType;
 @Getter @Setter
 public class CTFFlagBase extends FlagBase
 {
-	protected CTFArena ctf;
-	protected CTFFlag flag;
 	protected CTFFlag enemyflag;
 
-	protected int team;
+	protected final int team;
+	protected final CTFFlag flag;
+	protected final CTFArena arena;
 
-	public CTFFlagBase(Arena arena, ArenaLocation location, int team, UltimateArena plugin)
+	public CTFFlagBase(CTFArena arena, ArenaLocation location, int team, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
 		this.arena = arena;
 		this.team = team;
-		this.ctf = (CTFArena) arena;
 
 		this.flag = new CTFFlag(arena, location.getLocation().clone().add(0, 1, 0), team);
 		this.flag.setTeam(team);
 		this.flag.colorize();
+	}
 
-		this.notify = location.getLocation().clone().add(0.0D, 5.0D, 0.0D).getBlock();
+	@Override
+	protected void setup()
+	{
+		this.notify = location.clone().add(0.0D, 5.0D, 0.0D).getBlock();
 		this.notify.setType(Material.AIR);
 	}
 
@@ -91,14 +93,16 @@ public class CTFFlagBase extends FlagBase
 
 							if (team == 1)
 							{
-								ctf.setRedCap(ctf.getRedCap() + 1);
-								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.getRedCap());
+								arena.setRedCap(arena.getRedCap() + 1);
+								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team),
+										arena.getRedCap());
 							}
 
 							if (team == 2)
 							{
-								ctf.setBlueCap(ctf.getBlueCap() + 1);
-								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team), ctf.getBlueCap());
+								arena.setBlueCap(arena.getBlueCap() + 1);
+								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team),
+										arena.getBlueCap());
 							}
 
 							return;
@@ -112,8 +116,8 @@ public class CTFFlagBase extends FlagBase
 	public void initialize()
 	{
 		if (team == 1)
-			this.enemyflag = ctf.getBlueFlag().getFlag();
+			this.enemyflag = arena.getBlueFlag().getFlag();
 		if (team == 2)
-			this.enemyflag = ctf.getRedFlag().getFlag();
+			this.enemyflag = arena.getRedFlag().getFlag();
 	}
 }

@@ -32,7 +32,7 @@ public class ConquestFlag extends ArenaFlag
 		for (ArenaPlayer ap : arenaPlayers)
 		{
 			Player player = ap.getPlayer();
-			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld())
+			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld().getUID())
 					&& player.getLocation().distance(location) < 4.5D)
 			{
 				players.add(ap);

@@ -39,7 +39,7 @@ public abstract class ArenaFlag extends FlagBase
 	}
 
 	@SuppressWarnings("deprecation")
-	private final void setData(Block block, MaterialData data)
+	protected final void setData(Block block, MaterialData data)
 	{
 		Util.setData(block, data);
 	}

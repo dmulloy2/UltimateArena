@@ -149,7 +149,7 @@ public class CTFFlag
 			for (ArenaPlayer ap : arenaPlayers)
 			{
 				Player player = ap.getPlayer();
-				if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(myloc.getWorld())
+				if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(myloc.getWorld().getUID())
 						&& player.getLocation().distance(myloc) < 1.75D)
 				{
 					if (ap.getTeam() != team)
