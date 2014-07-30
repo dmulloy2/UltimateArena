@@ -230,4 +230,15 @@ public class CONQUESTArena extends Arena
 			}
 		}
 	}
+
+	@Override
+	public List<String> getExtraInfo()
+	{
+		List<String> ret = new ArrayList<>();
+
+		ret.add("&3Red Team Power: &e" + redTeamPower);
+		ret.add("&3Blue Team Power: &e" + blueTeamPower);
+
+		return ret;
+	}
 }
