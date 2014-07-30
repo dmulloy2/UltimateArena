@@ -164,7 +164,7 @@ public abstract class Arena implements Reloadable
 	public void onReload() { }
 
 	/**
-	 * Adds a player to the {@link Arena}.
+	 * Adds a player to the arena.
 	 *
 	 * @param player {@link Player} to add to an arena
 	 */
@@ -237,9 +237,11 @@ public abstract class Arena implements Reloadable
 	public void onJoin(ArenaPlayer ap) { }
 
 	/**
-	 * Returns which team a new player should be on.
+	 * Gets which team a new player should be on.
 	 * <p>
 	 * Can be overriden in certain cases.
+	 *
+	 * @return The team, defaults to 1
 	 */
 	public int getTeam()
 	{
@@ -277,11 +279,13 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Returns the team with the least number of players on it.
+	 * Gets the team with the least amount of players on it.
+	 *
+	 * @return The team with the least amount of players
 	 */
 	public final int getBalancedTeam()
 	{
-		// Refresh team size
+		// Refresh teams
 		updateTeams();
 
 		return team1size > team2size ? 2 : 1;
@@ -289,9 +293,14 @@ public abstract class Arena implements Reloadable
 
 	/**
 	 * A simple team check.
+	 *
+	 * @return True if there are people on both teams, false if not
 	 */
 	public boolean simpleTeamCheck()
 	{
+		// Refresh teams
+		updateTeams();
+
 		if (team1size == 0 || team2size == 0)
 		{
 			return startingAmount < 1;
@@ -363,6 +372,7 @@ public abstract class Arena implements Reloadable
 	 * Can be overriden under certain circumstances
 	 *
 	 * @param ap {@link ArenaPlayer} instance
+	 * @return Their spawn
 	 */
 	public Location getSpawn(ArenaPlayer ap)
 	{

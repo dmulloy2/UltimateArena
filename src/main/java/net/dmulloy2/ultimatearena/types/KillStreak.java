@@ -7,6 +7,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.NonNull;
+import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.ItemUtil;
 
 import org.bukkit.Location;
@@ -109,9 +110,10 @@ public final class KillStreak
 
 	private final LivingEntity getTarget(ArenaPlayer ap)
 	{
-		for (ArenaPlayer target : ap.getArena().getLeaderboard())
+		Arena arena = ap.getArena();
+		for (ArenaPlayer target : arena.getLeaderboard())
 		{
-			if (target.getTeam() != ap.getTeam())
+			if (arena.isAllowTeamKilling() || target.getTeam() != ap.getTeam())
 				return target.getPlayer();
 		}
 
