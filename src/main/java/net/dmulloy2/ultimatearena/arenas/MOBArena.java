@@ -35,10 +35,6 @@ public class MOBArena extends Arena
 	{
 		super(az);
 		this.type = FieldType.MOB;
-
-		this.mobSpawn = 0;
-		this.mobTimer = 0;
-		this.wave = 0;
 		this.winningTeam = -1;
 
 		this.spawning = new ArrayList<>();
@@ -47,8 +43,7 @@ public class MOBArena extends Arena
 		spawning.add("ZOMBIE");
 
 		this.mobs = new ArrayList<>();
-
-		newWave();
+		this.newWave();
 	}
 
 	private final void newWave()
@@ -292,5 +287,11 @@ public class MOBArena extends Arena
 	{
 		this.countMobKills = true;
 		this.maxWave = getConfig().getMaxWave();
+	}
+
+	@Override
+	public List<String> getExtraInfo()
+	{
+		return Util.toList("&3Wave: &e" + wave);
 	}
 }
