@@ -36,16 +36,11 @@ public class CTFFlagBase extends FlagBase
 		this.team = team;
 		this.ctf = (CTFArena) arena;
 
-		flag.setTeam(team);
-		flag.colorize();
-	}
+		this.flag = new CTFFlag(arena, location.getLocation().clone().add(0, 1, 0), team);
+		this.flag.setTeam(team);
+		this.flag.colorize();
 
-	@Override
-	public void setup()
-	{
-		super.setup();
-		this.flag = new CTFFlag(arena, location.clone().add(0, 1, 0), team);
-		this.notify = location.clone().add(0.0D, 5.0D, 0.0D).getBlock();
+		this.notify = location.getLocation().clone().add(0.0D, 5.0D, 0.0D).getBlock();
 		this.notify.setType(Material.AIR);
 	}
 
