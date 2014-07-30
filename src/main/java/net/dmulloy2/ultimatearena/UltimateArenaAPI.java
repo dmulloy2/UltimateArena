@@ -151,9 +151,11 @@ public class UltimateArenaAPI
 	public final void kickPlayer(Player player)
 	{
 		logUsage("kickPlayer(" + player.getName() + ")");
-		if (ultimateArena.isInArena(player))
+
+		ArenaPlayer ap = ultimateArena.getArenaPlayer(player);
+		if (ap != null)
 		{
-			getArenaPlayer(player).leaveArena(LeaveReason.KICK);
+			ap.leaveArena(LeaveReason.KICK);
 		}
 	}
 

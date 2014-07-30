@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.Util;
@@ -35,12 +36,13 @@ public class CmdKick extends UltimateArenaCommand
 			return;
 		}
 
-		if (! plugin.isInArena(player))
+		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap == null)
 		{
 			err("That player is not in an arena!");
 			return;
 		}
 
-		plugin.getArenaPlayer(player).leaveArena(LeaveReason.KICK);
+		ap.leaveArena(LeaveReason.KICK);
 	}
 }

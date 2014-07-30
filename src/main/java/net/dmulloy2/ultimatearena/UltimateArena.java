@@ -658,9 +658,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public final ArenaPlayer getArenaPlayer(Player player, boolean inactive)
 	{
-		for (Arena a : getActiveArenas())
+		for (Arena arena : getActiveArenas())
 		{
-			ArenaPlayer ap = a.getArenaPlayer(player, inactive);
+			ArenaPlayer ap = arena.getArenaPlayer(player, inactive);
 			if (ap != null)
 				return ap;
 		}

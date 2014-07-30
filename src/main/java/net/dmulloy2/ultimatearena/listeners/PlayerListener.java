@@ -49,26 +49,26 @@ public class PlayerListener implements Listener
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		Player player = event.getPlayer();
-		if (plugin.isCreatingArena(player))
+
+		ArenaCreator ac = plugin.getArenaCreator(player);
+		if (ac != null)
 		{
-			ArenaCreator ac = plugin.getArenaCreator(player);
 			plugin.getMakingArena().remove(ac);
 
 			plugin.outConsole("{0} stopping the creation of {1} from quit", player.getName(), ac.getArenaName());
 		}
 
-		if (plugin.isInArena(player))
+		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap != null)
 		{
-			ArenaPlayer ap = plugin.getArenaPlayer(player);
 			ap.leaveArena(LeaveReason.QUIT);
 
 			plugin.outConsole("{0} leaving arena {1} from quit", ap.getName(), ap.getArena().getName());
 		}
 
-		if (plugin.isPlayerWaiting(player))
+		ArenaJoinTask task = plugin.getWaiting().get(player.getUniqueId());
+		if (task != null)
 		{
-			ArenaJoinTask task = plugin.getWaiting().get(player.getUniqueId());
-
 			task.cancel();
 			plugin.getWaiting().remove(player.getUniqueId());
 		}

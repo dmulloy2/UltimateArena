@@ -234,10 +234,9 @@ public class EntityListener implements Listener
 		if (died instanceof Player)
 		{
 			Player pdied = (Player) died;
-			if (plugin.isInArena(pdied))
+			ArenaPlayer dp = plugin.getArenaPlayer(pdied);
+			if (dp != null)
 			{
-				ArenaPlayer dp = plugin.getArenaPlayer(pdied);
-
 				// Prevents duplicate deaths
 				if (dp.isDead()) return;
 				dp.onDeath();
