@@ -2,7 +2,7 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Permission;
 
 /**
@@ -18,34 +18,36 @@ public class CmdSpectate extends UltimateArenaCommand
 		this.optionalArgs.add("arena");
 		this.description = "Spectates an arena";
 		this.permission = Permission.SPECTATE;
-
 		this.mustBePlayer = true;
 	}
 
 	@Override
 	public void perform()
 	{
-		SpectatingHandler spectatingHandler = plugin.getSpectatingHandler();
-		if (spectatingHandler.isSpectating(player))
+		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap != null)
 		{
-			spectatingHandler.removeSpectator(player);
-			sendpMessage("&3You are no longer spectating");
+			err("You cannot spectate while in an arena!");
+			return;
 		}
-		else
+
+		if (plugin.getSpectatingHandler().isSpectating(player))
 		{
-			Arena arena = null;
-			if (args.length != 0)
-				arena = plugin.getArena(args[0]);
-
-			if (arena == null)
-			{
-				err("Please secify a valid arena!");
-				return;
-			}
-
-			spectatingHandler.addSpectator(arena, player);
-			sendpMessage("&eYou are now spectating &e{0}", arena.getName());
-			sendpMessage("&3To stop spectating, use &e/ua spectate &3again");
+			plugin.getSpectatingHandler().removeSpectator(player);
+			sendpMessage("&eYou are no longer spectating!");
+			return;
 		}
+
+		Arena arena = getArena(0);
+		if (arena == null)
+		{
+			err("You must specify a valid arena!");
+			return;
+		}
+
+		plugin.getSpectatingHandler().addSpectator(arena, player);
+
+		sendpMessage("&eYou are now spectating &e{0}", arena.getName());
+		sendpMessage("&3To stop spectating, use &e/ua spectate &3again");
 	}
 }
