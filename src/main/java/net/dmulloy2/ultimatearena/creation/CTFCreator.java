@@ -162,44 +162,42 @@ public class CTFCreator extends ArenaCreator
 					}
 				}
 			}
-			case 3:
+			case 3: // Red lobby spawn
 			{
 				target.setLobbyREDspawn(new ArenaLocation(player));
 				sendMessage("&eRed &3team lobby spawn set.");
 				break; // Step completed
 			}
-			case 4:
+			case 4: // Blue lobby spawn
 			{
 				target.setLobbyBLUspawn(new ArenaLocation(player));
 				sendMessage("&eBlue &3team lobby spawn set.");
 				break; // Step completed
 			}
-			case 5:
+			case 5: // Red team spawn
 			{
 				target.setTeam1spawn(new ArenaLocation(player));
 				sendMessage("&eRed &3team arena spawn set.");
 				break; // Step completed
 			}
-			case 6:
+			case 6: // Blue team spawn
 			{
 				target.setTeam2spawn(new ArenaLocation(player));
 				sendMessage("&eBlue &3team arena spawn set.");
 				break; // Step completed
 			}
-			case 7:
+			case 7: // Red team flag
 			{
-				if (target.getFlags().isEmpty())
-				{
-					target.getFlags().add(new ArenaLocation(player));
-					sendMessage("&e1&3/&e2 &3flag spawnpoints set.");
-					return;
-				}
-				else
-				{
-					target.getFlags().add(new ArenaLocation(player));
-					sendMessage("&e2&3/&e2 &3flag spawnpoints set.");
-					break; // Step complete
-				}
+				target.getFlags().add(new ArenaLocation(player));
+				sendMessage("&eRed &3flag spawnpoint set.");
+				break; // Step complete
+
+			}
+			case 8: // Blue team flag
+			{
+				target.getFlags().add(new ArenaLocation(player));
+				sendMessage("&eBlue &3flag spawnpoint set.");
+				break; // Step complete
 			}
 		}
 
@@ -233,7 +231,10 @@ public class CTFCreator extends ArenaCreator
 				sendMessage("&3Please set the &eBlue &3team arena spawn.");
 				break;
 			case 7:
-				sendMessage("&3Please set &e2 &3flag spawnpoints.");
+				sendMessage("&3Please set the &eRed &3flag spawnpoint.");
+				break;
+			case 8:
+				sendMessage("&3Please set the &eBlue &3flag spawnpoint.");
 				break;
 		}
 	}
@@ -253,6 +254,6 @@ public class CTFCreator extends ArenaCreator
 	@Override
 	public void setSteps()
 	{
-		this.steps = 7;
+		this.steps = 8;
 	}
 }
