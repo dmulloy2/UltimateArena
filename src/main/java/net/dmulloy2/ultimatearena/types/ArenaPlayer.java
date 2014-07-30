@@ -11,9 +11,11 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,11 +65,12 @@ public final class ArenaPlayer
 	private final UltimateArena plugin;
 
 	/**
-	 * Creates a new ArenaPlayer instance
+	 * Creates a new ArenaPlayer instance.
 	 *
 	 * @param player Base {@link Player} to create the arena player around
 	 * @param arena {@link Arena} the player is in
 	 * @param plugin {@link UltimateArena} plugin instance
+	 * @throws NullPointerException if any of the arguments are null
 	 */
 	public ArenaPlayer(@NonNull Player player, @NonNull Arena arena, @NonNull UltimateArena plugin)
 	{
@@ -82,33 +85,41 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Decides the player's hat
+	 * Decides the player's hat.
 	 */
-	public final void decideHat()
+	public final void decideHat(boolean random)
 	{
 		if (arenaClass != null && ! arenaClass.isUseHelmet())
 		{
-			player.getInventory().setHelmet(null);
+			ItemStack helmet = player.getInventory().getHelmet();
+			if (helmet != null && helmet.getType() == Material.LEATHER_HELMET)
+				player.getInventory().setHelmet(null);
 			return;
 		}
 
 		if (player.getInventory().getHelmet() == null)
 		{
-			ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
-			LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
-			Color teamColor = Color.RED;
-			if (team == 2)
-				teamColor = Color.BLUE;
-			meta.setColor(teamColor);
-			itemStack.setItemMeta(meta);
-			player.getInventory().setHelmet(itemStack);
+			ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
+			LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
+
+			Color color = team == 2 ? Color.BLUE : Color.RED;
+			if (random)
+			{
+				DyeColor rand = DyeColor.values()[Util.random(DyeColor.values().length)];
+				color = rand.getColor();
+			}
+
+			meta.setColor(color);
+			helmet.setItemMeta(meta);
+			player.getInventory().setHelmet(helmet);
 		}
 	}
 
 	/**
-	 * Gives the player an item
+	 * Gives the player an item.
 	 *
 	 * @param stack {@link ItemStack} to give the player
+	 * @throws NullPointerException if stack is null
 	 */
 	public final void giveItem(@NonNull ItemStack stack)
 	{
@@ -116,10 +127,11 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gives the player armor
+	 * Gives the player a piece of armor armor.
 	 *
 	 * @param slot Armor slot (helmet, chestplate, etc.)
 	 * @param stack {@link ItemStack} to give as armor
+	 * @throws NullPointerException if stack is null
 	 */
 	public final void giveArmor(String slot, @NonNull ItemStack stack)
 	{
@@ -141,7 +153,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Clears the player's inventory
+	 * Clears the player's inventory.
 	 */
 	public final void clearInventory()
 	{
@@ -159,7 +171,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Readies the player for spawning
+	 * Readies the player for spawning.
 	 */
 	public final void spawn()
 	{
@@ -179,10 +191,11 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Sets a player's class
+	 * Sets a player's class.
 	 *
 	 * @param ac {@link ArenaClass} to set the player's class to
-	 * @return Whether or not the operation was successful
+	 * @return True if the operation was successful, false if not
+	 * @throws NullPointerException if ac is null
 	 */
 	public final boolean setClass(@NonNull ArenaClass ac)
 	{
@@ -199,18 +212,18 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gives the player their class items
+	 * Gives the player their class items.
 	 */
 	public final void giveClassItems()
 	{
 		if (! arena.isInGame())
 		{
 			if (arena.isInLobby())
-				decideHat();
+				decideHat(false);
 			return;
 		}
 
-		decideHat();
+		decideHat(false);
 
 		if (arenaClass == null)
 		{
@@ -243,7 +256,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Clears the player's potion effects
+	 * Clears the player's potion effects.
 	 */
 	public final void clearPotionEffects()
 	{
@@ -254,18 +267,19 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Sends the player a message
+	 * Sends the player a formatted and prefixed message.
 	 *
 	 * @param string Base message
 	 * @param objects Objects to format in
+	 * @throws NullPointerException if string is null
 	 */
-	public final void sendMessage(String string, Object... objects)
+	public final void sendMessage(@NonNull String string, Object... objects)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
-	 * Gives the player xp
+	 * Gives the player xp.
 	 *
 	 * @param xp XP to give the player
 	 */
@@ -275,7 +289,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Subtracts xp from the player
+	 * Subtracts xp from the player.
 	 *
 	 * @param xp XP to subtract
 	 */
@@ -285,9 +299,9 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gets a player's KDR (Kill-Death Ratio)
+	 * Gets a player's Kill-Death ratio.
 	 *
-	 * @return KDR
+	 * @return Their KDR
 	 */
 	public final double getKDR()
 	{
@@ -302,9 +316,9 @@ public final class ArenaPlayer
 	private long deathTime;
 
 	/**
-	 * Returns whether or not the player is dead
+	 * Whether or not the player is dead
 	 *
-	 * @return Whether or not the player is dead
+	 * @return True if they are dead, false if not
 	 */
 	public final boolean isDead()
 	{
@@ -312,7 +326,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Handles the player's death
+	 * Handles the player's death.
 	 */
 	public final void onDeath()
 	{
@@ -324,11 +338,12 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Makes the player leave their {@link Arena}
+	 * Makes the player leave their {@link Arena}.
 	 *
 	 * @param reason Reason the player is leaving
+	 * @throws NullPointerException if reason is null
 	 */
-	public final void leaveArena(LeaveReason reason)
+	public final void leaveArena(@NonNull LeaveReason reason)
 	{
 		switch (reason)
 		{
@@ -365,6 +380,7 @@ public final class ArenaPlayer
 	 * teleport the player to the center of the block.
 	 *
 	 * @param location {@link Location} to teleport the player to
+	 * @throws NullPointerException if location is null
 	 */
 	public final void teleport(@NonNull Location location)
 	{
@@ -376,6 +392,7 @@ public final class ArenaPlayer
 	 * teleport the player to the center of the block.
 	 *
 	 * @param location {@link ArenaLocation} to teleport the player to
+	 * @throws NullPointerException if location is null
 	 */
 	public final void teleport(@NonNull ArenaLocation location)
 	{
@@ -383,7 +400,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Saves the player's data
+	 * Saves the player's data.
 	 */
 	public final void savePlayerData()
 	{
@@ -392,7 +409,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Returns the player to their pre-join state
+	 * Returns the player to their pre-join state.
 	 */
 	public final void reset()
 	{

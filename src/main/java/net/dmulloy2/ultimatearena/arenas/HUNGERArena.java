@@ -3,14 +3,8 @@ package net.dmulloy2.ultimatearena.arenas;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.FieldType;
-import net.dmulloy2.util.Util;
 
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 /**
  * @author dmulloy2
@@ -42,20 +36,7 @@ public class HUNGERArena extends Arena
 	@Override
 	public void onSpawn(ArenaPlayer ap)
 	{
-		if (ap.getArenaClass() != null && ! ap.getArenaClass().isUseHelmet())
-		{
-			ap.getPlayer().getInventory().setHelmet(null);
-			return;
-		}
-
-		DyeColor rand = DyeColor.values()[Util.random(DyeColor.values().length)];
-		Color color = rand.getColor();
-
-		ItemStack itemStack = new ItemStack(Material.LEATHER_HELMET);
-		LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
-		meta.setColor(color);
-		itemStack.setItemMeta(meta);
-		ap.getPlayer().getInventory().setHelmet(itemStack);
+		ap.decideHat(true);
 	}
 
 	@Override

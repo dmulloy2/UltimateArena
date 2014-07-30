@@ -72,7 +72,7 @@ public class INFECTArena extends PVPArena
 			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
 
 			ap.clearInventory();
-			ap.decideHat();
+			ap.decideHat(false);
 		}
 	}
 

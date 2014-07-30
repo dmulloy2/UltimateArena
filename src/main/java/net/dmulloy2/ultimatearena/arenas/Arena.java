@@ -211,7 +211,7 @@ public abstract class Arena implements Reloadable
 		pl.clearPotionEffects();
 
 		// Decide Hat
-		pl.decideHat();
+		pl.decideHat(false);
 
 		// API
 		onJoin(pl);
@@ -902,9 +902,7 @@ public abstract class Arena implements Reloadable
 
 			// Hats
 			if (isInLobby())
-			{
-				ap.decideHat();
-			}
+				ap.decideHat(false);
 
 			// Class based stuff
 			ap.setHealTimer(ap.getHealTimer() - 1);
