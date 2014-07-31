@@ -66,11 +66,11 @@ public class PlayerListener implements Listener
 			plugin.outConsole("{0} leaving arena {1} from quit", ap.getName(), ap.getArena().getName());
 		}
 
-		ArenaJoinTask task = plugin.getWaiting().get(player.getUniqueId());
+		ArenaJoinTask task = plugin.getWaiting().get(player.getName());
 		if (task != null)
 		{
 			task.cancel();
-			plugin.getWaiting().remove(player.getUniqueId());
+			plugin.getWaiting().remove(player.getName());
 		}
 
 		if (plugin.getSpectatingHandler().isSpectating(player))
@@ -263,13 +263,11 @@ public class PlayerListener implements Listener
 			return;
 
 		Player player = event.getPlayer();
-		if (plugin.isPlayerWaiting(player))
+		ArenaJoinTask task = plugin.getWaiting().get(player.getName());
+		if (task != null)
 		{
-			ArenaJoinTask task = plugin.getWaiting().get(player.getUniqueId());
-
 			task.cancel();
-			plugin.getWaiting().remove(player.getUniqueId());
-
+			plugin.getWaiting().remove(player.getName());
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCancelled!"));
 		}
 	}

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -137,7 +136,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter VaultHandler vaultHandler;
 
 	// Public lists and maps
-	private @Getter Map<UUID, ArenaJoinTask> waiting = new HashMap<>();
+	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<>();
 	private @Getter List<String> pluginsUsingAPI = new ArrayList<>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<>();
@@ -740,14 +739,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
-		ArenaJoinTask join = new ArenaJoinTask(player.getUniqueId(), arena, this);
+		ArenaJoinTask join = new ArenaJoinTask(player.getName(), arena, this);
 		if (getConfig().getBoolean("joinTimer.enabled"))
 		{
 			int seconds = getConfig().getInt("joinTimer.wait");
 			int wait = seconds * 20;
 
 			join.runTaskLater(this, wait);
-			waiting.put(player.getUniqueId(), join);
+			waiting.put(player.getName(), join);
 
 			player.sendMessage(prefix + FormatUtil.format("&3Please stand still for &e{0} &3seconds!", seconds));
 		}
