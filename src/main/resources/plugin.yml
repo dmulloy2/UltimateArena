@@ -16,25 +16,25 @@ permissions:
     description: Allows access to all UltimateArena features
     default: false
     children:
-      ultimatearena.builder: true
-      ultimatearena.forcestop: true
-      ultimatearena.reload: true
-      ultimatearena.disable: true
       ultimatearena.enable: true
+      ultimatearena.disable: true
+      ultimatearena.forcestop: true
       ultimatearena.kick: true
       ultimatearena.option: true
-      ultimatearena.start: true
       ultimatearena.pause: true
+      ultimatearena.reload: true
+      ultimatearena.start: true
       ultimatearena.bypass: true
+      ultimatearena.builder: true
   ultimatearena.builder:
-    description: Allows access to features meant for builders
+    description: Allows access to features meant for arena builders
     default: false
     children:
       ultimatearena.create: true
-      ultimatearena.setpoint: true
-      ultimatearena.setdone: true
       ultimatearena.delete: true
+      ultimatearena.setpoint: true
       ultimatearena.stop: true
+      ultimatearena.teleport: true
       ultimatearena.undo: true
       ultimatearena.build: true
   ultimatearena.class:
@@ -102,6 +102,9 @@ permissions:
     default: true
   ultimatearena.stop:
     description: Allows the usage of /ua stop
+    default: false
+  ultimatearena.teleport:
+    description: Allows the usage of /ua tp
     default: false
   ultimatearena.undo:
     description: Allows the usage of /ua undo

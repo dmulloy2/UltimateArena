@@ -32,11 +32,13 @@ public enum Permission implements IPermission
 	START,
 	STATS,
 	STOP,
+	TELEPORT,
 	UNDO,
 	VERSION,
 
 	BUILD,
-	BYPASS;
+	BYPASS,
+	;
 
 	private final String node;
 	private Permission()

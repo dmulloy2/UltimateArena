@@ -71,6 +71,7 @@ import net.dmulloy2.ultimatearena.commands.CmdSpectate;
 import net.dmulloy2.ultimatearena.commands.CmdStart;
 import net.dmulloy2.ultimatearena.commands.CmdStats;
 import net.dmulloy2.ultimatearena.commands.CmdStop;
+import net.dmulloy2.ultimatearena.commands.CmdTeleport;
 import net.dmulloy2.ultimatearena.commands.CmdUndo;
 import net.dmulloy2.ultimatearena.commands.CmdVersion;
 import net.dmulloy2.ultimatearena.creation.ArenaCreator;
@@ -214,6 +215,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		commandHandler.registerPrefixedCommand(new CmdStart(this));
 		commandHandler.registerPrefixedCommand(new CmdStats(this));
 		commandHandler.registerPrefixedCommand(new CmdStop(this));
+		commandHandler.registerPrefixedCommand(new CmdTeleport(this));
 		commandHandler.registerPrefixedCommand(new CmdUndo(this));
 		commandHandler.registerPrefixedCommand(new CmdVersion(this));
 
