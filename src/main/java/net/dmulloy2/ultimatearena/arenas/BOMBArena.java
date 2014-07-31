@@ -42,10 +42,15 @@ public class BOMBArena extends Arena
 	}
 
 	@Override
-	public void onOutOfTime()
+	public void onPreOutOfTime()
 	{
 		setWinningTeam(2);
-		rewardTeam(winningTeam);
+	}
+
+	@Override
+	public void onOutOfTime()
+	{
+		rewardTeam(2);
 	}
 
 	@Override
