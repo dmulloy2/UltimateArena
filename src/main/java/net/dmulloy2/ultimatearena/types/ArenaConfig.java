@@ -65,14 +65,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.plugin = plugin;
 
 		// Initialize some variables
-		this.rewards = new ArrayList<>();
-		this.blacklistedClasses = new ArrayList<>();
-		this.whitelistedClasses = new ArrayList<>();
-		this.countMobKills = type.toLowerCase().equals("mob");
-		this.canModifyWorld = type.toLowerCase().equals("hunger");
-		this.unlimitedAmmo = ! type.toLowerCase().equals("hunger");
-		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
-		this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(type.toUpperCase()));
+		this.initializeVariables();
 
 		// Load
 		this.loaded = load();
@@ -83,6 +76,18 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.type = az.getName() + " - Config";
 		this.plugin = az.getPlugin();
 		this.file = az.getFile();
+	}
+
+	private final void initializeVariables()
+	{
+		this.rewards = new ArrayList<>();
+		this.blacklistedClasses = new ArrayList<>();
+		this.whitelistedClasses = new ArrayList<>();
+		this.countMobKills = type.toLowerCase().equals("mob");
+		this.canModifyWorld = type.toLowerCase().equals("hunger");
+		this.unlimitedAmmo = ! type.toLowerCase().equals("hunger");
+		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
+		this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(type.toUpperCase()));
 	}
 
 	public final boolean load()
@@ -315,13 +320,10 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			return;
 		}
 
-		// Clear lists and maps
-		this.blacklistedClasses.clear();
-		this.whitelistedClasses.clear();
-		this.killStreaks.clear();
-		this.rewards.clear();
+		// Re-initialize variables
+		this.initializeVariables();
 
-		// Load again
+		// Re-load
 		this.loaded = false;
 		this.loaded = load();
 	}

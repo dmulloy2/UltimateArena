@@ -24,11 +24,12 @@ public class CmdReload extends UltimateArenaCommand
 	public void perform()
 	{
 		long start = System.currentTimeMillis();
-
+		plugin.getLogHandler().log("Reloading UltimateArena...");
 		sendpMessage("&aReloading UltimateArena...");
 
 		plugin.reload();
 
 		sendpMessage("&aReload Complete! Took {0} ms!", System.currentTimeMillis() - start);
+		plugin.getLogHandler().log("Reload complete! Took {0} ms!", System.currentTimeMillis() - start);
 	}
 }
