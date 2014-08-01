@@ -158,6 +158,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			{
 				this.killStreaks = new LinkedHashMap<>();
 
+				// TODO: Use memory sections for this, much easier
 				Map<String, Object> values = fc.getConfigurationSection("killStreaks").getValues(true);
 				for (Entry<String, Object> entry : values.entrySet())
 				{
@@ -171,11 +172,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 					List<String> list = (List<String>) entry.getValue();
 					for (String string : list)
 					{
-						// Normalize string
-						string = string.replaceAll(",", " ");
 						string = string.replaceAll("  ", " ");
-
-						String[] split = string.split(" ");
+						String[] split = string.split(",");
 
 						// Determine type
 						KillStreak.Type type = split[0].equalsIgnoreCase("mob") ? KillStreak.Type.MOB : KillStreak.Type.ITEM;
@@ -193,7 +191,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 						}
 						else
 						{
-							String item = FormatUtil.join(" ", Arrays.copyOfRange(split, 2, split.length));
+							String item = FormatUtil.join(",", Arrays.copyOfRange(split, 2, split.length));
 
 							try
 							{
