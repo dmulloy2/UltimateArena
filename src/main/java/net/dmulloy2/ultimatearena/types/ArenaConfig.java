@@ -23,6 +23,7 @@ import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.EntityType;
@@ -39,12 +40,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	protected int gameTime, lobbyTime, maxDeaths;
 	protected double cashReward;
 
-	// Arena Specific
-	protected int maxWave = 15;
-	protected int maxPoints = 60;
-
-	protected boolean allowTeamKilling, countMobKills, rewardBasedOnXp, canModifyWorld, unlimitedAmmo;
-	protected boolean giveRewards = true;
+	protected boolean allowTeamKilling, countMobKills, canModifyWorld = false;
+	protected boolean unlimitedAmmo, rewardBasedOnXp, giveRewards = true;
 
 	protected List<String> blacklistedClasses, whitelistedClasses;
 
@@ -78,16 +75,13 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.file = az.getFile();
 	}
 
-	private final void initializeVariables()
+	protected void initializeVariables()
 	{
 		this.rewards = new ArrayList<>();
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
-		this.countMobKills = type.toLowerCase().equals("mob");
-		this.canModifyWorld = type.toLowerCase().equals("hunger");
-		this.unlimitedAmmo = ! type.toLowerCase().equals("hunger");
 		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
-		this.killStreaks = KillStreak.defaultKillStreak(FieldType.getByName(type.toUpperCase()));
+		this.killStreaks = getDefaultKillStreak();
 	}
 
 	public final boolean load()
@@ -102,16 +96,6 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		try
 		{
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			if (type.equalsIgnoreCase("mob"))
-			{
-				this.maxWave = fc.getInt("maxWave", def.getMaxWave());
-			}
-
-			if (type.equalsIgnoreCase("koth"))
-			{
-				this.maxPoints = fc.getInt("maxPoints", def.getMaxDeaths());
-			}
-
 			this.gameTime = fc.getInt("gameTime", def.getGameTime());
 			this.lobbyTime = fc.getInt("lobbyTime", def.getLobbyTime());
 			this.maxDeaths = Math.max(1, fc.getInt("maxDeaths", def.getMaxDeaths()));
@@ -214,6 +198,9 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 					killStreaks.put(kills, streaks);
 				}
 			}
+
+			// Load custom options
+			loadCustomOptions(fc, def);
 		}
 		catch (Throwable ex)
 		{
@@ -225,10 +212,42 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		return true;
 	}
 
+	protected void loadCustomOptions(YamlConfiguration fc, ArenaConfig def) { }
+
+	// TODO
 	private static final List<String> xpBasedTypes = Arrays.asList(new String[]
 	{
 			"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
 	});
+
+	public Map<Integer, List<KillStreak>> getDefaultKillStreak()
+	{
+		Map<Integer, List<KillStreak>> ret = new LinkedHashMap<>();
+
+		ret.put(2, Arrays.asList(new KillStreak[] {
+				new KillStreak(2, "&e2 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))
+		}));
+
+		ret.put(4, Arrays.asList(new KillStreak[] {
+				new KillStreak(4, "&e4 &3kills! Unlocked health potion!", ItemUtil.readPotion("heal, 1, 1, false")),
+				new KillStreak(4, "&e4 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
+		}));
+
+		ret.put(5, Arrays.asList(new KillStreak[] {
+				new KillStreak(5, "&e5 &3kills! Unlocked Zombies!", EntityType.ZOMBIE, 4)
+		}));
+
+		ret.put(8, Arrays.asList(new KillStreak[] {
+				new KillStreak(8, "&e8 &3kills! Unlocked attack dogs!", EntityType.WOLF, 2)
+		}));
+
+		ret.put(12, Arrays.asList(new KillStreak[] {
+				new KillStreak(12, "&e12 &3kills! Unlocked regen potion!", ItemUtil.readPotion("regen, 1, 1, false")),
+				new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
+		}));
+
+		return ret;
+	}
 
 	public final void save()
 	{

@@ -38,14 +38,14 @@ public class ArenaLoader
 		this.loaders = new HashMap<>();
 	}
 
-	public final ArenaType loadArenaType(@NonNull File file) throws Exception
+	protected final ArenaType loadArenaType(@NonNull File file) throws Exception
 	{
 		if (! file.exists())
 		{
 			throw new FileNotFoundException(file.getPath() + " does not exist");
 		}
 
-		ArenaDescriptionFile description = getArenaDescription(file);
+		ArenaDescription description = getArenaDescription(file);
 		ArenaClassLoader loader = loadClasses(description.getName(), file);
 
 		Class<?> jarClass;
@@ -87,7 +87,7 @@ public class ArenaLoader
 		return loader;
 	}
 
-	public final ArenaDescriptionFile getArenaDescription(@NonNull File file) throws InvalidArenaException
+	public final ArenaDescription getArenaDescription(@NonNull File file) throws InvalidArenaException
 	{
 		JarFile jar = null;
 		InputStream stream = null;
@@ -122,7 +122,7 @@ public class ArenaLoader
 			if (stylized == null)
 				stylized = name;
 
-			return new ArenaDescriptionFile(name, main, stylized, version, author);
+			return new ArenaDescription(name, main, stylized, version, author);
 		}
 		catch (Throwable ex)
 		{

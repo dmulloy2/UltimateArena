@@ -15,14 +15,15 @@ import lombok.Setter;
 import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.flags.ArenaFlag;
+import net.dmulloy2.ultimatearena.api.ArenaType;
+import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
 import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
+import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
@@ -48,7 +49,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * functional arena on its own. It does, however, provide useful methods that
  * can be used to create a functional arena.
  * <p>
- * The simplest example of a functional arena is the {@link PVPArena}
+ * The simplest example of a functional arena is the {@link PvPArena}
  *
  * @author dmulloy2
  */
@@ -98,13 +99,13 @@ public abstract class Arena implements Reloadable
 	protected boolean inLobby;
 	protected boolean inGame;
 
+	protected String name;
+
 	protected Mode gameMode = Mode.IDLE;
 
 	protected final World world;
-	protected FieldType type;
-	protected String name;
-
 	protected final ArenaZone az;
+	protected final ArenaType type;
 	protected final UltimateArena plugin;
 
 	/**
@@ -262,15 +263,15 @@ public abstract class Arena implements Reloadable
 					if (announced == 0)
 					{
 						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&e{0} &3arena has been created!", type.getStylized()));
+								FormatUtil.format("&e{0} &3arena has been created!", type.getStylizedName()));
 					}
 					else
 					{
 						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getStylized()));
+								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getStylizedName()));
 					}
 
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Type &e/ua join {0} &3to join!", az.getName()));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Type &e/ua join {0} &3to join!", name));
 				}
 			}
 		}
@@ -1275,7 +1276,7 @@ public abstract class Arena implements Reloadable
 	 *
 	 * @return This arena's configuration
 	 */
-	public final ArenaConfig getConfig()
+	public ArenaConfig getConfig()
 	{
 		return az.getConfig();
 	}

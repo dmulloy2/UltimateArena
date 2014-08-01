@@ -14,6 +14,7 @@ import net.dmulloy2.util.NumberUtil;
  * @author dmulloy2
  */
 
+// TODO: Update this for 3.0
 public class CmdOption extends UltimateArenaCommand
 {
 	private static Map<String, Type> options;
@@ -90,15 +91,15 @@ public class CmdOption extends UltimateArenaCommand
 				case "maxDeaths":
 					az.getConfig().setMaxDeaths(NumberUtil.toInt(value));
 					break;
-				case "maxWave":
-					az.getConfig().setMaxWave(NumberUtil.toInt(value));
-					break;
+//				case "maxWave":
+//					az.getConfig().setMaxWave(NumberUtil.toInt(value));
+//					break;
 				case "cashReward":
 					az.getConfig().setCashReward(NumberUtil.toInt(value));
 					break;
-				case "maxPoints":
-					az.getConfig().setMaxPoints(NumberUtil.toInt(value));
-					break;
+//				case "maxPoints":
+//					az.getConfig().setMaxPoints(NumberUtil.toInt(value));
+//					break;
 				case "allowTeamKilling":
 					az.getConfig().setAllowTeamKilling((boolean) value);
 					break;
@@ -138,15 +139,15 @@ public class CmdOption extends UltimateArenaCommand
 				case "maxDeaths":
 					ac.setMaxDeaths(NumberUtil.toInt(value));
 					break;
-				case "maxWave":
-					ac.setMaxWave(NumberUtil.toInt(value));
-					break;
+//				case "maxWave":
+//					ac.setMaxWave(NumberUtil.toInt(value));
+//					break;
 				case "cashReward":
 					ac.setCashReward(NumberUtil.toInt(value));
 					break;
-				case "maxPoints":
-					ac.setMaxPoints(NumberUtil.toInt(value));
-					break;
+//				case "maxPoints":
+//					ac.setMaxPoints(NumberUtil.toInt(value));
+//					break;
 				case "allowTeamKilling":
 					ac.setAllowTeamKilling((boolean) value);
 					break;

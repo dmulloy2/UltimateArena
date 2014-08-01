@@ -13,8 +13,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.creation.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
+import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 import org.apache.commons.lang.Validate;
@@ -37,7 +37,7 @@ public abstract class ArenaType
 	private ArenaLogger logger;
 	private UltimateArena plugin;
 	private ArenaClassLoader classLoader;
-	private ArenaDescriptionFile description;
+	private ArenaDescription description;
 
 	// Base Constructor
 	public ArenaType() { }
@@ -70,19 +70,35 @@ public abstract class ArenaType
 	 *
 	 * @param plugin UltimateArena instance
 	 * @param file Data file
+	 * @reutrn The ArenaZone
 	 */
 	public ArenaZone getArenaZone(File file)
 	{
-		return new ArenaZone(plugin, file);
+		return new ArenaZone(this, file);
 	}
 
 	/**
 	 * Gets the {@link ArenaConfig} associated with this ArenaType. Will return
 	 * a default ArenaConfig if this method is not overriden.
+	 *
+	 * @return The ArenaConfig
 	 */
 	public ArenaConfig newConfig()
 	{
-		return new ArenaConfig(plugin, getName().toLowerCase(), new File(dataFolder, "config.yml"));
+		String name = getName().toLowerCase();
+		return new ArenaConfig(plugin, name, new File(dataFolder, "config.yml"));
+	}
+
+	/**
+	 * Gets the {@link ArenaConfig} associated with this ArenaType for an arena.
+	 * Will return a default ArenaConfig if this method is not overriden.
+	 *
+	 * @param az Arena to get the config for
+	 * @return The ArenaConfig
+	 */
+	public ArenaConfig newConfig(ArenaZone az)
+	{
+		return new ArenaConfig(az);
 	}
 
 	// ---- Required Hooks
@@ -93,14 +109,15 @@ public abstract class ArenaType
 	 *
 	 * @param player {@link Player} creating the arena
 	 * @param name Name of the arena
-	 * @param plugin UltimateArena instance
+	 * @return The ArenaCreator
 	 */
-	public abstract ArenaCreator newCreator(Player player, String name, UltimateArena plugin);
+	public abstract ArenaCreator newCreator(Player player, String name);
 
 	/**
 	 * Gets the {@link Arena} associated with this ArenaType. Must be overriden.
 	 *
 	 * @param az Underlying {@link ArenaZone}
+	 * @return The Arena
 	 */
 	public abstract Arena newArena(ArenaZone az);
 
@@ -111,7 +128,7 @@ public abstract class ArenaType
 	 */
 	public final String getName()
 	{
-		return description.getName();
+		return getDescription().getName();
 	}
 
 	/**
@@ -121,7 +138,7 @@ public abstract class ArenaType
 	 */
 	public final String getStylizedName()
 	{
-		return description.getStylized();
+		return getDescription().getStylized();
 	}
 
 	/**
@@ -129,7 +146,7 @@ public abstract class ArenaType
 	 *
 	 * @throws IllegalArgumentException If this ArenaType is already initialized
 	 */
-	protected final void initialize(UltimateArena plugin, ArenaDescriptionFile description, ArenaClassLoader classLoader, File file,
+	protected final void initialize(UltimateArena plugin, ArenaDescription description, ArenaClassLoader classLoader, File file,
 			File dataFolder)
 	{
 		Validate.isTrue(! initialized, "Already initialized!");
@@ -146,21 +163,23 @@ public abstract class ArenaType
 	// ---- Configuration
 
 	/**
-	 * Saves the default config for this ArenaType.
+	 * Loads this type's config. If the config doesn't exist, the default config
+	 * is saved.
+	 *
+	 * @return The loaded config
 	 */
-	public final void saveDefaultConfig()
+	public final ArenaConfig loadConfig()
 	{
-		File file = new File(dataFolder, "config.yml");
-		if (! file.exists())
-			saveResource("config.yml", false);
+		saveDefaultConfig();
+		return getConfig();
 	}
 
 	protected ArenaConfig config;
 
 	/**
-	 * Gets this ArenaType's configuration.
+	 * Gets this type's configuration.
 	 *
-	 * @return This ArenaType's configuration
+	 * @return This type's configuration
 	 */
 	public final ArenaConfig getConfig()
 	{
@@ -174,7 +193,31 @@ public abstract class ArenaType
 	}
 
 	/**
-	 * Reloads this ArenaType's configuration.
+	 * Saves this type's default config.
+	 */
+	public void saveDefaultConfig()
+	{
+		File file = new File(dataFolder, "config.yml");
+		if (! file.exists())
+			saveResource("config.yml", false);
+	}
+
+	/**
+	 * Saves this type's default config
+	 *
+	 * @param defaultType if this is a default arena type
+	 */
+	public void saveDefaultConfig(boolean defaultType)
+	{
+		String name = getName().toLowerCase();
+		InputStream in = plugin.getResource("configs/" + name + "Config.yml");
+		File outFile = new File(dataFolder, "config.yml");
+		if (! outFile.exists())
+			saveResource(in, outFile);
+	}
+
+	/**
+	 * Reloads this type's configuration.
 	 */
 	public final void reloadConfig()
 	{
@@ -222,6 +265,29 @@ public abstract class ArenaType
 		try
 		{
 			if (! outFile.exists() || replace)
+			{
+				OutputStream out = new FileOutputStream(outFile);
+				byte[] buf = new byte[1024];
+				int len;
+				while ((len = in.read(buf)) > 0)
+				{
+					out.write(buf, 0, len);
+				}
+				out.close();
+				in.close();
+			}
+		}
+		catch (IOException ex)
+		{
+			logger.log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+		}
+	}
+
+	private final void saveResource(@NonNull InputStream in, @NonNull File outFile)
+	{
+		try
+		{
+			if (! outFile.exists())
 			{
 				OutputStream out = new FileOutputStream(outFile);
 				byte[] buf = new byte[1024];

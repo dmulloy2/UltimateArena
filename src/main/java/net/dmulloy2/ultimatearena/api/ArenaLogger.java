@@ -14,7 +14,7 @@ public class ArenaLogger extends Logger
 	public ArenaLogger(ArenaType type)
 	{
 		super(type.getClass().getCanonicalName(), null);
-		prefix = "[" + type.getName() + "] ";
+		prefix = "[UltimateArena] [" + type.getStylizedName() + "] ";
 		setLevel(Level.ALL);
 	}
 

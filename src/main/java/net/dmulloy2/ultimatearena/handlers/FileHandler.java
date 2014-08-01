@@ -4,11 +4,12 @@ import java.io.File;
 import java.util.logging.Level;
 
 import lombok.AllArgsConstructor;
-import net.dmulloy2.types.Material;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.api.ArenaType;
+import net.dmulloy2.ultimatearena.arenas.spleef.SpleefZone;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.FieldType;
+import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -40,10 +41,6 @@ public class FileHandler
 
 			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
-			String arenaType = fc.getString("type");
-			az.setType(FieldType.getByName(arenaType));
-			az.setTypeString(arenaType);
-
 			String worldName = fc.getString("world");
 			if (worldName == null || worldName.isEmpty())
 			{
@@ -60,6 +57,8 @@ public class FileHandler
 			az.setArena1(new ArenaLocation(worldName, fc.getInt("arena1.x"), 0, fc.getInt("arena1.z")));
 			az.setArena2(new ArenaLocation(worldName, fc.getInt("arena2.x"), 0, fc.getInt("arena2.z")));
 
+			ArenaType type = az.getType();
+			String arenaType = type.getName().toLowerCase();
 			if (arenaType.equalsIgnoreCase("pvp"))
 			{
 				az.setLobbyREDspawn(new ArenaLocation(worldName, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
@@ -142,8 +141,7 @@ public class FileHandler
 				az.setLobbyREDspawn(new ArenaLocation(worldName, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
 				String specialType = fc.getString("specialType");
-				az.setSpecialType(Material.matchMaterial(specialType));
-				az.setSpecialTypeString(specialType);
+				((SpleefZone) az).setSpecialType(MaterialUtil.getMaterial(specialType));
 
 				for (int i = 0; i < 4; i++)
 				{

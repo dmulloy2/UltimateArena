@@ -7,7 +7,6 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 
 import org.bukkit.Location;
@@ -21,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author dmulloy2
  */
+
 public class UltimateArenaAPI
 {
 	protected final UltimateArena ultimateArena;
@@ -298,19 +298,5 @@ public class UltimateArenaAPI
 	public String getArenaName(ArenaPlayer a)
 	{
 		return a.getArena().getName();
-	}
-
-	/**
-	 * Gets the {@link FieldType} of the {@link Arena} an {@link ArenaPlayer} is
-	 * in
-	 *
-	 * @param a {@link ArenaPlayer} instance
-	 * @return The {@link FieldType} of the {@link Arena} the player is in
-	 * @deprecated In favor of {@link Arena#getType()}
-	 */
-	@Deprecated
-	public FieldType getArenaType(ArenaPlayer a)
-	{
-		return a.getArena().getType();
 	}
 }

@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.io.FileSerialization;
-import net.dmulloy2.types.Material;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -52,18 +51,15 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected int disliked;
 	protected int timesPlayed;
 
-	// ---- Spleef
-	protected transient Material specialType;
-	protected String specialTypeString;
-
 	protected boolean disabled;
 
 	protected String worldName;
 	protected String defaultClass;
 
 	// ---- Type
-	protected transient FieldType type;
 	protected String typeString;
+	protected transient ArenaType type;
+	protected transient String stylized;
 
 	// ---- Locations
 	protected ArenaLocation lobby1;
@@ -93,23 +89,30 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	protected transient final UltimateArena plugin;
 
-	// Base Constructor
-	public ArenaZone(UltimateArena plugin)
+	// Creation constructor
+	public ArenaZone(ArenaType type)
 	{
-		this.plugin = plugin;
+		this.type = type;
+		this.typeString = type.getName();
+		this.plugin = type.getPlugin();
 	}
 
-	public ArenaZone(UltimateArena plugin, File file)
+	// Regular constructor
+	public ArenaZone(ArenaType type, File file)
 	{
-		this(plugin);
+		this.plugin = type.getPlugin();
 		this.file = file;
+		this.type = type;
+		this.typeString = type.getName();
+		this.stylized = type.getStylizedName();
 		this.name = FormatUtil.trimFileExtension(file, ".dat");
 		this.initialize();
 	}
 
-	public ArenaZone(ArenaType type, File file)
+	@Deprecated
+	public ArenaZone(UltimateArena plugin, File file)
 	{
-		this(type.getPlugin());
+		this.plugin = plugin;
 		this.file = file;
 		this.name = FormatUtil.trimFileExtension(file, ".dat");
 		this.initialize();
@@ -188,53 +191,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	/**
 	 * @return This arena's type
 	 */
-	public final FieldType getType()
+	public final ArenaType getType()
 	{
-		if (type == null)
-			type = FieldType.getByName(typeString);
-
 		return type;
-	}
-
-	/**
-	 * Sets this arena's type.
-	 * <p>
-	 * Should only be used in arena creation
-	 *
-	 * @param type The arena's {@link FieldType}
-	 */
-	public final void setType(FieldType type)
-	{
-		Validate.isTrue(typeString == null, "Type already set!");
-		this.typeString = type.getName();
-		this.type = type;
-	}
-
-	/**
-	 * @return Spleef special type.
-	 * @throws NullPointerException If this isn't a spleef arena
-	 */
-	public final Material getSpecialType()
-	{
-		if (specialType == null)
-			specialType = Material.matchMaterial(specialTypeString);
-
-		return specialType;
-	}
-
-	/**
-	 * Sets the spleef special type
-	 * <p>
-	 * Should only be used in arena creation
-	 *
-	 * @param specialType Spleef special type
-	 */
-	public final void setSpecialType(Material specialType)
-	{
-		Validate.isTrue(specialTypeString == null, "Special Type already set!");
-		this.specialTypeString = specialType.toString();
-		this.specialType = specialType;
-
 	}
 
 	/**
@@ -421,13 +380,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			} catch (Throwable ex) { }
 		}
 
-		this.type = FieldType.getByName(typeString);
-		if (type == FieldType.SPLEEF)
-			this.specialType = Material.matchMaterial(specialTypeString);
+		loadCustomOptions(fc);
+
 		this.loaded = true;
 
 		loadConfiguration();
 	}
+
+	/**
+	 * Loads custom options.
+	 */
+	protected void loadCustomOptions(FileConfiguration fc) { }
 
 	/**
 	 * Saves this arena to disk
@@ -512,7 +475,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	protected void newConfig()
 	{
-		config = new ArenaConfig(this);
+		config = getType().newConfig(this);
 	}
 
 	/**
@@ -545,7 +508,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	protected ArenaConfig getDefaultConfig()
 	{
-		return plugin.getConfig(getType());
+		ArenaType type = getType();
+		if (type == null)
+			return null;
+
+		return type.getConfig();
 	}
 
 	/**

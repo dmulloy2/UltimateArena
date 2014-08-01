@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
-import net.dmulloy2.ultimatearena.creation.ArenaCreator;
+import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
 import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
@@ -211,11 +211,11 @@ public class PlayerListener implements Listener
 				if (ap != null)
 				{
 					Arena arena = ap.getArena();
-					if (arena instanceof SPLEEFArena)
+					if (arena instanceof SpleefArena)
 					{
 						if (arena.isInGame())
 						{
-							SPLEEFArena spleef = (SPLEEFArena) arena;
+							SpleefArena spleef = (SpleefArena) arena;
 							Field3D field = spleef.getSpleefGround();
 							if (field.isInside(block.getLocation()))
 							{

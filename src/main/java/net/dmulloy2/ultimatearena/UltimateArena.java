@@ -37,17 +37,9 @@ import net.dmulloy2.handlers.PermissionHandler;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.types.SimpleVector;
 import net.dmulloy2.types.StringJoiner;
+import net.dmulloy2.ultimatearena.api.ArenaType;
+import net.dmulloy2.ultimatearena.api.ArenaTypeHandler;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.BOMBArena;
-import net.dmulloy2.ultimatearena.arenas.CONQUESTArena;
-import net.dmulloy2.ultimatearena.arenas.CTFArena;
-import net.dmulloy2.ultimatearena.arenas.FFAArena;
-import net.dmulloy2.ultimatearena.arenas.HUNGERArena;
-import net.dmulloy2.ultimatearena.arenas.INFECTArena;
-import net.dmulloy2.ultimatearena.arenas.KOTHArena;
-import net.dmulloy2.ultimatearena.arenas.MOBArena;
-import net.dmulloy2.ultimatearena.arenas.PVPArena;
-import net.dmulloy2.ultimatearena.arenas.SPLEEFArena;
 import net.dmulloy2.ultimatearena.commands.CmdClass;
 import net.dmulloy2.ultimatearena.commands.CmdClassList;
 import net.dmulloy2.ultimatearena.commands.CmdCreate;
@@ -74,17 +66,6 @@ import net.dmulloy2.ultimatearena.commands.CmdStop;
 import net.dmulloy2.ultimatearena.commands.CmdTeleport;
 import net.dmulloy2.ultimatearena.commands.CmdUndo;
 import net.dmulloy2.ultimatearena.commands.CmdVersion;
-import net.dmulloy2.ultimatearena.creation.ArenaCreator;
-import net.dmulloy2.ultimatearena.creation.BombCreator;
-import net.dmulloy2.ultimatearena.creation.CTFCreator;
-import net.dmulloy2.ultimatearena.creation.ConquestCreator;
-import net.dmulloy2.ultimatearena.creation.FFACreator;
-import net.dmulloy2.ultimatearena.creation.HungerCreator;
-import net.dmulloy2.ultimatearena.creation.InfectCreator;
-import net.dmulloy2.ultimatearena.creation.KOTHCreator;
-import net.dmulloy2.ultimatearena.creation.MobCreator;
-import net.dmulloy2.ultimatearena.creation.PvPCreator;
-import net.dmulloy2.ultimatearena.creation.SpleefCreator;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
@@ -97,11 +78,11 @@ import net.dmulloy2.ultimatearena.listeners.PlayerListener;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
+import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.FieldType;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
@@ -110,6 +91,8 @@ import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -128,6 +111,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 {
 	// Handlers
 	private @Getter SpectatingHandler spectatingHandler;
+	private @Getter ArenaTypeHandler arenaTypeHandler;
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
 
@@ -183,6 +167,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		spectatingHandler = new SpectatingHandler(this);
 		commandHandler = new CommandHandler(this);
 		fileHandler = new FileHandler(this);
+
+		arenaTypeHandler = new ArenaTypeHandler(this);
 
 		// Integration
 		essentialsHandler = new EssentialsHandler(this);
@@ -292,7 +278,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private final void loadFiles()
 	{
 		loadClasses();
-		loadConfigs();
+//		loadConfigs();
 		loadArenas();
 		loadSigns();
 	}
@@ -305,6 +291,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	{
 		// Reload config
 		reloadConfig();
+
+		arenaTypeHandler.reload();
 
 		// Reload configs
 		for (ArenaConfig conf : Util.newList(configs))
@@ -358,16 +346,17 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		File configsFile = new File(dataFolder, "configs");
-		if (! configsFile.exists())
+		if (configsFile.exists())
 		{
-			configsFile.mkdir();
+			if (configsFile.listFiles().length == 0)
+				configsFile.mkdir();
 		}
 
-//		File typesFile = new File(dataFolder(), "types");
-//		if (! typesFile.exists())
-//		{
-//			typesFile.mkdir();
-//		}
+		File typesFile = new File(dataFolder, "types");
+		if (! typesFile.exists())
+		{
+			typesFile.mkdir();
+		}
 
 		File whitelistedCommands = new File(dataFolder, "whiteListedCommands.yml");
 		if (whitelistedCommands.exists())
@@ -399,9 +388,19 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 					alreadyLoaded = true;
 			}
 
-			if (alreadyLoaded) continue;
+			if (alreadyLoaded)
+				continue;
 
-			ArenaZone az = new ArenaZone(this, file);
+			// TODO: This is kinda hacky
+			FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			ArenaType type = arenaTypeHandler.getArenaType(fc.getString("typeString"));
+			if (type == null)
+			{
+				logHandler.log(Level.WARNING, "Failed to find ArenaType \"{0}\" for arena " + file.getName());
+				continue;
+			}
+
+			ArenaZone az = type.getArenaZone(file);
 			if (az.isLoaded())
 			{
 				debug("Successfully loaded arena {0}!", az.getName());
@@ -409,40 +408,40 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 		}
 
-		outConsole("Loaded {0} arenas!", total);
+		logHandler.log("Loaded {0} arenas!", total);
 	}
 
-	private final void loadConfigs()
-	{
-		int total = 0;
-		for (FieldType type : FieldType.values())
-		{
-			if (loadConfig(type.getName()))
-				total++;
-		}
-
-		debug("Loaded {0} arena configs!", total);
-	}
-
-	private boolean loadConfig(String str)
-	{
-		File folder = new File(getDataFolder(), "configs");
-		File file = new File(folder, str + "Config.yml");
-		if (! file.exists())
-		{
-			debug("Generating config for: {0}", str);
-			generateArenaConfig(str);
-		}
-
-		ArenaConfig a = new ArenaConfig(this, str, file);
-		if (a.isLoaded())
-		{
-			configs.add(a);
-			return true;
-		}
-
-		return false;
-	}
+//	private final void loadConfigs()
+//	{
+//		int total = 0;
+//		for (FieldType type : FieldType.values())
+//		{
+//			if (loadConfig(type.getName()))
+//				total++;
+//		}
+//
+//		debug("Loaded {0} arena configs!", total);
+//	}
+//
+//	private boolean loadConfig(String str)
+//	{
+//		File folder = new File(getDataFolder(), "configs");
+//		File file = new File(folder, str + "Config.yml");
+//		if (! file.exists())
+//		{
+//			debug("Generating config for: {0}", str);
+//			generateArenaConfig(str);
+//		}
+//
+//		ArenaConfig a = new ArenaConfig(this, str, file);
+//		if (a.isLoaded())
+//		{
+//			configs.add(a);
+//			return true;
+//		}
+//
+//		return false;
+//	}
 
 	private void loadClasses()
 	{
@@ -498,10 +497,10 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		outConsole("Loaded {0} classes!", total);
 	}
 
-	private final void generateArenaConfig(String field)
-	{
-		saveResource("configs" + File.separator + field + "Config.yml", false);
-	}
+//	private final void generateArenaConfig(String field)
+//	{
+//		saveResource("configs" + File.separator + field + "Config.yml", false);
+//	}
 
 	private final void generateStockClasses()
 	{
@@ -523,11 +522,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// TODO: JavaDoc need - start
-
-	public final ArenaConfig getConfig(FieldType type)
-	{
-		return getConfig(type.getName());
-	}
 
 	public final ArenaConfig getConfig(String type)
 	{
@@ -811,46 +805,17 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 				return;
 			}
 
-			Arena arena = null;
-
-			switch (az.getType())
+			ArenaType type = az.getType();
+			if (type == null)
 			{
-				case BOMB:
-					arena = new BOMBArena(az);
-					break;
-				case CONQUEST:
-					arena = new CONQUESTArena(az);
-					break;
-				case CTF:
-					arena = new CTFArena(az);
-					break;
-				case FFA:
-					arena = new FFAArena(az);
-					break;
-				case HUNGER:
-					arena = new HUNGERArena(az);
-					break;
-				case INFECT:
-					arena = new INFECTArena(az);
-					break;
-				case KOTH:
-					arena = new KOTHArena(az);
-					break;
-				case MOB:
-					arena = new MOBArena(az);
-					break;
-				case PVP:
-					arena = new PVPArena(az);
-					break;
-				case SPLEEF:
-					arena = new SPLEEFArena(az);
-					break;
+				player.sendMessage(prefix + FormatUtil.format("&cCould not find a valid type for arena: {0}", az.getName()));
+				return;
 			}
 
-			// Won't ever be null, but just in case
+			Arena arena = type.newArena(az);
 			if (arena == null)
 			{
-				player.sendMessage(prefix + FormatUtil.format("&cCould not find a valid arena for the type: {0}", az.getType()));
+				player.sendMessage(prefix + FormatUtil.format("&c{0} does not define a valid arena!", type.getName()));
 				return;
 			}
 
@@ -956,14 +921,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
-		if (! FieldType.contains(type.toLowerCase()))
-		{
-			player.sendMessage(prefix + FormatUtil.format("\"{0}\" is not a valid field type!", type));
-			return;
-		}
-
-		FieldType fieldType = FieldType.getByName(type);
-
 		for (ArenaZone az : loadedArenas)
 		{
 			if (az.getName().equalsIgnoreCase(name))
@@ -973,50 +930,21 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 		}
 
-		ArenaCreator ac = null;
-
-		switch (fieldType)
+		ArenaType at = arenaTypeHandler.getArenaType(type);
+		if (at == null)
 		{
-			case BOMB:
-				ac = new BombCreator(player, name, this);
-				break;
-			case CONQUEST:
-				ac = new ConquestCreator(player, name, this);
-				break;
-			case CTF:
-				ac = new CTFCreator(player, name, this);
-				break;
-			case FFA:
-				ac = new FFACreator(player, name, this);
-				break;
-			case HUNGER:
-				ac = new HungerCreator(player, name, this);
-				break;
-			case INFECT:
-				ac = new InfectCreator(player, name, this);
-				break;
-			case KOTH:
-				ac = new KOTHCreator(player, name, this);
-				break;
-			case MOB:
-				ac = new MobCreator(player, name, this);
-				break;
-			case PVP:
-				ac = new PvPCreator(player, name, this);
-				break;
-			case SPLEEF:
-				ac = new SpleefCreator(player, name, this);
-				break;
+			player.sendMessage(prefix + FormatUtil.format("&cArena Type {0} does not exist!", type));
+			return;
 		}
 
-		// It won't ever be null, but just in case...
+		ArenaCreator ac = at.newCreator(player, name);
 		if (ac == null)
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cCould not find an applicable ArenaCreator for \"{0}\"", type));
 			return;
 		}
 
-		outConsole("{0} has started the creation of Arena: {1}. Type: {2}", player.getName(), name, type);
+		logHandler.log("{0} has started the creation of Arena: {1}. Type: {2}", player.getName(), name, type);
 		makingArena.add(ac);
 	}
 
