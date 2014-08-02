@@ -481,10 +481,7 @@ public abstract class Arena implements Reloadable
 	 *
 	 * @param pl {@link ArenaPlayer} who died
 	 */
-	public void onPlayerDeath(ArenaPlayer pl)
-	{
-		pl.setAmtKicked(0);
-	}
+	public void onPlayerDeath(ArenaPlayer pl) { }
 
 	/**
 	 * Default rewarding system. May be overriden in some cases.

@@ -61,8 +61,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.file = file;
 		this.plugin = plugin;
 
-		// Initialize some variables
-		this.initializeVariables();
+		// Set defaults
+		this.setDefaults();
 
 		// Load
 		this.loaded = load();
@@ -75,20 +75,37 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.file = az.getFile();
 	}
 
-	protected void initializeVariables()
+	private final void setDefaults()
 	{
 		this.rewards = new ArrayList<>();
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
-		this.rewardBasedOnXp = xpBasedTypes.contains(type.toUpperCase());
 		this.killStreaks = getDefaultKillStreak();
+		setCustomDefaults();
 	}
 
+	/**
+	 * Sets any custom defaults. Called after {@link #setDefaults()}.
+	 */
+	protected void setCustomDefaults() { }
+
+	/**
+	 * Loads this config.
+	 *
+	 * @return True if loading was successful, false if not
+	 */
 	public final boolean load()
 	{
 		return load(file, this);
 	}
 
+	/**
+	 * Loads this config from a given file.
+	 *
+	 * @param file File to load from
+	 * @param def Parent config
+	 * @return True if loading was successful, false if not
+	 */
 	public final boolean load(@NonNull File file, @NonNull ArenaConfig def)
 	{
 		Validate.isTrue(! loaded, "Config has already been loaded!");
@@ -212,14 +229,19 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		return true;
 	}
 
+	/**
+	 * Loads any custom options. Called after {@link #load(File, ArenaConfig)}
+	 *
+	 * @param fc FileConfiguration to load options from
+	 * @param def Parent config
+	 */
 	protected void loadCustomOptions(YamlConfiguration fc, ArenaConfig def) { }
 
-	// TODO
-	private static final List<String> xpBasedTypes = Arrays.asList(new String[]
-	{
-			"KOTH", "FFA", "CQ", "MOB", "CTF", "PVP", "BOMB"
-	});
-
+	/**
+	 * Gets this config's default kill streak.
+	 *
+	 * @return Default kill streak
+	 */
 	public Map<Integer, List<KillStreak>> getDefaultKillStreak()
 	{
 		Map<Integer, List<KillStreak>> ret = new LinkedHashMap<>();
@@ -249,11 +271,19 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		return ret;
 	}
 
+	/**
+	 * Saves this config.
+	 */
 	public final void save()
 	{
 		save(file);
 	}
 
+	/**
+	 * Saves this config to a given file.
+	 *
+	 * @param file File to save to
+	 */
 	public final void save(@NonNull File file)
 	{
 		try
@@ -271,14 +301,17 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		} catch (Throwable ex) { }
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Map<String, Object> serialize()
 	{
 		Map<String, Object> data = new LinkedHashMap<>();
 
-		try
+		for (Field field : getClass().getDeclaredFields())
 		{
-			for (Field field : getClass().getDeclaredFields())
+			try
 			{
 				if (Modifier.isTransient(field.getModifiers()))
 					continue;
@@ -324,25 +357,37 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 				}
 
 				field.setAccessible(accessible);
-			}
-		} catch (Throwable ex) { }
+			} catch (Throwable ex) { }
+		}
+
+		serializeCustomOptions(data);
 		return data;
 	}
 
+	/**
+	 * Serializes custom options. This should be overriden by subclasses.
+	 *
+	 * @param data Serialized data map
+	 */
+	protected void serializeCustomOptions(Map<String, Object> data) { }
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reload()
 	{
-		// Make sure this class still exists
+		// Make sure this config still exists
 		if (! file.exists())
 		{
 			plugin.getClasses().remove(this);
 			return;
 		}
 
-		// Re-initialize variables
-		this.initializeVariables();
+		// Reset defaults
+		this.setDefaults();
 
-		// Re-load
+		// Reload
 		this.loaded = false;
 		this.loaded = load();
 	}

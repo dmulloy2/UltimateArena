@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.arenas.hunger;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -21,20 +24,10 @@ public class HungerArena extends Arena
 	}
 
 	@Override
-	public Location getSpawn(ArenaPlayer ap)
+	public void announceWinner()
 	{
-		if (isInLobby())
-		{
-			return super.getSpawn(ap);
-		}
-
-		return getRandomSpawn(ap);
-	}
-
-	@Override
-	public void onSpawn(ArenaPlayer ap)
-	{
-		ap.decideHat(true);
+		if (winner != null)
+			tellAllPlayers("&e{0} &3is the victor!", winner.getName());
 	}
 
 	@Override
@@ -69,10 +62,14 @@ public class HungerArena extends Arena
 	}
 
 	@Override
-	public void announceWinner()
+	public Location getSpawn(ArenaPlayer ap)
 	{
-		if (winner != null)
-			tellAllPlayers("&e{0} &3is the victor!", winner.getName());
+		if (isInLobby())
+		{
+			return super.getSpawn(ap);
+		}
+
+		return getRandomSpawn(ap);
 	}
 
 	@Override
@@ -82,5 +79,11 @@ public class HungerArena extends Arena
 
 		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
 		tellPlayers("&3Tribute &e{0} &3has fallen!", pl.getName());
+	}
+
+	@Override
+	public void onSpawn(ArenaPlayer ap)
+	{
+		ap.decideHat(true);
 	}
 }

@@ -332,6 +332,7 @@ public final class ArenaPlayer
 	{
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
+		this.amtKicked = 0;
 		this.deaths++;
 
 		arena.onPlayerDeath(this);

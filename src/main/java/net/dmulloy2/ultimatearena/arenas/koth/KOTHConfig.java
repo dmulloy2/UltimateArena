@@ -41,9 +41,8 @@ public class KOTHConfig extends ArenaConfig
 	}
 
 	@Override
-	protected void initializeVariables()
+	public void setCustomDefaults()
 	{
-		super.initializeVariables();
 		this.maxPoints = 60;
 	}
 
@@ -73,5 +72,11 @@ public class KOTHConfig extends ArenaConfig
 		}));
 
 		return ret;
+	}
+
+	@Override
+	public void serializeCustomOptions(Map<String, Object> data)
+	{
+		data.put("maxPoints", maxPoints);
 	}
 }

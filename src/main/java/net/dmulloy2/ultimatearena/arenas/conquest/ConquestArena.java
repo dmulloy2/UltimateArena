@@ -128,8 +128,6 @@ public class ConquestArena extends Arena
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
-		super.onPlayerDeath(pl);
-
 		int majority = 0;
 		int red = 0;
 		int blu = 0;

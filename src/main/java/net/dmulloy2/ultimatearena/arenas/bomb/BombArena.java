@@ -93,8 +93,6 @@ public class BombArena extends Arena
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
-		super.onPlayerDeath(pl);
-
 		if (pl.getTeam() == 1)
 		{
 			redTeamPower--;

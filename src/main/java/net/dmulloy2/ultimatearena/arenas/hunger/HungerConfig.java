@@ -31,9 +31,8 @@ public class HungerConfig extends ArenaConfig
 	}
 
 	@Override
-	protected void initializeVariables()
+	protected void setCustomDefaults()
 	{
-		super.initializeVariables();
 		this.canModifyWorld = true;
 		this.unlimitedAmmo = false;
 		this.rewardBasedOnXp = false;

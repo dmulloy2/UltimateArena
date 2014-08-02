@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.arenas.infect;
 
 import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
@@ -93,6 +96,12 @@ public class InfectArena extends PvPArena
 	}
 
 	@Override
+	public InfectConfig getConfig()
+	{
+		return (InfectConfig) super.getConfig();
+	}
+
+	@Override
 	public int getTeam()
 	{
 		return 1; // blue team
@@ -107,8 +116,6 @@ public class InfectArena extends PvPArena
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
-		super.onPlayerDeath(pl);
-
 		if (pl.getTeam() == 1)
 		{
 			pl.sendMessage("&3You have joined the Infected!");

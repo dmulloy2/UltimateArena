@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.arenas.spleef;
 
 import java.util.Random;
@@ -20,9 +23,8 @@ import org.bukkit.block.Block;
 @Getter
 public class SpleefArena extends FFAArena
 {
-	private Field3D spleefGround;
 	private Field3D outZone;
-
+	private Field3D spleefGround;
 	private Material specialType;
 
 	public SpleefArena(ArenaZone az)
@@ -40,40 +42,10 @@ public class SpleefArena extends FFAArena
 	}
 
 	@Override
-	public Location getSpawn(ArenaPlayer ap)
+	public void announceWinner()
 	{
-		if (isInLobby())
-		{
-			return super.getSpawn(ap);
-		}
-
-		return getBlockInSpleefArena(0);
-	}
-
-	public Location getBlockInSpleefArena(int repeat)
-	{
-		Random rand = new Random();
-		Location ret = null;
-
-		int checkx = rand.nextInt(spleefGround.getWidth() - 1);
-		int checkz = rand.nextInt(spleefGround.getLength() - 1);
-
-		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
-
-		Material mat = b.getType();
-		if (mat == specialType)
-		{
-			ret = b.getLocation();
-		}
-		else
-		{
-			if (repeat < (spleefGround.getWidth() * spleefGround.getHeight()) / 2)
-			{
-				ret = getBlockInSpleefArena(repeat + 1);
-			}
-		}
-
-		return ret;
+		if (winner != null)
+			tellAllPlayers("&e{0} &3has won the Spleef match at &e{1}", winner.getName(), name);
 	}
 
 	@Override
@@ -124,11 +96,47 @@ public class SpleefArena extends FFAArena
 		}
 	}
 
-	@Override
-	public void announceWinner()
+	private final Location getBlockInSpleefArena(int repeat)
 	{
-		if (winner != null)
-			tellAllPlayers("&e{0} &3has won the Spleef match at &e{1}", winner.getName(), name);
+		Random rand = new Random();
+		Location ret = null;
+
+		int checkx = rand.nextInt(spleefGround.getWidth() - 1);
+		int checkz = rand.nextInt(spleefGround.getLength() - 1);
+
+		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
+
+		Material mat = b.getType();
+		if (mat == specialType)
+		{
+			ret = b.getLocation();
+		}
+		else
+		{
+			if (repeat < (spleefGround.getWidth() * spleefGround.getHeight()) / 2)
+			{
+				ret = getBlockInSpleefArena(repeat + 1);
+			}
+		}
+
+		return ret;
+	}
+
+	@Override
+	public SpleefConfig getConfig()
+	{
+		return (SpleefConfig) super.getConfig();
+	}
+
+	@Override
+	public Location getSpawn(ArenaPlayer ap)
+	{
+		if (isInLobby())
+		{
+			return super.getSpawn(ap);
+		}
+
+		return getBlockInSpleefArena(0);
 	}
 
 	@Override

@@ -42,9 +42,8 @@ public class MobConfig extends ArenaConfig
 	}
 
 	@Override
-	protected void initializeVariables()
+	protected void setCustomDefaults()
 	{
-		super.initializeVariables();
 		this.countMobKills = true;
 		this.maxWave = 15;
 	}
@@ -95,5 +94,11 @@ public class MobConfig extends ArenaConfig
 		}));
 
 		return ret;
+	}
+
+	@Override
+	public void serializeCustomOptions(Map<String, Object> data)
+	{
+		data.put("maxWave", maxWave);
 	}
 }

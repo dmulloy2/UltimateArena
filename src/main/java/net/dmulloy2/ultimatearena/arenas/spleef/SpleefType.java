@@ -3,9 +3,12 @@
  */
 package net.dmulloy2.ultimatearena.arenas.spleef;
 
+import java.io.File;
+
 import net.dmulloy2.ultimatearena.api.ArenaDescription;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 
@@ -27,6 +30,19 @@ public class SpleefType extends ArenaType
 	public Arena newArena(ArenaZone az)
 	{
 		return new SpleefArena(az);
+	}
+
+	@Override
+	public ArenaConfig newConfig()
+	{
+		String name = getName().toLowerCase();
+		return new SpleefConfig(getPlugin(), name, new File(getDataFolder(), "config.yml"));
+	}
+
+	@Override
+	public ArenaConfig newConfig(ArenaZone az)
+	{
+		return new SpleefConfig(az);
 	}
 
 	protected ArenaDescription description;
