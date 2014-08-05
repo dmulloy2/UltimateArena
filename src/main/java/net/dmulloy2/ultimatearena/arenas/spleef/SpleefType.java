@@ -33,6 +33,12 @@ public class SpleefType extends ArenaType
 	}
 
 	@Override
+	public ArenaZone getArenaZone(File file)
+	{
+		return new SpleefZone(this, file);
+	}
+
+	@Override
 	public ArenaConfig newConfig()
 	{
 		String name = getName().toLowerCase();
