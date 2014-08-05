@@ -84,6 +84,7 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
+import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.TimeUtil;
@@ -96,7 +97,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -483,11 +483,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 				if (ac.isNeedsPermission())
 				{
+					// Fully qualified names, conflicts with UA permissions
 					PluginManager pm = getServer().getPluginManager();
-					Permission perm = pm.getPermission(ac.getPermissionNode());
+					org.bukkit.permissions.Permission perm = pm.getPermission(ac.getPermissionNode());
 					if (perm == null)
 					{
-						perm = new Permission(ac.getPermissionNode(), PermissionDefault.OP);
+						perm = new org.bukkit.permissions.Permission(ac.getPermissionNode(), PermissionDefault.OP);
 						pm.addPermission(perm);
 					}
 				}
@@ -663,11 +664,23 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
-	public final void attemptJoin(Player player, String arena)
+	public final void attemptJoin(Player player, String name)
 	{
-		if (! permissionHandler.hasPermission(player, net.dmulloy2.ultimatearena.types.Permission.JOIN))
+		if (! permissionHandler.hasPermission(player, Permission.JOIN))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to do this!"));
+			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to join arenas!"));
+			return;
+		}
+
+		if (waiting.containsKey(player.getName()))
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));
+			return;
+		}
+
+		if (isInArena(player))
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cYou are already in an arena!"));
 			return;
 		}
 
@@ -677,21 +690,21 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
-		if (! InventoryUtil.isEmpty(player.getInventory()))
+		if (! getConfig().getBoolean("saveInventories", true))
 		{
-			if (! getConfig().getBoolean("saveInventories"))
+			if (! InventoryUtil.isEmpty(player.getInventory()))
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cPlease clear your inventory!"));
 				return;
 			}
 		}
 
-		ArenaZone a = getArenaZone(arena);
-		if (a == null)
+		ArenaZone az = getArenaZone(name);
+		if (az == null)
 		{
-			player.sendMessage(prefix + FormatUtil.format("&3Unknown arena: &e{0}", arena));
+			player.sendMessage(prefix + FormatUtil.format("&3Unknown arena: &e{0}", name));
 
-			List<ArenaZone> matches = matchArena(arena);
+			List<ArenaZone> matches = matchArena(name);
 			if (matches.size() > 0)
 			{
 				StringJoiner joiner = new StringJoiner("&3, &e");
@@ -706,21 +719,15 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
-		if (isInArena(player))
-		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are already in an arena!"));
-			return;
-		}
-
 		ArenaPlayer ap = getArenaPlayer(player, true);
 		if (ap != null)
 		{
-			Arena ar = ap.getArena();
-			if (ar != null)
+			Arena arena = ap.getArena();
+			if (arena != null)
 			{
-				if (ar.getName().equalsIgnoreCase(arena))
+				if (arena.getName().equalsIgnoreCase(name))
 				{
-					if (ar.isInGame())
+					if (arena.isInGame())
 					{
 						player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin this arena!"));
 						return;
@@ -729,16 +736,10 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 		}
 
-		if (isPlayerWaiting(player))
+		ArenaJoinTask join = new ArenaJoinTask(player.getName(), name, this);
+		if (getConfig().getBoolean("joinTimer.enabled", true))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));
-			return;
-		}
-
-		ArenaJoinTask join = new ArenaJoinTask(player.getName(), arena, this);
-		if (getConfig().getBoolean("joinTimer.enabled"))
-		{
-			int seconds = getConfig().getInt("joinTimer.wait");
+			int seconds = getConfig().getInt("joinTimer.wait", 3);
 			int wait = seconds * 20;
 
 			join.runTaskLater(this, wait);
@@ -752,56 +753,51 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 	}
 
-	public final void join(Player player, String name)
+	public final void addPlayer(Player player, String name)
 	{
-		boolean forced = permissionHandler.hasPermission(player, net.dmulloy2.ultimatearena.types.Permission.JOIN_FORCE);
-
-		ArenaZone az = getArenaZone(name);
-		Arena a = getArena(name);
-		if (a != null)
+		try
 		{
-			if (a.isStopped())
-			{
-				// Will only occur while the arena is stopping, so this message is valid
-				player.sendMessage(prefix + FormatUtil.format("&cThis arena is currently stopping"));
-				return;
-			}
-
-			if (a.isInLobby())
-			{
-				if (a.getPlayerCount() + 1 <= az.getMaxPlayers())
-				{
-					a.addPlayer(player);
-				}
-				else
-				{
-					if (! forced)
-					{
-						player.sendMessage(prefix + FormatUtil.format("&cThis arena is full!"));
-					}
-					else
-					{
-						if (kickRandomPlayer(a))
-						{
-							a.addPlayer(player);
-						}
-						else
-						{
-							player.sendMessage(prefix + FormatUtil.format("&cCould not join the arena!"));
-						}
-					}
-				}
-			}
-			else
-			{
-				player.sendMessage(prefix + FormatUtil.format("&cThis arena has already started!"));
-			}
-		}
-		else
-		{
+			ArenaZone az = getArenaZone(name);
 			if (az.isDisabled())
 			{
 				player.sendMessage(prefix + FormatUtil.format("&cThis arena is disabled!"));
+				return;
+			}
+
+			Arena active = getArena(name);
+			if (active != null)
+			{
+				if (active.isStopped())
+				{
+					player.sendMessage(prefix + FormatUtil.format("&cThis arena is currently stopping"));
+					return;
+				}
+
+				if (active.isInGame())
+				{
+					player.sendMessage(prefix + FormatUtil.format("&cThis arena has already started!"));
+					return;
+				}
+
+				if (active.getPlayerCount() < az.getMaxPlayers())
+				{
+					active.addPlayer(player);
+					return;
+				}
+
+				if (! permissionHandler.hasPermission(player, Permission.JOIN_FORCE))
+				{
+					player.sendMessage(prefix + FormatUtil.format("&cThis arena is full!"));
+					return;
+				}
+
+				if (kickRandomPlayer(active))
+				{
+					active.addPlayer(player);
+					return;
+				}
+
+				player.sendMessage(prefix + FormatUtil.format("&cCould not force join the arena!"));
 				return;
 			}
 
@@ -822,6 +818,11 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			activeArenas.add(arena);
 			arena.addPlayer(player);
 			arena.announce();
+		}
+		catch (Throwable ex)
+		{
+			logHandler.log(Level.SEVERE, Util.getUsefulStack(ex, "adding " + player.getName() + " to arena " + name));
+			player.sendMessage(prefix + FormatUtil.format("&cFailed to add you to the arena! Contact an Administrator!"));
 		}
 	}
 
@@ -1165,7 +1166,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 				}
 				catch (Throwable ex)
 				{
-					logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "updating " + arena.getName()));
+					logHandler.log(Level.SEVERE, Util.getUsefulStack(ex, "updating " + arena.getName()));
 				}
 			}
 		}
