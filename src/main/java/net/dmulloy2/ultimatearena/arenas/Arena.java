@@ -918,7 +918,6 @@ public abstract class Arena implements Reloadable
 			ArenaClass ac = ap.getArenaClass();
 			if (ac != null)
 			{
-				// Healing. TODO: Does anyone even use this anymore?
 				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
 				{
 					if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
@@ -929,7 +928,7 @@ public abstract class Arena implements Reloadable
 				}
 
 				// Potion effects
-				if (ac.isHasPotionEffects())
+				if (! ap.isChangeClassOnRespawn() && ac.isHasPotionEffects())
 				{
 					if (ac.getPotionEffects().size() > 0)
 					{
