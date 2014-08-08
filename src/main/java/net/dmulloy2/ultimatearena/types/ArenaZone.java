@@ -144,9 +144,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				{
 					ArenaClass ac = plugin.getClasses().get(0);
 					if (ac != null)
-					{
 						this.defaultClass = ac.getName();
-					}
 				}
 			}
 

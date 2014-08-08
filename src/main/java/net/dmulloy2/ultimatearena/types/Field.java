@@ -2,6 +2,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -14,48 +15,23 @@ public class Field
 {
 	protected boolean initialized;
 
-	protected ArenaLocation point1;
-	protected ArenaLocation point2;
+	protected ArenaLocation max;
+	protected ArenaLocation min;
 
-	protected int maxX;
-	protected int maxZ;
-
-	protected int minX;
-	protected int minZ;
+	public Field() { }
 
 	public Field(ArenaLocation point1, ArenaLocation point2)
 	{
 		setParam(point1, point2);
 	}
 
-	public Field()
-	{
-		//
-	}
-
 	public void setParam(ArenaLocation point1, ArenaLocation point2)
 	{
-		this.point1 = point1;
-		this.point2 = point2;
+		Validate.notNull(point1, "point1 cannot be null!");
+		Validate.notNull(point2, "point2 cannot be null!");
 
-		this.maxX = point1.getX();
-		this.maxZ = point1.getZ();
-
-		this.minX = point2.getX();
-		this.minZ = point2.getZ();
-
-		if (minX > maxX)
-		{
-			this.maxX = point2.getX();
-			this.minX = point1.getX();
-		}
-
-		if (minZ > maxZ)
-		{
-			this.maxZ = point2.getZ();
-			this.minZ = point1.getZ();
-		}
-
+		this.max = ArenaLocation.getMaximum(point1, point2);
+		this.min = ArenaLocation.getMinimum(point1, point2);
 		this.initialized = true;
 	}
 
@@ -74,10 +50,8 @@ public class Field
 		int locZ = loc.getBlockZ();
 		if (getWorld().getUID() == world.getUID())
 		{
-			if (locX >= minX && locX <= maxX)
-			{
-				return locZ >= minZ && locZ <= maxZ;
-			}
+			if (locX >= min.getX() && locX <= max.getX())
+				return locZ >= min.getZ() && locZ <= max.getZ();
 		}
 
 		return false;
@@ -85,16 +59,16 @@ public class Field
 
 	public final World getWorld()
 	{
-		return point1.getWorld();
+		return max.getWorld();
 	}
 
 	public final int getWidth()
 	{
-		return maxX - minX;
+		return max.getX() - min.getX();
 	}
 
 	public final int getLength()
 	{
-		return maxZ - minZ;
+		return max.getZ() - min.getZ();
 	}
 }

@@ -139,6 +139,16 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		return simpleVector;
 	}
 
+	public static ArenaLocation getMaximum(ArenaLocation l1, ArenaLocation l2)
+	{
+		return new ArenaLocation(l1.worldName, Math.max(l1.x, l2.x), Math.max(l1.y, l2.y), Math.max(l1.z, l2.z));
+	}
+
+	public static ArenaLocation getMinimum(ArenaLocation l1, ArenaLocation l2)
+	{
+		return new ArenaLocation(l1.worldName, Math.min(l1.x, l2.x), Math.min(l1.y, l2.y), Math.min(l1.z, l2.z));
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

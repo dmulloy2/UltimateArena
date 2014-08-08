@@ -378,37 +378,41 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 		});
 
-		int total = 0;
 		for (File file : children)
 		{
-			boolean alreadyLoaded = false;
+			loadArena(file);
+		}
+
+		logHandler.log("Loaded {0} arenas!", loadedArenas.size());
+	}
+
+	private final void loadArena(File file)
+	{
+		try
+		{
 			for (ArenaZone loaded : loadedArenas)
 			{
 				if (loaded.getFile().equals(file))
-					alreadyLoaded = true;
+					return;
 			}
 
-			if (alreadyLoaded)
-				continue;
-
-			// TODO: This is kinda hacky
 			FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			ArenaType type = arenaTypeHandler.getArenaType(fc.getString("typeString"));
+			String typeString = fc.getString("typeString");
+			ArenaType type = arenaTypeHandler.getArenaType(typeString);
 			if (type == null)
 			{
-				logHandler.log(Level.WARNING, "Failed to find ArenaType \"{0}\" for arena " + file.getName());
-				continue;
+				logHandler.log(Level.WARNING, "Failed to find ArenaType \"{0}\" for arena {1}", typeString, file.getName());
+				return;
 			}
 
 			ArenaZone az = type.getArenaZone(file);
 			if (az.isLoaded())
-			{
 				debug("Successfully loaded arena {0}!", az.getName());
-				total++;
-			}
 		}
-
-		logHandler.log("Loaded {0} arenas!", total);
+		catch (Throwable ex)
+		{
+			logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "loading arena " + file.getName()));
+		}
 	}
 
 //	private final void loadConfigs()

@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 /**
@@ -13,32 +14,11 @@ import org.bukkit.block.Block;
 @Getter
 public final class Field3D extends Field
 {
-	protected int maxY;
-	protected int minY;
+	public Field3D() { }
 
 	public Field3D(ArenaLocation point1, ArenaLocation point2)
 	{
-		setParam(point1, point2);
-	}
-
-	public Field3D()
-	{
-		//
-	}
-
-	@Override
-	public void setParam(ArenaLocation point1, ArenaLocation point2)
-	{
-		super.setParam(point1, point2);
-
-		this.maxY = point1.getY();
-		this.minY = point2.getY();
-
-		if (minY > maxY)
-		{
-			this.maxY = point2.getY();
-			this.minY = point1.getY();
-		}
+		super(point1, point2);
 	}
 
 	@Override
@@ -47,7 +27,7 @@ public final class Field3D extends Field
 		if (super.isInside(loc))
 		{
 			int locY = loc.getBlockY();
-			return locY >= minY && locY <= maxY;
+			return locY >= min.getY() && locY <= max.getY();
 		}
 
 		return false;
@@ -55,29 +35,25 @@ public final class Field3D extends Field
 
 	public final Block getBlockAt(int x, int y, int z)
 	{
-		return getWorld().getBlockAt(minX + x, minY + y, minZ + z);
+		return getWorld().getBlockAt(min.getX() + x, min.getY() + y, min.getZ() + z);
 	}
 
 	public final boolean isUnder(Location loc)
 	{
-		if (super.isInside(loc))
-		{
-			return loc.getBlockY() < minY;
-		}
-
-		return false;
+		return super.isInside(loc) && loc.getBlockY() < min.getY();
 	}
 
 	public final void setType(Material mat)
 	{
-		for (int x = minX; x <= maxX; x++)
+		World world = getWorld();
+		for (int x = min.getX(); x <= max.getX(); x++)
 		{
-			for (int y = minY; y <= maxY; y++)
+			for (int y = min.getY(); y <= max.getY(); y++)
 			{
-				for (int z = minZ; z <= maxZ; z++)
+				for (int z = min.getZ(); z <= max.getZ(); z++)
 				{
-					Block b = getWorld().getBlockAt(x, y, z);
-					b.setType(mat);
+					Block block = world.getBlockAt(x, y, z);
+					block.setType(mat);
 				}
 			}
 		}
@@ -85,6 +61,6 @@ public final class Field3D extends Field
 
 	public final int getHeight()
 	{
-		return maxY - minY;
+		return max.getY() - min.getY();
 	}
 }
