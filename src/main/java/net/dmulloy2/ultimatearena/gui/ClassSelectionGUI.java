@@ -57,9 +57,8 @@ public class ClassSelectionGUI extends AbstractGUI
 	}
 
 	@Override
-	public void onInventoryClick(InventoryClickEvent event)
+	public void onInventoryClick(Player player, InventoryClickEvent event)
 	{
-		Player player = (Player) event.getWhoClicked();
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
 		if (ap != null)
 		{
