@@ -1,16 +1,13 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.handlers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
+import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.gui.PlayerSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaSpectator;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,15 +19,10 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 /**
  * @author dmulloy2
@@ -38,9 +30,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class SpectatingHandler implements Listener
 {
-	private List<String> browsingInventory = new ArrayList<String>();
-	private HashMap<Arena, List<ArenaSpectator>> spectating = new HashMap<Arena, List<ArenaSpectator>>();
-
 	private final UltimateArena plugin;
 	public SpectatingHandler(UltimateArena plugin)
 	{
@@ -48,138 +37,54 @@ public class SpectatingHandler implements Listener
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	// ---- Arena Management ---- //
+	// ---- Spectator Management
 
-	public void registerArena(Arena arena)
+	public final boolean isSpectating(Player player)
 	{
-		spectating.put(arena, new ArrayList<ArenaSpectator>());
-	}
-
-	public void unregisterArena(Arena arena)
-	{
-		for (ArenaSpectator spectator : spectating.get(arena))
-		{
-			spectator.endPlayer();
-		}
-
-		spectating.get(arena).clear();
-		spectating.remove(arena);
-	}
-
-	public Arena getArena(Player player)
-	{
-		ArenaSpectator spectator = getSpectator(player);
-		if (spectator != null)
-		{
-			return getArena(spectator);
-		}
-
-		return null;
-	}
-
-	private Arena getArena(ArenaSpectator spectator)
-	{
-		for (Entry<Arena, List<ArenaSpectator>> entry : spectating.entrySet())
-		{
-			if (entry.getValue().contains(spectator))
-				return entry.getKey();
-		}
-
-		return null;
-	}
-
-	// ---- Spectator Management ---- //
-
-	public ArenaSpectator addSpectator(Arena arena, Player player)
-	{
-		ArenaSpectator spectator = new ArenaSpectator(player, arena, plugin);
-		spectator.spawn();
-
-		spectating.get(arena).add(spectator);
-		return spectator;
-	}
-
-	public void removeSpectator(Player player)
-	{
-		ArenaSpectator spectator = getSpectator(player);
-		if (spectator != null)
-		{
-			removeSpectator(spectator);
-		}
-	}
-
-	private void removeSpectator(ArenaSpectator spectator)
-	{
-		spectator.endPlayer();
-		closeInventory(spectator.getPlayer());
-		spectating.get(spectator.getArena()).remove(spectator);
-	}
-
-	public boolean isSpectating(Player player)
-	{
-		ArenaSpectator spectator = getSpectator(player);
-		if (spectator != null)
-		{
-			return spectator.isActive();
-		}
-
-		return false;
+		return getSpectator(player) != null;
 	}
 
 	public ArenaSpectator getSpectator(Player player)
 	{
-		for (List<ArenaSpectator> spectators : spectating.values())
+		if (isSpectating(player))
 		{
-			for (ArenaSpectator spectator : spectators)
+			for (Arena arena : plugin.getActiveArenas())
 			{
-				if (spectator.getName().equals(player.getName()))
-					return spectator;
+				for (ArenaSpectator spectator : arena.getSpectators())
+				{
+					if (spectator.getUniqueId().equals(player.getUniqueId()))
+						return spectator;
+				}
 			}
 		}
 
 		return null;
 	}
 
-	// ---- Inventory ---- //
-
-	public void openInventory(Player p, Arena a)
+	public final ArenaSpectator addSpectator(Arena arena, Player player)
 	{
-		String name = FormatUtil.format("&4&lActive Players");
-		Inventory inventory = plugin.getServer().createInventory(p, 27, name);
+		ArenaSpectator spectator = new ArenaSpectator(player, arena, plugin);
+		spectator.spawn();
 
-		for (ArenaPlayer pl : a.getActivePlayers())
-		{
-			ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-			SkullMeta meta = (SkullMeta) skull.getItemMeta();
-			meta.setOwner(pl.getName());
-			skull.setItemMeta(meta);
-			inventory.addItem(skull);
-		}
-
-		p.openInventory(inventory);
-		browsingInventory.add(p.getName());
+		arena.getSpectators().add(spectator);
+		return spectator;
 	}
 
-	public void closeInventory(Player player)
+	public final void removeSpectator(Player player)
 	{
-		if (isBrowsingInventory(player))
-		{
-			browsingInventory.remove(player.getName());
-			player.closeInventory();
-		}
+		ArenaSpectator spectator = getSpectator(player);
+		if (spectator != null)
+			removeSpectator(spectator);
 	}
 
-	public boolean isBrowsingInventory(ArenaSpectator spectator)
+	private final void removeSpectator(ArenaSpectator spectator)
 	{
-		return browsingInventory.contains(spectator.getName());
+		spectator.endPlayer();
+		spectator.getPlayer().closeInventory();
+		spectator.getArena().getSpectators().remove(spectator);
 	}
 
-	public boolean isBrowsingInventory(Player player)
-	{
-		return browsingInventory.contains(player.getName());
-	}
-
-	// ---- Events ---- //
+	// ---- Events
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event)
@@ -212,72 +117,21 @@ public class SpectatingHandler implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerClickEvent(PlayerInteractEvent event)
+	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
 		if (isSpectating(player))
 		{
-			ArenaSpectator spectator = getSpectator(player);
 			if (player.getItemInHand().getType() == Material.COMPASS)
 			{
-				Arena arena = getArena(spectator);
-				if (arena != null)
-				{
-					event.setCancelled(true);
-					openInventory(player, arena);
-				}
-				else
-				{
-					removeSpectator(spectator);
-				}
+				PlayerSelectionGUI psGUI = new PlayerSelectionGUI(plugin, player);
+				GUIHandler.openGUI(player, psGUI);
 			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInventoryClick(InventoryClickEvent event)
-	{
-		if (event.getWhoClicked() instanceof Player)
-		{
-			Player player = (Player) event.getWhoClicked();
-			if (isBrowsingInventory(player))
-			{
-				ItemStack stack = event.getCurrentItem();
-				if (stack.getType() == Material.SKULL_ITEM)
-				{
-					SkullMeta meta = (SkullMeta) stack.getItemMeta();
-					if (meta.hasOwner())
-					{
-						Player pl = Util.matchPlayer(meta.getOwner());
-						if (pl != null)
-						{
-							if (plugin.isInArena(pl))
-							{
-								event.setCancelled(true);
-								player.teleport(pl);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onInventoryClose(InventoryCloseEvent event)
-	{
-		if (event instanceof Player)
-		{
-			Player player = (Player) event.getPlayer();
-			if (isBrowsingInventory(player))
-			{
-				closeInventory(player);
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onItemPickup(PlayerPickupItemEvent event)
+	public void onPlayerPickupItem(PlayerPickupItemEvent event)
 	{
 		Player player = event.getPlayer();
 		if (isSpectating(player))
@@ -287,7 +141,7 @@ public class SpectatingHandler implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onItemDrop(PlayerDropItemEvent event)
+	public void onPlayerDropItem(PlayerDropItemEvent event)
 	{
 		Player player = event.getPlayer();
 		if (isSpectating(player))
@@ -297,7 +151,7 @@ public class SpectatingHandler implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDamage(EntityDamageByEntityEvent event)
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
 		if (event.getDamager() instanceof Player)
 		{

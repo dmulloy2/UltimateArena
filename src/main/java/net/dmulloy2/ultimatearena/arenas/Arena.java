@@ -23,6 +23,7 @@ import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaSpectator;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
@@ -65,6 +66,7 @@ public abstract class Arena implements Reloadable
 	protected List<ArenaPlayer> active;
 	protected List<ArenaPlayer> inactive;
 	protected List<ArenaPlayer> toReward;
+	protected List<ArenaSpectator> spectators;
 
 	protected List<ArenaFlag> flags;
 	protected List<ArenaLocation> spawns;
@@ -124,6 +126,7 @@ public abstract class Arena implements Reloadable
 
 		this.active = new ArrayList<>();
 		this.inactive = new ArrayList<>();
+		this.spectators = new ArrayList<>();
 
 		this.flags = new ArrayList<>();
 		this.spawns = new ArrayList<>();
@@ -134,8 +137,6 @@ public abstract class Arena implements Reloadable
 		this.inLobby = true;
 
 		this.reload();
-
-		plugin.getSpectatingHandler().registerArena(this);
 	}
 
 	/**
@@ -594,6 +595,11 @@ public abstract class Arena implements Reloadable
 		{
 			ap.sendMessage(string, objects);
 		}
+
+		for (ArenaSpectator as : spectators)
+		{
+			as.sendMessage(string, objects);
+		}
 	}
 
 	/**
@@ -720,7 +726,10 @@ public abstract class Arena implements Reloadable
 			endPlayer(ap, false);
 		}
 
-		plugin.getSpectatingHandler().unregisterArena(this);
+		for (ArenaSpectator as : spectators)
+		{
+			as.endPlayer();
+		}
 
 		clearEntities();
 		conclude(120L);

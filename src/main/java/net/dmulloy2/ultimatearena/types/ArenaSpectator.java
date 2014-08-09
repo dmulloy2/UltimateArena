@@ -1,12 +1,12 @@
 package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,6 +28,7 @@ public final class ArenaSpectator
 
 	private Arena arena;
 	private String name;
+	private String uniqueId;
 	private PlayerData playerData;
 
 	private final Player player;
@@ -37,17 +38,19 @@ public final class ArenaSpectator
 	/**
 	 * Creates a new ArenaSpectator instance
 	 *
-	 * @param player
-	 *        - Base {@link Player} to create the ArenaSpectator around
-	 * @param arena
-	 *        - {@link Arena} the player is in
-	 * @param plugin
-	 *        - {@link UltimateArena} plugin instance
+	 * @param player Base {@link Player} to create the ArenaSpectator around
+	 * @param arena {@link Arena} the player is in
+	 * @param plugin {@link UltimateArena} plugin instance
 	 */
-	public ArenaSpectator(@NonNull Player player, @NonNull Arena arena, @NonNull UltimateArena plugin)
+	public ArenaSpectator(Player player, Arena arena, UltimateArena plugin)
 	{
+		Validate.notNull(player, "player cannot be null!");
+		Validate.notNull(arena, "arena cannot be null!");
+		Validate.notNull(plugin, "plugin cannot be null!");
+
 		this.player = player;
 		this.name = player.getName();
+		this.uniqueId = player.getUniqueId().toString();
 		this.spawnBack = player.getLocation();
 
 		this.arena = arena;
@@ -149,8 +152,7 @@ public final class ArenaSpectator
 	 * Teleports the player to a given location. Will attempt to teleport the
 	 * player to the center of the block.
 	 *
-	 * @param location
-	 *        - {@link Location} to teleport the player to
+	 * @param location {@link Location} to teleport the player to
 	 */
 	public final void teleport(Location location)
 	{
