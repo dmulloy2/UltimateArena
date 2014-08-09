@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
 
 import org.bukkit.ChatColor;
@@ -9,18 +12,18 @@ import org.bukkit.ChatColor;
 public class TeamHelper
 {
 	/**
-	 * @param team
-	 *            - Team Number
-	 * @return Team name and color
+	 * Gets a team's name and color.
+	 *
+	 * @param team Team Number
+	 * @return The team's name and color
 	 */
 	public static String getTeam(int team)
 	{
 		if (team == 1)
 			return ChatColor.RED + "Red";
-
-		if (team == 2)
+		else if (team == 2)
 			return ChatColor.BLUE + "Blue";
-
-		return ChatColor.GRAY + "No";
+		else
+			return ChatColor.GRAY + "N/A";
 	}
 }

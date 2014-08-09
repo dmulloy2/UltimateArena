@@ -1,6 +1,8 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
 
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.util.FormatUtil;
@@ -25,6 +27,10 @@ public abstract class ArenaCreator
 
 	public ArenaCreator(Player player, String name, ArenaType type)
 	{
+		Validate.notNull(player, "player cannot be null!");
+		Validate.notNull(name, "name cannot be null!");
+		Validate.notNull(type, "type cannot be null!");
+
 		this.player = player;
 		this.name = name;
 		this.type = type;
@@ -34,7 +40,7 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * Starts the creation of the arena
+	 * Starts the creation of the arena.
 	 */
 	public final void start()
 	{
@@ -45,10 +51,9 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * Initializes the arena
+	 * Initializes the arena.
 	 *
-	 * @throws IllegalStateException
-	 *         If the arena is already initialized
+	 * @throws IllegalStateException if the arena is already initialized
 	 */
 	public final void initializeArena()
 	{
@@ -76,13 +81,12 @@ public abstract class ArenaCreator
 	 * needed in that particular step. We will increment the step if no errors
 	 * occur
 	 *
-	 * @param args
-	 *        - Command line arguments, only necessary in a few steps
+	 * @param args Command line arguments, only necessary in a few steps
 	 */
 	public abstract void setPoint(String[] args);
 
 	/**
-	 * Moves the creator to the next step in the creation process
+	 * Moves the creator to the next step in the creation process.
 	 */
 	public final void stepUp()
 	{
@@ -97,12 +101,12 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * Gives the player instructions for the next step in the creation process
+	 * Gives the player instructions for the next step in the creation process.
 	 */
 	public abstract void stepInfo();
 
 	/**
-	 * Undo the last step in the creation process
+	 * Undoes the last step in the creation process.
 	 */
 	public final void undo()
 	{
@@ -117,7 +121,7 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * Completes the Arena Creation process
+	 * Completes the creation process.
 	 */
 	public final void complete()
 	{
@@ -146,12 +150,14 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * Sets the number of steps in this
+	 * Sets the number of steps in the creation process.
 	 */
 	public abstract void setSteps();
 
 	/**
-	 * @return The name of the arena being created
+	 * Gets the name of the arena being created.
+	 *
+	 * @return The arena name
 	 */
 	public final String getArenaName()
 	{
@@ -159,7 +165,9 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * @return The player creating the arena
+	 * Gets the player creating the arena.
+	 *
+	 * @return Player creating the arena
 	 */
 	public final Player getPlayer()
 	{
@@ -167,12 +175,10 @@ public abstract class ArenaCreator
 	}
 
 	/**
-	 * Sends the creator a message
+	 * Sends the creator a message.
 	 *
-	 * @param string
-	 *        - Base message
-	 * @param objects
-	 *        - Objects to format in
+	 * @param string Base message
+	 * @param objects Objects to format in
 	 */
 	protected final void sendMessage(String string, Object... objects)
 	{
@@ -185,7 +191,7 @@ public abstract class ArenaCreator
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(@NonNull Object obj)
+	public boolean equals(Object obj)
 	{
 		if (obj instanceof ArenaCreator)
 		{

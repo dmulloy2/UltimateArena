@@ -7,6 +7,7 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,6 +27,10 @@ public abstract class FlagBase
 
 	public FlagBase(Arena arena, ArenaLocation location, UltimateArena plugin)
 	{
+		Validate.notNull(arena, "arena cannot be null!");
+		Validate.notNull(location, "location cannot be null!");
+		Validate.notNull(plugin, "plugin cannot be null!");
+
 		this.arena = arena;
 		this.location = location.getLocation().clone().subtract(0.0D, 1.0D, 0.0D);
 		this.plugin = plugin;

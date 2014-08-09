@@ -1,9 +1,13 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
 import lombok.NonNull;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -37,25 +41,32 @@ public final class KillStreak
 	private ItemStack item;
 
 	// Base constructor
-	private KillStreak(int kills, @NonNull String message, @NonNull Type type)
+	private KillStreak(int kills, String message, Type type)
 	{
+		Validate.notNull(message, "message cannot be null!");
+		Validate.notNull(type, "type cannot be null!");
+
 		this.kills = kills;
 		this.message = message;
 		this.type = type;
 	}
 
 	// Mob Constructor
-	public KillStreak(int kills, @NonNull String message, @NonNull EntityType mobType, int mobAmount)
+	public KillStreak(int kills, String message, @NonNull EntityType mobType, int mobAmount)
 	{
 		this(kills, message, Type.MOB);
+
+		Validate.notNull(mobType, "mobType cannot be null!");
 		this.mobType = mobType;
 		this.mobAmount = mobAmount;
 	}
 
 	// Item Constructor
-	public KillStreak(int kills, @NonNull String message, @NonNull ItemStack item)
+	public KillStreak(int kills, String message, ItemStack item)
 	{
 		this(kills, message, Type.ITEM);
+
+		Validate.notNull(item, "item cannot be null!");
 		this.item = item;
 	}
 

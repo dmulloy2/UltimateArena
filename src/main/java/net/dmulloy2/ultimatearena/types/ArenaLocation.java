@@ -7,9 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.Setter;
 import net.dmulloy2.types.SimpleVector;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -26,7 +27,7 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-@Getter
+@Getter @Setter
 @SerializableAs("net.dmulloy2.ArenaLocation")
 public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 {
@@ -37,8 +38,9 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 	private transient Location location;
 	private transient SimpleVector simpleVector;
 
-	public ArenaLocation(@NonNull String worldName, int x, int y, int z)
+	public ArenaLocation(String worldName, int x, int y, int z)
 	{
+		Validate.notNull(worldName, "worldName cannot be null!");
 		this.worldName = worldName;
 		this.x = x;
 		this.y = y;
@@ -70,8 +72,9 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		this(player.getLocation());
 	}
 
-	public ArenaLocation(@NonNull Map<String, Object> args)
+	public ArenaLocation(Map<String, Object> args)
 	{
+		Validate.notNull(args, "args cannot be null!");
 		this.worldName = (String) args.get("worldName");
 		this.x = (int) args.get("x");
 		this.y = (int) args.get("y");
@@ -169,16 +172,18 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(@NonNull Object o)
+	public boolean equals(Object obj)
 	{
-		if (! (o instanceof ArenaLocation))
-			return false;
+		if (obj instanceof ArenaLocation)
+		{
+			ArenaLocation that = (ArenaLocation) obj;
+			if (x != that.x || y != that.y || z != that.z)
+				return false;
 
-		ArenaLocation that = (ArenaLocation) o;
-		if (x != that.x || y != that.y || z != that.z)
-			return false;
+			return worldName.equals(that.worldName);
+		}
 
-		return worldName.equals(that.worldName);
+		return false;
 	}
 
 	/**

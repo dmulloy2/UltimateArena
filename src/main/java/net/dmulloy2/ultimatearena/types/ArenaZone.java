@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
@@ -11,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.io.FileSerialization;
 import net.dmulloy2.types.Reloadable;
@@ -119,9 +121,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	/**
-	 * Initializes this arena
+	 * Initializes this arena.
 	 *
-	 * @return Whether or not the initialization was successful
+	 * @return True if initialization was successful, false if not
 	 */
 	public final boolean initialize()
 	{
@@ -162,7 +164,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	// ---- Getters and Setters
 
 	/**
-	 * @return The {@link World} this arena is in
+	 * Gets the {@link World} this arena is in.
+	 *
+	 * @return The world
 	 */
 	public final World getWorld()
 	{
@@ -187,6 +191,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	/**
+	 * Gets this arena's type.
+	 *
 	 * @return This arena's type
 	 */
 	public final ArenaType getType()
@@ -195,7 +201,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	/**
-	 * @return Arena statistics
+	 * Gets this arena's statistics.
+	 *
+	 * @return This arena's statistics
 	 */
 	public final List<String> getStats()
 	{
@@ -266,17 +274,21 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	private transient boolean insideStackPrinted;
 
 	/**
-	 * Whether or not a player has voted
+	 * Gets whether or not a player has voted
 	 *
 	 * @param player {@link Player} voting
+	 * @return True if they have voted, false if not
 	 */
 	public final boolean hasVoted(Player player)
 	{
+		Validate.notNull(player, "player cannot be null!");
 		return voted.contains(player.getName());
 	}
 
 	/**
-	 * @return Whether or not this Arena is active
+	 * Gets whether or not this arena is active.
+	 *
+	 * @return True if the arena is active, false if not
 	 */
 	public final boolean isActive()
 	{
@@ -284,12 +296,13 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	/**
-	 * Gives a player rewards (if enabled)
+	 * Gives a player defined rewards.
 	 *
 	 * @param ap {@link ArenaPlayer} to give rewards to
 	 */
 	public void giveRewards(ArenaPlayer ap)
 	{
+		Validate.notNull(ap, "ap cannot be null!");
 		if (! config.isGiveRewards())
 			return;
 
@@ -602,7 +615,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(@NonNull Object obj)
+	public boolean equals(Object obj)
 	{
 		if (obj instanceof ArenaZone)
 		{

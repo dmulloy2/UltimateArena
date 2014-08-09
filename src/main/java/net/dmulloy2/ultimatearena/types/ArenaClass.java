@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import lombok.NonNull;
 import net.dmulloy2.types.EnchantmentType;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
@@ -66,8 +65,11 @@ public final class ArenaClass implements Reloadable
 
 	private transient final UltimateArena plugin;
 
-	public ArenaClass(@NonNull UltimateArena plugin, @NonNull File file)
+	public ArenaClass(UltimateArena plugin, File file)
 	{
+		Validate.notNull(plugin, "plugin cannot be null!");
+		Validate.notNull(file, "file cannot be null!");
+
 		this.plugin = plugin;
 		this.file = file;
 		this.name = FormatUtil.trimFileExtension(file, ".yml");
@@ -83,7 +85,7 @@ public final class ArenaClass implements Reloadable
 	 */
 	public final boolean load()
 	{
-		Validate.isTrue(! loaded, "Class has already been loaded!");
+		Validate.isTrue(! loaded, "This class has already been loaded!");
 
 		// Initialize variables
 		this.armor = new HashMap<>();
@@ -308,6 +310,7 @@ public final class ArenaClass implements Reloadable
 
 	public final boolean checkPermission(Player player)
 	{
+		Validate.notNull(player, "player cannot be null!");
 		return ! needsPermission || plugin.getPermissionHandler().hasPermission(player, permissionNode);
 	}
 

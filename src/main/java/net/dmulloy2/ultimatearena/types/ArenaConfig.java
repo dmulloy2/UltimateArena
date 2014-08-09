@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -55,8 +54,12 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 	protected transient final UltimateArena plugin;
 
-	public ArenaConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
+	public ArenaConfig(UltimateArena plugin, String type, File file)
 	{
+		Validate.notNull(plugin, "plugin cannot be null!");
+		Validate.notNull(type, "type cannot be null!");
+		Validate.notNull(file, "file cannot be null!");
+
 		this.type = type;
 		this.file = file;
 		this.plugin = plugin;
@@ -68,8 +71,10 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 		this.loaded = load();
 	}
 
-	public ArenaConfig(@NonNull ArenaZone az)
+	public ArenaConfig(ArenaZone az)
 	{
+		Validate.notNull(az, "az cannot be null!");
+
 		this.type = az.getName() + " - Config";
 		this.plugin = az.getPlugin();
 		this.file = az.getFile();
@@ -106,9 +111,11 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	 * @param def Parent config
 	 * @return True if loading was successful, false if not
 	 */
-	public final boolean load(@NonNull File file, @NonNull ArenaConfig def)
+	public final boolean load(File file, ArenaConfig def)
 	{
-		Validate.isTrue(! loaded, "Config has already been loaded!");
+		Validate.isTrue(! loaded, "This config has already been loaded!");
+		Validate.notNull(file, "file cannot be null!");
+		Validate.notNull(def, "def cannot be null!");
 
 		try
 		{
@@ -284,7 +291,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	 *
 	 * @param file File to save to
 	 */
-	public final void save(@NonNull File file)
+	public final void save(File file)
 	{
 		try
 		{

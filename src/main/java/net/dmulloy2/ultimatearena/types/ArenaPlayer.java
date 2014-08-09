@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
 
 import java.util.Map.Entry;
@@ -428,7 +431,7 @@ public final class ArenaPlayer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(@NonNull Object obj)
+	public boolean equals(Object obj)
 	{
 		if (obj instanceof ArenaPlayer)
 		{
