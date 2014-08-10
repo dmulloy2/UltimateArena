@@ -63,7 +63,7 @@ public class PlayerSelectionGUI extends AbstractGUI
 	}
 
 	@Override
-	public void onInventoryClick(Player player, InventoryClickEvent event)
+	public void onInventoryClick(InventoryClickEvent event)
 	{
 		ArenaSpectator spectator = plugin.getSpectatingHandler().getSpectator(player);
 		if (spectator != null)
