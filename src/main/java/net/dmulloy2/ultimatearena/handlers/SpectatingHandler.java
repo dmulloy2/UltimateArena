@@ -31,11 +31,11 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class SpectatingHandler implements Listener
 {
+	private boolean registered;
 	private final UltimateArena plugin;
 	public SpectatingHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	// ---- Spectator Management
@@ -61,6 +61,13 @@ public class SpectatingHandler implements Listener
 
 	public final ArenaSpectator addSpectator(Arena arena, Player player)
 	{
+		// Lazy register
+		if (! registered)
+		{
+			plugin.getServer().getPluginManager().registerEvents(this, plugin);
+			registered = true;
+		}
+
 		ArenaSpectator spectator = new ArenaSpectator(player, arena, plugin);
 		spectator.spawn();
 
