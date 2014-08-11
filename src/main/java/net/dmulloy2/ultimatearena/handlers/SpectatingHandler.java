@@ -11,6 +11,7 @@ import net.dmulloy2.ultimatearena.types.ArenaSpectator;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -46,15 +47,12 @@ public class SpectatingHandler implements Listener
 
 	public ArenaSpectator getSpectator(Player player)
 	{
-		if (isSpectating(player))
+		for (Arena arena : plugin.getActiveArenas())
 		{
-			for (Arena arena : plugin.getActiveArenas())
+			for (ArenaSpectator spectator : arena.getSpectators())
 			{
-				for (ArenaSpectator spectator : arena.getSpectators())
-				{
-					if (spectator.getUniqueId().equals(player.getUniqueId()))
-						return spectator;
-				}
+				if (spectator.getUniqueId().equals(player.getUniqueId()))
+					return spectator;
 			}
 		}
 
@@ -126,6 +124,7 @@ public class SpectatingHandler implements Listener
 			{
 				PlayerSelectionGUI psGUI = new PlayerSelectionGUI(plugin, player);
 				GUIHandler.openGUI(player, psGUI);
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -166,9 +165,20 @@ public class SpectatingHandler implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
+		Player player = null;
 		if (event.getEntity() instanceof Player)
 		{
-			Player player = (Player) event.getEntity();
+			player = (Player) event.getEntity();
+		}
+		else if (event.getEntity() instanceof Projectile)
+		{
+			Projectile proj = (Projectile) event.getEntity();
+			if (proj.getShooter() instanceof Player)
+				player = (Player) proj.getShooter();
+		}
+
+		if (player != null)
+		{
 			if (isSpectating(player))
 			{
 				event.setCancelled(true);
