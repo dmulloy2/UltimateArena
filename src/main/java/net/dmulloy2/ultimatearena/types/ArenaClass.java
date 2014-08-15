@@ -190,10 +190,12 @@ public final class ArenaClass implements Reloadable
 				changes = true;
 			}
 
-			hasPotionEffects = ! fc.getString("potionEffects").isEmpty();
-			if (hasPotionEffects)
+			if (fc.isSet("potionEffects"))
 			{
-				potionEffects = readPotionEffects(fc.getString("potionEffects"));
+				String effects = fc.getString("potionEffects");
+				hasPotionEffects = ! effects.isEmpty();
+				if (hasPotionEffects)
+					potionEffects = readPotionEffects(effects);
 			}
 
 			useHelmet = fc.getBoolean("useHelmet", true);
