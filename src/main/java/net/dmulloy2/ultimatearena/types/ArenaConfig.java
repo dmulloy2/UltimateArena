@@ -39,8 +39,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	protected int gameTime, lobbyTime, maxDeaths;
 	protected double cashReward;
 
-	protected boolean allowTeamKilling, countMobKills, canModifyWorld = false;
-	protected boolean unlimitedAmmo, rewardBasedOnXp, giveRewards = true;
+	protected boolean allowTeamKilling, countMobKills, canModifyWorld;
+	protected boolean unlimitedAmmo = true, rewardBasedOnXp = true, giveRewards = true;
 
 	protected List<String> blacklistedClasses, whitelistedClasses;
 
