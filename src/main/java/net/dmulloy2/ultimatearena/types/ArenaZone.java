@@ -378,7 +378,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			try
 			{
-				for (java.lang.reflect.Field field : getClass().getDeclaredFields())
+				for (java.lang.reflect.Field field : ArenaZone.class.getDeclaredFields())
 				{
 					if (field.getName().equalsIgnoreCase(entry.getKey()))
 					{
@@ -534,7 +534,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		Map<String, Object> data = new LinkedHashMap<>();
 
-		for (java.lang.reflect.Field field : getClass().getDeclaredFields())
+		for (java.lang.reflect.Field field : ArenaZone.class.getDeclaredFields())
 		{
 			if (Modifier.isTransient(field.getModifiers()))
 				continue;
