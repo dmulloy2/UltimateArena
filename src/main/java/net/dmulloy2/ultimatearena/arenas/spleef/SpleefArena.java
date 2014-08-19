@@ -104,8 +104,8 @@ public class SpleefArena extends FFAArena
 		Block block = spleefGround.getBlockAt(x, y, z);
 		while (block.getType() != specialType)
 		{
-			block = spleefGround.getBlockAt(x++, y, z++);
-			if (tries++ > MAX_TRIES)
+			block = spleefGround.getBlockAt(++x, y, ++z);
+			if (++tries >= MAX_TRIES)
 			{
 				// Drop them at a random location
 				x = Util.random(spleefGround.getWidth() - 1);
