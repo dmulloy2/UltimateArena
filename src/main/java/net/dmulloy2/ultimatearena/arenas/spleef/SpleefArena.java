@@ -3,14 +3,13 @@
  */
 package net.dmulloy2.ultimatearena.arenas.spleef;
 
-import java.util.Random;
-
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.arenas.ffa.FFAArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,9 +59,7 @@ public class SpleefArena extends FFAArena
 				if (startingAmount > 1)
 				{
 					if (active.size() > 0)
-					{
 						this.winner = active.get(0);
-					}
 				}
 
 				stop();
@@ -87,39 +84,38 @@ public class SpleefArena extends FFAArena
 					if (ap.getPlayer().getHealth() > 0.0D)
 					{
 						if (outZone.isUnder(loc))
-						{
 							ap.getPlayer().setHealth(0.0D);
-						}
 					}
 				}
 			}
 		}
 	}
 
+	// Completely arbitrary number
+	private static final int MAX_TRIES = 10;
+
 	private final Location getBlockInSpleefArena(int repeat)
 	{
-		Random rand = new Random();
-		Location ret = null;
+		int x = Util.random(spleefGround.getWidth() - 1);
+		int y = spleefGround.getMax().getY();
+		int z = Util.random(spleefGround.getLength() - 1);
 
-		int checkx = rand.nextInt(spleefGround.getWidth() - 1);
-		int checkz = rand.nextInt(spleefGround.getLength() - 1);
-
-		Block b = spleefGround.getBlockAt(checkx + 1, 0, checkz + 1);
-
-		Material mat = b.getType();
-		if (mat == specialType)
+		int tries = 0;
+		Block block = spleefGround.getBlockAt(x, y, z);
+		while (block.getType() != specialType)
 		{
-			ret = b.getLocation();
-		}
-		else
-		{
-			if (repeat < (spleefGround.getWidth() * spleefGround.getHeight()) / 2)
+			block = spleefGround.getBlockAt(x++, y, z++);
+			if (tries++ > MAX_TRIES)
 			{
-				ret = getBlockInSpleefArena(repeat + 1);
+				// Drop them at a random location
+				x = Util.random(spleefGround.getWidth() - 1);
+				z = Util.random(spleefGround.getLength() - 1);
+				block = spleefGround.getBlockAt(x, y, z);
+				break;
 			}
 		}
 
-		return ret;
+		return block.getLocation();
 	}
 
 	@Override
@@ -132,9 +128,7 @@ public class SpleefArena extends FFAArena
 	public Location getSpawn(ArenaPlayer ap)
 	{
 		if (isInLobby())
-		{
 			return super.getSpawn(ap);
-		}
 
 		return getBlockInSpleefArena(0);
 	}
