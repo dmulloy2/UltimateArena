@@ -94,7 +94,7 @@ public class SpleefArena extends FFAArena
 	// Completely arbitrary number
 	private static final int MAX_TRIES = 10;
 
-	private final Location getBlockInSpleefArena(int repeat)
+	private final Location getBlockInSpleefArena()
 	{
 		int x = Util.random(spleefGround.getWidth() - 1);
 		int y = spleefGround.getMax().getY();
@@ -106,14 +106,12 @@ public class SpleefArena extends FFAArena
 		{
 			block = spleefGround.getBlockAt(++x, y, ++z);
 			if (++tries >= MAX_TRIES)
-			{
-				// Drop them at a random location
-				x = Util.random(spleefGround.getWidth() - 1);
-				z = Util.random(spleefGround.getLength() - 1);
-				block = spleefGround.getBlockAt(x, y, z);
 				break;
-			}
 		}
+
+		// Ensure they spawn on the ground
+		if (block.getType() != specialType)
+			block.setType(specialType);
 
 		return block.getLocation();
 	}
@@ -130,7 +128,7 @@ public class SpleefArena extends FFAArena
 		if (isInLobby())
 			return super.getSpawn(ap);
 
-		return getBlockInSpleefArena(0);
+		return getBlockInSpleefArena();
 	}
 
 	@Override
