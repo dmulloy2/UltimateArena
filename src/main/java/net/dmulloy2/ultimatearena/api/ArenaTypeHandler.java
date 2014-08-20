@@ -163,6 +163,9 @@ public class ArenaTypeHandler implements Reloadable
 		try
 		{
 			ArenaType type = loader.loadArenaType(file);
+			if (arenaTypes.containsKey(type.getName()))
+				throw new IllegalArgumentException("name '" + type.getName() + "' is already taken!");
+
 			type.onLoad();
 
 			type.loadConfig();

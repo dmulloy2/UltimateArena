@@ -240,7 +240,6 @@ public abstract class ArenaType
 	 *        plugin's .jar file. (No preceding slash).
 	 * @param replace if true, the embedded resource will overwrite the contents
 	 *        of an existing file.
-	 * @throws NullPointerException if resourcePath is null
 	 * @throws IllegalArgumentException if the resource path is empty or
 	 *         points to a nonexistent resource.
 	 */
@@ -313,7 +312,6 @@ public abstract class ArenaType
 	 *
 	 * @param filename Filename of the resource
 	 * @return File, or null if it cannot be found
-	 * @throws NullPointerException if fileName is null
 	 */
 	protected final InputStream getResource(String fileName)
 	{
@@ -334,7 +332,7 @@ public abstract class ArenaType
 	 * Registers a {@link Listener} via UltimateArena
 	 *
 	 * @param listener {@link Listener} to register
-	 * @throws NullPointerException if listener is null
+	 * @throws IllegalArgumentException if listener is null
 	 */
 	protected final void registerListener(Listener listener)
 	{
