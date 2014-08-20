@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import lombok.NonNull;
 import net.dmulloy2.SwornAPI;
 import net.dmulloy2.SwornPlugin;
 import net.dmulloy2.commands.CmdHelp;
@@ -1068,12 +1067,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 *
 	 * @param command Command to check
 	 * @return True if the command is whitelisted, false if not
-	 * @throws NullPointerException if command is null
+	 * @throws IllegalException if command is null
 	 */
-	public final boolean isWhitelistedCommand(@NonNull String command)
+	public final boolean isWhitelistedCommand(String command)
 	{
 		if (! getConfig().getBoolean("restrictCommands", true))
 			return true;
+
+		Validate.notNull(command, "command cannot be null!");
 
 		// Lazy-load whitelistedCommands
 		if (whitelistedCommands == null)

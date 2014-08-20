@@ -48,7 +48,7 @@ public class Field
 		World world = loc.getWorld();
 		int locX = loc.getBlockX();
 		int locZ = loc.getBlockZ();
-		if (getWorld().getUID() == world.getUID())
+		if (getWorld().getUID().equals(world.getUID()))
 		{
 			if (locX >= min.getX() && locX <= max.getX())
 				return locZ >= min.getZ() && locZ <= max.getZ();

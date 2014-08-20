@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -75,7 +74,7 @@ public final class ArenaPlayer
 	 * @param plugin {@link UltimateArena} plugin instance
 	 * @throws NullPointerException if any of the arguments are null
 	 */
-	public ArenaPlayer(@NonNull Player player, @NonNull Arena arena, @NonNull UltimateArena plugin)
+	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
 		this.player = player;
 		this.name = player.getName();
@@ -124,7 +123,7 @@ public final class ArenaPlayer
 	 * @param stack {@link ItemStack} to give the player
 	 * @throws NullPointerException if stack is null
 	 */
-	public final void giveItem(@NonNull ItemStack stack)
+	public final void giveItem(ItemStack stack)
 	{
 		InventoryUtil.giveItem(player, stack);
 	}
@@ -134,10 +133,13 @@ public final class ArenaPlayer
 	 *
 	 * @param slot Armor slot (helmet, chestplate, etc.)
 	 * @param stack {@link ItemStack} to give as armor
-	 * @throws NullPointerException if stack is null
+	 * @throws IllegalArgumentException if slot or stack is null
 	 */
-	public final void giveArmor(String slot, @NonNull ItemStack stack)
+	public final void giveArmor(String slot, ItemStack stack)
 	{
+		Validate.notNull(slot, "slot cannot be null!");
+		Validate.notNull(stack, "stack cannot be null!");
+
 		switch (slot.toLowerCase())
 		{
 			case "helmet":
@@ -194,14 +196,16 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Sets a player's class.
+	 * Sets the player's class.
 	 *
 	 * @param ac {@link ArenaClass} to set the player's class to
 	 * @return True if the operation was successful, false if not
-	 * @throws NullPointerException if ac is null
+	 * @throws IllegalArgumentException if ac is null
 	 */
-	public final boolean setClass(@NonNull ArenaClass ac)
+	public final boolean setClass(ArenaClass ac)
 	{
+		Validate.notNull(ac, "ac cannot be null!");
+
 		if (arena.isValidClass(ac))
 		{
 			this.arenaClass = ac;
@@ -274,9 +278,8 @@ public final class ArenaPlayer
 	 *
 	 * @param string Base message
 	 * @param objects Objects to format in
-	 * @throws NullPointerException if string is null
 	 */
-	public final void sendMessage(@NonNull String string, Object... objects)
+	public final void sendMessage(String string, Object... objects)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
@@ -302,7 +305,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gets a player's Kill-Death ratio.
+	 * Gets the player's Kill-Death ratio.
 	 *
 	 * @return Their KDR
 	 */
@@ -345,9 +348,8 @@ public final class ArenaPlayer
 	 * Makes the player leave their {@link Arena}.
 	 *
 	 * @param reason Reason the player is leaving
-	 * @throws NullPointerException if reason is null
 	 */
-	public final void leaveArena(@NonNull LeaveReason reason)
+	public final void leaveArena(LeaveReason reason)
 	{
 		switch (reason)
 		{
@@ -384,10 +386,11 @@ public final class ArenaPlayer
 	 * teleport the player to the center of the block.
 	 *
 	 * @param location {@link Location} to teleport the player to
-	 * @throws NullPointerException if location is null
+	 * @throws IllegalArgumentException if location is null
 	 */
-	public final void teleport(@NonNull Location location)
+	public final void teleport(Location location)
 	{
+		Validate.notNull(location, "location cannot be null!");
 		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
@@ -396,10 +399,11 @@ public final class ArenaPlayer
 	 * teleport the player to the center of the block.
 	 *
 	 * @param location {@link ArenaLocation} to teleport the player to
-	 * @throws NullPointerException if location is null
+	 * @throws IllegalArgumentException if location is null
 	 */
-	public final void teleport(@NonNull ArenaLocation location)
+	public final void teleport(ArenaLocation location)
 	{
+		Validate.notNull(location, "location cannot be null!");
 		teleport(location.getLocation());
 	}
 

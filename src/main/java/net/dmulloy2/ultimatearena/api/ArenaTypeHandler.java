@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.api;
 
 import java.io.File;
@@ -6,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import lombok.NonNull;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.bomb.BombType;
@@ -41,7 +43,7 @@ public class ArenaTypeHandler implements Reloadable
 		this.loadArenaTypes();
 	}
 
-	public final ArenaType getArenaType(@NonNull String name)
+	public final ArenaType getArenaType(String name)
 	{
 		Validate.notEmpty(name, "Name cannot be empty!");
 

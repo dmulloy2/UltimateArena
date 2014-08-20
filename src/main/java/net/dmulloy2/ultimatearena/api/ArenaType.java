@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.api;
 
 import java.io.File;
@@ -10,7 +13,6 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
@@ -242,7 +244,7 @@ public abstract class ArenaType
 	 * @throws IllegalArgumentException if the resource path is empty or
 	 *         points to a nonexistent resource.
 	 */
-	protected final void saveResource(@NonNull String resourcePath, boolean replace)
+	protected final void saveResource(String resourcePath, boolean replace)
 	{
 		Validate.notEmpty(resourcePath, "resourcePath cannot be empty!");
 
@@ -283,7 +285,7 @@ public abstract class ArenaType
 		}
 	}
 
-	private final void saveResource(@NonNull InputStream in, @NonNull File outFile)
+	private final void saveResource(InputStream in, File outFile)
 	{
 		try
 		{
@@ -313,7 +315,7 @@ public abstract class ArenaType
 	 * @return File, or null if it cannot be found
 	 * @throws NullPointerException if fileName is null
 	 */
-	protected final InputStream getResource(@NonNull String fileName)
+	protected final InputStream getResource(String fileName)
 	{
 		try
 		{
@@ -334,8 +336,9 @@ public abstract class ArenaType
 	 * @param listener {@link Listener} to register
 	 * @throws NullPointerException if listener is null
 	 */
-	protected final void registerListener(@NonNull Listener listener)
+	protected final void registerListener(Listener listener)
 	{
+		Validate.notNull(listener, "listener cannot be null!");
 		plugin.getServer().getPluginManager().registerEvents(listener, plugin);
 	}
 
@@ -345,7 +348,7 @@ public abstract class ArenaType
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(@NonNull Object obj)
+	public boolean equals(Object obj)
 	{
 		if (obj instanceof ArenaType)
 		{

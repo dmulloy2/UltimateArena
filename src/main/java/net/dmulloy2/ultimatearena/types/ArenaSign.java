@@ -1,14 +1,17 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -37,8 +40,12 @@ public final class ArenaSign implements ConfigurationSerializable
 	 * @param zone {@link ArenaZone} that the sign is for
 	 * @param id The sign's ID
 	 */
-	public ArenaSign(@NonNull UltimateArena plugin, @NonNull Location loc, @NonNull ArenaZone az, int id)
+	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone az, int id)
 	{
+		Validate.notNull(plugin, "plugin cannot be null!");
+		Validate.notNull(loc, "loc cannot be null!");
+		Validate.notNull(az, "az cannot be null!");
+
 		this.id = id;
 		this.arenaName = az.getName();
 		this.loc = new ArenaLocation(loc);
@@ -51,8 +58,11 @@ public final class ArenaSign implements ConfigurationSerializable
 	/**
 	 * Constructs an ArenaSign from configuration
 	 */
-	public ArenaSign(@NonNull UltimateArena plugin, @NonNull Map<String, Object> args)
+	public ArenaSign(UltimateArena plugin, Map<String, Object> args)
 	{
+		Validate.notNull(plugin, "plugin cannot be null!");
+		Validate.notNull(args, "args cannot be null!");
+
 		this.id = (int) args.get("id");
 		this.arenaName = (String) args.get("arenaName");
 		this.loc = (ArenaLocation) args.get("loc");
@@ -163,7 +173,6 @@ public final class ArenaSign implements ConfigurationSerializable
 					break;
 				default:
 					break;
-
 			}
 		}
 		else
@@ -261,7 +270,7 @@ public final class ArenaSign implements ConfigurationSerializable
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new LinkedHashMap<>();
 
 		data.put("id", id);
 		data.put("arenaName", arenaName);

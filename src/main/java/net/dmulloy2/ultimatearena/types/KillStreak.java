@@ -4,7 +4,6 @@
 package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
 import org.apache.commons.lang.Validate;
@@ -52,7 +51,7 @@ public final class KillStreak
 	}
 
 	// Mob Constructor
-	public KillStreak(int kills, String message, @NonNull EntityType mobType, int mobAmount)
+	public KillStreak(int kills, String message, EntityType mobType, int mobAmount)
 	{
 		this(kills, message, Type.MOB);
 
