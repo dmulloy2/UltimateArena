@@ -33,6 +33,7 @@ import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.handlers.CommandHandler;
 import net.dmulloy2.handlers.LogHandler;
 import net.dmulloy2.handlers.PermissionHandler;
+import net.dmulloy2.handlers.ResourceHandler;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.types.SimpleVector;
 import net.dmulloy2.types.StringJoiner;
@@ -111,6 +112,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	// Handlers
 	private @Getter SpectatingHandler spectatingHandler;
 	private @Getter ArenaTypeHandler arenaTypeHandler;
+	private @Getter ResourceHandler resourceHandler;
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
 
@@ -154,20 +156,22 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Register LogHandler
 		logHandler = new LogHandler(this);
 
-		// I / O
+		// I/O
 		checkFiles();
 
 		// Configuration
 		saveDefaultConfig();
 		reloadConfig();
 
-		// Register other handlers
+		// Register generic handlers
 		permissionHandler = new PermissionHandler(this);
-		spectatingHandler = new SpectatingHandler(this);
+		resourceHandler = new ResourceHandler(this);
 		commandHandler = new CommandHandler(this);
-		fileHandler = new FileHandler(this);
 
+		// Register UA handlers
+		spectatingHandler = new SpectatingHandler(this);
 		arenaTypeHandler = new ArenaTypeHandler(this);
+		fileHandler = new FileHandler(this);
 
 		// Integration
 		essentialsHandler = new EssentialsHandler(this);
@@ -322,6 +326,11 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Load any new classes
 		loadClasses();
+	}
+
+	public String getMessage(String key)
+	{
+		return resourceHandler.getMessage(key);
 	}
 
 	private final void checkFiles()
