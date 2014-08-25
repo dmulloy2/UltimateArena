@@ -21,15 +21,16 @@ public abstract class UltimateArenaCommand extends Command
 	protected final Arena getArena(int arg)
 	{
 		if (args.length > arg)
-		{
 			return plugin.getArena(args[arg]);
-		}
 
 		if (isPlayer() && plugin.isInArena(player))
-		{
 			return plugin.getArena(player);
-		}
 
 		return null;
+	}
+
+	protected final String getMessage(String key)
+	{
+		return plugin.getMessage(key);
 	}
 }

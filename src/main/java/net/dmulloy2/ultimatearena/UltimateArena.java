@@ -165,7 +165,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Register generic handlers
 		permissionHandler = new PermissionHandler(this);
-		resourceHandler = new ResourceHandler(this);
+		// resourceHandler = new ResourceHandler(this);
 		commandHandler = new CommandHandler(this);
 
 		// Register UA handlers
@@ -270,6 +270,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		logHandler.debug(string, objects);
 	}
 
+	// Messaging
+	public final String getMessage(String key)
+	{
+		// return resourceHandler.getMessage(key);
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
 	public void broadcast(String string, Object... objects)
 	{
 		String broadcast = FormatUtil.format(string, objects);
@@ -278,6 +285,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		debug("Broadcasted message: {0}", broadcast);
 	}
 
+	// Loading
 	private final void loadFiles()
 	{
 		loadClasses();
@@ -326,11 +334,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Load any new classes
 		loadClasses();
-	}
-
-	public String getMessage(String key)
-	{
-		return resourceHandler.getMessage(key);
 	}
 
 	private final void checkFiles()
