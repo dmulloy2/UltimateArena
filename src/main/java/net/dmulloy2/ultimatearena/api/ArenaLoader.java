@@ -9,9 +9,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import lombok.NonNull;
+import net.dmulloy2.io.Closer;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -38,12 +37,11 @@ public class ArenaLoader
 		this.loaders = new HashMap<>();
 	}
 
-	protected final ArenaType loadArenaType(@NonNull File file) throws Exception
+	protected final ArenaType loadArenaType(File file) throws Exception
 	{
+		Validate.notNull(file, "file cannot be null!");
 		if (! file.exists())
-		{
 			throw new FileNotFoundException(file.getPath() + " does not exist");
-		}
 
 		ArenaDescription description = getArenaDescription(file);
 		ArenaClassLoader loader = loadClasses(description.getName(), file);
@@ -75,8 +73,11 @@ public class ArenaLoader
 		return type;
 	}
 
-	private final ArenaClassLoader loadClasses(@NonNull String key, @NonNull File file) throws Exception
+	private final ArenaClassLoader loadClasses(String key, File file) throws Exception
 	{
+		Validate.notNull(key, "key cannot be null!");
+		Validate.notNull(file, "file cannot be null!");
+
 		ArenaClassLoader loader = null;
 
 		URL[] urls = new URL[1];
@@ -87,21 +88,20 @@ public class ArenaLoader
 		return loader;
 	}
 
-	public final ArenaDescription getArenaDescription(@NonNull File file) throws InvalidArenaException
+	public final ArenaDescription getArenaDescription(File file) throws InvalidArenaException
 	{
-		JarFile jar = null;
-		InputStream stream = null;
+		Validate.notNull(file, "file cannot be null!");
+		Closer closer = new Closer();
 
 		try
 		{
-			jar = new JarFile(file);
+			JarFile jar = closer.register(new JarFile(file));
 			JarEntry entry = jar.getJarEntry("arena.yml");
 
 			if (entry == null)
 				throw new InvalidArenaException(new FileNotFoundException("Jar does not contain arena.yml"));
 
-			stream = jar.getInputStream(entry);
-
+			InputStream stream = closer.register(jar.getInputStream(entry));
 			Map<?, ?> map = (Map<?, ?>) yaml.load(stream);
 
 			String name = (String) map.get("name");
@@ -130,15 +130,15 @@ public class ArenaLoader
 		}
 		finally
 		{
-			Util.closeQuietly(jar);
-			Util.closeQuietly(stream);
+			closer.close();
 		}
 	}
 
-	public final Class<?> getClassByName(@NonNull String name)
+	public final Class<?> getClassByName(String name)
 	{
-		Class<?> cachedClass = classes.get(name);
+		Validate.notNull(name, "name cannot be null!");
 
+		Class<?> cachedClass = classes.get(name);
 		if (cachedClass == null)
 		{
 			for (String current : loaders.keySet())
@@ -155,8 +155,11 @@ public class ArenaLoader
 		return cachedClass;
 	}
 
-	public final void setClass(@NonNull String name, @NonNull Class<?> clazz)
+	public final void setClass(String name, Class<?> clazz)
 	{
+		Validate.notNull(name, "name cannot be null!");
+		Validate.notNull(clazz, "clazz cannot be null!");
+
 		if (! classes.containsKey(name))
 		{
 			classes.put(name, clazz);

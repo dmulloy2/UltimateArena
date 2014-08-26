@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.io.FileSerialization;
+import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -107,7 +108,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		this.type = type;
 		this.typeString = type.getName();
 		this.stylized = type.getStylizedName();
-		this.name = FormatUtil.trimFileExtension(file, ".dat");
+		this.name = IOUtil.trimFileExtension(file, ".dat");
 		this.initialize();
 	}
 
@@ -116,7 +117,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		this.plugin = plugin;
 		this.file = file;
-		this.name = FormatUtil.trimFileExtension(file, ".dat");
+		this.name = IOUtil.trimFileExtension(file, ".dat");
 		this.initialize();
 	}
 

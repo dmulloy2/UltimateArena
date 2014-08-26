@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.EnchantmentType;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
@@ -64,7 +65,6 @@ public final class ArenaClass implements Reloadable
 	private transient boolean loaded;
 
 	private transient final UltimateArena plugin;
-
 	public ArenaClass(UltimateArena plugin, File file)
 	{
 		Validate.notNull(plugin, "plugin cannot be null!");
@@ -72,7 +72,7 @@ public final class ArenaClass implements Reloadable
 
 		this.plugin = plugin;
 		this.file = file;
-		this.name = FormatUtil.trimFileExtension(file, ".yml");
+		this.name = IOUtil.trimFileExtension(file, ".yml");
 
 		// Load
 		this.loaded = load();
