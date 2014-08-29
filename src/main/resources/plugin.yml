@@ -25,6 +25,8 @@ permissions:
       ultimatearena.reload: true
       ultimatearena.start: true
       ultimatearena.bypass: true
+      ultimatearena.join.force: true
+      ultimatearena.join.others: true
       ultimatearena.builder: true
   ultimatearena.builder:
     description: Allows access to features meant for arena builders
@@ -69,6 +71,9 @@ permissions:
     default: true
   ultimatearena.join.force:
     description: Allows the forceful joining of arenas
+    default: false
+  ultimatearena.join.others:
+    description: Allows the adding of other players to arenas
     default: false
   ultimatearena.kick:
     description: Allows the kicking of players from arenas
