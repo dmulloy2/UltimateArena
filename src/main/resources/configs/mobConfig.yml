@@ -9,3 +9,8 @@ countMobKills: true
 rewardBasedOnXp: true
 maxWave: 15
 cashReward: 750
+scaledRewards:
+  - "GOLD_INGOT, 500"
+  - "SLIME_BALL, 550"
+  - "GLOWSTONE_DUST, 450"
+  - "SULPHUR, 425"

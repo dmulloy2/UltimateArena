@@ -3,10 +3,12 @@ package net.dmulloy2.ultimatearena.arenas.mob;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.ScaledReward;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -99,37 +101,25 @@ public class MobArena extends Arena
 	public void reward(ArenaPlayer pl)
 	{
 		// Enable check
-		if (! az.getConfig().isGiveRewards())
+		if (! getConfig().isGiveRewards())
 			return;
 
-		// If there are predefined rewards, give those
-		if (! az.getConfig().getRewards().isEmpty())
+		// Get the rewards
+		List<ScaledReward> rewards = getConfig().getScaledRewards();
+		if (rewards == null)
+			rewards = getDefaultRewards();
+
+		for (ScaledReward reward : rewards)
 		{
-			super.reward(pl);
-			return;
+			ItemStack stack = reward.get(pl.getGameXP());
+			if (stack.getAmount() > 0)
+				pl.giveItem(stack);
 		}
 
-		// Default to old system
-		int amtGold = (int) Math.round(pl.getGameXP() / 500.0);
-		int amtSlime = (int) Math.round(pl.getGameXP() / 550.0);
-		int amtGlowStone = (int) Math.round(pl.getGameXP() / 450.0);
-		int amtGunPowder = (int) Math.round(pl.getGameXP() / 425.0);
-		int amtCash = (int) Math.round(pl.getGameXP() / 10.0);
-
-		if (amtGold > 0)
-			pl.giveItem(new ItemStack(Material.GOLD_INGOT, amtGold));
-
-		if (amtSlime > 0)
-			pl.giveItem(new ItemStack(Material.SLIME_BALL, amtSlime));
-
-		if (amtGlowStone > 0)
-			pl.giveItem(new ItemStack(Material.GLOWSTONE_DUST, amtGlowStone));
-
-		if (amtGunPowder > 0)
-			pl.giveItem(new ItemStack(Material.SULPHUR, amtGunPowder));
-
-		if (amtCash > 0 && plugin.getConfig().getBoolean("moneyrewards"))
+		// Money
+		if (plugin.getConfig().getBoolean("moneyrewards"))
 		{
+			double amtCash = pl.getGameXP() / 10.0D;
 			VaultHandler vault = plugin.getVaultHandler();
 			if (vault.isEnabled())
 			{
@@ -139,6 +129,22 @@ public class MobArena extends Arena
 				pl.sendMessage("&a{0} has been added to your balance!", cash);
 			}
 		}
+	}
+
+	private static List<ScaledReward> defaultRewards;
+	private static final List<ScaledReward> getDefaultRewards()
+	{
+		// Lazy-initialization
+		if (defaultRewards == null)
+		{
+			defaultRewards = new ArrayList<>();
+			defaultRewards.add(new ScaledReward(new MyMaterial(Material.GOLD_INGOT), 500.0D));
+			defaultRewards.add(new ScaledReward(new MyMaterial(Material.SLIME_BALL), 550.0D));
+			defaultRewards.add(new ScaledReward(new MyMaterial(Material.GLOWSTONE_DUST), 450.0D));
+			defaultRewards.add(new ScaledReward(new MyMaterial(Material.SULPHUR), 425.0D));
+		}
+
+		return defaultRewards;
 	}
 
 	@Override
