@@ -279,10 +279,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public void broadcast(String string, Object... objects)
 	{
-		String broadcast = FormatUtil.format(string, objects);
-		getServer().broadcastMessage(prefix + broadcast);
+		if (getConfig().getBoolean("globalMessages", true))
+		{
+			String broadcast = FormatUtil.format(string, objects);
+			getServer().broadcastMessage(prefix + broadcast);
 
-		debug("Broadcasted message: {0}", broadcast);
+			debug("Broadcasted message: {0}", broadcast);
+		}
 	}
 
 	// Loading

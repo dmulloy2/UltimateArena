@@ -19,8 +19,8 @@
 # http://yaml.org/
 
 # Whether or not cash rewards are given upon completion
-# Input - boolean
-moneyrewards: true
+# Input: boolean; default: true
+cashRewards: true
 
 # Time a player must stand still before joining the arena
 # Enabled - boolean
@@ -30,15 +30,15 @@ joinTimer:
   wait: 3
   
 # Whether or not the plugin will save inventories
-# Input - boolean
+# Input: boolean; default: true
 saveInventories: true
 
 # Extra output to console
-# Default - false; Input - boolean
+# Input: boolean; default: false
 debug: false
 
 # Timer XP bar
-# Default - false; Input - boolean
+# Input: boolean; default: true
 timerXPBar: true
 
 # Class Selection GUI
@@ -51,7 +51,7 @@ classSelector:
 # Restrict commands
 # Whether or not to restrict commands
 # See: whitelistedCommands
-# Default - true; Input - boolean
+# Input: boolean; default: true
 restrictCommands: true
 
 # Whitelisted Commands
@@ -67,3 +67,7 @@ whitelistedCommands:
 - "/list"
 - "/t"
 - "/tell"
+
+# Global messages
+# Input: boolean; default: true
+globalMessages: true

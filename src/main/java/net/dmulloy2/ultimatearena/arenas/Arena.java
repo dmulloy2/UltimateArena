@@ -255,6 +255,9 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void announce()
 	{
+		if (! plugin.getConfig().getBoolean("globalMessages", true))
+			return;
+
 		for (Player player : Util.getOnlinePlayers())
 		{
 			if (! plugin.isInArena(player))

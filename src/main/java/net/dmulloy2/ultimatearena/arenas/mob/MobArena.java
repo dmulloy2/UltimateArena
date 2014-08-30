@@ -117,7 +117,7 @@ public class MobArena extends Arena
 		}
 
 		// Money
-		if (plugin.getConfig().getBoolean("moneyrewards"))
+		if (plugin.getConfig().getBoolean("moneyRewards", true))
 		{
 			double amtCash = pl.getGameXP() / 10.0D;
 			VaultHandler vault = plugin.getVaultHandler();

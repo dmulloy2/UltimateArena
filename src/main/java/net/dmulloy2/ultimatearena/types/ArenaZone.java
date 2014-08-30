@@ -330,7 +330,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			}
 		}
 
-		if (plugin.getConfig().getBoolean("moneyrewards", true))
+		if (plugin.getConfig().getBoolean("moneyRewards", true))
 		{
 			VaultHandler vault = plugin.getVaultHandler();
 			if (vault.isEnabled())
