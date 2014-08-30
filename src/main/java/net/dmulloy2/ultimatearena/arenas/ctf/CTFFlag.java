@@ -180,7 +180,7 @@ public class CTFFlag
 		}
 		else
 		{
-			if (riding.getPlayer().isOnline() && ! riding.isDead())
+			if (! riding.isOut() && ! riding.isDead() && riding.getPlayer().isOnline())
 			{
 				// if player is alive
 				toloc = riding.getPlayer().getLocation().clone().add(0, 5, 0);
@@ -194,6 +194,12 @@ public class CTFFlag
 
 			setFlag();
 		}
+	}
+
+	public final void onPlayerQuit(ArenaPlayer ap)
+	{
+		if (riding.equals(ap))
+			fall();
 	}
 
 	public final void despawn()

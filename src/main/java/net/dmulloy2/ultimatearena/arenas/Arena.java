@@ -800,7 +800,17 @@ public abstract class Arena implements Reloadable
 		{
 			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
 		}
+
+		// API call
+		onPlayerQuit(ap);
 	}
+
+	/**
+	 * Called when an {@link ArenaPlayer} quits.
+	 *
+	 * @param ap ArenaPlayer who quit
+	 */
+	public void onPlayerQuit(ArenaPlayer ap) { }
 
 	/**
 	 * Basic timer checker.

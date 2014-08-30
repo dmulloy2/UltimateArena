@@ -147,4 +147,11 @@ public class CTFArena extends Arena
 		if (lastcap != null)
 			tellPlayers("&e{0} &3team won the game!", lastcap);
 	}
+
+	@Override
+	public void onPlayerQuit(ArenaPlayer ap)
+	{
+		redFlag.getFlag().onPlayerQuit(ap);
+		blueFlag.getFlag().onPlayerQuit(ap);
+	}
 }
