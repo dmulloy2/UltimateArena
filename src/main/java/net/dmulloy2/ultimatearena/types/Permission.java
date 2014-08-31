@@ -21,7 +21,7 @@ public enum Permission implements IPermission
 	INFO,
 	JOIN,
 	JOIN_FORCE,
-	JOIN_OTHERS,
+	JOIN_FULL,
 	KICK,
 	LIKE,
 	LIST,

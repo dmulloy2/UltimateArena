@@ -48,6 +48,7 @@ import net.dmulloy2.ultimatearena.commands.CmdDisable;
 import net.dmulloy2.ultimatearena.commands.CmdDislike;
 import net.dmulloy2.ultimatearena.commands.CmdDone;
 import net.dmulloy2.ultimatearena.commands.CmdEnable;
+import net.dmulloy2.ultimatearena.commands.CmdForceJoin;
 import net.dmulloy2.ultimatearena.commands.CmdForceStop;
 import net.dmulloy2.ultimatearena.commands.CmdInfo;
 import net.dmulloy2.ultimatearena.commands.CmdJoin;
@@ -188,6 +189,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		commandHandler.registerPrefixedCommand(new CmdDislike(this));
 		commandHandler.registerPrefixedCommand(new CmdDone(this));
 		commandHandler.registerPrefixedCommand(new CmdEnable(this));
+		commandHandler.registerPrefixedCommand(new CmdForceJoin(this));
 		commandHandler.registerPrefixedCommand(new CmdForceStop(this));
 		commandHandler.registerPrefixedCommand(new CmdHelp(this));
 		commandHandler.registerPrefixedCommand(new CmdInfo(this));
@@ -684,6 +686,11 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public final void attemptJoin(Player player, String name)
 	{
+		attemptJoin(player, name, -1);
+	}
+
+	public final void attemptJoin(Player player, String name, int team)
+	{
 		if (waiting.containsKey(player.getName()))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));
@@ -748,7 +755,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 		}
 
-		ArenaJoinTask join = new ArenaJoinTask(player.getName(), name, this);
+		ArenaJoinTask join = new ArenaJoinTask(player.getName(), name, this, team);
 		if (getConfig().getBoolean("joinTimer.enabled", true))
 		{
 			int seconds = getConfig().getInt("joinTimer.wait", 3);
@@ -765,7 +772,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 	}
 
-	public final void addPlayer(Player player, String name)
+	public final void addPlayer(Player player, String name, int team)
 	{
 		try
 		{
@@ -793,11 +800,11 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 				if (active.getPlayerCount() < az.getMaxPlayers())
 				{
-					active.addPlayer(player);
+					active.addPlayer(player, team);
 					return;
 				}
 
-				if (! permissionHandler.hasPermission(player, Permission.JOIN_FORCE))
+				if (! permissionHandler.hasPermission(player, Permission.JOIN_FULL))
 				{
 					player.sendMessage(prefix + FormatUtil.format("&cThis arena is full!"));
 					return;
@@ -805,7 +812,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 				if (kickRandomPlayer(active))
 				{
-					active.addPlayer(player);
+					active.addPlayer(player, team);
 					return;
 				}
 
@@ -828,7 +835,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 
 			activeArenas.add(arena);
-			arena.addPlayer(player);
+			arena.addPlayer(player, team);
 			arena.announce();
 		}
 		catch (Throwable ex)
@@ -845,7 +852,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		List<ArenaPlayer> totalPlayers = arena.getActivePlayers();
 		for (ArenaPlayer ap : totalPlayers)
 		{
-			if (! permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FORCE))
+			if (! permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FULL))
 			{
 				validPlayers.add(ap);
 			}

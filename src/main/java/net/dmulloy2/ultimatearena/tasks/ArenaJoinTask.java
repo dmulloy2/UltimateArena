@@ -20,13 +20,14 @@ public class ArenaJoinTask extends BukkitRunnable
 	private final String name;
 	private final String arenaName;
 	private final UltimateArena plugin;
+	private final int team;
 
 	@Override
 	public void run()
 	{
 		Player player = getPlayer();
 		if (player != null)
-			plugin.addPlayer(player, arenaName);
+			plugin.addPlayer(player, arenaName, team);
 
 		plugin.getWaiting().remove(name);
 	}

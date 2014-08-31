@@ -170,15 +170,14 @@ public abstract class Arena implements Reloadable
 	 *
 	 * @param player {@link Player} to add to an arena
 	 */
-	public final void addPlayer(Player player)
+	public final void addPlayer(Player player, int team)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Joining arena &e{0}&3... Please wait!", name));
 
 		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
 
-		// Update Teams
-		pl.setTeam(getTeam());
-
+		// Set their team
+		pl.setTeam(team == -1 ? getTeam() : team);
 		this.updatedTeams = true;
 
 		// Teleport the player to the lobby spawn

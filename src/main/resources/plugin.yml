@@ -70,10 +70,10 @@ permissions:
     description: Allows the joining of arenas
     default: true
   ultimatearena.join.force:
-    description: Allows the forceful joining of arenas
+    description: Allows the forcing of players into arenas
     default: false
-  ultimatearena.join.others:
-    description: Allows the adding of other players to arenas
+  ultimatearena.join.full:
+    description: Allows the joining of full arenas
     default: false
   ultimatearena.kick:
     description: Allows the kicking of players from arenas
