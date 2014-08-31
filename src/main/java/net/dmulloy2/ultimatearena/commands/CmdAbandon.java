@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -7,15 +10,14 @@ import net.dmulloy2.ultimatearena.types.Permission;
  * @author dmulloy2
  */
 
-public class CmdUndo extends UltimateArenaCommand
+public class CmdAbandon extends UltimateArenaCommand
 {
-	public CmdUndo(UltimateArena plugin)
+	public CmdAbandon(UltimateArena plugin)
 	{
 		super(plugin);
-		this.name = "undo";
-		this.description = "undo the last step in arena creation";
-		this.permission = Permission.UNDO;
-
+		this.name = "abandon";
+		this.description = "stop creating an arena";
+		this.permission = Permission.ABANDON;
 		this.mustBePlayer = true;
 	}
 
@@ -28,6 +30,6 @@ public class CmdUndo extends UltimateArenaCommand
 			return;
 		}
 
-		plugin.getArenaCreator(player).undo();
+		plugin.stopCreatingArena(player);
 	}
 }

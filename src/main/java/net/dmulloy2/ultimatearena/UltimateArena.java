@@ -40,16 +40,15 @@ import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.api.ArenaTypeHandler;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.commands.CmdAbandon;
 import net.dmulloy2.ultimatearena.commands.CmdClass;
 import net.dmulloy2.ultimatearena.commands.CmdClassList;
 import net.dmulloy2.ultimatearena.commands.CmdCreate;
 import net.dmulloy2.ultimatearena.commands.CmdDelete;
 import net.dmulloy2.ultimatearena.commands.CmdDisable;
 import net.dmulloy2.ultimatearena.commands.CmdDislike;
-import net.dmulloy2.ultimatearena.commands.CmdDone;
 import net.dmulloy2.ultimatearena.commands.CmdEnable;
 import net.dmulloy2.ultimatearena.commands.CmdForceJoin;
-import net.dmulloy2.ultimatearena.commands.CmdForceStop;
 import net.dmulloy2.ultimatearena.commands.CmdInfo;
 import net.dmulloy2.ultimatearena.commands.CmdJoin;
 import net.dmulloy2.ultimatearena.commands.CmdKick;
@@ -181,16 +180,15 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Register Commands
 		commandHandler.setCommandPrefix("ua");
+		commandHandler.registerPrefixedCommand(new CmdAbandon(this));
 		commandHandler.registerPrefixedCommand(new CmdClass(this));
 		commandHandler.registerPrefixedCommand(new CmdClassList(this));
 		commandHandler.registerPrefixedCommand(new CmdCreate(this));
 		commandHandler.registerPrefixedCommand(new CmdDelete(this));
 		commandHandler.registerPrefixedCommand(new CmdDisable(this));
 		commandHandler.registerPrefixedCommand(new CmdDislike(this));
-		commandHandler.registerPrefixedCommand(new CmdDone(this));
 		commandHandler.registerPrefixedCommand(new CmdEnable(this));
 		commandHandler.registerPrefixedCommand(new CmdForceJoin(this));
-		commandHandler.registerPrefixedCommand(new CmdForceStop(this));
 		commandHandler.registerPrefixedCommand(new CmdHelp(this));
 		commandHandler.registerPrefixedCommand(new CmdInfo(this));
 		commandHandler.registerPrefixedCommand(new CmdJoin(this));

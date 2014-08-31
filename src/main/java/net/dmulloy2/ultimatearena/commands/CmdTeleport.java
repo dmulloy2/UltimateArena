@@ -21,7 +21,7 @@ public class CmdTeleport extends UltimateArenaCommand
 		this.name = "teleport";
 		this.aliases.add("tp");
 		this.requiredArgs.add("arena");
-		this.description = "Teleport to an arena";
+		this.description = "teleport to an arena";
 		this.permission = Permission.TELEPORT;
 		this.mustBePlayer = true;
 	}

@@ -19,7 +19,7 @@ public class CmdClassList extends UltimateArenaCommand
 		super(plugin);
 		this.name = "classlist";
 		this.aliases.add("classes");
-		this.description = "List UltimateArena classes";
+		this.description = "list available classes";
 		this.permission = Permission.CLASSLIST;
 	}
 
@@ -28,6 +28,7 @@ public class CmdClassList extends UltimateArenaCommand
 	{
 		sendMessage("&3====[ &eUltimateArena Classes &3]====");
 
+		// TODO: Some sort of filter
 		for (ArenaClass ac : plugin.getClasses())
 		{
 			String name = WordUtils.capitalize(ac.getName());

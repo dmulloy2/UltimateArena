@@ -20,7 +20,7 @@ public class CmdClass extends UltimateArenaCommand
 		this.name = "class";
 		this.aliases.add("cl");
 		this.optionalArgs.add("class");
-		this.description = "Switch UltimateArena classes";
+		this.description = "switch your class";
 		this.permission = Permission.CLASS;
 		this.mustBePlayer = true;
 	}

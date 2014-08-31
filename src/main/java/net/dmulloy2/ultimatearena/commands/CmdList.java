@@ -23,7 +23,7 @@ public class CmdList extends UltimateArenaCommand
 		super(plugin);
 		this.name = "list";
 		this.aliases.add("li");
-		this.description = "view all the UltimateArenas";
+		this.description = "list all arenas";
 		this.permission = Permission.LIST;
 
 		this.mustBePlayer = false;

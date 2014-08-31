@@ -24,7 +24,7 @@ public class CmdForceJoin extends UltimateArenaCommand
 		this.requiredArgs.add("arena");
 		this.requiredArgs.add("player");
 		this.optionalArgs.add("team");
-		this.description = "Force a player into an arena";
+		this.description = "force a player into an arena";
 		this.permission = Permission.JOIN_FORCE;
 	}
 

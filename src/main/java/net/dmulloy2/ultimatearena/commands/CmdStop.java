@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.Permission;
 
 /**
@@ -13,22 +14,30 @@ public class CmdStop extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "stop";
-		this.aliases.add("s");
-		this.description = "stop building an arena";
+		this.aliases.add("fs");
+		this.requiredArgs.add("arena");
+		this.description = "stop an active arena";
 		this.permission = Permission.STOP;
-
-		this.mustBePlayer = true;
 	}
 
 	@Override
 	public void perform()
 	{
-		if (! plugin.isCreatingArena(player))
+		Arena arena = getArena(0);
+		if (arena == null)
 		{
-			err("You are not creating an arena!");
+			if (! args[0].equalsIgnoreCase("all"))
+			{
+				sendpMessage("&3Stopping all arenas!");
+				plugin.stopAll();
+				return;
+			}
+
+			err("Arena \"&c{0}&4\" not found!", args[0]);
 			return;
 		}
 
-		plugin.stopCreatingArena(player);
+		sendpMessage("&3Stopping arena &e{0}&3!", arena.getName());
+		arena.stop();
 	}
 }

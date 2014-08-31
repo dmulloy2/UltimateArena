@@ -16,7 +16,7 @@ public class CmdSpectate extends UltimateArenaCommand
 		super(plugin);
 		this.name = "spectate";
 		this.optionalArgs.add("arena");
-		this.description = "Spectates an arena";
+		this.description = "spectate an arena";
 		this.permission = Permission.SPECTATE;
 		this.mustBePlayer = true;
 	}

@@ -10,6 +10,7 @@ import net.dmulloy2.types.IPermission;
 @Getter
 public enum Permission implements IPermission
 {
+	ABANDON,
 	CLASS,
 	CLASSLIST,
 	CREATE,
@@ -17,7 +18,6 @@ public enum Permission implements IPermission
 	DISABLE,
 	DISLIKE,
 	ENABLE,
-	FORCESTOP,
 	INFO,
 	JOIN,
 	JOIN_FORCE,

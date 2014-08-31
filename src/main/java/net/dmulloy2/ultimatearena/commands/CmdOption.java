@@ -26,7 +26,7 @@ public class CmdOption extends UltimateArenaCommand
 		this.requiredArgs.add("name");
 		this.requiredArgs.add("option");
 		this.requiredArgs.add("value");
-		this.description = "Change an option for an arena/config";
+		this.description = "change configuration options";
 		this.permission = Permission.OPTION;
 
 		this.mustBePlayer = false;
