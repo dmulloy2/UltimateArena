@@ -684,12 +684,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public final void attemptJoin(Player player, String name)
 	{
-		if (! permissionHandler.hasPermission(player, Permission.JOIN))
-		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to join arenas!"));
-			return;
-		}
-
 		if (waiting.containsKey(player.getName()))
 		{
 			player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));

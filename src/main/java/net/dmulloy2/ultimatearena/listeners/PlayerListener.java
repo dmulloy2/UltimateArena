@@ -142,33 +142,36 @@ public class PlayerListener implements Listener
 						}
 						else
 						{
-							ArenaZone az = plugin.getArenaZone(sign.getLine(1));
-							if (az != null)
+							if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
 							{
-								plugin.attemptJoin(player, az.getName());
-								return;
-							}
-
-							if (sign.getLine(2).equalsIgnoreCase("Auto Assign"))
-							{
-								for (Arena arena : plugin.getActiveArenas())
+								ArenaZone az = plugin.getArenaZone(sign.getLine(1));
+								if (az != null)
 								{
-									if (arena.isInLobby())
-									{
-										if (arena.getPlayerCount() < arena.getAz().getMaxPlayers())
-										{
-											plugin.attemptJoin(player, arena.getName());
-											return;
-										}
-									}
+									plugin.attemptJoin(player, az.getName());
+									return;
 								}
 
-								for (ArenaZone inactive : plugin.getLoadedArenas())
+								if (sign.getLine(2).equalsIgnoreCase("Auto Assign"))
 								{
-									if (! inactive.isActive())
+									for (Arena arena : plugin.getActiveArenas())
 									{
-										plugin.attemptJoin(player, inactive.getName());
-										return;
+										if (arena.isInLobby())
+										{
+											if (arena.getPlayerCount() < arena.getAz().getMaxPlayers())
+											{
+												plugin.attemptJoin(player, arena.getName());
+												return;
+											}
+										}
+									}
+
+									for (ArenaZone inactive : plugin.getLoadedArenas())
+									{
+										if (! inactive.isActive())
+										{
+											plugin.attemptJoin(player, inactive.getName());
+											return;
+										}
 									}
 								}
 							}

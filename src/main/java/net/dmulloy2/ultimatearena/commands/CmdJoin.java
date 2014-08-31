@@ -38,6 +38,6 @@ public class CmdJoin extends UltimateArenaCommand
 			return;
 		}
 
-		plugin.attemptJoin(player, args[0]);
+		plugin.attemptJoin(join, args[0]);
 	}
 }
