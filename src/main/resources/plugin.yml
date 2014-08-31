@@ -16,29 +16,32 @@ permissions:
     description: Allows access to all UltimateArena features
     default: false
     children:
-      ultimatearena.enable: true
+      ultimatearena.builder: true
       ultimatearena.disable: true
-      ultimatearena.forcestop: true
+      ultimatearena.enable: true
+      ultimatearena.join.force: true
+      ultimatearena.join.full: true
       ultimatearena.kick: true
       ultimatearena.option: true
       ultimatearena.pause: true
       ultimatearena.reload: true
       ultimatearena.start: true
+      ultimatearena.stop: true
       ultimatearena.bypass: true
-      ultimatearena.join.force: true
-      ultimatearena.join.others: true
-      ultimatearena.builder: true
   ultimatearena.builder:
     description: Allows access to features meant for arena builders
     default: false
     children:
+      ultimatearena.abandon: true
       ultimatearena.create: true
       ultimatearena.delete: true
       ultimatearena.setpoint: true
-      ultimatearena.stop: true
       ultimatearena.teleport: true
       ultimatearena.undo: true
       ultimatearena.build: true
+  ultimatearena.abandon:
+    description: Allows the abandoning of arenas
+    default: false
   ultimatearena.class:
     description: Allows the switching of classes ingame
     default: true
@@ -59,9 +62,6 @@ permissions:
     default: true
   ultimatearena.enable:
     description: Allows the enabling of arenas
-    default: false
-  ultimatearena.forcestop:
-    description: Allows the force stopping of arenas
     default: false
   ultimatearena.info:
     description: Allows the viewing of arena info
