@@ -3,12 +3,11 @@ armor:
   leggings: IRON_LEGGINGS, 1, prot:1
   boots: IRON_BOOTS, 1, prot:1
 tools:
-  '1': BOW, 1, power:2, arrowkb:2, inf:1
-  '2': ARROW, 1024
+  '1': BOW, 1, power:2, arrowkb:1, inf:1
+  '2': ARROW, 1
   '3': IRON_SWORD, 1, sharp:2
   '4': GOLDEN_APPLE, 2
   '5': SLIME_BALL, 3
 essentialsKit: ''
 useHelmet: true
-potionEffects: SPEED:1,JUMP:1
 icon: BOW, 1
