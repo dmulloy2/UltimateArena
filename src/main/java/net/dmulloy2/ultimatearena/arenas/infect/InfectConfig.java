@@ -5,7 +5,6 @@ package net.dmulloy2.ultimatearena.arenas.infect;
 
 import java.io.File;
 
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -16,12 +15,12 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class InfectConfig extends ArenaConfig
 {
-	public InfectConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
+	public InfectConfig(UltimateArena plugin, String type, File file)
 	{
 		super(plugin, type, file);
 	}
 
-	public InfectConfig(@NonNull ArenaZone az)
+	public InfectConfig(ArenaZone az)
 	{
 		super(az);
 	}

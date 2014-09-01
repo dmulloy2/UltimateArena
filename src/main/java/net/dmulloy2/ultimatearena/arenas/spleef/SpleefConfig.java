@@ -5,7 +5,6 @@ package net.dmulloy2.ultimatearena.arenas.spleef;
 
 import java.io.File;
 
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -16,12 +15,12 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 public class SpleefConfig extends ArenaConfig
 {
-	public SpleefConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
+	public SpleefConfig(UltimateArena plugin, String type, File file)
 	{
 		super(plugin, type, file);
 	}
 
-	public SpleefConfig(@NonNull ArenaZone az)
+	public SpleefConfig(ArenaZone az)
 	{
 		super(az);
 	}

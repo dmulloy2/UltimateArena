@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -26,12 +25,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class ConquestConfig extends ArenaConfig
 {
-	public ConquestConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
+	public ConquestConfig(UltimateArena plugin, String type, File file)
 	{
 		super(plugin, type, file);
 	}
 
-	public ConquestConfig(@NonNull ArenaZone az)
+	public ConquestConfig(ArenaZone az)
 	{
 		super(az);
 	}

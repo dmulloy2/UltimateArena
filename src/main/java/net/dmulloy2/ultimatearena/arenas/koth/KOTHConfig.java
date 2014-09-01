@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -30,12 +29,12 @@ public class KOTHConfig extends ArenaConfig
 {
 	private int maxPoints;
 
-	public KOTHConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
+	public KOTHConfig(UltimateArena plugin, String type, File file)
 	{
 		super(plugin, type, file);
 	}
 
-	public KOTHConfig(@NonNull ArenaZone az)
+	public KOTHConfig(ArenaZone az)
 	{
 		super(az);
 	}

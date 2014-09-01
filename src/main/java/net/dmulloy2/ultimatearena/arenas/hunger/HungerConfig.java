@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.NonNull;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -20,12 +19,12 @@ import net.dmulloy2.ultimatearena.types.KillStreak;
 
 public class HungerConfig extends ArenaConfig
 {
-	public HungerConfig(@NonNull UltimateArena plugin, @NonNull String type, @NonNull File file)
+	public HungerConfig(UltimateArena plugin, String type, File file)
 	{
 		super(plugin, type, file);
 	}
 
-	public HungerConfig(@NonNull ArenaZone az)
+	public HungerConfig(ArenaZone az)
 	{
 		super(az);
 	}
