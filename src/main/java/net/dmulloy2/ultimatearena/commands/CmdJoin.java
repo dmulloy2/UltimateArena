@@ -4,6 +4,7 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.types.Permission;
 
 /**
  * @author dmulloy2
@@ -18,6 +19,7 @@ public class CmdJoin extends UltimateArenaCommand
 		this.aliases.add("j");
 		this.requiredArgs.add("arena");
 		this.description = "join an arena";
+		this.permission = Permission.JOIN;
 		this.mustBePlayer = true;
 	}
 
