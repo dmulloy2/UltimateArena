@@ -39,7 +39,7 @@ public class CmdForceJoin extends UltimateArenaCommand
 		}
 
 		int team = -1;
-		if (args.length > 3)
+		if (args.length > 2)
 			team = NumberUtil.toInt(args[2]);
 
 		plugin.attemptJoin(player, args[0], team);

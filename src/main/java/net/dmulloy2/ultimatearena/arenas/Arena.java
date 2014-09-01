@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.types.Reloadable;
@@ -1088,10 +1087,9 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
-	private static final List<EntityType> persistentEntities = Arrays.asList(new EntityType[]
-	{
+	private static final List<EntityType> persistentEntities = Arrays.asList(
 			EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
-	});
+	);
 
 	/**
 	 * Gets a sorted list of players, based on KDR
@@ -1314,12 +1312,12 @@ public abstract class Arena implements Reloadable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(@NonNull Object obj)
+	public boolean equals(Object obj)
 	{
 		if (obj instanceof Arena)
 		{
 			Arena that = (Arena) obj;
-			return that.getName().equals(name);
+			return this.name.equals(that.name);
 		}
 
 		return false;
