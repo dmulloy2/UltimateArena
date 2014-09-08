@@ -1,8 +1,12 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaSpectator;
 import net.dmulloy2.ultimatearena.types.Permission;
 
 /**
@@ -31,9 +35,10 @@ public class CmdSpectate extends UltimateArenaCommand
 			return;
 		}
 
-		if (plugin.getSpectatingHandler().isSpectating(player))
+		ArenaSpectator spectator = plugin.getSpectatingHandler().getSpectator(player);
+		if (spectator != null)
 		{
-			plugin.getSpectatingHandler().removeSpectator(player);
+			plugin.getSpectatingHandler().removeSpectator(spectator);
 			sendpMessage("&3You are no longer spectating!");
 			return;
 		}

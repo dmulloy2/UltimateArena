@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
@@ -174,5 +177,43 @@ public final class ArenaSpectator
 		clearInventory();
 		clearPotionEffects();
 		playerData.apply();
+	}
+
+	// ---- Generic Methods
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof ArenaSpectator)
+		{
+			ArenaSpectator that = (ArenaSpectator) obj;
+			return that.uniqueId.equals(uniqueId) && that.arena.equals(arena);
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode()
+	{
+		int hash = 41;
+		hash *= 1 + uniqueId.hashCode();
+		hash *= 1 + arena.hashCode();
+		return hash;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }

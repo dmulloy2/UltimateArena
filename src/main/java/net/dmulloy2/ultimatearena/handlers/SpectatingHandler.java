@@ -51,7 +51,7 @@ public class SpectatingHandler implements Listener
 		{
 			for (ArenaSpectator spectator : arena.getSpectators())
 			{
-				if (spectator.getUniqueId().equals(player.getUniqueId()))
+				if (spectator.getUniqueId().equals(player.getUniqueId().toString()))
 					return spectator;
 			}
 		}
@@ -82,7 +82,7 @@ public class SpectatingHandler implements Listener
 			removeSpectator(spectator);
 	}
 
-	private final void removeSpectator(ArenaSpectator spectator)
+	public final void removeSpectator(ArenaSpectator spectator)
 	{
 		spectator.endPlayer();
 		spectator.getPlayer().closeInventory();

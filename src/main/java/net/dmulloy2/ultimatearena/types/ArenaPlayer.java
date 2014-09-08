@@ -453,8 +453,8 @@ public final class ArenaPlayer
 	public int hashCode()
 	{
 		int hash = 34;
-		hash *= uniqueId.hashCode();
-		hash *= arena.hashCode();
+		hash *= 1 + uniqueId.hashCode();
+		hash *= 1 + arena.hashCode();
 		return hash;
 	}
 

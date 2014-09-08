@@ -1337,7 +1337,7 @@ public abstract class Arena implements Reloadable
 	public int hashCode()
 	{
 		int hash = 35;
-		hash *= name.hashCode();
+		hash *= 1 + name.hashCode();
 		return hash;
 	}
 
