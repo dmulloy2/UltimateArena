@@ -18,6 +18,7 @@ import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
+import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
@@ -43,6 +44,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	protected boolean unlimitedAmmo = true, rewardBasedOnXp = true, giveRewards = true;
 
 	protected List<String> blacklistedClasses, whitelistedClasses;
+	protected List<Material> clearMaterials;
 
 	protected transient List<ItemStack> rewards;
 	protected transient Map<Integer, List<KillStreak>> killStreaks;
@@ -129,9 +131,9 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			this.canModifyWorld = fc.getBoolean("canModifyWorld", def.isCanModifyWorld());
 			this.unlimitedAmmo = fc.getBoolean("unlimitedAmmo", def.isUnlimitedAmmo());
 
-			this.rewards = new ArrayList<>();
 			if (fc.isSet("rewards"))
 			{
+				this.rewards = new ArrayList<>();
 				for (String reward : fc.getStringList("rewards"))
 				{
 					try
@@ -149,6 +151,21 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			else
 			{
 				this.rewards = def.getRewards();
+			}
+
+			if (fc.isSet("clearMaterials"))
+			{
+				this.clearMaterials = new ArrayList<>();
+				for (String string : fc.getStringList("clearMaterials"))
+				{
+					Material material = MaterialUtil.getMaterial(string);
+					if (material != null)
+						clearMaterials.add(material);
+				}
+			}
+			else
+			{
+				this.clearMaterials = def.getClearMaterials();
 			}
 
 			this.giveRewards = fc.getBoolean("giveRewards", def.isGiveRewards());

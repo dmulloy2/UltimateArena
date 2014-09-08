@@ -34,7 +34,7 @@ public class CmdSpectate extends UltimateArenaCommand
 		if (plugin.getSpectatingHandler().isSpectating(player))
 		{
 			plugin.getSpectatingHandler().removeSpectator(player);
-			sendpMessage("&eYou are no longer spectating!");
+			sendpMessage("&3You are no longer spectating!");
 			return;
 		}
 
@@ -47,7 +47,7 @@ public class CmdSpectate extends UltimateArenaCommand
 
 		plugin.getSpectatingHandler().addSpectator(arena, player);
 
-		sendpMessage("&eYou are now spectating &e{0}", arena.getName());
+		sendpMessage("&3You are now spectating &e{0}", arena.getName());
 		sendpMessage("&3To stop spectating, use &e/ua spectate &3again");
 	}
 }

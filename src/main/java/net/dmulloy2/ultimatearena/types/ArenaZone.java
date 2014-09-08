@@ -410,9 +410,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	public final void saveToDisk()
 	{
 		checkFile();
-
 		FileSerialization.save(this, file);
-
 		saveConfiguration();
 	}
 
@@ -422,9 +420,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		{
 			File folder = new File(plugin.getDataFolder(), "arenas");
 			if (! folder.exists())
-			{
 				folder.mkdirs();
-			}
 
 			file = new File(folder, name + ".dat");
 		}
@@ -512,7 +508,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		try
 		{
 			fc.save(file);
-		} catch (Throwable ex) { }
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "saving configuration for " + name));
+		}
 	}
 
 	/**

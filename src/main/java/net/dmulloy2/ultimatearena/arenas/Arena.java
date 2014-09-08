@@ -33,6 +33,7 @@ import net.dmulloy2.util.Util;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -733,6 +734,8 @@ public abstract class Arena implements Reloadable
 		}
 
 		clearEntities();
+		clearMaterials();
+
 		conclude(120L);
 	}
 
@@ -1062,9 +1065,10 @@ public abstract class Arena implements Reloadable
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
 	}
 
-	/**
-	 * Clears the entities inside this arena
-	 */
+	private static final List<EntityType> persistentEntities = Arrays.asList(
+			EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
+	);
+
 	private final void clearEntities()
 	{
 		plugin.debug("Clearing entities in arena {0}", name);
@@ -1087,12 +1091,15 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
-	private static final List<EntityType> persistentEntities = Arrays.asList(
-			EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
-	);
+	private final void clearMaterials()
+	{
+		List<Material> clear = getConfig().getClearMaterials();
+		if (! clear.isEmpty())
+			az.getArena().removeMaterials(clear);
+	}
 
 	/**
-	 * Gets a sorted list of players, based on KDR
+	 * Gets a list of active players, sorted by KDR.
 	 *
 	 * @return The list
 	 */

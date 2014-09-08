@@ -1,10 +1,14 @@
 package net.dmulloy2.ultimatearena.types;
 
+import java.util.List;
+
 import lombok.Getter;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 /**
  * @author dmulloy2
@@ -55,6 +59,28 @@ public class Field
 		}
 
 		return false;
+	}
+
+	public Block getBlockAt(int x, int y, int z)
+	{
+		return getWorld().getBlockAt(min.getX() + x, min.getY() + y, min.getZ() + z);
+	}
+
+	public void removeMaterials(List<Material> materials)
+	{
+		World world = getWorld();
+		for (int x = min.getX(); x < max.getX(); x++)
+		{
+			for (int y = min.getY(); y < max.getY(); y++)
+			{
+				for (int z = min.getZ(); z < max.getZ(); z++)
+				{
+					Block block = world.getBlockAt(x, y, z);
+					if (materials.contains(block.getType()))
+						block.setType(Material.AIR);
+				}
+			}
+		}
 	}
 
 	public final World getWorld()

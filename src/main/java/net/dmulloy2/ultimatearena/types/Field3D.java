@@ -33,7 +33,8 @@ public final class Field3D extends Field
 		return false;
 	}
 
-	public final Block getBlockAt(int x, int y, int z)
+	@Override
+	public Block getBlockAt(int x, int y, int z)
 	{
 		return getWorld().getBlockAt(min.getX() + x, min.getY() + y, min.getZ() + z);
 	}
