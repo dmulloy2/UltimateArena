@@ -44,7 +44,7 @@ public class CmdSpectate extends UltimateArenaCommand
 		}
 
 		Arena arena = getArena(0);
-		if (arena == null)
+		if (arena == null || ! arena.isActive())
 		{
 			err("You must specify a valid arena!");
 			return;

@@ -1313,6 +1313,16 @@ public abstract class Arena implements Reloadable
 		return null;
 	}
 
+	/**
+	 * Whether or not this arena is active.
+	 *
+	 * @return True if active, false if not
+	 */
+	public final boolean isActive()
+	{
+		return ! stopped;
+	}
+
 	// ---- Generic Methods
 
 	/**
