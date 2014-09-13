@@ -15,9 +15,11 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.types.Transformation;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
+import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
@@ -133,20 +135,22 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 			if (fc.isSet("rewards"))
 			{
-				this.rewards = new ArrayList<>();
-				for (String reward : fc.getStringList("rewards"))
+				this.rewards = ListUtil.transform(fc.getStringList("rewards"), new Transformation<String, ItemStack>()
 				{
-					try
+					@Override
+					public ItemStack transform(String string)
 					{
-						ItemStack stack = ItemUtil.readItem(reward);
-						if (stack != null)
-							rewards.add(stack);
+						try
+						{
+							return ItemUtil.readItem(string);
+						}
+						catch (Throwable ex)
+						{
+							plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + string + "\""));
+							return null;
+						}
 					}
-					catch (Throwable ex)
-					{
-						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + reward + "\""));
-					}
-				}
+				});
 			}
 			else
 			{
@@ -155,13 +159,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 			if (fc.isSet("clearMaterials"))
 			{
-				this.clearMaterials = new ArrayList<>();
-				for (String string : fc.getStringList("clearMaterials"))
-				{
-					Material material = MaterialUtil.getMaterial(string);
-					if (material != null)
-						clearMaterials.add(material);
-				}
+				this.clearMaterials = MaterialUtil.fromStrings(fc.getStringList("clearMaterials"));
 			}
 			else
 			{

@@ -87,6 +87,7 @@ import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
+import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
 
@@ -309,19 +310,19 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		arenaTypeHandler.reload();
 
 		// Reload configs
-		for (ArenaConfig conf : Util.newList(configs))
+		for (ArenaConfig conf : ListUtil.newList(configs))
 		{
 			conf.reload();
 		}
 
 		// Reload ArenaZones
-		for (ArenaZone az : Util.newList(loadedArenas))
+		for (ArenaZone az : ListUtil.newList(loadedArenas))
 		{
 			az.reload();
 		}
 
 		// Reload active arenas
-		for (Arena a : Util.newList(activeArenas))
+		for (Arena a : ListUtil.newList(activeArenas))
 		{
 			a.reload();
 		}
@@ -330,7 +331,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		loadArenas();
 
 		// Reload classes
-		for (ArenaClass ac : Util.newList(classes))
+		for (ArenaClass ac : ListUtil.newList(classes))
 		{
 			ac.reload();
 		}
@@ -598,7 +599,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 
 			// Stop the active arena, if applicable
-			for (Arena a : Util.newList(activeArenas))
+			for (Arena a : ListUtil.newList(activeArenas))
 			{
 				if (a.getName().equalsIgnoreCase(str))
 				{
@@ -1153,7 +1154,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 */
 	public final List<Arena> getActiveArenas()
 	{
-		return Util.newList(activeArenas);
+		return ListUtil.newList(activeArenas);
 	}
 
 	/**

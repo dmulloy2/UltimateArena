@@ -28,6 +28,7 @@ import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.WordUtils;
@@ -1247,7 +1248,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final List<ArenaPlayer> getActivePlayers()
 	{
-		return Util.newList(active);
+		return ListUtil.newList(active);
 	}
 
 	/**
@@ -1257,7 +1258,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final List<ArenaPlayer> getInactivePlayers()
 	{
-		return Util.newList(inactive);
+		return ListUtil.newList(inactive);
 	}
 
 	/**

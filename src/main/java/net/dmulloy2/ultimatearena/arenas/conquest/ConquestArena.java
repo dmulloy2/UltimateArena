@@ -11,6 +11,7 @@ import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -59,7 +60,7 @@ public class ConquestArena extends Arena
 		if (redTeamPower <= 0)
 			setWinningTeam(2);
 
-		for (ArenaFlag flag : Util.newList(flags))
+		for (ArenaFlag flag : ListUtil.newList(flags))
 		{
 			flag.checkNear(getActivePlayers());
 		}
@@ -95,7 +96,7 @@ public class ConquestArena extends Arena
 			return super.getSpawn(ap);
 
 		List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
-		for (ArenaFlag flag : Util.newList(flags))
+		for (ArenaFlag flag : ListUtil.newList(flags))
 		{
 			if (flag.getOwningTeam() == ap.getTeam())
 			{
@@ -132,7 +133,7 @@ public class ConquestArena extends Arena
 		int red = 0;
 		int blu = 0;
 
-		for (ArenaFlag flag : Util.newList(flags))
+		for (ArenaFlag flag : ListUtil.newList(flags))
 		{
 			if (flag.getOwningTeam() == 1)
 			{

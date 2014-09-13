@@ -13,6 +13,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -268,7 +269,7 @@ public class SignHandler
 	 */
 	public final List<ArenaSign> getSigns()
 	{
-		return Util.newList(signs);
+		return ListUtil.newList(signs);
 	}
 
 	// ---- ID Related Stuff

@@ -9,6 +9,7 @@ import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
+import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -303,6 +304,6 @@ public class MobArena extends Arena
 	@Override
 	public List<String> getExtraInfo()
 	{
-		return Util.toList("&3Wave: &e" + wave);
+		return ListUtil.toList("&3Wave: &e" + wave);
 	}
 }

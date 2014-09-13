@@ -8,7 +8,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.util.ListUtil;
 
 import org.bukkit.entity.Player;
 
@@ -46,7 +46,7 @@ public class ConquestFlag extends ArenaFlag
 		}
 
 		// Remove any duplicates
-		players = Util.removeDuplicates(players);
+		players = ListUtil.removeDuplicates(players);
 		cappingTeam = team1 > team2 ? 1 : 2;
 
 		// The other team is trying to cap
