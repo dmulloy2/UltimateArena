@@ -22,10 +22,10 @@ public class CmdOption extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "option";
-		this.requiredArgs.add("type");
-		this.requiredArgs.add("name");
-		this.requiredArgs.add("option");
-		this.requiredArgs.add("value");
+		this.addRequiredArg("type");
+		this.addRequiredArg("name");
+		this.addRequiredArg("option");
+		this.addRequiredArg("value");
 		this.description = "change configuration options";
 		this.permission = Permission.OPTION;
 

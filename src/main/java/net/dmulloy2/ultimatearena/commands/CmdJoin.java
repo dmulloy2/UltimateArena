@@ -17,7 +17,7 @@ public class CmdJoin extends UltimateArenaCommand
 		super(plugin);
 		this.name = "join";
 		this.aliases.add("j");
-		this.requiredArgs.add("arena");
+		this.addRequiredArg("arena");
 		this.description = "join an arena";
 		this.permission = Permission.JOIN;
 		this.mustBePlayer = true;

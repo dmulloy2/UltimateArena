@@ -16,7 +16,7 @@ public class CmdDisable extends UltimateArenaCommand
 		super(plugin);
 		this.name = "disable";
 		this.aliases.add("di");
-		this.requiredArgs.add("arena");
+		this.addRequiredArg("arena");
 		this.description = "disable an arena";
 		this.permission = Permission.DISABLE;
 

@@ -15,7 +15,7 @@ public class CmdDislike extends UltimateArenaCommand
 		super(plugin);
 		this.name = "dislike";
 		this.aliases.add("d");
-		this.requiredArgs.add("arena");
+		this.addRequiredArg("arena");
 		this.description = "dislike an arena";
 		this.permission = Permission.DISLIKE;
 

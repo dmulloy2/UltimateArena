@@ -19,7 +19,7 @@ public class CmdClass extends UltimateArenaCommand
 		super(plugin);
 		this.name = "class";
 		this.aliases.add("cl");
-		this.optionalArgs.add("class");
+		this.addOptionalArg("class");
 		this.description = "switch your class";
 		this.permission = Permission.CLASS;
 		this.mustBePlayer = true;

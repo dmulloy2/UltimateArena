@@ -14,7 +14,7 @@ public class CmdSetPoint extends UltimateArenaCommand
 		super(plugin);
 		this.name = "setpoint";
 		this.aliases.add("sp");
-		this.optionalArgs.add("args");
+		this.addOptionalArg("args");
 		this.description = "set a point in the creation process";
 		this.permission = Permission.SETPOINT;
 

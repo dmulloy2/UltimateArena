@@ -21,9 +21,9 @@ public class CmdForceJoin extends UltimateArenaCommand
 		super(plugin);
 		this.name = "forcejoin";
 		this.aliases.add("fj");
-		this.requiredArgs.add("arena");
-		this.requiredArgs.add("player");
-		this.optionalArgs.add("team");
+		this.addRequiredArg("arena");
+		this.addRequiredArg("player");
+		this.addOptionalArg("team");
 		this.description = "force a player into an arena";
 		this.permission = Permission.JOIN_FORCE;
 	}

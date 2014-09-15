@@ -15,7 +15,7 @@ public class CmdStop extends UltimateArenaCommand
 		super(plugin);
 		this.name = "stop";
 		this.aliases.add("fs");
-		this.requiredArgs.add("arena");
+		this.addRequiredArg("arena");
 		this.description = "stop an active arena";
 		this.permission = Permission.STOP;
 	}

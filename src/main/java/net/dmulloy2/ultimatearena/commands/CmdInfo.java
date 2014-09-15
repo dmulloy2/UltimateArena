@@ -17,7 +17,7 @@ public class CmdInfo extends UltimateArenaCommand
 		super(plugin);
 		this.name = "info";
 		this.aliases.add("lb");
-		this.optionalArgs.add("arena");
+		this.addOptionalArg("arena");
 		this.description = "view info on the arena you are in";
 		this.permission = Permission.INFO;
 		this.mustBePlayer = true;

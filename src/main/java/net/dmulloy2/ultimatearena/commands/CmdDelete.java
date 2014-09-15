@@ -14,7 +14,7 @@ public class CmdDelete extends UltimateArenaCommand
 		super(plugin);
 		this.name = "delete";
 		this.aliases.add("x");
-		this.requiredArgs.add("arena");
+		this.addRequiredArg("arena");
 		this.description = "delete an arena";
 		this.permission = Permission.DELETE;
 

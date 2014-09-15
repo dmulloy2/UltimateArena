@@ -14,7 +14,7 @@ public class CmdLike extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "like";
-		this.requiredArgs.add("arena");
+		this.addRequiredArg("arena");
 		this.description = "like an arena";
 		this.permission = Permission.LIKE;
 

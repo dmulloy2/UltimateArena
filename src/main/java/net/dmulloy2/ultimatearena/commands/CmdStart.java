@@ -14,7 +14,7 @@ public class CmdStart extends UltimateArenaCommand
 	{
 		super(plugin);
 		this.name = "start";
-		this.optionalArgs.add("arena");
+		this.addOptionalArg("arena");
 		this.description = "force start an arena";
 		this.permission = Permission.START;
 		this.mustBePlayer = false;
