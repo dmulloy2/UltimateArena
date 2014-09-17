@@ -1074,6 +1074,7 @@ public abstract class Arena implements Reloadable
 	{
 		plugin.debug("Clearing entities in arena {0}", name);
 
+		int count = 0;
 		for (Entity entity : world.getEntities())
 		{
 			if (entity != null && entity.isValid())
@@ -1086,10 +1087,13 @@ public abstract class Arena implements Reloadable
 							((LivingEntity) entity).setHealth(0.0D);
 
 						entity.remove();
+						count++;
 					}
 				}
 			}
 		}
+
+		plugin.debug("Removed {0} entities from {1}", count, name);
 	}
 
 	private final void clearMaterials()
