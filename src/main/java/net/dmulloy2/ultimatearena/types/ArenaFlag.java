@@ -10,8 +10,6 @@ import net.dmulloy2.util.Util;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
 /**
@@ -33,13 +31,7 @@ public abstract class ArenaFlag extends FlagBase
 
 		Wool wool = new Wool();
 		wool.setColor(getColor(8));
-		setData(notify, wool);
-	}
-
-	@SuppressWarnings("deprecation")
-	protected final void setData(Block block, MaterialData data)
-	{
-		Util.setData(block, data);
+		Util.setData(notify, wool);
 	}
 
 	@Override
@@ -58,7 +50,7 @@ public abstract class ArenaFlag extends FlagBase
 
 		Wool wool = new Wool();
 		wool.setColor(getColor(team == 1 ? 14 : 11));
-		setData(notify, wool);
+		Util.setData(notify, wool);
 	}
 
 	protected final DyeColor getColor(int color)
