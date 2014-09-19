@@ -87,6 +87,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	private final void setDefaults()
 	{
 		this.rewards = new ArrayList<>();
+		this.clearMaterials = new ArrayList<>();
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
 		this.killStreaks = getDefaultKillStreak();

@@ -253,10 +253,9 @@ public final class ArenaPlayer
 				giveArmor(armor.getKey(), item);
 		}
 
-		for (ItemStack tool : arenaClass.getTools())
+		for (Entry<Integer, ItemStack> tool : arenaClass.getTools().entrySet())
 		{
-			if (tool != null)
-				giveItem(tool);
+			player.getInventory().setItem(tool.getKey(), tool.getValue());
 		}
 
 		this.changeClassOnRespawn = false;

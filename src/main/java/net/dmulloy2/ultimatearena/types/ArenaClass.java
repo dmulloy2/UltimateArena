@@ -40,7 +40,7 @@ public final class ArenaClass implements Reloadable
 	private boolean needsPermission;
 	private String permissionNode;
 
-	private List<ItemStack> tools;
+	private Map<Integer, ItemStack> tools;
 	private Map<String, ItemStack> armor;
 
 	private boolean useHelmet = true;
@@ -89,7 +89,7 @@ public final class ArenaClass implements Reloadable
 
 		// Initialize variables
 		this.armor = new HashMap<>();
-		this.tools = new ArrayList<>();
+		this.tools = new HashMap<>();
 
 		try
 		{
@@ -153,21 +153,25 @@ public final class ArenaClass implements Reloadable
 
 			if (fc.isSet("tools"))
 			{
+				int nextSlot = 0;
 				Map<String, Object> values = fc.getConfigurationSection("tools").getValues(false);
 				for (Entry<String, Object> entry : values.entrySet())
 				{
+					int slot = NumberUtil.toInt(entry.getKey());
 					String value = entry.getValue().toString();
 
 					try
 					{
 						ItemStack stack = ItemUtil.readItem(value);
 						if (stack != null)
-							tools.add(stack);
+							tools.put(slot == -1 ? nextSlot : slot - 1, stack);
 					}
 					catch (Throwable ex)
 					{
 						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + value + "\""));
 					}
+
+					nextSlot++;
 				}
 			}
 

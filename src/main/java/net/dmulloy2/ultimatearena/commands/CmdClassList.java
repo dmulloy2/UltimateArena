@@ -33,7 +33,7 @@ public class CmdClassList extends UltimateArenaCommand
 		{
 			String name = WordUtils.capitalize(ac.getName());
 			sendMessage("&3[ &e{0} &3]", name);
-			for (ItemStack weapon : ac.getTools())
+			for (ItemStack weapon : ac.getTools().values())
 			{
 				name = FormatUtil.getFriendlyName(weapon.getType());
 				sendMessage("&b- &e{0} &bx &e{1}", name, weapon.getAmount());
