@@ -30,6 +30,7 @@ public class SpleefCreator extends ArenaCreator
 	@Override
 	public void setPoint(String[] args)
 	{
+		Player player = getPlayer();
 		switch (stepNumber)
 		{
 			case 1: // Arena

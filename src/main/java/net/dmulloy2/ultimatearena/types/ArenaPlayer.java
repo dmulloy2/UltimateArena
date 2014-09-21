@@ -28,7 +28,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 
 /**
- * Represents a player inside an {@link Arena}.
+ * Represents a Player inside an {@link Arena}.
  * <p>
  * Every player who has joined this arena will have an ArenaPlayer instance. It
  * is important to note, however, that players who are out will still have arena
@@ -59,7 +59,6 @@ public final class ArenaPlayer
 
 	private final String name;
 	private final UUID uniqueId;
-	private final Player player;
 
 	private ArenaClass arenaClass;
 
@@ -69,14 +68,13 @@ public final class ArenaPlayer
 	/**
 	 * Creates a new ArenaPlayer instance.
 	 *
-	 * @param player Base {@link Player} to create the arena player around
+	 * @param player Base {@link getPlayer()} to create the ArenaPlayer around
 	 * @param arena {@link Arena} the player is in
 	 * @param plugin {@link UltimateArena} plugin instance
 	 * @throws NullPointerException if any of the arguments are null
 	 */
 	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
-		this.player = player;
 		this.name = player.getName();
 		this.uniqueId = player.getUniqueId();
 		this.spawnBack = player.getLocation();
@@ -91,6 +89,7 @@ public final class ArenaPlayer
 	 */
 	public final void decideHat(boolean random)
 	{
+		Player player = getPlayer();
 		if (arenaClass != null && ! arenaClass.isUseHelmet())
 		{
 			ItemStack helmet = player.getInventory().getHelmet();
@@ -118,18 +117,18 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gives the player an item.
+	 * Gives the getPlayer() an item.
 	 *
-	 * @param stack {@link ItemStack} to give the player
+	 * @param stack {@link ItemStack} to give the getPlayer()
 	 * @throws NullPointerException if stack is null
 	 */
 	public final void giveItem(ItemStack stack)
 	{
-		InventoryUtil.giveItem(player, stack);
+		InventoryUtil.giveItem(getPlayer(), stack);
 	}
 
 	/**
-	 * Gives the player a piece of armor armor.
+	 * Gives the getPlayer() a piece of armor armor.
 	 *
 	 * @param slot Armor slot (helmet, chestplate, etc.)
 	 * @param stack {@link ItemStack} to give as armor
@@ -143,16 +142,16 @@ public final class ArenaPlayer
 		switch (slot.toLowerCase())
 		{
 			case "helmet":
-				player.getInventory().setHelmet(stack);
+				getPlayer().getInventory().setHelmet(stack);
 				return;
 			case "chestplate":
-				player.getInventory().setChestplate(stack);
+				getPlayer().getInventory().setChestplate(stack);
 				return;
 			case "leggings":
-				player.getInventory().setLeggings(stack);
+				getPlayer().getInventory().setLeggings(stack);
 				return;
 			case "boots":
-				player.getInventory().setBoots(stack);
+				getPlayer().getInventory().setBoots(stack);
 				return;
 		}
 	}
@@ -162,6 +161,8 @@ public final class ArenaPlayer
 	 */
 	public final void clearInventory()
 	{
+		Player player = getPlayer();
+
 		// Close any open inventories
 		player.closeInventory();
 
@@ -191,6 +192,7 @@ public final class ArenaPlayer
 
 		giveClassItems();
 
+		Player player = getPlayer();
 		if (! player.hasMetadata("UA"))
 			player.setMetadata("UA", new FixedMetadataValue(plugin, true));
 	}
@@ -253,6 +255,7 @@ public final class ArenaPlayer
 				giveArmor(armor.getKey(), item);
 		}
 
+		Player player = getPlayer();
 		for (Entry<Integer, ItemStack> tool : arenaClass.getTools().entrySet())
 		{
 			player.getInventory().setItem(tool.getKey(), tool.getValue());
@@ -266,6 +269,7 @@ public final class ArenaPlayer
 	 */
 	public final void clearPotionEffects()
 	{
+		Player player = getPlayer();
 		for (PotionEffect effect : player.getActivePotionEffects())
 		{
 			player.removePotionEffect(effect.getType());
@@ -280,7 +284,7 @@ public final class ArenaPlayer
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
@@ -390,7 +394,7 @@ public final class ArenaPlayer
 	public final void teleport(Location location)
 	{
 		Validate.notNull(location, "location cannot be null!");
-		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		getPlayer().teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
 	/**
@@ -412,7 +416,7 @@ public final class ArenaPlayer
 	public final void savePlayerData()
 	{
 		Validate.isTrue(playerData == null, "PlayerData already saved!");
-		this.playerData = new PlayerData(player);
+		this.playerData = new PlayerData(getPlayer());
 	}
 
 	/**
@@ -424,8 +428,18 @@ public final class ArenaPlayer
 		clearPotionEffects();
 		playerData.apply();
 
-		if (player.hasMetadata("UA"))
-			player.removeMetadata("UA", plugin);
+		if (getPlayer().hasMetadata("UA"))
+			getPlayer().removeMetadata("UA", plugin);
+	}
+
+	/**
+	 * Gets this ArenaPlayer's {@link Player} instance.
+	 *
+	 * @return Player instance
+	 */
+	public final Player getPlayer()
+	{
+		return Util.matchPlayer(name);
 	}
 
 	// ---- Generic Methods

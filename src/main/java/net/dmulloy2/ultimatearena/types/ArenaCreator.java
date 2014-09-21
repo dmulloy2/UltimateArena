@@ -6,6 +6,7 @@ package net.dmulloy2.ultimatearena.types;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
@@ -21,8 +22,8 @@ public abstract class ArenaCreator
 	protected int stepNumber;
 	protected ArenaZone target;
 
-	protected final Player player;
 	protected final ArenaType type;
+	protected final String playerName;
 	protected final UltimateArena plugin;
 
 	public ArenaCreator(Player player, String name, ArenaType type)
@@ -31,7 +32,7 @@ public abstract class ArenaCreator
 		Validate.notNull(name, "name cannot be null!");
 		Validate.notNull(type, "type cannot be null!");
 
-		this.player = player;
+		this.playerName = player.getName();
 		this.name = name;
 		this.type = type;
 		this.plugin = type.getPlugin();
@@ -171,7 +172,7 @@ public abstract class ArenaCreator
 	 */
 	public final Player getPlayer()
 	{
-		return player;
+		return Util.matchPlayer(playerName);
 	}
 
 	/**
@@ -182,7 +183,7 @@ public abstract class ArenaCreator
 	 */
 	protected final void sendMessage(String string, Object... objects)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	// ---- Generic Methods
@@ -219,6 +220,6 @@ public abstract class ArenaCreator
 	@Override
 	public String toString()
 	{
-		return "ArenaCreator { name = " + name + ", player = " + player.getName() + ", type = " + type.getName() + " }";
+		return "ArenaCreator { name = " + name + ", player = " + playerName + ", type = " + type.getName() + " }";
 	}
 }

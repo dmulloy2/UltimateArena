@@ -10,6 +10,7 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
@@ -30,13 +31,11 @@ import org.bukkit.potion.PotionEffect;
 public final class ArenaSpectator
 {
 	private boolean active;
-
-	private Arena arena;
-	private String name;
-	private String uniqueId;
 	private PlayerData playerData;
 
-	private final Player player;
+	private final Arena arena;
+	private final String name;
+	private final String uniqueId;
 	private final Location spawnBack;
 	private final UltimateArena plugin;
 
@@ -53,7 +52,6 @@ public final class ArenaSpectator
 		Validate.notNull(arena, "arena cannot be null!");
 		Validate.notNull(plugin, "plugin cannot be null!");
 
-		this.player = player;
 		this.name = player.getName();
 		this.uniqueId = player.getUniqueId().toString();
 		this.spawnBack = player.getLocation();
@@ -84,6 +82,7 @@ public final class ArenaSpectator
 		clearInventory();
 
 		// Make sure the player is in survival
+		Player player = getPlayer();
 		player.setGameMode(GameMode.SURVIVAL);
 
 		// Heal up the Player
@@ -111,6 +110,7 @@ public final class ArenaSpectator
 	{
 		reset();
 
+		Player player = getPlayer();
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
 			ap.getPlayer().showPlayer(player);
@@ -134,6 +134,7 @@ public final class ArenaSpectator
 	 */
 	public final void clearInventory()
 	{
+		Player player = getPlayer();
 		PlayerInventory inv = player.getInventory();
 
 		player.closeInventory();
@@ -150,6 +151,7 @@ public final class ArenaSpectator
 	 */
 	public final void clearPotionEffects()
 	{
+		Player player = getPlayer();
 		for (PotionEffect effect : player.getActivePotionEffects())
 		{
 			player.removePotionEffect(effect.getType());
@@ -158,7 +160,7 @@ public final class ArenaSpectator
 
 	public void sendMessage(String string, Object... objects)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
@@ -169,7 +171,7 @@ public final class ArenaSpectator
 	 */
 	public final void teleport(Location location)
 	{
-		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		getPlayer().teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
 	public final void teleport(ArenaLocation location)
@@ -179,7 +181,7 @@ public final class ArenaSpectator
 
 	public final void savePlayerData()
 	{
-		this.playerData = new PlayerData(player);
+		this.playerData = new PlayerData(getPlayer());
 	}
 
 	public final void reset()
@@ -187,6 +189,11 @@ public final class ArenaSpectator
 		clearInventory();
 		clearPotionEffects();
 		playerData.apply();
+	}
+
+	public final Player getPlayer()
+	{
+		return Util.matchPlayer(name);
 	}
 
 	// ---- Generic Methods
