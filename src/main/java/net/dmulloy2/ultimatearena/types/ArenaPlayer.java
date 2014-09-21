@@ -68,7 +68,7 @@ public final class ArenaPlayer
 	/**
 	 * Creates a new ArenaPlayer instance.
 	 *
-	 * @param player Base {@link getPlayer()} to create the ArenaPlayer around
+	 * @param player Base {@link Player} to create the ArenaPlayer around
 	 * @param arena {@link Arena} the player is in
 	 * @param plugin {@link UltimateArena} plugin instance
 	 * @throws NullPointerException if any of the arguments are null
@@ -117,9 +117,9 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gives the getPlayer() an item.
+	 * Gives the player an item.
 	 *
-	 * @param stack {@link ItemStack} to give the getPlayer()
+	 * @param stack {@link ItemStack} to give the player
 	 * @throws NullPointerException if stack is null
 	 */
 	public final void giveItem(ItemStack stack)
@@ -128,7 +128,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gives the getPlayer() a piece of armor armor.
+	 * Gives the player a piece of armor.
 	 *
 	 * @param slot Armor slot (helmet, chestplate, etc.)
 	 * @param stack {@link ItemStack} to give as armor
