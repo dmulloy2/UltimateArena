@@ -42,9 +42,8 @@ public class KOTHArena extends Arena
 	@Override
 	public void reward(ArenaPlayer ap)
 	{
-		if (ap.getPoints() >= maxPoints)
+		if (ap.getDataInt("kothPoints") >= maxPoints)
 		{
-			// If you scored at least 60 points
 			super.reward(ap);
 		}
 	}
@@ -72,13 +71,33 @@ public class KOTHArena extends Arena
 		checkEmpty();
 	}
 
+	/**
+	 * Checks if a player has enough points to win.
+	 *
+	 * @param max Max points for an arena
+	 */
+	public final void checkPlayerPoints(int max)
+	{
+		for (ArenaPlayer ap : getActivePlayers())
+		{
+			if (ap.getDataInt("kothPoints") >= max)
+			{
+				tellAllPlayers("&3Player &e{0} &3has won!", ap.getName());
+
+				stop();
+
+				reward(ap);
+			}
+		}
+	}
+
 	@Override
 	public List<ArenaPlayer> getLeaderboard()
 	{
 		Map<ArenaPlayer, Integer> pointsMap = new HashMap<>();
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			pointsMap.put(ap, ap.getPoints());
+			pointsMap.put(ap, ap.getDataInt("kothPoints"));
 		}
 
 		List<Entry<ArenaPlayer, Integer>> sortedEntries = new ArrayList<>(pointsMap.entrySet());
@@ -109,7 +128,7 @@ public class KOTHArena extends Arena
 		Map<String, Integer> pointsMap = new HashMap<>();
 		for (ArenaPlayer ap : active)
 		{
-			pointsMap.put(ap.getName(), ap.getPoints());
+			pointsMap.put(ap.getName(), ap.getDataInt("kothPoints"));
 		}
 
 		List<Entry<String, Integer>> sortedEntries = new ArrayList<>(pointsMap.entrySet());
@@ -134,7 +153,7 @@ public class KOTHArena extends Arena
 				line.append(FormatUtil.format(ap.getName() + "&r"));
 				line.append(FormatUtil.format("  &3Kills: &e{0}", ap.getKills()));
 				line.append(FormatUtil.format("  &3Deaths: &e{0}", ap.getDeaths()));
-				line.append(FormatUtil.format("  &3Points: &e{0}", ap.getPoints()));
+				line.append(FormatUtil.format("  &3Points: &e{0}", ap.getDataInt("kothPoints")));
 				leaderboard.add(line.toString());
 				pos++;
 			}

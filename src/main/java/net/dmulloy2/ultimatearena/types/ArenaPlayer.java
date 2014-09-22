@@ -3,6 +3,8 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -46,21 +48,21 @@ public final class ArenaPlayer
 	private int killStreak;
 	private int gameXP;
 	private int team = 1;
-	private int points;
 	private int amtKicked;
-	private int healTimer;
 
 	private boolean out;
 	private boolean canReward;
 	private boolean changeClassOnRespawn;
 
-	private PlayerData playerData;
-	private final Location spawnBack;
+	private Map<String, Object> data = new HashMap<>();
 
+	// Player Info
 	private final String name;
 	private final UUID uniqueId;
+	private final Location spawnBack;
 
 	private ArenaClass arenaClass;
+	private PlayerData playerData;
 
 	private final Arena arena;
 	private final UltimateArena plugin;
@@ -440,6 +442,19 @@ public final class ArenaPlayer
 	public final Player getPlayer()
 	{
 		return Util.matchPlayer(name);
+	}
+
+	public final void putData(String key, int value)
+	{
+		data.put(key, value);
+	}
+
+	public final int getDataInt(String key)
+	{
+		if (data.containsKey(key))
+			return (int) data.get(key);
+
+		return -1;
 	}
 
 	// ---- Generic Methods

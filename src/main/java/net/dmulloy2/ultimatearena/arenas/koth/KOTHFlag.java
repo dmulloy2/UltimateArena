@@ -51,8 +51,9 @@ public class KOTHFlag extends ArenaFlag
 		{
 			if (capturer != null)
 			{
-				capturer.setPoints(capturer.getPoints() + 1);
-				capturer.sendMessage("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getPoints(), arena.getMaxPoints());
+				capturer.putData("kothData", capturer.getDataInt("kothPoints") + 1);
+				capturer.sendMessage("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getDataInt("kothPoints"),
+						arena.getMaxPoints());
 				leadChange();
 			}
 		}

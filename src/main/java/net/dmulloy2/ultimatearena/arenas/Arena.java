@@ -543,26 +543,6 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Checks if a player has enough points to win.
-	 *
-	 * @param max Max points for an arena
-	 */
-	public final void checkPlayerPoints(int max)
-	{
-		for (ArenaPlayer ap : getActivePlayers())
-		{
-			if (ap.getPoints() >= max)
-			{
-				tellAllPlayers("&3Player &e{0} &3has won!", ap.getName());
-
-				stop();
-
-				reward(ap);
-			}
-		}
-	}
-
-	/**
 	 * Stops the arena if empty.
 	 *
 	 * @return Whether or not the arena is empty
@@ -936,18 +916,20 @@ public abstract class Arena implements Reloadable
 			if (isInLobby())
 				ap.decideHat(false);
 
-			// Class based stuff
-			ap.setHealTimer(ap.getHealTimer() - 1);
-
+			// Class stuff
 			ArenaClass ac = ap.getArenaClass();
 			if (ac != null)
 			{
-				if (ac.getName().equalsIgnoreCase("healer") && ap.getHealTimer() <= 0)
+				if (ac.getName().equalsIgnoreCase("healer"))
 				{
-					if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
+					ap.putData("healTimer", ap.getDataInt("healTimer") - 1);
+					if (ap.getDataInt("healTimer") <= 0)
 					{
-						ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
-						ap.setHealTimer(2);
+						if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
+						{
+							ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
+							ap.getData().put("healTimer", 2);
+						}
 					}
 				}
 
