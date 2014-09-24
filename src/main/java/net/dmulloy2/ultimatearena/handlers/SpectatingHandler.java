@@ -3,7 +3,6 @@
  */
 package net.dmulloy2.ultimatearena.handlers;
 
-import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.gui.PlayerSelectionGUI;
@@ -130,7 +129,7 @@ public class SpectatingHandler implements Listener
 			if (player.getItemInHand().getType() == Material.COMPASS)
 			{
 				PlayerSelectionGUI psGUI = new PlayerSelectionGUI(plugin, player);
-				GUIHandler.openGUI(player, psGUI);
+				plugin.getGuiHandler().open(player, psGUI);
 				event.setCancelled(true);
 			}
 		}

@@ -116,6 +116,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter ResourceHandler resourceHandler;
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
+	private @Getter GUIHandler guiHandler;
 
 	// Integration
 	private @Getter EssentialsHandler essentialsHandler;
@@ -168,6 +169,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		permissionHandler = new PermissionHandler(this);
 		// resourceHandler = new ResourceHandler(this);
 		commandHandler = new CommandHandler(this);
+		guiHandler = new GUIHandler(this);
 
 		// Register UA handlers
 		spectatingHandler = new SpectatingHandler(this);
@@ -214,8 +216,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		pm.registerEvents(new EntityListener(this), this);
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
-
-		GUIHandler.registerEvents(this);
 
 		// Load files
 		loadFiles();

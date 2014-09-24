@@ -1,6 +1,5 @@
 package net.dmulloy2.ultimatearena.commands;
 
-import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
@@ -38,7 +37,7 @@ public class CmdClass extends UltimateArenaCommand
 		if (args.length == 0)
 		{
 			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
-			GUIHandler.openGUI(player, csGUI);
+			plugin.getGuiHandler().open(player, csGUI);
 			return;
 		}
 

@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -225,7 +224,7 @@ public abstract class Arena implements Reloadable
 		if (plugin.getConfig().getBoolean("classSelector.automatic", true))
 		{
 			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
-			GUIHandler.openGUI(player, csGUI);
+			plugin.getGuiHandler().open(player, csGUI);
 		}
 
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), az.getMaxPlayers());

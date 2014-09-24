@@ -1,7 +1,6 @@
 package net.dmulloy2.ultimatearena.listeners;
 
 import lombok.AllArgsConstructor;
-import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
@@ -136,7 +135,7 @@ public class PlayerListener implements Listener
 							if (sign.getLine(1).equalsIgnoreCase("Classes"))
 							{
 								ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
-								GUIHandler.openGUI(player, csGUI);
+								plugin.getGuiHandler().open(player, csGUI);
 								return;
 							}
 						}
