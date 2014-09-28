@@ -57,15 +57,16 @@ public final class ArenaPlayer
 	private Map<String, Object> data = new HashMap<>();
 
 	// Player Info
-	private final String name;
-	private final UUID uniqueId;
-	private final Location spawnBack;
+	private String name;
+	private UUID uniqueId;
+	private Location spawnBack;
 
 	private ArenaClass arenaClass;
 	private PlayerData playerData;
 
-	private final Arena arena;
-	private final UltimateArena plugin;
+	private Player player;
+	private Arena arena;
+	private UltimateArena plugin;
 
 	/**
 	 * Creates a new ArenaPlayer instance.
@@ -77,6 +78,7 @@ public final class ArenaPlayer
 	 */
 	public ArenaPlayer(Player player, Arena arena, UltimateArena plugin)
 	{
+		this.player = player;
 		this.name = player.getName();
 		this.uniqueId = player.getUniqueId();
 		this.spawnBack = player.getLocation();
@@ -441,7 +443,7 @@ public final class ArenaPlayer
 	 */
 	public final Player getPlayer()
 	{
-		return Util.matchPlayer(name);
+		return player;
 	}
 
 	public final void putData(String key, int value)
@@ -455,6 +457,20 @@ public final class ArenaPlayer
 			return (int) data.get(key);
 
 		return -1;
+	}
+
+	/**
+	 * Clears this player's memory.
+	 */
+	public final void clear()
+	{
+		data.clear();
+		data = null;
+		uniqueId = null;
+		spawnBack = null;
+		player = null;
+		arena = null;
+		plugin = null;
 	}
 
 	// ---- Generic Methods

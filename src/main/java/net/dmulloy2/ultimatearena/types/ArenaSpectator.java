@@ -10,7 +10,6 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
@@ -33,11 +32,12 @@ public final class ArenaSpectator
 	private boolean active;
 	private PlayerData playerData;
 
-	private final Arena arena;
-	private final String name;
-	private final String uniqueId;
-	private final Location spawnBack;
-	private final UltimateArena plugin;
+	private Arena arena;
+	private String name;
+	private Player player;
+	private String uniqueId;
+	private Location spawnBack;
+	private UltimateArena plugin;
 
 	/**
 	 * Creates a new ArenaSpectator instance
@@ -52,6 +52,7 @@ public final class ArenaSpectator
 		Validate.notNull(arena, "arena cannot be null!");
 		Validate.notNull(plugin, "plugin cannot be null!");
 
+		this.player = player;
 		this.name = player.getName();
 		this.uniqueId = player.getUniqueId().toString();
 		this.spawnBack = player.getLocation();
@@ -193,7 +194,20 @@ public final class ArenaSpectator
 
 	public final Player getPlayer()
 	{
-		return Util.matchPlayer(name);
+		return player;
+	}
+
+	/**
+	 * Clears this spectator's memory.
+	 */
+	public final void clear()
+	{
+		arena = null;
+		name = null;
+		player = null;
+		uniqueId = null;
+		spawnBack = null;
+		plugin = null;
 	}
 
 	// ---- Generic Methods

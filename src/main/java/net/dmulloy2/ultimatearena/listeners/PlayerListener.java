@@ -9,6 +9,7 @@ import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaSpectator;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
@@ -53,16 +54,19 @@ public class PlayerListener implements Listener
 		if (ac != null)
 		{
 			plugin.getMakingArena().remove(ac);
-
-			plugin.outConsole("{0} stopping the creation of {1} from quit", player.getName(), ac.getArenaName());
+			plugin.outConsole("{0} stopping the creation of {1} from quit.", player.getName(), ac.getArenaName());
 		}
 
-		ArenaPlayer ap = plugin.getArenaPlayer(player);
-		if (ap != null)
+		ArenaPlayer ap = null;
+		while ((ap = plugin.getArenaPlayer(player, true)) != null)
 		{
-			ap.leaveArena(LeaveReason.QUIT);
+			if (! ap.isOut())
+			{
+				ap.leaveArena(LeaveReason.QUIT);
+				plugin.outConsole("{0} leaving arena {1} from quit.", ap.getName(), ap.getArena().getName());
+			}
 
-			plugin.outConsole("{0} leaving arena {1} from quit", ap.getName(), ap.getArena().getName());
+			ap.clear();
 		}
 
 		ArenaJoinTask task = plugin.getWaiting().get(player.getName());
@@ -72,9 +76,11 @@ public class PlayerListener implements Listener
 			plugin.getWaiting().remove(player.getName());
 		}
 
-		if (plugin.getSpectatingHandler().isSpectating(player))
+		ArenaSpectator as = plugin.getSpectatingHandler().getSpectator(player);
+		if (as != null)
 		{
-			plugin.getSpectatingHandler().removeSpectator(player);
+			as.clear();
+			plugin.getSpectatingHandler().removeSpectator(as);
 		}
 
 		if (player.hasMetadata("UA"))
