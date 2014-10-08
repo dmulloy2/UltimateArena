@@ -1,5 +1,7 @@
 package net.dmulloy2.ultimatearena.listeners;
 
+import java.util.logging.Level;
+
 import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -15,6 +17,7 @@ import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -50,6 +53,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 
+		try { // TODO - Temporary debug measure, bodyless exception
 		ArenaCreator ac = plugin.getArenaCreator(player);
 		if (ac != null)
 		{
@@ -85,6 +89,9 @@ public class PlayerListener implements Listener
 
 		if (player.hasMetadata("UA"))
 			player.removeMetadata("UA", plugin);
+		} catch (Throwable ex) { // TODO - Temporary debug measure, bodyless exception
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "onPlayerQuit(" + player + ")"));
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
