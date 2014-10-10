@@ -53,7 +53,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 
-		try { // TODO - Temporary debug measure, bodyless exception
+		try { // TODO: Bodyless exception
 		ArenaCreator ac = plugin.getArenaCreator(player);
 		if (ac != null)
 		{
@@ -89,8 +89,8 @@ public class PlayerListener implements Listener
 
 		if (player.hasMetadata("UA"))
 			player.removeMetadata("UA", plugin);
-		} catch (Throwable ex) { // TODO - Temporary debug measure, bodyless exception
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "onPlayerQuit(" + player + ")"));
+		} catch (Throwable ex) { // TODO: Bodyless exception
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "handling PlayerQuitEvent"));
 		}
 	}
 
@@ -130,6 +130,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
+		try { // TODO: Bodyless exception
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		if (block != null)
@@ -241,6 +242,9 @@ public class PlayerListener implements Listener
 					}
 				}
 			}
+		}
+		} catch (Throwable ex) { // TODO: Bodyless exception
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "handling PlayerInteractEvent"));
 		}
 	}
 
