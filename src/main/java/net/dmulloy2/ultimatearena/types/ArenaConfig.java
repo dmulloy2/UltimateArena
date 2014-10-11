@@ -14,12 +14,11 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dmulloy2.types.ItemParser;
 import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.types.Transformation;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
@@ -134,24 +133,11 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			this.canModifyWorld = fc.getBoolean("canModifyWorld", def.isCanModifyWorld());
 			this.unlimitedAmmo = fc.getBoolean("unlimitedAmmo", def.isUnlimitedAmmo());
 
+			ItemParser parser = new ItemParser(plugin);
+
 			if (fc.isSet("rewards"))
 			{
-				this.rewards = ListUtil.transform(fc.getStringList("rewards"), new Transformation<String, ItemStack>()
-				{
-					@Override
-					public ItemStack transform(String string)
-					{
-						try
-						{
-							return ItemUtil.readItem(string);
-						}
-						catch (Throwable ex)
-						{
-							plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + string + "\""));
-							return null;
-						}
-					}
-				});
+				this.rewards = parser.parse(fc.getStringList("rewards"));
 			}
 			else
 			{
@@ -221,17 +207,9 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 						else
 						{
 							String item = FormatUtil.join(",", Arrays.copyOfRange(split, 2, split.length));
-
-							try
-							{
-								ItemStack stack = ItemUtil.readItem(item);
-								if (stack != null)
-									streaks.add(new KillStreak(kills, message, stack));
-							}
-							catch (Throwable ex)
-							{
-								plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + item + "\""));
-							}
+							ItemStack stack = parser.parse(item);
+							if (stack != null)
+								streaks.add(new KillStreak(kills, message, stack));
 						}
 					}
 

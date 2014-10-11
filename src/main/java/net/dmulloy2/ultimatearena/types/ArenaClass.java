@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import lombok.Getter;
 import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.EnchantmentType;
+import net.dmulloy2.types.ItemParser;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -151,6 +152,9 @@ public final class ArenaClass implements Reloadable
 				}
 			}
 
+			// Item Parser
+			ItemParser parser = new ItemParser(plugin);
+
 			if (fc.isSet("tools"))
 			{
 				int nextSlot = 0;
@@ -160,16 +164,9 @@ public final class ArenaClass implements Reloadable
 					int slot = NumberUtil.toInt(entry.getKey());
 					String value = entry.getValue().toString();
 
-					try
-					{
-						ItemStack stack = ItemUtil.readItem(value);
-						if (stack != null)
-							tools.put(slot == -1 ? nextSlot : slot - 1, stack);
-					}
-					catch (Throwable ex)
-					{
-						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item \"" + value + "\""));
-					}
+					ItemStack stack = parser.parse(value);
+					if (stack != null)
+						tools.put(slot == -1 ? nextSlot : slot - 1, stack);
 
 					nextSlot++;
 				}
@@ -217,16 +214,7 @@ public final class ArenaClass implements Reloadable
 			permissionNode = "ultimatearena.class." + name.toLowerCase();
 
 			if (fc.isSet("icon"))
-			{
-				try
-				{
-					icon = ItemUtil.readItem(fc.getString("icon"));
-				}
-				catch (Throwable ex)
-				{
-					plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing item " + fc.getString("icon")));
-				}
-			}
+				icon = parser.parse(fc.getString("icon"));
 
 			if (icon == null)
 			{
