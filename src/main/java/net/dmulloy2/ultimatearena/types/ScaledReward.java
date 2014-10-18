@@ -4,8 +4,8 @@
 package net.dmulloy2.ultimatearena.types;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import net.dmulloy2.types.MyMaterial;
+import lombok.Getter;
+import net.dmulloy2.util.ItemUtil;
 import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.inventory.ItemStack;
@@ -14,27 +14,29 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-@Data
+@Getter
 @AllArgsConstructor
 public class ScaledReward
 {
-	private final MyMaterial type;
+	private final ItemStack item;
 	private final double scale;
 
-	public final ItemStack get(int xp)
+	public ItemStack get(int xp)
 	{
-		int amount = (int) Math.round(xp / scale);
-		return type.newItemStack(amount);
+		ItemStack ret = item.clone();
+		ret.setAmount((int) (xp / scale));
+		return ret;
 	}
 
-	public static final ScaledReward fromString(String string)
+	public static ScaledReward fromString(String string)
 	{
 		try
 		{
 			string = string.replaceAll(" ", "");
-			MyMaterial type = MyMaterial.fromString(string.substring(0, string.lastIndexOf(",")));
-			double scale = NumberUtil.toDouble(string.substring(string.lastIndexOf("," + 1)));
-			return new ScaledReward(type, scale);
+			ItemStack item = ItemUtil.readItem(string.substring(0, string.lastIndexOf(",")));
+			double scale = NumberUtil.toDouble(string.substring(string.lastIndexOf(",") + 1));
+			if (item != null && scale != -1)
+				return new ScaledReward(item, scale);
 		} catch (Throwable ex) { }
 		return null;
 	}

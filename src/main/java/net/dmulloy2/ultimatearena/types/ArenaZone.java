@@ -309,24 +309,21 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 		plugin.debug("Rewarding player {0}", ap.getName());
 
-		for (ItemStack stack : config.getRewards())
+		if (! config.getScaledRewards().isEmpty())
 		{
-			if (stack == null)
-				continue;
-
-			stack = stack.clone();
-			int amt = stack.getAmount();
-
-			// Gradient based, if applicable
-			if (config.isRewardBasedOnXp())
-				amt = (int) Math.round(ap.getGameXP() / 200.0D);
-
-			if (amt > 0)
+			int xp = ap.getGameXP();
+			for (ScaledReward reward : config.getScaledRewards())
 			{
-				stack.setAmount(amt);
-
-				// Give the item
-				ap.giveItem(stack);
+				if (reward != null)
+					ap.giveItem(reward.get(xp));
+			}
+		}
+		else
+		{
+			for (ItemStack stack : config.getRewards())
+			{
+				if (stack != null)
+					ap.giveItem(stack.clone());
 			}
 		}
 

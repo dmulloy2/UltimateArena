@@ -493,7 +493,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public void reward(ArenaPlayer ap)
 	{
-		if (az.getConfig().isGiveRewards() && ap != null)
+		if (ap != null && az.getConfig().isGiveRewards())
 			az.giveRewards(ap);
 	}
 

@@ -4,7 +4,6 @@
 package net.dmulloy2.ultimatearena.arenas.mob;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.KillStreak;
-import net.dmulloy2.ultimatearena.types.ScaledReward;
 import net.dmulloy2.util.ItemUtil;
 
 import org.bukkit.Material;
@@ -31,7 +29,6 @@ import org.bukkit.inventory.ItemStack;
 public class MobConfig extends ArenaConfig
 {
 	private int maxWave;
-	private List<ScaledReward> scaledRewards;
 
 	public MobConfig(UltimateArena plugin, String type, File file)
 	{
@@ -54,21 +51,6 @@ public class MobConfig extends ArenaConfig
 	public void loadCustomOptions(YamlConfiguration fc, ArenaConfig def)
 	{
 		this.maxWave = fc.getInt("maxWave", ((MobConfig) def).getMaxWave());
-
-		if (fc.isSet("scaledRewards"))
-		{
-			this.scaledRewards = new ArrayList<>();
-			for (String string : fc.getStringList("scaledRewards"))
-			{
-				ScaledReward reward = ScaledReward.fromString(string);
-				if (reward != null)
-					scaledRewards.add(reward);
-			}
-		}
-		else
-		{
-			this.scaledRewards = ((MobConfig) def).getScaledRewards();
-		}
 	}
 
 	@Override

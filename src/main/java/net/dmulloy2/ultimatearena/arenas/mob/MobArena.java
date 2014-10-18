@@ -3,7 +3,6 @@ package net.dmulloy2.ultimatearena.arenas.mob;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -139,10 +138,10 @@ public class MobArena extends Arena
 		if (defaultRewards == null)
 		{
 			defaultRewards = new ArrayList<>();
-			defaultRewards.add(new ScaledReward(new MyMaterial(Material.GOLD_INGOT), 500.0D));
-			defaultRewards.add(new ScaledReward(new MyMaterial(Material.SLIME_BALL), 550.0D));
-			defaultRewards.add(new ScaledReward(new MyMaterial(Material.GLOWSTONE_DUST), 450.0D));
-			defaultRewards.add(new ScaledReward(new MyMaterial(Material.SULPHUR), 425.0D));
+			defaultRewards.add(new ScaledReward(new ItemStack(Material.GOLD_INGOT), 500.0D));
+			defaultRewards.add(new ScaledReward(new ItemStack(Material.SLIME_BALL), 550.0D));
+			defaultRewards.add(new ScaledReward(new ItemStack(Material.GLOWSTONE_DUST), 450.0D));
+			defaultRewards.add(new ScaledReward(new ItemStack(Material.SULPHUR), 425.0D));
 		}
 
 		return defaultRewards;

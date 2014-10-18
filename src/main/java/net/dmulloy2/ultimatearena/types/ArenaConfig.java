@@ -48,6 +48,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	protected List<Material> clearMaterials;
 
 	protected transient List<ItemStack> rewards;
+	protected transient List<ScaledReward> scaledRewards;
 	protected transient Map<Integer, List<KillStreak>> killStreaks;
 
 	// ---- Transient
@@ -86,6 +87,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 	private final void setDefaults()
 	{
 		this.rewards = new ArrayList<>();
+		this.scaledRewards = new ArrayList<>();
 		this.clearMaterials = new ArrayList<>();
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
@@ -132,16 +134,46 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			this.countMobKills = fc.getBoolean("countMobKills", def.isCountMobKills());
 			this.canModifyWorld = fc.getBoolean("canModifyWorld", def.isCanModifyWorld());
 			this.unlimitedAmmo = fc.getBoolean("unlimitedAmmo", def.isUnlimitedAmmo());
+			this.giveRewards = fc.getBoolean("giveRewards", def.isGiveRewards());
+			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", def.isRewardBasedOnXp());
 
 			ItemParser parser = new ItemParser(plugin);
 
-			if (fc.isSet("rewards"))
+			if (giveRewards)
 			{
-				this.rewards = parser.parse(fc.getStringList("rewards"));
-			}
-			else
-			{
-				this.rewards = def.getRewards();
+				if (fc.isSet("rewards"))
+				{
+					this.rewards = parser.parse(fc.getStringList("rewards"));
+				}
+				else
+				{
+					this.rewards = def.getRewards();
+				}
+
+				if (fc.isSet("scaledRewards"))
+				{
+					for (String string : fc.getStringList("scaledRewards"))
+					{
+						ScaledReward reward = ScaledReward.fromString(string);
+						if (reward != null)
+							scaledRewards.add(reward);
+					}
+				}
+				else
+				{
+					if (rewardBasedOnXp)
+					{
+						for (ItemStack item : rewards)
+						{
+							ScaledReward reward = new ScaledReward(item, 200.0D);
+							scaledRewards.add(reward);
+						}
+					}
+					else
+					{
+						this.scaledRewards = def.getScaledRewards();
+					}
+				}
 			}
 
 			if (fc.isSet("clearMaterials"))
@@ -152,9 +184,6 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			{
 				this.clearMaterials = def.getClearMaterials();
 			}
-
-			this.giveRewards = fc.getBoolean("giveRewards", def.isGiveRewards());
-			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", def.isRewardBasedOnXp());
 
 			this.blacklistedClasses = def.getBlacklistedClasses();
 			if (fc.isSet("blacklistedClasses"))
