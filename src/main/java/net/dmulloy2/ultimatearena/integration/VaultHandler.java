@@ -74,4 +74,22 @@ public class VaultHandler extends IntegrationHandler
 
 		return null;
 	}
+
+	@SuppressWarnings("deprecation") // Backwards Compatibility
+	public final EconomyResponse withdrawPlayer(Player player, double amount)
+	{
+		if (economy != null)
+		{
+			try
+			{
+				return economy.withdrawPlayer(player, amount);
+			}
+			catch (Throwable ex)
+			{
+				return economy.withdrawPlayer(player.getName(), amount);
+			}
+		}
+
+		return null;
+	}
 }

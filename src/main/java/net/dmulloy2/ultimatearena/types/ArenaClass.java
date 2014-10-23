@@ -45,6 +45,7 @@ public final class ArenaClass implements Reloadable
 	private Map<String, ItemStack> armor;
 
 	private boolean useHelmet = true;
+	private double cost = -1.0D;
 
 	// Essentials Integration
 	private String essKitName;
@@ -200,6 +201,7 @@ public final class ArenaClass implements Reloadable
 			}
 
 			useHelmet = fc.getBoolean("useHelmet", true);
+			cost = fc.getDouble("cost", -1.0D);
 
 			if (fc.isSet("permissionNode"))
 			{
