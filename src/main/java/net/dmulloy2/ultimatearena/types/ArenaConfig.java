@@ -150,6 +150,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 					this.rewards = def.getRewards();
 				}
 
+				this.scaledRewards = new ArrayList<>();
 				if (fc.isSet("scaledRewards"))
 				{
 					for (String string : fc.getStringList("scaledRewards"))
@@ -166,7 +167,8 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 						for (ItemStack item : rewards)
 						{
 							ScaledReward reward = new ScaledReward(item, 200.0D);
-							scaledRewards.add(reward);
+							if (reward != null)
+								scaledRewards.add(reward);
 						}
 					}
 					else
