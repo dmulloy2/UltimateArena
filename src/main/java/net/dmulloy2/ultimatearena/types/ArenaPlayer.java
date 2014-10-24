@@ -377,29 +377,26 @@ public final class ArenaPlayer
 		switch (reason)
 		{
 			case COMMAND:
-				arena.endPlayer(this, false);
-
+				arena.endPlayer(this);
 				sendMessage("&3You have left the arena!");
-
 				arena.tellPlayers("&e{0} &3has left the arena!", name);
 				break;
 			case DEATHS:
-				arena.endPlayer(this, true);
+				arena.endPlayer(this);
+				sendMessage("&3You have exceeded the death limit!");
+				arena.tellPlayers("&e{0} &3has been eliminated!", name);
 				break;
 			case KICK:
-				arena.endPlayer(this, false);
-
+				arena.endPlayer(this);
 				sendMessage("&cYou have been kicked from the arena!");
-
 				arena.tellPlayers("&e{0} &3has been kicked from the arena!", name);
 				break;
 			case QUIT:
-				arena.endPlayer(this, false);
-
+				arena.endPlayer(this, true);
 				arena.tellPlayers("&e{0} &3has left the arena!", name);
 				break;
 			default:
-				arena.endPlayer(this, false);
+				arena.endPlayer(this);
 				break;
 		}
 	}

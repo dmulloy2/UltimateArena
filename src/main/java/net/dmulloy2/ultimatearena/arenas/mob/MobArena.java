@@ -91,10 +91,9 @@ public class MobArena extends Arena
 	}
 
 	@Override
-	public void endPlayer(ArenaPlayer ap, boolean end)
+	public void onPlayerQuit(ArenaPlayer ap)
 	{
-		super.endPlayer(ap, end);
-		this.reward(ap);
+		reward(ap);
 	}
 
 	@Override

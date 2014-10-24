@@ -329,7 +329,7 @@ public abstract class Arena implements Reloadable
 	{
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			if (ap.getUniqueId().equals(player.getUniqueId()))
+			if (player.getUniqueId().equals(ap.getUniqueId()))
 				return ap;
 		}
 
@@ -337,7 +337,7 @@ public abstract class Arena implements Reloadable
 		{
 			for (ArenaPlayer ap : getInactivePlayers())
 			{
-				if (ap.getUniqueId().equals(player.getUniqueId()))
+				if (player.getUniqueId().equals(ap.getUniqueId()))
 					return ap;
 			}
 		}
@@ -753,14 +753,25 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
+	 * Alias for {@link #endPlayer(ArenaPlayer, boolean)}.
+	 * <p>
+	 * Same as calling {@code endPlayer(ap, false)}.
+	 */
+	public final void endPlayer(ArenaPlayer ap)
+	{
+		endPlayer(ap, false);
+	}
+
+	/**
 	 * Ends an {@link ArenaPlayer}.
 	 *
-	 * @param ap {@link ArenaPlayer} to end
-	 * @param dead Whether or not the player died
+	 * @param ap Player to end
+	 * @param deathLimit Whether or not they exceeded the death limit
+	 * @param disconnect Whether or not they disconnected
 	 */
-	public void endPlayer(ArenaPlayer ap, boolean dead)
+	public final void endPlayer(ArenaPlayer ap, boolean disconnect)
 	{
-		plugin.debug("Ending Player: {0} Dead: {1}", ap.getName(), dead);
+		plugin.debug("Ending player {0}, disconnect: {1}", ap.getName(), disconnect);
 
 		ap.reset();
 		ap.teleport(ap.getSpawnBack());
@@ -769,18 +780,11 @@ public abstract class Arena implements Reloadable
 		updatedTeams = true;
 
 		active.remove(ap);
-		inactive.add(ap);
-
-		if (dead)
-		{
-			ap.sendMessage("&3You have exceeded the death limit!");
-			tellPlayers("&e{0} &3has been eliminated!", ap.getName());
-		}
+		if (! disconnect)
+			inactive.add(ap);
 
 		if (active.size() > 1)
-		{
 			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
-		}
 
 		// API call
 		onPlayerQuit(ap);
