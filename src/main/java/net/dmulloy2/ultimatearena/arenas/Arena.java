@@ -766,12 +766,11 @@ public abstract class Arena implements Reloadable
 	 * Ends an {@link ArenaPlayer}.
 	 *
 	 * @param ap Player to end
-	 * @param deathLimit Whether or not they exceeded the death limit
-	 * @param disconnect Whether or not they disconnected
+	 * @param disconnected Whether or not they disconnected
 	 */
-	public final void endPlayer(ArenaPlayer ap, boolean disconnect)
+	public final void endPlayer(ArenaPlayer ap, boolean disconnected)
 	{
-		plugin.debug("Ending player {0}, disconnect: {1}", ap.getName(), disconnect);
+		plugin.debug("Ending player {0}, disconnected: {1}", ap.getName(), disconnected);
 
 		ap.reset();
 		ap.teleport(ap.getSpawnBack());
@@ -780,7 +779,7 @@ public abstract class Arena implements Reloadable
 		updatedTeams = true;
 
 		active.remove(ap);
-		if (! disconnect)
+		if (! disconnected)
 			inactive.add(ap);
 
 		if (active.size() > 1)
