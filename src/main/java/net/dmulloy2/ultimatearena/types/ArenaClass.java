@@ -19,6 +19,7 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
+import net.milkbowl.vault.economy.Economy;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
@@ -201,7 +202,6 @@ public final class ArenaClass implements Reloadable
 			}
 
 			useHelmet = fc.getBoolean("useHelmet", true);
-			cost = fc.getDouble("cost", -1.0D);
 
 			if (fc.isSet("permissionNode"))
 			{
@@ -229,6 +229,13 @@ public final class ArenaClass implements Reloadable
 			{
 				for (String line : fc.getStringList("description"))
 					description.add(FormatUtil.format("&7" + line));
+			}
+
+			cost = fc.getDouble("cost", -1.0D);
+			if (cost != -1.0D)
+			{
+				Economy eco = plugin.getVaultHandler().getEconomy();
+				description.add(FormatUtil.format("&7Cost: &a{0}", eco.format(cost)));
 			}
 
 			ItemMeta meta = icon.getItemMeta();

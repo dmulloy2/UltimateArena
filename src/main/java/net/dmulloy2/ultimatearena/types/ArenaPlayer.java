@@ -220,13 +220,13 @@ public final class ArenaPlayer
 				EconomyResponse response = plugin.getVaultHandler().withdrawPlayer(player, ac.getCost());
 				if (! response.transactionSuccess())
 				{
-					sendMessage("&cCould not purchace class {0}: {1}", ac.getName(), response.errorMessage);
+					sendMessage("&cCould not purchase class {0}: {1}", ac.getName(), response.errorMessage);
 					return false;
 				}
 				else
 				{
 					String format = plugin.getVaultHandler().getEconomy().format(ac.getCost());
-					sendMessage("&3You have purchaced class &e{0} &3for &e{1}", ac.getName(), format);
+					sendMessage("&3You have purchased class &e{0} &3for &e{1}", ac.getName(), format);
 				}
 			}
 
