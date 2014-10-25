@@ -14,6 +14,8 @@ import lombok.Setter;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
+import net.dmulloy2.ultimatearena.api.event.ArenaJoinEvent;
+import net.dmulloy2.ultimatearena.api.event.ArenaLeaveEvent;
 import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
 import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
@@ -175,6 +177,15 @@ public abstract class Arena implements Reloadable
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Joining arena &e{0}&3... Please wait!", name));
 
 		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
+
+		ArenaJoinEvent event = new ArenaJoinEvent(player, pl, this);
+		plugin.getServer().getPluginManager().callEvent(event);
+		if (event.isCancelled())
+		{
+			pl.sendMessage(event.getCancelMessage() != null ? event.getCancelMessage() : "&3Unexpected exit!");
+			pl.clear();
+			return;
+		}
 
 		// Set their team
 		pl.setTeam(team == -1 ? getTeam() : team);
@@ -787,6 +798,10 @@ public abstract class Arena implements Reloadable
 
 		// API call
 		onPlayerQuit(ap);
+
+		// Event
+		ArenaLeaveEvent event = new ArenaLeaveEvent(ap.getPlayer(), ap, this);
+		plugin.getServer().getPluginManager().callEvent(event);
 	}
 
 	/**
