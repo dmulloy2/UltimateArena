@@ -308,6 +308,19 @@ public final class ArenaPlayer
 	}
 
 	/**
+	 * Displays the player's ingame statistics.
+	 */
+	public final void displayStats()
+	{
+		getPlayer().sendMessage(FormatUtil.format("&3----------------------------"));
+		getPlayer().sendMessage(FormatUtil.format("&3Kills: &e{0}", kills));
+		getPlayer().sendMessage(FormatUtil.format("&3Deaths: &e{0}", deaths));
+		getPlayer().sendMessage(FormatUtil.format("&3Streak: &e{0}", killStreak));
+		getPlayer().sendMessage(FormatUtil.format("&3GameXP: &e{0}", gameXP));
+		getPlayer().sendMessage(FormatUtil.format("&3----------------------------"));
+	}
+
+	/**
 	 * Gives the player xp.
 	 *
 	 * @param xp XP to give the player
