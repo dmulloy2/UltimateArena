@@ -3,7 +3,9 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -55,6 +57,7 @@ public final class ArenaPlayer
 	private boolean canReward;
 	private boolean changeClassOnRespawn;
 
+	private List<Double> transactions = new ArrayList<>();
 	private Map<String, Object> data = new HashMap<>();
 
 	// Player Info
@@ -228,6 +231,10 @@ public final class ArenaPlayer
 					String format = plugin.getVaultHandler().getEconomy().format(ac.getCost());
 					sendMessage("&3You have purchased class &e{0} &3for &e{1}", ac.getName(), format);
 				}
+
+				// Add to refund list if they didn't go negative, prevents exploiting
+				if (plugin.getVaultHandler().getEconomy().getBalance(player) > 0)
+					transactions.add(ac.getCost());
 			}
 
 			this.arenaClass = ac;
@@ -387,6 +394,21 @@ public final class ArenaPlayer
 	 */
 	public final void leaveArena(LeaveReason reason)
 	{
+		// Refund transactions if the arena didn't start
+		if (! arena.isStarted() && ! transactions.isEmpty())
+		{
+			double refund = 0;
+			for (double transaction : transactions)
+				refund += transaction;
+
+			if (refund > 0)
+			{
+				plugin.getVaultHandler().depositPlayer(player, refund);
+				String format = plugin.getVaultHandler().getEconomy().format(refund);
+				sendMessage("&3You have been refunded &e{0} &3for your class purchases.", format);
+			}
+		}
+
 		switch (reason)
 		{
 			case COMMAND:
