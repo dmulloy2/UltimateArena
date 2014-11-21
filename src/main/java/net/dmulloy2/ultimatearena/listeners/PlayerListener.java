@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.listeners;
 
-import java.util.logging.Level;
-
 import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -17,7 +15,6 @@ import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,8 +49,6 @@ public class PlayerListener implements Listener
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		Player player = event.getPlayer();
-
-		try { // TODO: Bodyless exception
 		ArenaCreator ac = plugin.getArenaCreator(player);
 		if (ac != null)
 		{
@@ -89,9 +84,6 @@ public class PlayerListener implements Listener
 
 		if (player.hasMetadata("UA"))
 			player.removeMetadata("UA", plugin);
-		} catch (Throwable ex) { // TODO: Bodyless exception
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "handling PlayerQuitEvent"));
-		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -130,7 +122,6 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		try { // TODO: Bodyless exception
 		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		if (block != null)
@@ -242,9 +233,6 @@ public class PlayerListener implements Listener
 					}
 				}
 			}
-		}
-		} catch (Throwable ex) { // TODO: Bodyless exception
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "handling PlayerInteractEvent"));
 		}
 	}
 
