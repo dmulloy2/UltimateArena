@@ -180,14 +180,14 @@ public class CTFFlag
 		}
 		else
 		{
-			// Make sure the player is online, alive, and still in
-			if (! riding.isOut() && ! riding.isDead() && riding.getPlayer().isOnline())
+			// Ensure that the player is online, alive, and in the game
+			if (riding.isOut() || riding.isDead() || ! riding.getPlayer().isOnline())
 			{
-				toloc = riding.getPlayer().getLocation().clone().add(0, 5, 0);
+				fall();
 			}
 			else
 			{
-				fall();
+				toloc = riding.getPlayer().getLocation().clone().add(0.0D, 5.0D, 0.0D);
 			}
 
 			this.myloc = toloc.clone();
@@ -197,6 +197,12 @@ public class CTFFlag
 	}
 
 	public final void onPlayerQuit(ArenaPlayer ap)
+	{
+		if (riding != null && riding.equals(ap))
+			fall();
+	}
+
+	public final void onPlayerDeath(ArenaPlayer ap)
 	{
 		if (riding != null && riding.equals(ap))
 			fall();
