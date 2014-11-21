@@ -43,14 +43,14 @@ public class BombFlag extends ArenaFlag
 			timer--;
 			Util.playEffect(Effect.STEP_SOUND, location, Material.COBBLESTONE);
 
-			if (timer == 30 || timer == 20 || timer == 10 || timer <= 5)
+			if (! exploded)
 			{
-				arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{1} &3seconds!", bombNumber, timer);
-			}
+				if (timer == 30 || timer == 20 || timer == 10 || timer <= 5)
+				{
+					arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{1} &3seconds!", bombNumber, timer);
+				}
 
-			if (timer < 1)
-			{
-				if (! exploded)
+				if (timer < 1)
 				{
 					Util.playEffect(Effect.EXTINGUISH, location, null);
 
@@ -62,13 +62,11 @@ public class BombFlag extends ArenaFlag
 
 					if (ba != null)
 					{
-						int amte = 0;
-						if (ba.getBomb1().isExploded())
-							amte++;
+						int bombs = ba.getBomb1().isExploded() ? 1 : 0;
 						if (ba.getBomb2().isExploded())
-							amte++;
+							bombs++;
 
-						if (amte == 0)
+						if (bombs == 0)
 							arena.killAllNear(location, 12.0D);
 					}
 
@@ -108,7 +106,7 @@ public class BombFlag extends ArenaFlag
 					{
 						// team 1 is fusing
 						fuser++;
-						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10)", bombNumber, fuser);
+						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", bombNumber, fuser);
 						if (fuser >= 10)
 						{
 							fuser = 0;
