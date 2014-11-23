@@ -98,7 +98,6 @@ public abstract class Arena implements Reloadable
 	protected boolean stopped;
 	protected boolean started;
 
-	protected boolean updatedTeams;
 	protected boolean disabled;
 	protected boolean inLobby;
 	protected boolean inGame;
@@ -189,7 +188,6 @@ public abstract class Arena implements Reloadable
 
 		// Set their team
 		pl.setTeam(team == -1 ? getTeam() : team);
-		this.updatedTeams = true;
 
 		// Teleport the player to the lobby spawn
 		spawnLobby(pl);
@@ -783,25 +781,25 @@ public abstract class Arena implements Reloadable
 	{
 		plugin.debug("Ending player {0}, disconnected: {1}", ap.getName(), disconnected);
 
+		// API stuff
+		onPlayerQuit(ap);
+
+		ArenaLeaveEvent event = new ArenaLeaveEvent(ap.getPlayer(), ap, this);
+		plugin.getServer().getPluginManager().callEvent(event);
+
+		// Reset them
 		ap.reset();
 		ap.teleport(ap.getSpawnBack());
 
 		ap.setOut(true);
-		updatedTeams = true;
 
+		// Remove from lists
 		active.remove(ap);
 		if (! disconnected)
 			inactive.add(ap);
 
 		if (active.size() > 1)
 			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
-
-		// API call
-		onPlayerQuit(ap);
-
-		// Event
-		ArenaLeaveEvent event = new ArenaLeaveEvent(ap.getPlayer(), ap, this);
-		plugin.getServer().getPluginManager().callEvent(event);
 	}
 
 	/**
