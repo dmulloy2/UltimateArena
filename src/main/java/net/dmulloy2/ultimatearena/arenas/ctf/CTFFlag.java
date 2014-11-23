@@ -181,7 +181,7 @@ public class CTFFlag
 		else
 		{
 			// Ensure that the player is online, alive, and in the game
-			if (riding.isOut() || riding.isDead() || ! riding.getPlayer().isOnline())
+			if (riding.isOut() || riding.isDead() || ! riding.isOnline())
 			{
 				fall();
 			}

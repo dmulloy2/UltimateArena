@@ -521,6 +521,11 @@ public final class ArenaPlayer
 		plugin = null;
 	}
 
+	public final boolean isOnline()
+	{
+		return player != null && player.isOnline();
+	}
+
 	// ---- Generic Methods
 
 	/**

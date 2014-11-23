@@ -60,7 +60,7 @@ public class CTFFlagBase extends FlagBase
 		for (ArenaPlayer ap : arenaPlayers)
 		{
 			Player player = ap.getPlayer();
-			if (ap.getPlayer().isOnline() && player.getHealth() > 0.0D)
+			if (ap.isOnline() && player.getHealth() > 0.0D)
 			{
 				if (ap.getTeam() == team)
 				{

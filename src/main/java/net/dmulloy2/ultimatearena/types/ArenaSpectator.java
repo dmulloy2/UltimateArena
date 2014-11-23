@@ -119,7 +119,7 @@ public final class ArenaSpectator
 
 		for (ArenaPlayer ap : arena.getInactivePlayers())
 		{
-			if (ap != null && ap.getPlayer().isOnline())
+			if (ap != null && ap.isOnline())
 			{
 				ap.getPlayer().showPlayer(player);
 			}

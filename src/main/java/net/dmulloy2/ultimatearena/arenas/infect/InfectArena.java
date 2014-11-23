@@ -75,7 +75,7 @@ public class InfectArena extends PvPArena
 		if (tries < 16)
 		{
 			ArenaPlayer ap = active.get(Util.random(active.size()));
-			if (ap != null && ap.getPlayer().isOnline())
+			if (ap != null && ap.isOnline())
 			{
 				ap.setTeam(2);
 				ap.sendMessage("&3You have been chosen for the infected!");

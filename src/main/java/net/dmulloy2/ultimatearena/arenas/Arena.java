@@ -609,7 +609,7 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : inactive)
 		{
-			if (ap != null && ap.getPlayer().isOnline())
+			if (ap != null && ap.isOnline())
 			{
 				ap.sendMessage(string, objects);
 			}
@@ -915,7 +915,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// Make sure they're still online
-			if (! ap.getPlayer().isOnline())
+			if (! ap.isOnline())
 			{
 				// Attempt to end them
 				ap.leaveArena(LeaveReason.QUIT);
