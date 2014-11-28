@@ -9,7 +9,6 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.Util;
 
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,15 +35,12 @@ public class CTFFlag
 	protected Location toloc;
 	protected Location lastloc;
 
-	
 	protected int timer = 15;
 
 	protected boolean pickedUp;
 	protected boolean stopped;
 
 	protected Material lastBlockType;
-
-	protected DyeColor color;
 	protected MaterialData lastBlockDat;
 
 	public CTFFlag(Arena arena, Location location, Team team)
@@ -99,12 +95,10 @@ public class CTFFlag
 		Block current = myloc.getBlock();
 		if (team == Team.RED)
 		{
-			this.color = DyeColor.RED;
 			this.flagType = team.toString();
 		}
 		else
 		{
-			this.color = DyeColor.BLUE;
 			this.flagType = team.toString();
 		}
 
@@ -266,13 +260,15 @@ public class CTFFlag
 		}
 	}
 
-	private final void setFlagBlock(Block c)
+	private final void setFlagBlock(Block block)
 	{
-		if (color == DyeColor.BLUE)
-			c.setType(Material.LAPIS_BLOCK);
-		else if (color == DyeColor.RED)
-			c.setType(Material.NETHERRACK);
+		if (team == Team.RED)
+			block.setType(Material.NETHERRACK);
+		else if (team == Team.BLUE)
+			block.setType(Material.LAPIS_BLOCK);
 		else
-			c.setType(Material.WOOL);
+			block.setType(Material.WOOL);
+
+		block.getState().update(true);
 	}
 }
