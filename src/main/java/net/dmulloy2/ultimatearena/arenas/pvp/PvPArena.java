@@ -5,7 +5,7 @@ package net.dmulloy2.ultimatearena.arenas.pvp;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.TeamHelper;
+import net.dmulloy2.ultimatearena.types.Team;
 
 /**
  * @author dmulloy2
@@ -21,7 +21,7 @@ public class PvPArena extends Arena
 	@Override
 	public void announceWinner()
 	{
-		tellAllPlayers("&e{0} team &3won the match at &e{1}", TeamHelper.getTeam(getWinningTeam()), name);
+		tellAllPlayers("&e{0} team &3won the match at &e{1}", getWinningTeam(), name);
 	}
 
 	@Override
@@ -39,31 +39,31 @@ public class PvPArena extends Arena
 
 			if (! simpleTeamCheck())
 			{
-				setWinningTeam(-1);
+				setWinningTeam(null);
 
 				stop();
 
-				rewardTeam(-1);
+				rewardTeam(null);
 			}
 		}
 	}
 
 	@Override
-	public int getTeam()
+	public Team getTeam()
 	{
 		return getBalancedTeam();
 	}
 
 	@Override
-	public int getWinningTeam()
+	public Team getWinningTeam()
 	{
-		if (winningTeam == -1)
+		if (winningTeam == null)
 		{
-			if (team1size > 0)
-				return 1;
+			if (redTeamSize > 0)
+				return Team.RED;
 
-			if (team2size > 0)
-				return 2;
+			if (blueTeamSize > 0)
+				return Team.BLUE;
 		}
 
 		return winningTeam;

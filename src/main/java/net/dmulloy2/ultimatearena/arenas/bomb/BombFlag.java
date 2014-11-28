@@ -9,6 +9,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Effect;
@@ -89,7 +90,7 @@ public class BombFlag extends ArenaFlag
 					&& player.getLocation().distance(location) < 3.0D)
 			{
 				capturer = ap;
-				if (ap.getTeam() == 1)
+				if (ap.getTeam() == Team.RED)
 					fuse = true;
 				else
 					defuse = true;

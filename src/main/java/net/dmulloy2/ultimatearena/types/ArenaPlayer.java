@@ -50,13 +50,13 @@ public final class ArenaPlayer
 	private int deaths;
 	private int killStreak;
 	private int gameXP;
-	private int team = 1;
 	private int amtKicked;
 
 	private boolean out;
 	private boolean canReward;
 	private boolean changeClassOnRespawn;
 
+	private Team team = Team.RED;
 	private List<Double> transactions = new ArrayList<>();
 	private Map<String, Object> data = new HashMap<>();
 
@@ -111,7 +111,7 @@ public final class ArenaPlayer
 			ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
 			LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
 
-			Color color = team == 2 ? Color.BLUE : Color.RED;
+			Color color = team == Team.BLUE ? Color.BLUE : Color.RED;
 			if (random)
 			{
 				DyeColor rand = DyeColor.values()[Util.random(DyeColor.values().length)];

@@ -151,7 +151,7 @@ public class ArenaTypeHandler implements Reloadable
 					}
 					catch (Throwable ex)
 					{
-						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "Copying config file: " + config.getName()));
+						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "copying config file: " + config.getName()));
 					}
 				}
 			}
@@ -163,8 +163,10 @@ public class ArenaTypeHandler implements Reloadable
 		try
 		{
 			ArenaType type = loader.loadArenaType(file);
-			if (arenaTypes.containsKey(type.getName()))
-				throw new IllegalArgumentException("name '" + type.getName() + "' is already taken!");
+
+			ArenaType sameName = getArenaType(type.getName());
+			if (sameName != null)
+				throw new IllegalArgumentException("Name '" + type.getName() + "' is already taken by: " + sameName);
 
 			type.onLoad();
 

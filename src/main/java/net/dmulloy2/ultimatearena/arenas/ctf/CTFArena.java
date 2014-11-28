@@ -7,6 +7,7 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.Team;
 
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,8 +32,8 @@ public class CTFArena extends Arena
 	public CTFArena(ArenaZone az)
 	{
 		super(az);
-		this.redFlag = new CTFFlagBase(this, az.getFlags().get(0), 1, plugin);
-		this.blueFlag = new CTFFlagBase(this, az.getFlags().get(1), 2, plugin);
+		this.redFlag = new CTFFlagBase(this, az.getFlags().get(0), Team.RED, plugin);
+		this.blueFlag = new CTFFlagBase(this, az.getFlags().get(1), Team.BLUE, plugin);
 
 		this.redFlag.initialize();
 		this.blueFlag.initialize();
@@ -64,7 +65,7 @@ public class CTFArena extends Arena
 
 		if (redCap >= 3 || blueCap >= 3)
 		{
-			setWinningTeam(1);
+			setWinningTeam(Team.RED);
 
 			this.lastcap = "&cRED";
 
@@ -72,7 +73,7 @@ public class CTFArena extends Arena
 			{
 				this.lastcap = "&9BLUE";
 
-				setWinningTeam(2);
+				setWinningTeam(Team.BLUE);
 			}
 
 			winGame();
@@ -85,7 +86,7 @@ public class CTFArena extends Arena
 	}
 
 	@Override
-	public int getTeam()
+	public Team getTeam()
 	{
 		return getBalancedTeam();
 	}
@@ -94,11 +95,11 @@ public class CTFArena extends Arena
 	{
 		if (redCap >= 3 && blueCap >= 3)
 		{
-			setWinningTeam(-1);
+			setWinningTeam(null);
 
 			stop();
 
-			rewardTeam(-1);
+			rewardTeam(null);
 			return;
 		}
 

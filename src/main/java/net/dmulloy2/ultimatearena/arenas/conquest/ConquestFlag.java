@@ -8,6 +8,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.ListUtil;
 
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class ConquestFlag extends ArenaFlag
 			{
 				players.add(ap);
 
-				if (ap.getTeam() == 1)
+				if (ap.getTeam() == Team.RED)
 					team1++;
 				else
 					team2++;
@@ -47,12 +48,12 @@ public class ConquestFlag extends ArenaFlag
 
 		// Remove any duplicates
 		players = ListUtil.removeDuplicates(players);
-		cappingTeam = team1 > team2 ? 1 : 2;
+		cappingTeam = team1 > team2 ? Team.RED : Team.BLUE;
 
 		// The other team is trying to cap
 		if (cappingTeam != owningTeam)
 		{
-			if (cappingTeam == 1)
+			if (cappingTeam == Team.RED)
 			{
 				int added = (team1 - team2) * 5;
 				if (power - added < 0)
@@ -67,7 +68,7 @@ public class ConquestFlag extends ArenaFlag
 
 				if (power == 0)
 				{
-					setOwningTeam(1);
+					setOwningTeam(Team.RED);
 				}
 			}
 			else
@@ -85,13 +86,13 @@ public class ConquestFlag extends ArenaFlag
 
 				if (power == 0)
 				{
-					setOwningTeam(2);
+					setOwningTeam(Team.BLUE);
 				}
 			}
 		}
 		else
 		{
-			if (owningTeam == 1 && ! capped)
+			if (owningTeam == Team.RED && ! capped)
 			{
 				int added = (team1 - team2) * 5;
 				if (power + added > 100)
@@ -112,10 +113,10 @@ public class ConquestFlag extends ArenaFlag
 					}
 
 					capped = true;
-					setOwningTeam(1);
+					setOwningTeam(Team.RED);
 				}
 			}
-			else if (owningTeam == 2 && ! capped)
+			else if (owningTeam == Team.BLUE && ! capped)
 			{
 				int added = (team2 - team1) * 5;
 				if (power + added > 100)
@@ -136,7 +137,7 @@ public class ConquestFlag extends ArenaFlag
 					}
 
 					capped = true;
-					setOwningTeam(1);
+					setOwningTeam(Team.BLUE);
 				}
 			}
 		}

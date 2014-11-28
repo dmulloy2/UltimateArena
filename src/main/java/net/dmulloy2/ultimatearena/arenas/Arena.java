@@ -28,6 +28,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
+import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
@@ -78,16 +79,18 @@ public abstract class Arena implements Reloadable
 
 	private Map<Integer, List<KillStreak>> killStreaks;
 
+	protected int winningTeamId = 999;
+	protected Team winningTeam;
+
 	protected int broadcastTimer = 45;
-	protected int winningTeam = 999;
 	protected int maxDeaths = 1;
 
 	protected int startingAmount;
 	protected int maxGameTime;
 	protected int startTimer;
 	protected int gameTimer;
-	protected int team1size;
-	protected int team2size;
+	protected int redTeamSize;
+	protected int blueTeamSize;
 	protected int announced;
 
 	protected boolean allowTeamKilling;
@@ -187,7 +190,7 @@ public abstract class Arena implements Reloadable
 		}
 
 		// Set their team
-		pl.setTeam(team == -1 ? getTeam() : team);
+		pl.setTeam(team == -1 ? getTeam() : Team.getById(team));
 
 		// Teleport the player to the lobby spawn
 		spawnLobby(pl);
@@ -251,11 +254,11 @@ public abstract class Arena implements Reloadable
 	 * <p>
 	 * Can be overriden in certain cases.
 	 *
-	 * @return The team, defaults to 1
+	 * @return The team, defaults to RED.
 	 */
-	public int getTeam()
+	public Team getTeam()
 	{
-		return 1;
+		return Team.RED;
 	}
 
 	/**
@@ -296,12 +299,12 @@ public abstract class Arena implements Reloadable
 	 *
 	 * @return The team with the least amount of players
 	 */
-	public final int getBalancedTeam()
+	public final Team getBalancedTeam()
 	{
 		// Refresh teams
 		updateTeams();
 
-		return team1size > team2size ? 2 : 1;
+		return redTeamSize > blueTeamSize ? Team.BLUE : Team.RED;
 	}
 
 	/**
@@ -314,7 +317,7 @@ public abstract class Arena implements Reloadable
 		// Refresh teams
 		updateTeams();
 
-		if (team1size == 0 || team2size == 0)
+		if (redTeamSize == 0 || blueTeamSize == 0)
 		{
 			return startingAmount < 1;
 		}
@@ -393,13 +396,13 @@ public abstract class Arena implements Reloadable
 		if (isInLobby())
 		{
 			loc = az.getLobbyREDspawn();
-			if (ap.getTeam() == 2)
+			if (ap.getTeam() == Team.BLUE)
 				loc = az.getLobbyBLUspawn();
 		}
 		else
 		{
 			loc = az.getTeam1spawn();
-			if (ap.getTeam() == 2)
+			if (ap.getTeam() == Team.BLUE)
 				loc = az.getTeam2spawn();
 		}
 
@@ -507,11 +510,20 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
+	 * @deprecated In favor of {@link #rewardTeam(Team)}
+	 */
+	@Deprecated
+	public final void rewardTeam(int team)
+	{
+		rewardTeam(Team.getById(team));
+	}
+
+	/**
 	 * Rewards an entire team.
 	 *
 	 * @param team Team to reward
 	 */
-	public final void rewardTeam(int team)
+	public final void rewardTeam(Team team)
 	{
 		if (az.getConfig().isGiveRewards())
 		{
@@ -519,7 +531,7 @@ public abstract class Arena implements Reloadable
 			{
 				if (ap.isCanReward())
 				{
-					if (ap.getTeam() == team || team == -1)
+					if (ap.getTeam() == team || team == null)
 						reward(ap);
 				}
 			}
@@ -529,18 +541,27 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
+	 * @deprecated In favor of {@link #setWinningTeam(Team)}
+	 */
+	@Deprecated
+	public final void setWinningTeam(int team)
+	{
+		setWinningTeam(Team.getById(team));
+	}
+
+	/**
 	 * Sets the winning team.
 	 *
 	 * @param team Winning team
 	 */
-	public final void setWinningTeam(int team)
+	public final void setWinningTeam(Team team)
 	{
 		this.toReward = new ArrayList<>();
 
 		for (ArenaPlayer ap : active)
 		{
 			ap.setCanReward(false);
-			if (ap.getTeam() == team || team == -1)
+			if (ap.getTeam() == team || team == null)
 			{
 				ap.setCanReward(true);
 				toReward.add(ap);
@@ -1169,20 +1190,10 @@ public abstract class Arena implements Reloadable
 	 *
 	 * @param pl Player to decide team color for
 	 */
+	@Deprecated
 	protected String decideColor(ArenaPlayer pl)
 	{
-		if (pl.getTeam() == 1)
-		{
-			return "&c";
-		}
-		else if (pl.getTeam() == 2)
-		{
-			return "&9";
-		}
-		else
-		{
-			return "&d";
-		}
+		return pl.getTeam().getColor().toString();
 	}
 
 	/**
@@ -1206,15 +1217,15 @@ public abstract class Arena implements Reloadable
 	 */
 	protected void announceWinner()
 	{
-		if (winningTeam == 2)
+		if (winningTeam == Team.BLUE)
 		{
 			tellAllPlayers("&eBlue &3team won!");
 		}
-		else if (winningTeam == 1)
+		else if (winningTeam == Team.RED)
 		{
 			tellAllPlayers("&eRed &3team won!");
 		}
-		else if (winningTeam == -1)
+		else if (winningTeam == null)
 		{
 			tellAllPlayers("&3Game ended in a tie!");
 		}
@@ -1272,15 +1283,15 @@ public abstract class Arena implements Reloadable
 
 	private final void updateTeams()
 	{
-		this.team1size = 0;
-		this.team2size = 0;
+		this.redTeamSize = 0;
+		this.blueTeamSize = 0;
 
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			if (ap.getTeam() == 1)
-				team1size++;
+			if (ap.getTeam() == Team.RED)
+				redTeamSize++;
 			else
-				team2size++;
+				blueTeamSize++;
 		}
 	}
 

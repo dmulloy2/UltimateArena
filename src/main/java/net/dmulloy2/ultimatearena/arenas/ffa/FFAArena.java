@@ -44,7 +44,7 @@ public class FFAArena extends Arena
 		{
 			if (isEmpty())
 			{
-				setWinningTeam(-1);
+				setWinningTeam(null);
 
 				if (startingAmount > 1)
 				{

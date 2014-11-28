@@ -8,7 +8,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.FlagBase;
-import net.dmulloy2.ultimatearena.types.TeamHelper;
+import net.dmulloy2.ultimatearena.types.Team;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,11 +24,11 @@ public class CTFFlagBase extends FlagBase
 {
 	protected CTFFlag enemyflag;
 
-	protected final int team;
+	protected final Team team;
 	protected final CTFFlag flag;
 	protected final CTFArena arena;
 
-	public CTFFlagBase(CTFArena arena, ArenaLocation location, int team, UltimateArena plugin)
+	public CTFFlagBase(CTFArena arena, ArenaLocation location, Team team, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
 		this.arena = arena;
@@ -91,17 +91,16 @@ public class CTFFlagBase extends FlagBase
 							ap.setGameXP(ap.getGameXP() + 500);
 							arena.tellPlayers("&e{0} &3captured the &e{1} &3flag!", ap.getName(), enemyflag.getFlagType());
 
-							if (team == 1)
+							if (team == Team.RED)
 							{
 								arena.setRedCap(arena.getRedCap() + 1);
-								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team),
+								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", team,
 										arena.getRedCap());
 							}
-
-							if (team == 2)
+							else if (team == Team.BLUE)
 							{
 								arena.setBlueCap(arena.getBlueCap() + 1);
-								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", TeamHelper.getTeam(team),
+								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", team,
 										arena.getBlueCap());
 							}
 
@@ -115,9 +114,9 @@ public class CTFFlagBase extends FlagBase
 
 	public void initialize()
 	{
-		if (team == 1)
+		if (team == Team.RED)
 			this.enemyflag = arena.getBlueFlag().getFlag();
-		if (team == 2)
+		if (team == Team.BLUE)
 			this.enemyflag = arena.getRedFlag().getFlag();
 	}
 }

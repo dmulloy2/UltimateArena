@@ -144,7 +144,7 @@ public abstract class ArenaType
 	}
 
 	/**
-	 * Initializes this ArenaType.
+	 * Initializes this ArenaType. Should <b>ONLY</b> be called by the ArenaLoader.
 	 *
 	 * @throws IllegalArgumentException If this ArenaType is already initialized
 	 */
@@ -231,8 +231,7 @@ public abstract class ArenaType
 
 	/**
 	 * Saves the raw contents of any resource embedded with a plugin's .jar file
-	 * assuming it can be found using {@link #getResource(String)}.
-	 * <p>
+	 * assuming it can be found using {@link #getResource(String)}.<br>
 	 * The resource is saved into the plugin's data folder using the same
 	 * hierarchy as the .jar file (subdirectories are preserved).
 	 *
@@ -308,7 +307,7 @@ public abstract class ArenaType
 	}
 
 	/**
-	 * Gets an embedded resource in this plugin.
+	 * Gets an embedded resource in this arena type's jar file.
 	 *
 	 * @param filename Filename of the resource
 	 * @return File, or null if it cannot be found
@@ -374,6 +373,6 @@ public abstract class ArenaType
 	@Override
 	public String toString()
 	{
-		return getName();
+		return getDescription().getFullName() + " by " + getDescription().getAuthor();
 	}
 }

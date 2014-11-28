@@ -11,6 +11,7 @@ import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
@@ -44,21 +45,21 @@ public class ConquestArena extends Arena
 		{
 			if (blueTeamPower <= 0)
 			{
-				if (ap.getTeam() == 2)
+				if (ap.getTeam() == Team.BLUE)
 					endPlayer(ap, false);
 			}
 			else if (redTeamPower <= 0)
 			{
-				if (ap.getTeam() == 1)
+				if (ap.getTeam() == Team.RED)
 					endPlayer(ap, false);
 			}
 		}
 
 		if (blueTeamPower <= 0)
-			setWinningTeam(1);
+			setWinningTeam(Team.RED);
 
 		if (redTeamPower <= 0)
-			setWinningTeam(2);
+			setWinningTeam(Team.BLUE);
 
 		for (ArenaFlag flag : ListUtil.newList(flags))
 		{
@@ -69,11 +70,11 @@ public class ConquestArena extends Arena
 		{
 			if (! simpleTeamCheck())
 			{
-				setWinningTeam(-1);
+				setWinningTeam(null);
 
 				stop();
 
-				rewardTeam(-1);
+				rewardTeam(null);
 			}
 		}
 	}
@@ -121,7 +122,7 @@ public class ConquestArena extends Arena
 	}
 
 	@Override
-	public int getTeam()
+	public Team getTeam()
 	{
 		return getBalancedTeam();
 	}
@@ -135,12 +136,12 @@ public class ConquestArena extends Arena
 
 		for (ArenaFlag flag : ListUtil.newList(flags))
 		{
-			if (flag.getOwningTeam() == 1)
+			if (flag.getOwningTeam() == Team.RED)
 			{
 				if (flag.isCapped())
 					red++;
 			}
-			else if (flag.getOwningTeam() == 2)
+			else if (flag.getOwningTeam() == Team.BLUE)
 			{
 				if (flag.isCapped())
 					blu++;
@@ -154,23 +155,23 @@ public class ConquestArena extends Arena
 		else
 			blueTeamPower--;
 
-		if (pl.getTeam() == 1)
+		if (pl.getTeam() == Team.RED)
 		{
 			redTeamPower--;
 			for (ArenaPlayer ap : active)
 			{
-				if (ap.getTeam() == 1)
+				if (ap.getTeam() == Team.RED)
 					ap.sendMessage("&3Your power is now: &e{0}", redTeamPower);
 				else
 					ap.sendMessage("&3The other team''s power is now: &e{0}", redTeamPower);
 			}
 		}
-		else if (pl.getTeam() == 2)
+		else if (pl.getTeam() == Team.BLUE)
 		{
 			blueTeamPower--;
 			for (ArenaPlayer ap : active)
 			{
-				if (ap.getTeam() == 2)
+				if (ap.getTeam() == Team.BLUE)
 					ap.sendMessage("&3Your power is now: &e{0}", blueTeamPower);
 				else
 					ap.sendMessage("&3The other team''s power is now: &e{0}", blueTeamPower);

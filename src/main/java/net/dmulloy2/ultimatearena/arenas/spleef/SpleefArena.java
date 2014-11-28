@@ -54,7 +54,7 @@ public class SpleefArena extends FFAArena
 		{
 			if (isEmpty())
 			{
-				setWinningTeam(-1);
+				setWinningTeam(null);
 
 				if (startingAmount > 1)
 				{

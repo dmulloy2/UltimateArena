@@ -6,6 +6,7 @@ package net.dmulloy2.ultimatearena.arenas.infect;
 import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.potion.PotionEffect;
@@ -25,11 +26,11 @@ public class InfectArena extends PvPArena
 	@Override
 	public void announceWinner()
 	{
-		if (winningTeam == 2)
+		if (winningTeam == Team.BLUE)
 		{
 			tellAllPlayers("&3The infected win!");
 		}
-		else if (winningTeam == 1)
+		else if (winningTeam == Team.RED)
 		{
 			tellAllPlayers("&3The humans have survived!");
 		}
@@ -49,17 +50,17 @@ public class InfectArena extends PvPArena
 
 			if (! simpleTeamCheck())
 			{
-				if (team1size == 0)
+				if (redTeamSize == 0)
 				{
-					setWinningTeam(2);
+					setWinningTeam(Team.BLUE);
 					stop();
-					rewardTeam(2);
+					rewardTeam(Team.BLUE);
 				}
-				else if (team2size == 0)
+				else if (blueTeamSize == 0)
 				{
-					setWinningTeam(1);
+					setWinningTeam(Team.RED);
 					stop();
-					rewardTeam(1);
+					rewardTeam(Team.RED);
 				}
 				else
 				{
@@ -77,8 +78,8 @@ public class InfectArena extends PvPArena
 			ArenaPlayer ap = active.get(Util.random(active.size()));
 			if (ap != null && ap.isOnline())
 			{
-				ap.setTeam(2);
-				ap.sendMessage("&3You have been chosen for the infected!");
+				ap.setTeam(Team.RED);
+				ap.sendMessage("&3You are patient zero!");
 				onSpawn(ap);
 				tellPlayers("&e{0} &3is the zombie!", ap.getName());
 			}
@@ -102,38 +103,37 @@ public class InfectArena extends PvPArena
 	}
 
 	@Override
-	public int getTeam()
+	public Team getTeam()
 	{
-		return 1; // blue team
+		return Team.RED;
 	}
 
 	@Override
 	public void onOutOfTime()
 	{
-		rewardTeam(1);
+		rewardTeam(Team.RED);
 	}
 
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
-		if (pl.getTeam() == 1)
+		if (pl.getTeam() == Team.RED)
 		{
-			pl.sendMessage("&3You have joined the Infected!");
+			pl.sendMessage("&3You have joined the infected!");
+			pl.setTeam(Team.BLUE);
 		}
-
-		pl.setTeam(2);
 	}
 
 	@Override
 	public void onPreOutOfTime()
 	{
-		setWinningTeam(1);
+		setWinningTeam(Team.RED);
 	}
 
 	@Override
 	public void onSpawn(ArenaPlayer ap)
 	{
-		if (ap.getTeam() == 2)
+		if (ap.getTeam() == Team.BLUE)
 		{
 			ap.clearInventory();
 

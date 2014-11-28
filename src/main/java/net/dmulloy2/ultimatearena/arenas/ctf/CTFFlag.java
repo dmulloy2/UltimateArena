@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.Util;
 
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,18 +25,18 @@ import org.bukkit.potion.PotionEffectType;
 @Getter @Setter
 public class CTFFlag
 {
-	protected ArenaPlayer riding;
-
 	protected String flagType = "";
 
+	protected Team team;
 	protected Arena arena;
+	protected ArenaPlayer riding;
 
 	protected Location returnto;
 	protected Location myloc;
 	protected Location toloc;
 	protected Location lastloc;
 
-	protected int team;
+	
 	protected int timer = 15;
 
 	protected boolean pickedUp;
@@ -47,7 +47,7 @@ public class CTFFlag
 	protected DyeColor color;
 	protected MaterialData lastBlockDat;
 
-	public CTFFlag(Arena arena, Location location, int team)
+	public CTFFlag(Arena arena, Location location, Team team)
 	{
 		this.team = team;
 		this.arena = arena;
@@ -97,15 +97,15 @@ public class CTFFlag
 	public final void colorize()
 	{
 		Block current = myloc.getBlock();
-		if (team == 1)
+		if (team == Team.RED)
 		{
 			this.color = DyeColor.RED;
-			this.flagType = ChatColor.RED + "RED";
+			this.flagType = team.toString();
 		}
 		else
 		{
 			this.color = DyeColor.BLUE;
-			this.flagType = ChatColor.BLUE + "BLUE";
+			this.flagType = team.toString();
 		}
 
 		setFlagBlock(current);

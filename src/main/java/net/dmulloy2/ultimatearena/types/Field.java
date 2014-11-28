@@ -66,6 +66,22 @@ public class Field
 		return getWorld().getBlockAt(min.getX() + x, min.getY() + y, min.getZ() + z);
 	}
 
+	public final void setType(Material mat)
+	{
+		World world = getWorld();
+		for (int x = min.getX(); x <= max.getX(); x++)
+		{
+			for (int y = min.getY(); y <= max.getY(); y++)
+			{
+				for (int z = min.getZ(); z <= max.getZ(); z++)
+				{
+					Block block = world.getBlockAt(x, y, z);
+					block.setType(mat);
+				}
+			}
+		}
+	}
+
 	public void removeMaterials(List<Material> materials)
 	{
 		World world = getWorld();

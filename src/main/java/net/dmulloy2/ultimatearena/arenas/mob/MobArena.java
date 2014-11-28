@@ -36,7 +36,7 @@ public class MobArena extends Arena
 	public MobArena(ArenaZone az)
 	{
 		super(az);
-		this.winningTeam = -1;
+		this.winningTeam = null;
 
 		this.spawning = new ArrayList<>();
 		spawning.add("ZOMBIE");
@@ -149,7 +149,7 @@ public class MobArena extends Arena
 	@Override
 	public void onOutOfTime()
 	{
-		setWinningTeam(-1);
+		setWinningTeam(null);
 		rewardTeam(winningTeam);
 	}
 
@@ -261,11 +261,11 @@ public class MobArena extends Arena
 
 			if (wave > maxWave)
 			{
-				setWinningTeam(-1);
+				setWinningTeam(null);
 
 				stop();
 
-				rewardTeam(-1);
+				rewardTeam(null);
 			}
 		}
 	}
@@ -273,7 +273,7 @@ public class MobArena extends Arena
 	@Override
 	public void announceWinner()
 	{
-		if (winningTeam == -1)
+		if (winningTeam == null)
 		{
 			if (wave > maxWave)
 			{

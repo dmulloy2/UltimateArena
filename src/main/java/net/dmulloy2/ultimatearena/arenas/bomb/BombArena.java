@@ -9,6 +9,7 @@ import lombok.Getter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.ListUtil;
 
 /**
@@ -53,21 +54,21 @@ public class BombArena extends Arena
 
 		if (bomb1.isExploded() && bomb2.isExploded())
 		{
-			setWinningTeam(1);
+			setWinningTeam(Team.RED);
 
 			stop();
 
-			rewardTeam(1);
+			rewardTeam(Team.RED);
 			return;
 		}
 
 		if (redTeamPower <= 0)
 		{
-			setWinningTeam(2);
+			setWinningTeam(Team.RED);
 
 			stop();
 
-			rewardTeam(2);
+			rewardTeam(Team.RED);
 			return;
 		}
 	}
@@ -79,7 +80,7 @@ public class BombArena extends Arena
 	}
 
 	@Override
-	public int getTeam()
+	public Team getTeam()
 	{
 		return getBalancedTeam();
 	}
@@ -87,18 +88,18 @@ public class BombArena extends Arena
 	@Override
 	public void onOutOfTime()
 	{
-		rewardTeam(2);
+		rewardTeam(Team.BLUE);
 	}
 
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
-		if (pl.getTeam() == 1)
+		if (pl.getTeam() == Team.RED)
 		{
 			redTeamPower--;
 			for (ArenaPlayer ap : active)
 			{
-				if (ap.getTeam() == 1)
+				if (ap.getTeam() == Team.RED)
 				{
 					ap.sendMessage("&3Your power is now: &e{0}", redTeamPower);
 				}
@@ -113,7 +114,7 @@ public class BombArena extends Arena
 	@Override
 	public void onPreOutOfTime()
 	{
-		setWinningTeam(2);
+		setWinningTeam(Team.BLUE);
 	}
 
 	@Override

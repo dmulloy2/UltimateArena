@@ -262,19 +262,6 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Returns the team an {@link ArenaPlayer} is on
-	 *
-	 * @param a {@link ArenaPlayer} to get team
-	 * @return The team an {@link ArenaPlayer} is on
-	 * @deprecated In favor of {@link ArenaPlayer#getTeam()}
-	 */
-	@Deprecated
-	public final int getTeam(ArenaPlayer a)
-	{
-		return a.getTeam();
-	}
-
-	/**
 	 * Returns an {@link ArenaPlayer}'s current killstreak
 	 *
 	 * @param a {@link ArenaPlayer} to get killstreak

@@ -19,8 +19,8 @@ import org.bukkit.material.Wool;
 @Getter @Setter
 public abstract class ArenaFlag extends FlagBase
 {
-	protected int owningTeam;
-	protected int cappingTeam;
+	protected Team owningTeam;
+	protected Team cappingTeam;
 	protected int power;
 
 	protected boolean capped;
@@ -44,15 +44,16 @@ public abstract class ArenaFlag extends FlagBase
 	@Override
 	public abstract void checkNear(List<ArenaPlayer> arenaPlayers);
 
-	protected final void setOwningTeam(int team)
+	protected final void setOwningTeam(Team team)
 	{
 		this.owningTeam = team;
 
 		Wool wool = new Wool();
-		wool.setColor(getColor(team == 1 ? 14 : 11));
+		wool.setColor(team == Team.RED ? DyeColor.RED : DyeColor.BLUE);
 		Util.setData(notify, wool);
 	}
 
+	@Deprecated
 	protected final DyeColor getColor(int color)
 	{
 		if (color == 8)

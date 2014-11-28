@@ -148,7 +148,7 @@ public class KOTHArena extends Arena
 			{
 				StringBuilder line = new StringBuilder();
 				line.append(FormatUtil.format("&3#{0}. ", pos));
-				line.append(FormatUtil.format(decideColor(ap)));
+				line.append(ap.getTeam().getColor());
 				line.append(FormatUtil.format(ap.getName().equals(player.getName()) ? "&l" : ""));
 				line.append(FormatUtil.format(ap.getName() + "&r"));
 				line.append(FormatUtil.format("  &3Kills: &e{0}", ap.getKills()));
