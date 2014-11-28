@@ -64,11 +64,11 @@ public class BombArena extends Arena
 
 		if (redTeamPower <= 0)
 		{
-			setWinningTeam(Team.RED);
+			setWinningTeam(Team.BLUE);
 
 			stop();
 
-			rewardTeam(Team.RED);
+			rewardTeam(Team.BLUE);
 			return;
 		}
 	}

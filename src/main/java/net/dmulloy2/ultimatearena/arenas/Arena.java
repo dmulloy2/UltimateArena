@@ -79,7 +79,6 @@ public abstract class Arena implements Reloadable
 
 	private Map<Integer, List<KillStreak>> killStreaks;
 
-	protected int winningTeamId = 999;
 	protected Team winningTeam;
 
 	protected int broadcastTimer = 45;

@@ -78,7 +78,7 @@ public class InfectArena extends PvPArena
 			ArenaPlayer ap = active.get(Util.random(active.size()));
 			if (ap != null && ap.isOnline())
 			{
-				ap.setTeam(Team.RED);
+				ap.setTeam(Team.BLUE);
 				ap.sendMessage("&3You are patient zero!");
 				onSpawn(ap);
 				tellPlayers("&e{0} &3is the zombie!", ap.getName());
