@@ -159,5 +159,10 @@
       <artifactId>worldedit</artifactId>
       <version>5.6.3</version>
     </dependency>
+    <dependency>
+      <groupId>com.comphenix.protocol</groupId>
+      <artifactId>ProtocolLib</artifactId>
+      <version>3.6.3-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

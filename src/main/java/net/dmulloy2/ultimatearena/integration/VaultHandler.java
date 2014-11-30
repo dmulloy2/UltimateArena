@@ -6,11 +6,8 @@ package net.dmulloy2.ultimatearena.integration;
 import lombok.Getter;
 import net.dmulloy2.integration.IntegrationHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicesManager;
 
@@ -21,7 +18,7 @@ import org.bukkit.plugin.ServicesManager;
 public class VaultHandler extends IntegrationHandler
 {
 	private @Getter boolean enabled;
-	private @Getter Economy economy;
+	private Object economy;
 
 	private final UltimateArena plugin;
 	public VaultHandler(UltimateArena plugin)
@@ -35,19 +32,17 @@ public class VaultHandler extends IntegrationHandler
 	{
 		try
 		{
-			PluginManager pm = plugin.getServer().getPluginManager();
-			if (pm.getPlugin("Vault") != null)
+			ServicesManager sm = plugin.getServer().getServicesManager();
+			RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider =
+					sm.getRegistration(net.milkbowl.vault.economy.Economy.class);
+			if (economyProvider != null)
 			{
-				ServicesManager sm = plugin.getServer().getServicesManager();
-				RegisteredServiceProvider<Economy> economyProvider = sm.getRegistration(Economy.class);
-				if (economyProvider != null)
+				net.milkbowl.vault.economy.Economy economy = economyProvider.getProvider();
+				if (economy != null)
 				{
-					economy = economyProvider.getProvider();
-					if (economy != null)
-					{
-						plugin.getLogHandler().log("Economy integration through {0}", economy.getName());
-						enabled = true;
-					}
+					plugin.getLogHandler().log("Economy integration through {0}", economy.getName());
+					this.economy = economy;
+					enabled = true;
 				}
 			}
 		}
@@ -58,17 +53,17 @@ public class VaultHandler extends IntegrationHandler
 	}
 
 	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final EconomyResponse depositPlayer(Player player, double amount)
+	public final net.milkbowl.vault.economy.EconomyResponse depositPlayer(Player player, double amount)
 	{
 		if (economy != null)
 		{
 			try
 			{
-				return economy.depositPlayer(player, amount);
+				return ((net.milkbowl.vault.economy.Economy) economy).depositPlayer(player, amount);
 			}
 			catch (Throwable ex)
 			{
-				return economy.depositPlayer(player.getName(), amount);
+				return ((net.milkbowl.vault.economy.Economy) economy).depositPlayer(player.getName(), amount);
 			}
 		}
 
@@ -76,20 +71,25 @@ public class VaultHandler extends IntegrationHandler
 	}
 
 	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final EconomyResponse withdrawPlayer(Player player, double amount)
+	public final net.milkbowl.vault.economy.EconomyResponse withdrawPlayer(Player player, double amount)
 	{
 		if (economy != null)
 		{
 			try
 			{
-				return economy.withdrawPlayer(player, amount);
+				return ((net.milkbowl.vault.economy.Economy) economy).withdrawPlayer(player, amount);
 			}
 			catch (Throwable ex)
 			{
-				return economy.withdrawPlayer(player.getName(), amount);
+				return ((net.milkbowl.vault.economy.Economy) economy).withdrawPlayer(player.getName(), amount);
 			}
 		}
 
 		return null;
+	}
+
+	public final net.milkbowl.vault.economy.Economy getEconomy()
+	{
+		return (net.milkbowl.vault.economy.Economy) economy;
 	}
 }

@@ -71,3 +71,7 @@ whitelistedCommands:
 # Global messages
 # Input: boolean; default: true
 globalMessages: true
+
+# Force Respawn
+# Input: boolean; default: false
+forceRespawn: false

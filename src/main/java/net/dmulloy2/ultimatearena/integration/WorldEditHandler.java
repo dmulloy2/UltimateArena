@@ -7,8 +7,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
 /**
@@ -20,9 +18,10 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 public class WorldEditHandler extends IntegrationHandler
 {
 	private @Getter boolean enabled;
-	private @Getter WorldEditPlugin worldEdit;
+	private @Getter Object worldEdit;
 
 	private final UltimateArena plugin;
+
 	public WorldEditHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -35,9 +34,9 @@ public class WorldEditHandler extends IntegrationHandler
 		try
 		{
 			PluginManager pm = plugin.getServer().getPluginManager();
-			if (pm.getPlugin("WorldEdit") != null)
+			if (pm.isPluginEnabled("WorldEdit"))
 			{
-				worldEdit = (WorldEditPlugin) pm.getPlugin("WorldEdit");
+				worldEdit = pm.getPlugin("WorldEdit");
 				enabled = true;
 
 				plugin.getLogHandler().log("Integration with WorldEdit successful!");
@@ -48,7 +47,7 @@ public class WorldEditHandler extends IntegrationHandler
 	/**
 	 * Whether or not a given player has a selection
 	 *
-	 * @param player - {@link Player} to check
+	 * @param player {@link Player} to check
 	 */
 	public final boolean hasSelection(Player player)
 	{
@@ -62,13 +61,13 @@ public class WorldEditHandler extends IntegrationHandler
 	/**
 	 * Gets a given player's {@link Selection}
 	 *
-	 * @param player - {@link Player} to get selection for
+	 * @param player {@link Player} to get selection for
 	 */
-	public final Selection getSelection(Player player)
+	public final com.sk89q.worldedit.bukkit.selections.Selection getSelection(Player player)
 	{
 		try
 		{
-			return worldEdit.getSelection(player);
+			return ((com.sk89q.worldedit.bukkit.WorldEditPlugin) worldEdit).getSelection(player);
 		} catch (Throwable ex) { }
 		return null;
 	}
@@ -76,11 +75,15 @@ public class WorldEditHandler extends IntegrationHandler
 	/**
 	 * Whether or not a given selection is a Cubiod Selection
 	 *
-	 * @param sel - {@link Selection} to check
+	 * @param sel {@link Selection} to check
 	 */
-	public final boolean isCuboidSelection(Selection sel)
+	public final boolean isCuboidSelection(com.sk89q.worldedit.bukkit.selections.Selection sel)
 	{
-		return sel instanceof CuboidSelection;
+		try
+		{
+			return sel instanceof com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+		} catch (Throwable ex) { }
+		return false;
 	}
 
 	public boolean useWorldEdit()

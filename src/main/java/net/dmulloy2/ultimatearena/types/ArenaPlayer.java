@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.integration.ProtocolHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -385,6 +386,15 @@ public final class ArenaPlayer
 		this.deaths++;
 
 		arena.onPlayerDeath(this);
+
+		if (plugin.getConfig().getBoolean("forceRespawn", false))
+		{
+			ProtocolHandler protocol = plugin.getProtocolHandler();
+			if (protocol != null && protocol.isEnabled())
+			{
+				protocol.forceRespawn(player);
+			}
+		}
 	}
 
 	/**

@@ -70,6 +70,7 @@ import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.integration.EssentialsHandler;
+import net.dmulloy2.ultimatearena.integration.ProtocolHandler;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.integration.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
@@ -121,6 +122,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	// Integration
 	private @Getter EssentialsHandler essentialsHandler;
 	private @Getter WorldEditHandler worldEditHandler;
+	private @Getter ProtocolHandler protocolHandler;
 	private @Getter VaultHandler vaultHandler;
 
 	// Public lists and maps
@@ -177,9 +179,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		fileHandler = new FileHandler(this);
 
 		// Integration
-		essentialsHandler = new EssentialsHandler(this);
-		worldEditHandler = new WorldEditHandler(this);
-		vaultHandler = new VaultHandler(this);
+		setupIntegration();
 
 		// Register Commands
 		commandHandler.setCommandPrefix("ua");
@@ -224,6 +224,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		new ArenaUpdateTask().runTaskTimer(this, TimeUtil.toTicks(1), TimeUtil.toTicks(1));
 
 		logHandler.log("{0} has been enabled ({1} ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
+	}
+
+	private final void setupIntegration()
+	{
+		try { essentialsHandler = new EssentialsHandler(this); } catch (Throwable ex) { }
+		try { worldEditHandler = new WorldEditHandler(this); } catch (Throwable ex) { }
+		try { protocolHandler = new ProtocolHandler(this); } catch (Throwable ex) { }
+		try { vaultHandler = new VaultHandler(this); } catch (Throwable ex) { }
 	}
 
 	@Override

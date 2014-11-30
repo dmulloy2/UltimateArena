@@ -13,26 +13,23 @@ import net.dmulloy2.util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.Kit;
-import com.earth2me.essentials.User;
-
 /**
  * Handles integration with Essentials.
  * <p>
- * All Essentials integration should go through this handler.
- * Everything is wrapped in a catch-all, since Essentials integration is
- * somewhat buggy and isn't necessary for functioning
+ * All Essentials integration should go through this handler. Everything is
+ * wrapped in a catch-all, since Essentials integration is somewhat buggy and
+ * isn't necessary for functioning
  *
  * @author dmulloy2
  */
 
 public class EssentialsHandler extends IntegrationHandler
 {
-	private @Getter Essentials essentials;
+	private @Getter Object essentials;
 	private @Getter boolean enabled;
 
 	private final UltimateArena plugin;
+
 	public EssentialsHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -45,9 +42,9 @@ public class EssentialsHandler extends IntegrationHandler
 		try
 		{
 			PluginManager pm = plugin.getServer().getPluginManager();
-			if (pm.getPlugin("Essentials") != null)
+			if (pm.isPluginEnabled("Essentials"))
 			{
-				essentials = (Essentials) pm.getPlugin("Essentials");
+				essentials = pm.getPlugin("Essentials");
 				enabled = true;
 
 				plugin.getLogHandler().log("Integration with Essentials successful!");
@@ -74,8 +71,7 @@ public class EssentialsHandler extends IntegrationHandler
 	/**
 	 * Disables Essentials god mode
 	 *
-	 * @param player
-	 *        - {@link Player} to disable god mode for
+	 * @param player {@link Player} to disable god mode for
 	 */
 	public final void disableGodMode(Player player)
 	{
@@ -83,7 +79,7 @@ public class EssentialsHandler extends IntegrationHandler
 		{
 			if (useEssentials())
 			{
-				User user = getEssentialsUser(player);
+				com.earth2me.essentials.User user = getEssentialsUser(player);
 				if (user != null)
 				{
 					user.setGodModeEnabled(false);
@@ -99,16 +95,15 @@ public class EssentialsHandler extends IntegrationHandler
 	/**
 	 * Attempts to get a player's Essentials user
 	 *
-	 * @param player
-	 *        - {@link Player} to get Essentials user for
+	 * @param player {@link Player} to get Essentials user for
 	 */
-	public final User getEssentialsUser(Player player)
+	public final com.earth2me.essentials.User getEssentialsUser(Player player)
 	{
 		try
 		{
 			if (useEssentials())
 			{
-				return getEssentials().getUser(player);
+				return ((com.earth2me.essentials.Essentials) essentials).getUser(player);
 			}
 		}
 		catch (Throwable ex)
@@ -122,21 +117,21 @@ public class EssentialsHandler extends IntegrationHandler
 	/**
 	 * Attempts to give a player their class's Essentials kit items
 	 *
-	 * @param player
-	 *        - {@link ArenaPlayer} to give kit items to
+	 * @param player {@link ArenaPlayer} to give kit items to
 	 */
 	public final void giveKitItems(ArenaPlayer player)
 	{
 		try
 		{
-			User user = getEssentialsUser(player.getPlayer());
+			com.earth2me.essentials.User user = getEssentialsUser(player.getPlayer());
 			if (user == null)
 			{
 				throw new Exception("Null user!");
 			}
 
 			ArenaClass ac = player.getArenaClass();
-			Kit kit = new Kit(ac.getEssKitName(), essentials);
+			com.earth2me.essentials.Kit kit = new com.earth2me.essentials.Kit(ac.getEssKitName(),
+					(com.earth2me.essentials.Essentials) essentials);
 			kit.expandItems(user);
 		}
 		catch (Throwable ex)
@@ -149,8 +144,7 @@ public class EssentialsHandler extends IntegrationHandler
 	/**
 	 * Attempts to read an Essentials kit from configuration
 	 *
-	 * @param name
-	 *        - Name of the Essentials kit
+	 * @param name Name of the Essentials kit
 	 */
 	public final Map<String, Object> readEssentialsKit(String name)
 	{
@@ -160,7 +154,7 @@ public class EssentialsHandler extends IntegrationHandler
 		{
 			if (useEssentials())
 			{
-				kit = getEssentials().getSettings().getKit(name);
+				kit = ((com.earth2me.essentials.Essentials) essentials).getSettings().getKit(name);
 			}
 		}
 		catch (Throwable ex)
