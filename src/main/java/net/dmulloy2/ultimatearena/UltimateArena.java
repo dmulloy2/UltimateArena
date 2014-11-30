@@ -420,7 +420,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 
 			FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			String typeString = fc.getString("typeString");
+			String typeString = fc.isSet("typeString") ? fc.getString("typeString") : fc.getString("type");
 			ArenaType type = arenaTypeHandler.getArenaType(typeString);
 			if (type == null)
 			{
