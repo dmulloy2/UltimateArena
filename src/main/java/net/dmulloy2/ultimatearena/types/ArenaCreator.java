@@ -139,7 +139,7 @@ public abstract class ArenaCreator
 			sendMessage("&3Creation of Arena &e{0} &3complete!", name);
 			sendMessage("&3Use &e/ua join {0} &3to play!", name);
 
-			plugin.outConsole("Successfully loaded and created arena {0}", name);
+			plugin.log("Successfully loaded and created arena {0}", name);
 		}
 		else
 		{

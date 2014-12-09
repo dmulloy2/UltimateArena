@@ -159,7 +159,7 @@ public class CTFArena extends Arena
 	@Override
 	public void onPlayerDeath(ArenaPlayer ap)
 	{
-		redFlag.getFlag().onPlayerQuit(ap);
-		blueFlag.getFlag().onPlayerQuit(ap);
+		redFlag.getFlag().onPlayerDeath(ap);
+		blueFlag.getFlag().onPlayerDeath(ap);
 	}
 }

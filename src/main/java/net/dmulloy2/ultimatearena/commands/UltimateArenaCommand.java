@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.commands;
 import net.dmulloy2.commands.Command;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 
 /**
  * @author dmulloy2
@@ -23,8 +24,12 @@ public abstract class UltimateArenaCommand extends Command
 		if (args.length > arg)
 			return plugin.getArena(args[arg]);
 
-		if (isPlayer() && plugin.isInArena(player))
-			return plugin.getArena(player);
+		if (isPlayer())
+		{
+			ArenaPlayer ap = plugin.getArenaPlayer(player);
+			if (ap != null)
+				return ap.getArena();
+		}
 
 		return null;
 	}

@@ -179,22 +179,7 @@ public class ArenaTypeHandler implements Reloadable
 		}
 	}
 
-	public final void enableArenaTypes()
-	{
-		for (ArenaType type : arenaTypes.values())
-		{
-			try
-			{
-				type.onEnable();
-			}
-			catch (Throwable ex)
-			{
-				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "enabling arena type '" + type.getName() + "'"));
-			}
-		}
-	}
-
-	public final void disableArenaTypes()
+	public final void disable()
 	{
 		for (ArenaType type : arenaTypes.values())
 		{
@@ -218,6 +203,7 @@ public class ArenaTypeHandler implements Reloadable
 		{
 			try
 			{
+				type.reloadConfig();
 				type.onReload();
 			}
 			catch (Throwable ex)

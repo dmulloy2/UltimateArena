@@ -53,7 +53,7 @@ public class PlayerListener implements Listener
 		if (ac != null)
 		{
 			plugin.getMakingArena().remove(ac);
-			plugin.outConsole("{0} stopping the creation of {1} from quit.", player.getName(), ac.getArenaName());
+			plugin.log("{0} stopping the creation of {1} from quit.", player.getName(), ac.getArenaName());
 		}
 
 		ArenaPlayer ap = null;
@@ -62,7 +62,7 @@ public class PlayerListener implements Listener
 			if (! ap.isOut())
 			{
 				ap.leaveArena(LeaveReason.QUIT);
-				plugin.outConsole("{0} leaving arena {1} from quit.", ap.getName(), ap.getArena().getName());
+				plugin.log("{0} leaving arena {1} from quit.", ap.getName(), ap.getArena().getName());
 			}
 
 			ap.clear();

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
@@ -121,7 +122,8 @@ public class CmdOption extends UltimateArenaCommand
 		}
 		else if (args[0].equalsIgnoreCase("config"))
 		{
-			ArenaConfig ac = plugin.getConfig(args[0]);
+			ArenaType at = plugin.getArenaTypeHandler().getArenaType(args[0]);
+			ArenaConfig ac = at.getConfig();
 			if (ac == null)
 			{
 				err("\"&c{0}&4\" is not a valid Field Type!");

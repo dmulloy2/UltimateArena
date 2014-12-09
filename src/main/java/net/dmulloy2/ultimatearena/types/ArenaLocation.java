@@ -52,16 +52,6 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		this(worldName, x, 0, z);
 	}
 
-	public ArenaLocation(World world, int x, int y, int z)
-	{
-		this(world.getName(), x, y, z);
-	}
-
-	public ArenaLocation(World world, int x, int z)
-	{
-		this(world.getName(), x, z);
-	}
-
 	public ArenaLocation(Location location)
 	{
 		this(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());

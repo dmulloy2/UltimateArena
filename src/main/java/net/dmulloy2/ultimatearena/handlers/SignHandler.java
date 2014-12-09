@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.ListUtil;
@@ -93,7 +92,7 @@ public class SignHandler
 		}
 		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "loading signs"));
+			plugin.log(Level.SEVERE, Util.getUsefulStack(ex, "loading signs"));
 		}
 	}
 
@@ -115,7 +114,7 @@ public class SignHandler
 		}
 		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "saving signs"));
+			plugin.log(Level.SEVERE, Util.getUsefulStack(ex, "saving signs"));
 		}
 	}
 
@@ -132,7 +131,7 @@ public class SignHandler
 		}
 		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.SEVERE, Util.getUsefulStack(ex, "creating new sign save"));
+			plugin.log(Level.SEVERE, Util.getUsefulStack(ex, "creating new sign save"));
 			return false;
 		}
 	}
@@ -167,22 +166,6 @@ public class SignHandler
 		for (ArenaSign sign : getSigns())
 		{
 			if (Util.checkLocation(sign.getLoc().getLocation(), loc))
-				return sign;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Attempts to get an {@link ArenaSign} based on location
-	 *
-	 * @param loc {@link ArenaLocation}
-	 */
-	public final ArenaSign getLocation(ArenaLocation loc)
-	{
-		for (ArenaSign sign : getSigns())
-		{
-			if (sign.getLoc().equals(loc))
 				return sign;
 		}
 

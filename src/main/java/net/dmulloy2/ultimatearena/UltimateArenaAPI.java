@@ -161,7 +161,7 @@ public class UltimateArenaAPI
 
 	private void logUsage(String event)
 	{
-		ultimateArena.outConsole("[API] \"{0}\" called by {1}", event, accessingPlugin);
+		ultimateArena.log("[API] \"{0}\" called by {1}", event, accessingPlugin);
 	}
 
 	/**

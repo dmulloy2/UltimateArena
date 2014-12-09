@@ -39,11 +39,6 @@ public class Field
 		this.initialized = true;
 	}
 
-	public boolean isInside(ArenaLocation loc)
-	{
-		return isInside(loc.getLocation());
-	}
-
 	public boolean isInside(Location loc)
 	{
 		if (! initialized)

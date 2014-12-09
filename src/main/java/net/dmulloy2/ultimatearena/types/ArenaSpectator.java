@@ -175,11 +175,6 @@ public final class ArenaSpectator
 		getPlayer().teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
-	public final void teleport(ArenaLocation location)
-	{
-		teleport(location.getLocation());
-	}
-
 	public final void savePlayerData()
 	{
 		this.playerData = new PlayerData(getPlayer());

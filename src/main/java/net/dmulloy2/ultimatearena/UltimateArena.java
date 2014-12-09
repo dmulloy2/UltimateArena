@@ -20,6 +20,7 @@ package net.dmulloy2.ultimatearena;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,6 @@ import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
-import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -130,7 +130,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<>();
 	private @Getter List<String> pluginsUsingAPI = new ArrayList<>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<>();
-	private @Getter List<ArenaConfig> configs = new ArrayList<>();
 	private @Getter List<ArenaClass> classes = new ArrayList<>();
 
 	// Private lists
@@ -223,15 +222,30 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Arena Updater, runs every second
 		new ArenaUpdateTask().runTaskTimer(this, TimeUtil.toTicks(1), TimeUtil.toTicks(1));
 
-		logHandler.log("{0} has been enabled ({1} ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been enabled. Took {1} ms.", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	private final void setupIntegration()
 	{
-		try { essentialsHandler = new EssentialsHandler(this); } catch (Throwable ex) { }
-		try { worldEditHandler = new WorldEditHandler(this); } catch (Throwable ex) { }
-		try { protocolHandler = new ProtocolHandler(this); } catch (Throwable ex) { }
-		try { vaultHandler = new VaultHandler(this); } catch (Throwable ex) { }
+		try
+		{
+			essentialsHandler = new EssentialsHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			worldEditHandler = new WorldEditHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			protocolHandler = new ProtocolHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			vaultHandler = new VaultHandler(this);
+		} catch (Throwable ex) { }
 	}
 
 	@Override
@@ -248,6 +262,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Stop all arenas
 		stopAll();
 
+		// Disable types
+		arenaTypeHandler.disable();
+
 		// Save Signs
 		signHandler.onDisable();
 
@@ -260,16 +277,16 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Clear Memory
 		clearMemory();
 
-		logHandler.log("{0} has been disabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been disabled. Took {1} ms.", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	// Console logging
-	public void outConsole(Level level, String string, Object... objects)
+	public void log(Level level, String string, Object... objects)
 	{
 		logHandler.log(level, FormatUtil.format(string, objects));
 	}
 
-	public void outConsole(String string, Object... objects)
+	public void log(String string, Object... objects)
 	{
 		logHandler.log(string, objects);
 	}
@@ -292,8 +309,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		{
 			String broadcast = FormatUtil.format(string, objects);
 			getServer().broadcastMessage(prefix + broadcast);
-
-			debug("Broadcasted message: {0}", broadcast);
 		}
 	}
 
@@ -301,7 +316,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private final void loadFiles()
 	{
 		loadClasses();
-//		loadConfigs();
 		loadArenas();
 		loadSigns();
 	}
@@ -316,12 +330,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		reloadConfig();
 
 		arenaTypeHandler.reload();
-
-		// Reload configs
-		for (ArenaConfig conf : ListUtil.newList(configs))
-		{
-			conf.reload();
-		}
 
 		// Reload ArenaZones
 		for (ArenaZone az : ListUtil.newList(loadedArenas))
@@ -406,7 +414,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			loadArena(file);
 		}
 
-		logHandler.log("Loaded {0} arenas!", loadedArenas.size());
+		logHandler.log("Loaded {0} arenas.", loadedArenas.size());
 	}
 
 	private final void loadArena(File file)
@@ -424,51 +432,19 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			ArenaType type = arenaTypeHandler.getArenaType(typeString);
 			if (type == null)
 			{
-				logHandler.log(Level.WARNING, "Failed to find ArenaType \"{0}\" for arena {1}", typeString, file.getName());
+				logHandler.log(Level.WARNING, "Failed to find ArenaType \"{0}\" for arena {1}.", typeString, file.getName());
 				return;
 			}
 
 			ArenaZone az = type.getArenaZone(file);
 			if (az.isLoaded())
-				debug("Successfully loaded arena {0}!", az.getName());
+				debug("Successfully loaded arena {0}.", az.getName());
 		}
 		catch (Throwable ex)
 		{
 			logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "loading arena " + file.getName()));
 		}
 	}
-
-//	private final void loadConfigs()
-//	{
-//		int total = 0;
-//		for (FieldType type : FieldType.values())
-//		{
-//			if (loadConfig(type.getName()))
-//				total++;
-//		}
-//
-//		debug("Loaded {0} arena configs!", total);
-//	}
-//
-//	private boolean loadConfig(String str)
-//	{
-//		File folder = new File(getDataFolder(), "configs");
-//		File file = new File(folder, str + "Config.yml");
-//		if (! file.exists())
-//		{
-//			debug("Generating config for: {0}", str);
-//			generateArenaConfig(str);
-//		}
-//
-//		ArenaConfig a = new ArenaConfig(this, str, file);
-//		if (a.isLoaded())
-//		{
-//			configs.add(a);
-//			return true;
-//		}
-//
-//		return false;
-//	}
 
 	private void loadClasses()
 	{
@@ -522,22 +498,16 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 		}
 
-		outConsole("Loaded {0} classes!", total);
+		log("Loaded {0} classes.", total);
 	}
 
-//	private final void generateArenaConfig(String field)
-//	{
-//		saveResource("configs" + File.separator + field + "Config.yml", false);
-//	}
+	private static final List<String> STOCK_CLASSES = Arrays.asList(
+			"archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef"
+	);
 
 	private final void generateStockClasses()
 	{
-		String[] stockClasses = new String[]
-		{
-				"archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef"
-		};
-
-		for (String stockClass : stockClasses)
+		for (String stockClass : STOCK_CLASSES)
 		{
 			saveResource("classes" + File.separator + stockClass + ".yml", false);
 		}
@@ -546,22 +516,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private final void loadSigns()
 	{
 		signHandler = new SignHandler(this);
-		outConsole("Loaded {0} signs!", signHandler.getSigns().size());
+		log("Loaded {0} signs!", signHandler.getSigns().size());
 	}
 
-	// TODO: JavaDoc need - start
-
-	public final ArenaConfig getConfig(String type)
-	{
-		for (ArenaConfig ac : configs)
-		{
-			if (ac.getType().equalsIgnoreCase(type))
-				return ac;
-		}
-
-		return null;
-	}
-
+	/**
+	 * Stops all running arenas.
+	 */
 	public final void stopAll()
 	{
 		for (Arena a : getActiveArenas())
@@ -572,6 +532,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		activeArenas.clear();
 	}
 
+	/**
+	 * Gets an ArenaClass by its name.
+	 * 
+	 * @param name Name
+	 * @return The class or null if not found
+	 */
 	public final ArenaClass getArenaClass(String name)
 	{
 		for (ArenaClass ac : classes)
@@ -583,6 +549,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
+	/**
+	 * Gets an ArenaClass by its icon.
+	 * 
+	 * @param icon Icon
+	 * @return The class or null if not found
+	 */
 	public final ArenaClass getArenaClass(ItemStack icon)
 	{
 		for (ArenaClass ac : classes)
@@ -594,9 +566,15 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
-	public final void deleteArena(Player player, String str)
+	/**
+	 * Deletes an arena with a given name.
+	 * 
+	 * @param player Player deleting the arena
+	 * @param name Arena name
+	 */
+	public final void deleteArena(Player player, String name)
 	{
-		ArenaZone az = getArenaZone(str);
+		ArenaZone az = getArenaZone(name);
 		if (az != null)
 		{
 			// Delete the file
@@ -609,10 +587,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			// Stop the active arena, if applicable
 			for (Arena a : ListUtil.newList(activeArenas))
 			{
-				if (a.getName().equalsIgnoreCase(str))
-				{
+				if (a.getName().equalsIgnoreCase(name))
 					a.stop();
-				}
 			}
 
 			// Delete any signs
@@ -624,18 +600,24 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			// Remove it from the list
 			loadedArenas.remove(az);
 
-			player.sendMessage(prefix + FormatUtil.format("&3Successfully deleted arena: &e{0}", str));
+			player.sendMessage(prefix + FormatUtil.format("&3Successfully deleted arena: &e{0}", name));
 
-			outConsole("Successfully deleted arena: {0}!", str);
+			log("Successfully deleted arena: {0}!", name);
 		}
 		else
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cCould not find an arena by the name of \"{0}\"!", str));
+			player.sendMessage(prefix + FormatUtil.format("&cCould not find an arena by the name of \"{0}\"!", name));
 		}
 	}
 
-	// ---- Locational Checks
+	// ---- Location Checks
 
+	/**
+	 * Gets the ArenaZone containing the given location.
+	 * 
+	 * @param location Location
+	 * @return The ArenaZone or null if not found
+	 */
 	public final ArenaZone getZoneInside(Location location)
 	{
 		for (ArenaZone az : loadedArenas)
@@ -647,38 +629,57 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
-	public final Arena getArenaInside(Location location)
-	{
-		for (Arena arena : getActiveArenas())
-		{
-			if (arena.isInside(location))
-				return arena;
-		}
-
-		return null;
-	}
-
+	/**
+	 * Whether or not a given location is inside an arena.
+	 * 
+	 * @param loc Location
+	 * @return True if inside, false if not
+	 */
 	public final boolean isInArena(Location loc)
 	{
 		return getZoneInside(loc) != null;
 	}
 
+	/**
+	 * Whether or not a given ArenaLocation is inside an arena.
+	 * 
+	 * @param loc Location
+	 * @return True if inside, false if not
+	 */
 	public final boolean isInArena(ArenaLocation loc)
 	{
 		return isInArena(loc.getLocation());
 	}
 
-	// Special case for player
+	/**
+	 * Whether or not a given player is in an arena.
+	 * 
+	 * @param player Player
+	 * @return True if they are in an arena, false if not
+	 */
 	public final boolean isInArena(Player player)
 	{
 		return getArenaPlayer(player) != null;
 	}
 
+	/**
+	 * Gets the ArenaPlayer associated with a given player.
+	 * 
+	 * @param player Player
+	 * @return The ArenaPlayer, or null if not found
+	 */
 	public final ArenaPlayer getArenaPlayer(Player player)
 	{
 		return getArenaPlayer(player, false);
 	}
 
+	/**
+	 * Gets the ArenaPlayer associated with a given player.
+	 * 
+	 * @param player Player
+	 * @param inactive Check the inactive list
+	 * @return The ArenaPlayer, or null if not found
+	 */
 	public final ArenaPlayer getArenaPlayer(Player player, boolean inactive)
 	{
 		for (Arena arena : getActiveArenas())
@@ -691,11 +692,24 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
+	/**
+	 * Attempt to join an arena.
+	 * 
+	 * @param player Player
+	 * @param name Arena name
+	 */
 	public final void attemptJoin(Player player, String name)
 	{
 		attemptJoin(player, name, -1);
 	}
 
+	/**
+	 * Attempt to join an arena with a given team.
+	 * 
+	 * @param player Player
+	 * @param name Arena name
+	 * @param team Team number
+	 */
 	public final void attemptJoin(Player player, String name, int team)
 	{
 		if (waiting.containsKey(player.getName()))
@@ -779,6 +793,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 	}
 
+	/**
+	 * Adds a player to an arena.
+	 * 
+	 * @param player Player
+	 * @param name Arena name
+	 * @param team Team number
+	 */
 	public final void addPlayer(Player player, String name, int team)
 	{
 		try
@@ -876,23 +897,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return false;
 	}
 
-	// Gets the arena by an active player
-	public final Arena getArena(Player player)
-	{
-		for (Arena arena : getActiveArenas())
-		{
-			ArenaPlayer ap = arena.getArenaPlayer(player);
-			if (ap != null)
-			{
-				if (ap.getUniqueId().equals(player.getUniqueId()))
-					return arena;
-			}
-		}
-
-		return null;
-	}
-
-	// Gets an arena by its name
+	/**
+	 * Gets an Arena by its name.
+	 * 
+	 * @param name Arena name
+	 * @return Arena or null if not found
+	 */
 	public final Arena getArena(String name)
 	{
 		for (Arena arena : getActiveArenas())
@@ -917,7 +927,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return ret;
 	}
 
-	// Gets an arena zone by its name
+	/**
+	 * Gets an ArenaZone by its name.
+	 * 
+	 * @param name Arena name
+	 * @return ArenaZone or null if not found
+	 */
 	public final ArenaZone getArenaZone(String name)
 	{
 		for (ArenaZone az : loadedArenas)
@@ -929,12 +944,10 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		return null;
 	}
 
-	// TODO: JavaDoc need - end
-
 	// ---- Arena Creation
 
 	/**
-	 * Attempts to create a new {@link Arena}
+	 * Attempts to create a new {@link Arena}.
 	 *
 	 * @param player {@link Player} who is creating the arena
 	 * @param name Name of the new arena
@@ -1051,7 +1064,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		makingArena.clear();
 		waiting.clear();
 		classes.clear();
-		configs.clear();
 	}
 
 	/**
@@ -1125,17 +1137,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		return false;
-	}
-
-	/**
-	 * Gets whether or not a {@link Player} is waiting to join an arena.
-	 *
-	 * @param player Player to check
-	 * @return True if they are waiting, false if not
-	 */
-	public final boolean isPlayerWaiting(Player player)
-	{
-		return waiting.containsKey(player.getUniqueId());
 	}
 
 	/**

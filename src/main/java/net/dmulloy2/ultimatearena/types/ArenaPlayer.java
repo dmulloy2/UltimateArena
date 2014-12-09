@@ -339,16 +339,6 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Subtracts xp from the player.
-	 *
-	 * @param xp XP to subtract
-	 */
-	public final void subtractXP(int xp)
-	{
-		this.gameXP -= xp;
-	}
-
-	/**
 	 * Gets the player's Kill-Death ratio.
 	 *
 	 * @return Their KDR
@@ -457,19 +447,6 @@ public final class ArenaPlayer
 	{
 		Validate.notNull(location, "location cannot be null!");
 		getPlayer().teleport(location.clone().add(0.5D, 1.0D, 0.5D));
-	}
-
-	/**
-	 * Teleports the player to a given {@link ArenaLocation}. Will attempt to
-	 * teleport the player to the center of the block.
-	 *
-	 * @param location {@link ArenaLocation} to teleport the player to
-	 * @throws IllegalArgumentException if location is null
-	 */
-	public final void teleport(ArenaLocation location)
-	{
-		Validate.notNull(location, "location cannot be null!");
-		teleport(location.getLocation());
 	}
 
 	/**

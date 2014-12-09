@@ -74,13 +74,6 @@ public class SpectatingHandler implements Listener
 		return spectator;
 	}
 
-	public final void removeSpectator(Player player)
-	{
-		ArenaSpectator spectator = getSpectator(player);
-		if (spectator != null)
-			removeSpectator(spectator);
-	}
-
 	public final void removeSpectator(ArenaSpectator spectator)
 	{
 		spectator.endPlayer();

@@ -509,15 +509,6 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * @deprecated In favor of {@link #rewardTeam(Team)}
-	 */
-	@Deprecated
-	public final void rewardTeam(int team)
-	{
-		rewardTeam(Team.getById(team));
-	}
-
-	/**
 	 * Rewards an entire team.
 	 *
 	 * @param team Team to reward
@@ -537,15 +528,6 @@ public abstract class Arena implements Reloadable
 		}
 
 		toReward.clear();
-	}
-
-	/**
-	 * @deprecated In favor of {@link #setWinningTeam(Team)}
-	 */
-	@Deprecated
-	public final void setWinningTeam(int team)
-	{
-		setWinningTeam(Team.getById(team));
 	}
 
 	/**
@@ -720,7 +702,7 @@ public abstract class Arena implements Reloadable
 		if (stopped)
 			return; // No need to stop multiple times
 
-		plugin.outConsole("Stopping arena {0}!", name);
+		plugin.log("Stopping arena {0}!", name);
 
 		this.inGame = false;
 		this.stopped = true;
@@ -887,7 +869,7 @@ public abstract class Arena implements Reloadable
 	{
 		if (! started)
 		{
-			plugin.outConsole("Starting arena {0} with {1} players", name, active.size());
+			plugin.log("Starting arena {0} with {1} players", name, active.size());
 
 			this.started = true;
 			this.inGame = true;
@@ -1074,7 +1056,7 @@ public abstract class Arena implements Reloadable
 			return;
 		}
 
-		plugin.outConsole("Forcefully starting arena {0}", name);
+		plugin.log("Forcefully starting arena {0}", name);
 
 		start();
 
