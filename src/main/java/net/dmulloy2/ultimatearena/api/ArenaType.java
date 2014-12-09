@@ -52,11 +52,6 @@ public abstract class ArenaType
 	public void onLoad() { }
 
 	/**
-	 * Called when this ArenaType is enabled.
-	 */
-	public void onEnable() { }
-
-	/**
 	 * Called when this ArenaType is disabled.
 	 */
 	public void onDisable() { }
