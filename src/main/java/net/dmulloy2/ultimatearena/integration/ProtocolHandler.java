@@ -44,7 +44,7 @@ public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
 		}
 		catch (Throwable ex)
 		{
-			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "setup("));
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "setup()"));
 		}
 	}
 
