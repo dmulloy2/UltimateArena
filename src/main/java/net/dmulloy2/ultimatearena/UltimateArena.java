@@ -225,29 +225,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		logHandler.log("{0} has been enabled. Took {1} ms.", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
-	private final void setupIntegration()
-	{
-		try
-		{
-			essentialsHandler = new EssentialsHandler(this);
-		} catch (Throwable ex) { }
-
-		try
-		{
-			worldEditHandler = new WorldEditHandler(this);
-		} catch (Throwable ex) { }
-
-		try
-		{
-			protocolHandler = new ProtocolHandler(this);
-		} catch (Throwable ex) { }
-
-		try
-		{
-			vaultHandler = new VaultHandler(this);
-		} catch (Throwable ex) { }
-	}
-
 	@Override
 	public void onDisable()
 	{
@@ -310,6 +287,49 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			String broadcast = FormatUtil.format(string, objects);
 			getServer().broadcastMessage(prefix + broadcast);
 		}
+	}
+
+	private final void setupIntegration()
+	{
+		try
+		{
+			essentialsHandler = new EssentialsHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			protocolHandler = new ProtocolHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			vaultHandler = new VaultHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			worldEditHandler = new WorldEditHandler(this);
+		} catch (Throwable ex) { }
+	}
+
+	public final boolean isEssentialsEnabled()
+	{
+		return essentialsHandler != null && essentialsHandler.isEnabled();
+	}
+
+	public final boolean isProtocolEnabled()
+	{
+		return protocolHandler != null && protocolHandler.isEnabled();
+	}
+
+	public final boolean isVaultEnabled()
+	{
+		return vaultHandler != null && vaultHandler.isEnabled();
+	}
+
+	public final boolean isWorldEditEnabled()
+	{
+		return worldEditHandler != null && worldEditHandler.isEnabled();
 	}
 
 	// Loading

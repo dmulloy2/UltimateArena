@@ -36,7 +36,7 @@ public class SpleefCreator extends ArenaCreator
 			case 1: // Arena
 			{
 				WorldEditHandler worldEdit = plugin.getWorldEditHandler();
-				if (worldEdit.useWorldEdit())
+				if (worldEdit != null && worldEdit.isEnabled())
 				{
 					if (! worldEdit.hasSelection(player))
 					{
@@ -93,7 +93,7 @@ public class SpleefCreator extends ArenaCreator
 			case 2: // Lobby
 			{
 				WorldEditHandler worldEdit = plugin.getWorldEditHandler();
-				if (worldEdit.useWorldEdit())
+				if (worldEdit != null && worldEdit.isEnabled())
 				{
 					if (! worldEdit.hasSelection(player))
 					{

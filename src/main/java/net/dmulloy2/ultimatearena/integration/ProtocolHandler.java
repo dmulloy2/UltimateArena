@@ -6,7 +6,7 @@ package net.dmulloy2.ultimatearena.integration;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import net.dmulloy2.integration.IntegrationHandler;
+import net.dmulloy2.integration.DependencyProvider;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.Util;
 
@@ -23,48 +23,51 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
  */
 
 @Getter
-public class ProtocolHandler extends IntegrationHandler
+public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
 {
-	private final UltimateArena plugin;
 	private ProtocolManager manager;
-	private boolean enabled;
 
 	public ProtocolHandler(UltimateArena plugin)
 	{
-		this.plugin = plugin;
+		super(plugin, "ProtocolLibrary");
 		this.setup();
 	}
 
-	@Override
-	public void setup()
+	private final void setup()
 	{
+		if (! isEnabled())
+			return;
+
 		try
 		{
-			if (plugin.getServer().getPluginManager().isPluginEnabled("ProtocolLib"))
-			{
-				manager = ProtocolLibrary.getProtocolManager();
-				enabled = true;
-
-				plugin.getLogHandler().log("ProtocolLib integration successful!");
-			}
+			manager = ProtocolLibrary.getProtocolManager();
 		}
 		catch (Throwable ex)
 		{
-			enabled = false;
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "setup("));
 		}
 	}
 
-	public void forceRespawn(Player player)
+	public final void forceRespawn(Player player)
 	{
+		if (! isEnabled())
+			return;
+
 		try
 		{
 			PacketContainer packet = manager.createPacket(PacketType.Play.Client.CLIENT_COMMAND);
 			packet.getClientCommands().write(0, EnumWrappers.ClientCommand.PERFORM_RESPAWN);
-			manager.sendServerPacket(player, packet);
+			manager.recieveClientPacket(player, packet);
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "forcing " + player.getName() + " to respawn"));
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "forcing " + player.getName() + " to respawn"));
 		}
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return super.isEnabled() && manager != null;
 	}
 }

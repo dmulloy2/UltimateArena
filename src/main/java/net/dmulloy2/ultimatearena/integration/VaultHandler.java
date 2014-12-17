@@ -3,9 +3,14 @@
  */
 package net.dmulloy2.ultimatearena.integration;
 
-import lombok.Getter;
-import net.dmulloy2.integration.IntegrationHandler;
+import java.util.logging.Level;
+
+import net.dmulloy2.integration.DependencyProvider;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.util.Util;
+import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -15,81 +20,74 @@ import org.bukkit.plugin.ServicesManager;
  * @author dmulloy2
  */
 
-public class VaultHandler extends IntegrationHandler
+public class VaultHandler extends DependencyProvider<Vault>
 {
-	private @Getter boolean enabled;
-	private Object economy;
+	private Economy economy;
 
-	private final UltimateArena plugin;
 	public VaultHandler(UltimateArena plugin)
 	{
-		this.plugin = plugin;
+		super(plugin, "Vault");
 		this.setup();
 	}
 
-	@Override
-	public void setup()
+	private final void setup()
 	{
+		if (! isEnabled())
+			return;
+
 		try
 		{
-			ServicesManager sm = plugin.getServer().getServicesManager();
-			RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider =
-					sm.getRegistration(net.milkbowl.vault.economy.Economy.class);
-			if (economyProvider != null)
-			{
-				net.milkbowl.vault.economy.Economy economy = economyProvider.getProvider();
-				if (economy != null)
-				{
-					plugin.getLogHandler().log("Economy integration through {0}", economy.getName());
-					this.economy = economy;
-					enabled = true;
-				}
-			}
+			ServicesManager sm = handler.getServer().getServicesManager();
+			RegisteredServiceProvider<Economy> provider = sm.getRegistration(Economy.class);
+			if (provider != null)
+				this.economy = provider.getProvider();
 		}
 		catch (Throwable ex)
 		{
-			enabled = false;
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "setup()"));
 		}
 	}
 
 	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final net.milkbowl.vault.economy.EconomyResponse depositPlayer(Player player, double amount)
+	public final EconomyResponse depositPlayer(Player player, double amount)
 	{
-		if (economy != null)
-		{
-			try
-			{
-				return ((net.milkbowl.vault.economy.Economy) economy).depositPlayer(player, amount);
-			}
-			catch (Throwable ex)
-			{
-				return ((net.milkbowl.vault.economy.Economy) economy).depositPlayer(player.getName(), amount);
-			}
-		}
+		if (! isEnabled())
+			return null;
 
-		return null;
+		try
+		{
+			return economy.depositPlayer(player, amount);
+		}
+		catch (Throwable ex)
+		{
+			return economy.depositPlayer(player.getName(), amount);
+		}
 	}
 
 	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final net.milkbowl.vault.economy.EconomyResponse withdrawPlayer(Player player, double amount)
+	public final EconomyResponse withdrawPlayer(Player player, double amount)
 	{
-		if (economy != null)
-		{
-			try
-			{
-				return ((net.milkbowl.vault.economy.Economy) economy).withdrawPlayer(player, amount);
-			}
-			catch (Throwable ex)
-			{
-				return ((net.milkbowl.vault.economy.Economy) economy).withdrawPlayer(player.getName(), amount);
-			}
-		}
+		if (! isEnabled())
+			return null;
 
-		return null;
+		try
+		{
+			return economy.withdrawPlayer(player, amount);
+		}
+		catch (Throwable ex)
+		{
+			return economy.withdrawPlayer(player.getName(), amount);
+		}
 	}
 
-	public final net.milkbowl.vault.economy.Economy getEconomy()
+	@Override
+	public boolean isEnabled()
 	{
-		return (net.milkbowl.vault.economy.Economy) economy;
+		return super.isEnabled() && economy != null;
+	}
+
+	public final Economy getEconomy()
+	{
+		return economy;
 	}
 }

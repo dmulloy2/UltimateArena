@@ -217,7 +217,8 @@ public abstract class Arena implements Reloadable
 		player.setFlying(false);
 
 		// Disable god mode
-		plugin.getEssentialsHandler().disableGodMode(player);
+		if (plugin.isEssentialsEnabled())
+			plugin.getEssentialsHandler().disableGodMode(player);
 
 		// Clear potion effects
 		pl.clearPotionEffects();

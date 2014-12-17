@@ -329,9 +329,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 		if (plugin.getConfig().getBoolean("moneyRewards", true))
 		{
-			VaultHandler vault = plugin.getVaultHandler();
-			if (vault.isEnabled())
+			if (plugin.isVaultEnabled())
 			{
+				VaultHandler vault = plugin.getVaultHandler();
 				double money = config.getCashReward();
 				if (config.isRewardBasedOnXp())
 					money = money * (ap.getGameXP() / 250.0D);

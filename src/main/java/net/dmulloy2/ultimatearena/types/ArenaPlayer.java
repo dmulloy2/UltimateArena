@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.integration.ProtocolHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -219,7 +218,7 @@ public final class ArenaPlayer
 
 		if (arena.isValidClass(ac))
 		{
-			if (ac.getCost() != -1.0D && plugin.getVaultHandler().isEnabled())
+			if (ac.getCost() != -1.0D && plugin.isVaultEnabled())
 			{
 				EconomyResponse response = plugin.getVaultHandler().withdrawPlayer(player, ac.getCost());
 				if (! response.transactionSuccess())
@@ -271,10 +270,8 @@ public final class ArenaPlayer
 			return;
 		}
 
-		if (arenaClass.isUseEssentials() && plugin.getEssentialsHandler().useEssentials())
-		{
+		if (plugin.isEssentialsEnabled() && arenaClass.isUseEssentials())
 			plugin.getEssentialsHandler().giveKitItems(this);
-		}
 
 		for (Entry<String, ItemStack> armor : arenaClass.getArmor().entrySet())
 		{
@@ -377,14 +374,8 @@ public final class ArenaPlayer
 
 		arena.onPlayerDeath(this);
 
-		if (plugin.getConfig().getBoolean("forceRespawn", false))
-		{
-			ProtocolHandler protocol = plugin.getProtocolHandler();
-			if (protocol != null && protocol.isEnabled())
-			{
-				protocol.forceRespawn(player);
-			}
-		}
+		if (plugin.getConfig().getBoolean("forceRespawn", false) && plugin.isProtocolEnabled())
+			plugin.getProtocolHandler().forceRespawn(player);
 	}
 
 	/**
@@ -401,7 +392,7 @@ public final class ArenaPlayer
 			for (double transaction : transactions)
 				refund += transaction;
 
-			if (refund > 0)
+			if (refund > 0 && plugin.isVaultEnabled())
 			{
 				plugin.getVaultHandler().depositPlayer(player, refund);
 				String format = plugin.getVaultHandler().getEconomy().format(refund);

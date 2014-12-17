@@ -181,7 +181,7 @@ public final class ArenaClass implements Reloadable
 			}
 
 			essKitName = fc.getString("essentialsKit", "");
-			useEssentials = ! essKitName.isEmpty() && plugin.getEssentialsHandler().useEssentials();
+			useEssentials = ! essKitName.isEmpty() && plugin.isEssentialsEnabled();
 			if (useEssentials)
 			{
 				essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(essKitName);
@@ -232,7 +232,7 @@ public final class ArenaClass implements Reloadable
 			}
 
 			cost = fc.getDouble("cost", -1.0D);
-			if (cost != -1.0D)
+			if (cost != -1.0D && plugin.isVaultEnabled())
 			{
 				Economy eco = plugin.getVaultHandler().getEconomy();
 				description.add(FormatUtil.format("&7Cost: &a{0}", eco.format(cost)));

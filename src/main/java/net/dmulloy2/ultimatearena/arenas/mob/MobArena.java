@@ -119,9 +119,10 @@ public class MobArena extends Arena
 		if (plugin.getConfig().getBoolean("moneyRewards", true))
 		{
 			double amtCash = pl.getGameXP() / 10.0D;
-			VaultHandler vault = plugin.getVaultHandler();
-			if (vault.isEnabled())
+
+			if (plugin.isVaultEnabled())
 			{
+				VaultHandler vault = plugin.getVaultHandler();
 				vault.depositPlayer(pl.getPlayer(), amtCash);
 
 				String cash = vault.getEconomy().format(amtCash);
