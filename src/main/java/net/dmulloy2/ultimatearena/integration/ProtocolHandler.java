@@ -30,10 +30,10 @@ public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
 	public ProtocolHandler(UltimateArena plugin)
 	{
 		super(plugin, "ProtocolLibrary");
-		this.setup();
 	}
 
-	private final void setup()
+	@Override
+	public void onEnable()
 	{
 		if (! isEnabled())
 			return;
@@ -46,6 +46,12 @@ public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
 		{
 			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "setup()"));
 		}
+	}
+
+	@Override
+	public void onDisable()
+	{
+		manager = null;
 	}
 
 	public final void forceRespawn(Player player)

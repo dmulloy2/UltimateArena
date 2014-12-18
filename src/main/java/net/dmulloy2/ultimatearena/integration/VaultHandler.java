@@ -27,10 +27,10 @@ public class VaultHandler extends DependencyProvider<Vault>
 	public VaultHandler(UltimateArena plugin)
 	{
 		super(plugin, "Vault");
-		this.setup();
 	}
 
-	private final void setup()
+	@Override
+	public void onEnable()
 	{
 		if (! isEnabled())
 			return;
@@ -46,6 +46,12 @@ public class VaultHandler extends DependencyProvider<Vault>
 		{
 			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "setup()"));
 		}
+	}
+
+	@Override
+	public void onDisable()
+	{
+		economy = null;
 	}
 
 	@SuppressWarnings("deprecation") // Backwards Compatibility
