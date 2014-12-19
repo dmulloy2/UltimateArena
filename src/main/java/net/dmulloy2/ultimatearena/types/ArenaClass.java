@@ -45,6 +45,7 @@ public final class ArenaClass implements Reloadable
 	private Map<String, ItemStack> armor;
 
 	private boolean useHelmet = true;
+	private double maxHealth = 20.0D;
 	private double cost = -1.0D;
 
 	// Essentials Integration
@@ -240,6 +241,8 @@ public final class ArenaClass implements Reloadable
 			meta.setDisplayName(title);
 			meta.setLore(description);
 			icon.setItemMeta(meta);
+
+			maxHealth = fc.getDouble("maxHealth", 20.0D);
 
 			try
 			{

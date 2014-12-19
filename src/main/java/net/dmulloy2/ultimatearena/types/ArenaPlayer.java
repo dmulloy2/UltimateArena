@@ -292,6 +292,11 @@ public final class ArenaPlayer
 			player.getInventory().setItem(tool.getKey(), tool.getValue());
 		}
 
+		if (arenaClass.getMaxHealth() != 20.0D)
+		{
+			player.setMaxHealth(arenaClass.getMaxHealth());
+		}
+
 		this.changeClassOnRespawn = false;
 	}
 

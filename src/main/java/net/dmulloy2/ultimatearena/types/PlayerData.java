@@ -32,6 +32,7 @@ public final class PlayerData
 	private int level;
 	private float saturation;
 	private int totalExperience;
+	private double maxHealth;
 
 	private final Player player;
 
@@ -51,6 +52,7 @@ public final class PlayerData
 		this.level = player.getLevel();
 		this.saturation = player.getSaturation();
 		this.totalExperience = player.getTotalExperience();
+		this.maxHealth = player.getMaxHealth();
 		this.player = player;
 	}
 
@@ -70,5 +72,6 @@ public final class PlayerData
 		player.setLevel(level);
 		player.setSaturation(saturation);
 		player.setTotalExperience(totalExperience);
+		player.setMaxHealth(maxHealth);
 	}
 }
