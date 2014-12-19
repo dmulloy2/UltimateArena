@@ -312,6 +312,8 @@ public final class ArenaPlayer
 		}
 	}
 
+	private String lastMessage;
+
 	/**
 	 * Sends the player a formatted and prefixed message.
 	 *
@@ -320,7 +322,12 @@ public final class ArenaPlayer
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
-		getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		string = plugin.getPrefix() + FormatUtil.format(string, objects);
+		if (lastMessage.equals(string))
+			return;
+
+		getPlayer().sendMessage(string);
+		lastMessage = string;
 	}
 
 	/**

@@ -92,7 +92,7 @@ public class ConquestFlag extends ArenaFlag
 		}
 		else
 		{
-			if (owningTeam == Team.RED && ! capped)
+			if (owningTeam == Team.RED/* && ! capped*/)
 			{
 				int added = (team1 - team2) * 5;
 				if (power + added > 100)
@@ -116,7 +116,7 @@ public class ConquestFlag extends ArenaFlag
 					setOwningTeam(Team.RED);
 				}
 			}
-			else if (owningTeam == Team.BLUE && ! capped)
+			else if (owningTeam == Team.BLUE/* && ! capped*/)
 			{
 				int added = (team2 - team1) * 5;
 				if (power + added > 100)
