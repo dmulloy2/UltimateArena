@@ -11,8 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.sk89q.worldedit.bukkit.selections.Selection;
-
 /**
  * @author dmulloy2
  */
@@ -44,7 +42,7 @@ public class SpleefCreator extends ArenaCreator
 						return;
 					}
 
-					Selection sel = worldEdit.getSelection(player);
+					com.sk89q.worldedit.bukkit.selections.Selection sel = worldEdit.getSelection(player);
 					if (! worldEdit.isCuboidSelection(sel))
 					{
 						sendMessage("&cYou must have a cuboid selection to do this!");
@@ -101,7 +99,7 @@ public class SpleefCreator extends ArenaCreator
 						return;
 					}
 
-					Selection sel = worldEdit.getSelection(player);
+					com.sk89q.worldedit.bukkit.selections.Selection sel = worldEdit.getSelection(player);
 					if (! worldEdit.isCuboidSelection(sel))
 					{
 						sendMessage("&cYou must have a cuboid selection to do this!");

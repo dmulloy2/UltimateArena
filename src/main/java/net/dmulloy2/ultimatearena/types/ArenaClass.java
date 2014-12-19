@@ -19,7 +19,6 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
-import net.milkbowl.vault.economy.Economy;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
@@ -234,8 +233,7 @@ public final class ArenaClass implements Reloadable
 			cost = fc.getDouble("cost", -1.0D);
 			if (cost != -1.0D && plugin.isVaultEnabled())
 			{
-				Economy eco = plugin.getVaultHandler().getEconomy();
-				description.add(FormatUtil.format("&7Cost: &a{0}", eco.format(cost)));
+				description.add(FormatUtil.format("&7Cost: &a{0}", plugin.getVaultHandler().format(cost)));
 			}
 
 			ItemMeta meta = icon.getItemMeta();

@@ -8,8 +8,6 @@ import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.sk89q.worldedit.bukkit.selections.Selection;
-
 /**
  * @author dmulloy2
  */
@@ -41,7 +39,7 @@ public class BombCreator extends ArenaCreator
 						return;
 					}
 
-					Selection sel = worldEdit.getSelection(player);
+					com.sk89q.worldedit.bukkit.selections.Selection sel = worldEdit.getSelection(player);
 					if (! worldEdit.isCuboidSelection(sel))
 					{
 						sendMessage("&cYou must have a cuboid selection to do this!");
@@ -98,7 +96,7 @@ public class BombCreator extends ArenaCreator
 						return;
 					}
 
-					Selection sel = worldEdit.getSelection(player);
+					com.sk89q.worldedit.bukkit.selections.Selection sel = worldEdit.getSelection(player);
 					if (! worldEdit.isCuboidSelection(sel))
 					{
 						sendMessage("&cYou must have a cuboid selection to do this!");

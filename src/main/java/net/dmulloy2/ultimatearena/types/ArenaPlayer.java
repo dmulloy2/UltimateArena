@@ -18,7 +18,6 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
@@ -220,20 +219,27 @@ public final class ArenaPlayer
 		{
 			if (ac.getCost() != -1.0D && plugin.isVaultEnabled())
 			{
-				EconomyResponse response = plugin.getVaultHandler().withdrawPlayer(player, ac.getCost());
-				if (! response.transactionSuccess())
+				if (plugin.getVaultHandler().getBalance(player) >= ac.getCost())
 				{
-					sendMessage("&cCould not purchase class {0}: {1}", ac.getName(), response.errorMessage);
-					return false;
+					if (plugin.getVaultHandler().withdrawPlayer(player, ac.getCost()))
+					{
+						String format = plugin.getVaultHandler().format(ac.getCost());
+						sendMessage("&3You have purchased class &e{0} &3for &e{1}", ac.getName(), format);
+					}
+					else
+					{
+						sendMessage("&cFailed to purchase class {0}.", ac.getName());
+						return false;
+					}
 				}
 				else
 				{
-					String format = plugin.getVaultHandler().getEconomy().format(ac.getCost());
-					sendMessage("&3You have purchased class &e{0} &3for &e{1}", ac.getName(), format);
+					sendMessage("&cFailed to purchase class {0}: Inadequate funds!", ac.getName());
+					return false;
 				}
 
 				// Add to refund list if they didn't go negative, prevents exploiting
-				if (plugin.getVaultHandler().getEconomy().getBalance(player) > 0)
+				if (plugin.getVaultHandler().getBalance(player) > 0.0D)
 					transactions.add(ac.getCost());
 			}
 
@@ -394,9 +400,11 @@ public final class ArenaPlayer
 
 			if (refund > 0 && plugin.isVaultEnabled())
 			{
-				plugin.getVaultHandler().depositPlayer(player, refund);
-				String format = plugin.getVaultHandler().getEconomy().format(refund);
-				sendMessage("&3You have been refunded &e{0} &3for your class purchases.", format);
+				if (plugin.getVaultHandler().depositPlayer(player, refund))
+				{
+					String format = plugin.getVaultHandler().format(refund);
+					sendMessage("&3You have been refunded &e{0} &3for your class purchases.", format);
+				}
 			}
 		}
 

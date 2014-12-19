@@ -123,10 +123,11 @@ public class MobArena extends Arena
 			if (plugin.isVaultEnabled())
 			{
 				VaultHandler vault = plugin.getVaultHandler();
-				vault.depositPlayer(pl.getPlayer(), amtCash);
-
-				String cash = vault.getEconomy().format(amtCash);
-				pl.sendMessage("&a{0} has been added to your balance!", cash);
+				if (vault.depositPlayer(pl.getPlayer(), amtCash))
+				{
+					String cash = vault.format(amtCash);
+					pl.sendMessage("&a{0} has been added to your balance!", cash);
+				}
 			}
 		}
 	}

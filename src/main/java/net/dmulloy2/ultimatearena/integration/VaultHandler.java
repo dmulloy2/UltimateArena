@@ -10,7 +10,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.Util;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -20,6 +19,7 @@ import org.bukkit.plugin.ServicesManager;
  * @author dmulloy2
  */
 
+@SuppressWarnings("deprecation") // Backwards compat
 public class VaultHandler extends DependencyProvider<Vault>
 {
 	private Economy economy;
@@ -54,35 +54,65 @@ public class VaultHandler extends DependencyProvider<Vault>
 		economy = null;
 	}
 
-	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final EconomyResponse depositPlayer(Player player, double amount)
+	public final boolean depositPlayer(Player player, double amount)
 	{
 		if (! isEnabled())
-			return null;
+			return false;
 
 		try
 		{
-			return economy.depositPlayer(player, amount);
+			return economy.depositPlayer(player, amount).transactionSuccess();
 		}
 		catch (Throwable ex)
 		{
-			return economy.depositPlayer(player.getName(), amount);
+			return economy.depositPlayer(player.getName(), amount).transactionSuccess();
 		}
 	}
 
-	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final EconomyResponse withdrawPlayer(Player player, double amount)
+	public final boolean withdrawPlayer(Player player, double amount)
 	{
 		if (! isEnabled())
-			return null;
+			return false;
 
 		try
 		{
-			return economy.withdrawPlayer(player, amount);
+			return economy.withdrawPlayer(player, amount).transactionSuccess();
 		}
 		catch (Throwable ex)
 		{
-			return economy.withdrawPlayer(player.getName(), amount);
+			return economy.withdrawPlayer(player.getName(), amount).transactionSuccess();
+		}
+	}
+
+	public final String format(double amount)
+	{
+		if (! isEnabled())
+			return Double.toString(amount);
+
+		try
+		{
+			return economy.format(amount);
+		}
+		catch (Throwable ex)
+		{
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "format(" + amount + ")"));
+		}
+
+		return Double.toString(amount);
+	}
+
+	public final double getBalance(Player player)
+	{
+		if (! isEnabled())
+			return 0.0D;
+
+		try
+		{
+			return economy.getBalance(player);
+		}
+		catch (Throwable ex)
+		{
+			return economy.getBalance(player.getName());
 		}
 	}
 
@@ -90,10 +120,5 @@ public class VaultHandler extends DependencyProvider<Vault>
 	public boolean isEnabled()
 	{
 		return super.isEnabled() && economy != null;
-	}
-
-	public final Economy getEconomy()
-	{
-		return economy;
 	}
 }

@@ -24,7 +24,6 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
@@ -338,15 +337,14 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 				if (money > 0.0D)
 				{
-					EconomyResponse er = vault.depositPlayer(ap.getPlayer(), money);
-					if (er.transactionSuccess())
+					if (vault.depositPlayer(ap.getPlayer(), money))
 					{
-						String format = vault.getEconomy().format(money);
+						String format = vault.format(money);
 						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
 					}
 					else
 					{
-						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", er.errorMessage));
+						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward."));
 					}
 				}
 			}
