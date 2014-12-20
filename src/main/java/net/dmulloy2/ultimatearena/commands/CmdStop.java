@@ -26,7 +26,7 @@ public class CmdStop extends UltimateArenaCommand
 		Arena arena = getArena(0);
 		if (arena == null)
 		{
-			if (! args[0].equalsIgnoreCase("all"))
+			if (args[0].equalsIgnoreCase("all"))
 			{
 				sendpMessage("&3Stopping all arenas!");
 				plugin.stopAll();

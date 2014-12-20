@@ -61,9 +61,37 @@ public class ConquestArena extends Arena
 		if (redTeamPower <= 0)
 			setWinningTeam(Team.BLUE);
 
+		int red = 0;
+		int blue = 0;
+
 		for (ArenaFlag flag : ListUtil.newList(flags))
 		{
 			flag.checkNear(getActivePlayers());
+
+			if (flag.isCapped())
+			{
+				if (flag.getOwningTeam() == Team.RED)
+					red++;
+				else
+					blue++;
+			}
+		}
+
+		if (red == flags.size())
+		{
+			setWinningTeam(Team.RED);
+
+			stop();
+
+			rewardTeam(Team.RED);
+		}
+		else if (blue == flags.size())
+		{
+			setWinningTeam(Team.BLUE);
+
+			stop();
+
+			rewardTeam(Team.BLUE);
 		}
 
 		if (startTimer <= 0)

@@ -312,7 +312,7 @@ public final class ArenaPlayer
 		}
 	}
 
-	private String lastMessage;
+	private String lastMessage = "";
 
 	/**
 	 * Sends the player a formatted and prefixed message.

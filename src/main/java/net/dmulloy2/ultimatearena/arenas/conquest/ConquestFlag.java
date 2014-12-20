@@ -68,6 +68,7 @@ public class ConquestFlag extends ArenaFlag
 
 				if (power == 0)
 				{
+					capped = false;
 					setOwningTeam(Team.RED);
 				}
 			}
@@ -86,24 +87,20 @@ public class ConquestFlag extends ArenaFlag
 
 				if (power == 0)
 				{
+					capped = false;
 					setOwningTeam(Team.BLUE);
 				}
 			}
 		}
 		else
 		{
-			if (owningTeam == Team.RED/* && ! capped*/)
+			if (owningTeam == Team.RED && ! capped)
 			{
 				int added = (team1 - team2) * 5;
 				if (power + added > 100)
 					power = 100;
 				else
 					power += added;
-
-				for (ArenaPlayer apl : players)
-				{
-					apl.sendMessage("&3Capping! &e{0}&3%", power);
-				}
 
 				if (power == 100)
 				{
@@ -115,19 +112,21 @@ public class ConquestFlag extends ArenaFlag
 					capped = true;
 					setOwningTeam(Team.RED);
 				}
+				else
+				{
+					for (ArenaPlayer apl : players)
+					{
+						apl.sendMessage("&3Capping! &e{0}&3%", power);
+					}
+				}
 			}
-			else if (owningTeam == Team.BLUE/* && ! capped*/)
+			else if (owningTeam == Team.BLUE && ! capped)
 			{
 				int added = (team2 - team1) * 5;
 				if (power + added > 100)
 					power = 100;
 				else
 					power += added;
-
-				for (ArenaPlayer apl : players)
-				{
-					apl.sendMessage("&3Capping! &e{0}&3%", power);
-				}
 
 				if (power == 100)
 				{
@@ -138,6 +137,13 @@ public class ConquestFlag extends ArenaFlag
 
 					capped = true;
 					setOwningTeam(Team.BLUE);
+				}
+				else
+				{
+					for (ArenaPlayer apl : players)
+					{
+						apl.sendMessage("&3Capping! &e{0}&3%", power);
+					}
 				}
 			}
 		}
