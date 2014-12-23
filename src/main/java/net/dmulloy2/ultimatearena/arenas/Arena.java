@@ -11,6 +11,10 @@ import java.util.Map.Entry;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dmulloy2.chat.BaseComponent;
+import net.dmulloy2.chat.ChatUtil;
+import net.dmulloy2.chat.ClickEvent;
+import net.dmulloy2.chat.ComponentBuilder;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -269,6 +273,13 @@ public abstract class Arena implements Reloadable
 		if (! plugin.getConfig().getBoolean("globalMessages", true))
 			return;
 
+		// Allow players to click and insert into chat
+		ComponentBuilder builder = new ComponentBuilder(FormatUtil.format("&3Type "));
+		builder.append(FormatUtil.format("&e/ua join {0}", name));
+		builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ua join " + name));
+		builder.append(FormatUtil.format(" &3to join!"));
+		BaseComponent[] components = builder.create();
+
 		for (Player player : Util.getOnlinePlayers())
 		{
 			if (! plugin.isInArena(player))
@@ -286,7 +297,7 @@ public abstract class Arena implements Reloadable
 								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getStylizedName()));
 					}
 
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Type &e/ua join {0} &3to join!", name));
+					ChatUtil.sendMessage(player, components);
 				}
 			}
 		}
