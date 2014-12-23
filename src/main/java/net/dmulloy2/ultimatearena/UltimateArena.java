@@ -793,6 +793,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
+		if (az.isDisabled())
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cThis arena is disabled!"));
+			return;
+		}
+
 		ArenaPlayer ap = getArenaPlayer(player, true);
 		if (ap != null)
 		{
@@ -839,18 +845,12 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		try
 		{
 			ArenaZone az = getArenaZone(name);
-			if (az.isDisabled())
-			{
-				player.sendMessage(prefix + FormatUtil.format("&cThis arena is disabled!"));
-				return;
-			}
-
 			Arena active = getArena(name);
 			if (active != null)
 			{
 				if (active.isStopped())
 				{
-					player.sendMessage(prefix + FormatUtil.format("&cThis arena is currently stopping"));
+					player.sendMessage(prefix + FormatUtil.format("&cThis arena is stopping!"));
 					return;
 				}
 
