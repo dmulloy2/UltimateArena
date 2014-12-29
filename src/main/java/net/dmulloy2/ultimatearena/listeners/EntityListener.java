@@ -181,9 +181,12 @@ public class EntityListener implements Listener
 							ArenaClass ac = ap.getArenaClass();
 							if (ac != null && ac.getName().equalsIgnoreCase("healer"))
 							{
-								if (dp.getPlayer().getHealth() > 0.0D && dp.getPlayer().getHealth() <= 18.0D)
+								Player heal = dp.getPlayer();
+								double health = heal.getHealth();
+								double maxHealth = heal.getMaxHealth();
+								if (health > 0.0D && health < maxHealth)
 								{
-									dp.getPlayer().setHealth(dp.getPlayer().getHealth() + 2.0D);
+									heal.setHealth(Math.max(health + 2.0D, maxHealth));
 									ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", dp.getName());
 								}
 							}
