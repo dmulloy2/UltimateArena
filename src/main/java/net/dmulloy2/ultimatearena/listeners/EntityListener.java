@@ -186,7 +186,7 @@ public class EntityListener implements Listener
 								double maxHealth = heal.getMaxHealth();
 								if (health > 0.0D && health < maxHealth)
 								{
-									heal.setHealth(Math.max(health + 2.0D, maxHealth));
+									heal.setHealth(Math.min(health + 2.0D, maxHealth));
 									ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", dp.getName());
 								}
 							}
