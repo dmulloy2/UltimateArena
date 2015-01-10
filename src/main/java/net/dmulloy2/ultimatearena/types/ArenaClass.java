@@ -13,7 +13,6 @@ import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.EnchantmentType;
 import net.dmulloy2.types.ItemParser;
 import net.dmulloy2.types.MyMaterial;
-import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
@@ -36,7 +35,7 @@ import org.bukkit.potion.PotionEffectType;
  */
 
 @Getter
-public final class ArenaClass implements Reloadable
+public final class ArenaClass extends Configuration
 {
 	private boolean needsPermission;
 	private String permissionNode;
@@ -97,12 +96,15 @@ public final class ArenaClass implements Reloadable
 		try
 		{
 			boolean changes = false;
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
-			if (fc.isSet("armor"))
+			YamlConfiguration config = new YamlConfiguration();
+			config.load(file);
+
+			Map<String, Object> values = config.getValues(false);
+
+			if (isSet(values, "armor"))
 			{
-				Map<String, Object> values = fc.getConfigurationSection("armor").getValues(false);
-				for (Entry<String, Object> entry : values.entrySet())
+				for (Entry<String, Object> entry : getSection(values, "armor").entrySet())
 				{
 					String value = entry.getValue().toString();
 					ItemStack item = null;
@@ -149,7 +151,7 @@ public final class ArenaClass implements Reloadable
 					armor.put(entry.getKey(), item);
 
 					// Convert
-					fc.set("armor." + entry.getKey().toLowerCase(), ItemUtil.serialize(item));
+					config.set("armor." + entry.getKey().toLowerCase(), ItemUtil.serialize(item));
 					changes = true;
 				}
 			}
@@ -157,11 +159,10 @@ public final class ArenaClass implements Reloadable
 			// Item Parser
 			ItemParser parser = new ItemParser(plugin);
 
-			if (fc.isSet("tools"))
+			if (isSet(values, "tools"))
 			{
 				int nextSlot = 0;
-				Map<String, Object> values = fc.getConfigurationSection("tools").getValues(false);
-				for (Entry<String, Object> entry : values.entrySet())
+				for (Entry<String, Object> entry : getSection(values, "tools").entrySet())
 				{
 					int slot = NumberUtil.toInt(entry.getKey());
 					String value = entry.getValue().toString();
@@ -174,64 +175,66 @@ public final class ArenaClass implements Reloadable
 				}
 			}
 
-			if (fc.isSet("useEssentials"))
+			if (isSet(values, "useEssentials"))
 			{
-				fc.set("useEssentials", null);
+				config.set("useEssentials", null);
 				changes = true;
 			}
 
-			essKitName = fc.getString("essentialsKit", "");
+			essKitName = getString(values, "essentialsKit", "");
 			useEssentials = ! essKitName.isEmpty() && plugin.isEssentialsEnabled();
 			if (useEssentials)
 			{
 				essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(essKitName);
 			}
 
-			if (fc.isSet("hasPotionEffects"))
+			if (isSet(values, "hasPotionEffects"))
 			{
-				fc.set("hasPotionEffects", null);
+				config.set("hasPotionEffects", null);
 				changes = true;
 			}
 
-			if (fc.isSet("potionEffects"))
+			if (isSet(values, "potionEffects"))
 			{
-				String effects = fc.getString("potionEffects");
+				String effects = getString(values, "potionEffects", "");
 				hasPotionEffects = ! effects.isEmpty();
 				if (hasPotionEffects)
 					potionEffects = readPotionEffects(effects);
 			}
 
-			useHelmet = fc.getBoolean("useHelmet", true);
+			useHelmet = getBoolean(values, "useHelmet", true);
 
-			if (fc.isSet("permissionNode"))
+			if (isSet(values, "permissionNode"))
 			{
-				if (! fc.getString("permissionNode").isEmpty())
-					fc.set("needsPermission", true);
+				if (! getString(values, "permissionNode", "").isEmpty())
+					config.set("needsPermission", true);
 
-				fc.set("permissionNode", null);
+				config.set("permissionNode", null);
 				changes = true;
 			}
 
-			needsPermission = fc.getBoolean("needsPermission", false);
+			needsPermission = getBoolean(values, "needsPermission", false);
 			permissionNode = "ultimatearena.class." + name.toLowerCase();
 
-			if (fc.isSet("icon"))
-				icon = parser.parse(fc.getString("icon"));
+			if (isSet(values, "icon"))
+			{
+				icon = parser.parse(getString(values, "icon", ""));
+			}
 
 			if (icon == null)
 			{
 				icon = new ItemStack(Material.PAPER, 1);
 			}
 
-			title = FormatUtil.format(fc.getString("title", "&e" + WordUtils.capitalize(name)));
+			title = FormatUtil.format(getString(values, "title", "&e" + WordUtils.capitalize(name)));
 
-			if (fc.isSet("description"))
+			if (isSet(values, "description"))
 			{
-				for (String line : fc.getStringList("description"))
+				for (String line : getStringList(values, "description"))
 					description.add(FormatUtil.format("&7" + line));
 			}
 
-			cost = fc.getDouble("cost", -1.0D);
+			cost = getDouble(values, "cost", -1.0D);
 			if (cost != -1.0D && plugin.isVaultEnabled())
 			{
 				description.add(FormatUtil.format("&7Cost: &a{0}", plugin.getVaultHandler().format(cost)));
@@ -242,12 +245,12 @@ public final class ArenaClass implements Reloadable
 			meta.setLore(description);
 			icon.setItemMeta(meta);
 
-			maxHealth = fc.getDouble("maxHealth", 20.0D);
+			maxHealth = getDouble(values, "maxHealth", 20.0D);
 
 			try
 			{
 				if (changes)
-					fc.save(file);
+					config.save(file);
 			}
 			catch (Throwable ex)
 			{
@@ -321,6 +324,13 @@ public final class ArenaClass implements Reloadable
 	public final ItemStack getIcon()
 	{
 		return icon.clone();
+	}
+
+	@Override
+	public Map<String, Object> serialize()
+	{
+		// Currently not needed
+		return null;
 	}
 
 	@Override

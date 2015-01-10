@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.types.ItemParser;
-import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
@@ -26,7 +25,6 @@ import net.dmulloy2.util.Util;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,7 +33,7 @@ import org.bukkit.inventory.ItemStack;
  */
 
 @Getter @Setter
-public class ArenaConfig implements ConfigurationSerializable, Reloadable
+public class ArenaConfig extends Configuration
 {
 	// Generic
 	protected int gameTime, lobbyTime, maxDeaths;
@@ -125,25 +123,28 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 
 		try
 		{
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			this.gameTime = fc.getInt("gameTime", def.getGameTime());
-			this.lobbyTime = fc.getInt("lobbyTime", def.getLobbyTime());
-			this.maxDeaths = Math.max(1, fc.getInt("maxDeaths", def.getMaxDeaths()));
-			this.allowTeamKilling = fc.getBoolean("allowTeamKilling", def.isAllowTeamKilling());
-			this.cashReward = fc.getDouble("cashReward", def.getCashReward());
-			this.countMobKills = fc.getBoolean("countMobKills", def.isCountMobKills());
-			this.canModifyWorld = fc.getBoolean("canModifyWorld", def.isCanModifyWorld());
-			this.unlimitedAmmo = fc.getBoolean("unlimitedAmmo", def.isUnlimitedAmmo());
-			this.giveRewards = fc.getBoolean("giveRewards", def.isGiveRewards());
-			this.rewardBasedOnXp = fc.getBoolean("rewardBasedOnXp", def.isRewardBasedOnXp());
+			YamlConfiguration config = new YamlConfiguration();
+			config.load(file);
+
+			Map<String, Object> values = config.getValues(false);
+			this.gameTime = getInt(values, "gameTime", def.getGameTime());
+			this.lobbyTime = getInt(values, "lobbyTime", def.getLobbyTime());
+			this.maxDeaths = Math.max(1, getInt(values, "maxDeaths", def.getMaxDeaths()));
+			this.allowTeamKilling = getBoolean(values, "allowTeamKilling", def.isAllowTeamKilling());
+			this.cashReward = getDouble(values, "cashReward", def.getCashReward());
+			this.countMobKills = getBoolean(values, "countMobKills", def.isCountMobKills());
+			this.canModifyWorld = getBoolean(values, "canModifyWorld", def.isCanModifyWorld());
+			this.unlimitedAmmo = getBoolean(values, "unlimitedAmmo", def.isUnlimitedAmmo());
+			this.giveRewards = getBoolean(values, "giveRewards", def.isGiveRewards());
+			this.rewardBasedOnXp = getBoolean(values, "rewardBasedOnXp", def.isRewardBasedOnXp());
 
 			ItemParser parser = new ItemParser(plugin);
 
 			if (giveRewards)
 			{
-				if (fc.isSet("rewards"))
+				if (isSet(values, "rewards"))
 				{
-					this.rewards = parser.parse(fc.getStringList("rewards"));
+					this.rewards = parser.parse(getStringList(values, "rewards"));
 				}
 				else
 				{
@@ -151,9 +152,9 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 				}
 
 				this.scaledRewards = new ArrayList<>();
-				if (fc.isSet("scaledRewards"))
+				if (isSet(values, "scaledRewards"))
 				{
-					for (String string : fc.getStringList("scaledRewards"))
+					for (String string : getStringList(values, "scaledRewards"))
 					{
 						ScaledReward reward = ScaledReward.fromString(string);
 						if (reward != null)
@@ -178,35 +179,24 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 				}
 			}
 
-			if (fc.isSet("clearMaterials"))
+			if (isSet(values, "clearMaterials"))
 			{
-				this.clearMaterials = MaterialUtil.fromStrings(fc.getStringList("clearMaterials"));
+				this.clearMaterials = MaterialUtil.fromStrings(getStringList(values, "clearMaterials"));
 			}
 			else
 			{
 				this.clearMaterials = def.getClearMaterials();
 			}
 
-			this.blacklistedClasses = def.getBlacklistedClasses();
-			if (fc.isSet("blacklistedClasses"))
-			{
-				blacklistedClasses.addAll(fc.getStringList("blacklistedClasses"));
-			}
-
-			this.whitelistedClasses = def.getWhitelistedClasses();
-			if (fc.isSet("whitelistedClasses"))
-			{
-				whitelistedClasses.addAll(fc.getStringList("whitelistedClasses"));
-			}
+			this.blacklistedClasses = getList(values, "blacklistedClasses", def.getBlacklistedClasses());
+			this.whitelistedClasses = getList(values, "whitelistedClasses", def.getWhitelistedClasses());
 
 			this.killStreaks = def.getKillStreaks();
-			if (fc.isSet("killStreaks"))
+			if (isSet(values, "killStreaks"))
 			{
 				this.killStreaks = new LinkedHashMap<>();
 
-				// TODO: Use memory sections for this, much easier
-				Map<String, Object> values = fc.getConfigurationSection("killStreaks").getValues(true);
-				for (Entry<String, Object> entry : values.entrySet())
+				for (Entry<String, Object> entry : getSection(values, "killStreaks").entrySet())
 				{
 					int kills = NumberUtil.toInt(entry.getKey());
 					if (kills < 0)
@@ -249,7 +239,7 @@ public class ArenaConfig implements ConfigurationSerializable, Reloadable
 			}
 
 			// Load custom options
-			loadCustomOptions(fc, def);
+			loadCustomOptions(config, def);
 		}
 		catch (Throwable ex)
 		{
