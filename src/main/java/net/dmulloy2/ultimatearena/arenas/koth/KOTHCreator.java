@@ -155,7 +155,7 @@ public class KOTHCreator extends ArenaCreator
 					}
 					else
 					{
-						target.setArena2(new ArenaLocation(player));
+						target.setLobby2(new ArenaLocation(player));
 						sendMessage("&3Second point set!");
 						break; // Step completed
 					}
