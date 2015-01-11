@@ -131,34 +131,40 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		this.arena = new Field();
 		this.lobby = new Field();
 
-		// Load the arena
-		loadFromDisk();
-
-		if (loaded)
+		try
 		{
-			// Load configuration settings
-			loadConfiguration();
-
-			// Default class
-			if (defaultClass == null || defaultClass.isEmpty())
-			{
-				if (! plugin.getClasses().isEmpty())
-				{
-					ArenaClass ac = plugin.getClasses().get(0);
-					if (ac != null)
-						this.defaultClass = ac.getName();
-				}
-			}
-
-			// Set lobby parameters
-			lobby.setParam(lobby1, lobby2);
-			arena.setParam(arena1, arena2);
-
-			// Add to the loaded arenas list
-			plugin.getLoadedArenas().add(this);
+			// Load the arena
+			loadFromDisk();
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "loading {0} from disk", name));
+			this.loaded = false;
+			return false;
 		}
 
-		return loaded;
+		// Load configuration settings
+		loadConfiguration();
+
+		// Default class
+		if (defaultClass == null || defaultClass.isEmpty())
+		{
+			if (! plugin.getClasses().isEmpty())
+			{
+				ArenaClass ac = plugin.getClasses().get(0);
+				if (ac != null)
+					this.defaultClass = ac.getName();
+			}
+		}
+
+		// Set lobby parameters
+		lobby.setParam(lobby1, lobby2);
+		arena.setParam(arena1, arena2);
+
+		// Add to the loaded arenas list
+		plugin.getLoadedArenas().add(this);
+		this.loaded = true;
+		return true;
 	}
 
 	// ---- Getters and Setters
@@ -353,12 +359,14 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- I/O
 
-	protected final void loadFromDisk()
+	protected final void loadFromDisk() throws Throwable
 	{
 		checkFile();
 
-		FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		Map<String, Object> values = fc.getValues(false);
+		YamlConfiguration config = new YamlConfiguration();
+		config.load(file);
+
+		Map<String, Object> values = config.getValues(false);
 
 		// Versioning
 		int version = 0;
@@ -387,10 +395,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			} catch (Throwable ex) { }
 		}
 
-		loadCustomOptions(fc);
-
-		this.loaded = true;
-
+		loadCustomOptions(config);
 		loadConfiguration();
 	}
 
@@ -404,9 +409,16 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	public final void saveToDisk()
 	{
-		checkFile();
-		FileSerialization.save(this, file);
-		saveConfiguration();
+		try
+		{
+			checkFile();
+			FileSerialization.save(this, file);
+			saveConfiguration();
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "saving {0} to disk", name));
+		}
 	}
 
 	protected final void checkFile()

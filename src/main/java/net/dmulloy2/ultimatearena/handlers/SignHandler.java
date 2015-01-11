@@ -48,14 +48,16 @@ public class SignHandler
 	{
 		try
 		{
-			this.file = new File(plugin.getDataFolder(), "signs.yml");
+			file = new File(plugin.getDataFolder(), "signs.yml");
 			if (! file.exists())
 			{
 				if (! createNewSave(false))
 					return;
 			}
 
-			this.signsSave = YamlConfiguration.loadConfiguration(file);
+			signsSave = new YamlConfiguration();
+			signsSave.load(file);
+
 			if (! signsSave.isSet("version"))
 			{
 				if (! createNewSave(true))
@@ -126,7 +128,7 @@ public class SignHandler
 				file.delete();
 
 			file.createNewFile();
-			signsSave = YamlConfiguration.loadConfiguration(file);
+			signsSave = new YamlConfiguration();
 			return true;
 		}
 		catch (Throwable ex)

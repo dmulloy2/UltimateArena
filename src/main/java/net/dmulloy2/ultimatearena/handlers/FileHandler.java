@@ -39,7 +39,8 @@ public class FileHandler
 			File folder = new File(plugin.getDataFolder(), "arenas");
 			File file = new File(folder, az.getName() + ".dat");
 
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			YamlConfiguration fc = new YamlConfiguration();
+			fc.load(file);
 
 			String worldName = fc.getString("world");
 			if (worldName == null || worldName.isEmpty())

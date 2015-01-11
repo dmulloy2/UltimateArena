@@ -94,7 +94,6 @@ import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -447,8 +446,10 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 					return;
 			}
 
-			FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
-			String typeString = fc.isSet("typeString") ? fc.getString("typeString") : fc.getString("type");
+			YamlConfiguration config = new YamlConfiguration();
+			config.load(file);
+
+			String typeString = config.isSet("typeString") ? config.getString("typeString") : config.getString("type");
 			ArenaType type = arenaTypeHandler.getArenaType(typeString);
 			if (type == null)
 			{
@@ -458,7 +459,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 			ArenaZone az = type.getArenaZone(file);
 			if (az.isLoaded())
-				debug("Successfully loaded arena {0}.", az.getName());
+				logHandler.debug("Arena {0} loaded.", az.getName());
 		}
 		catch (Throwable ex)
 		{

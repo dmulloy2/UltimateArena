@@ -313,14 +313,20 @@ public class ArenaConfig extends Configuration
 			if (! file.exists())
 				file.createNewFile();
 
-			YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
+			YamlConfiguration config = new YamlConfiguration();
+			config.load(file);
+
 			for (Entry<String, Object> entry : serialize().entrySet())
 			{
-				fc.set(entry.getKey(), entry.getValue());
+				config.set(entry.getKey(), entry.getValue());
 			}
 
-			fc.save(file);
-		} catch (Throwable ex) { }
+			config.save(file);
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "saving config " + type));
+		}
 	}
 
 	/**
