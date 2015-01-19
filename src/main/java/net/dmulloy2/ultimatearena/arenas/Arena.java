@@ -15,6 +15,7 @@ import net.dmulloy2.chat.BaseComponent;
 import net.dmulloy2.chat.ChatUtil;
 import net.dmulloy2.chat.ClickEvent;
 import net.dmulloy2.chat.ComponentBuilder;
+import net.dmulloy2.chat.HoverEvent;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -274,11 +275,12 @@ public abstract class Arena implements Reloadable
 			return;
 
 		// Allow players to click and insert into chat
-		ComponentBuilder builder = new ComponentBuilder(FormatUtil.format("&3Type "));
-		builder.append(FormatUtil.format("&e/ua join {0}", name));
-		builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ua join " + name));
-		builder.append(FormatUtil.format(" &3to join!"));
-		BaseComponent[] components = builder.create();
+		BaseComponent[] components = new ComponentBuilder(FormatUtil.format(plugin.getPrefix() + "&3Type "))
+			.append(FormatUtil.format("&e/ua join {0}", name))
+			.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/ua join " + name))
+			.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, FormatUtil.format("&eClick to join {0}!", name)))
+			.append(FormatUtil.format(" &3to join!"))
+			.create();
 
 		for (Player player : Util.getOnlinePlayers())
 		{
@@ -288,13 +290,13 @@ public abstract class Arena implements Reloadable
 				{
 					if (announced == 0)
 					{
-						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&e{0} &3arena has been created!", type.getStylizedName()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&e{0} &3arena has been created!",
+								type.getStylizedName()));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&3Hurry up and join the &e{0} &3arena!", type.getStylizedName()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Hurry up and join the &e{0} &3arena!",
+								type.getStylizedName()));
 					}
 
 					ChatUtil.sendMessage(player, components);
@@ -312,9 +314,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final Team getBalancedTeam()
 	{
-		// Refresh teams
 		updateTeams();
-
 		return redTeamSize > blueTeamSize ? Team.BLUE : Team.RED;
 	}
 
@@ -325,15 +325,8 @@ public abstract class Arena implements Reloadable
 	 */
 	public boolean simpleTeamCheck()
 	{
-		// Refresh teams
 		updateTeams();
-
-		if (redTeamSize == 0 || blueTeamSize == 0)
-		{
-			return startingAmount < 1;
-		}
-
-		return true;
+		return redTeamSize == 0 || blueTeamSize == 0 ? startingAmount < 1 : true;
 	}
 
 	/**
@@ -385,7 +378,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void spawnAll()
 	{
-		plugin.debug("Spawning players for Arena {0}", name);
+		plugin.debug("Spawning players for arena {0}", name);
 
 		for (ArenaPlayer ap : active)
 		{
@@ -437,7 +430,7 @@ public abstract class Arena implements Reloadable
 				Location loc = getSpawn(ap);
 				if (loc != null)
 				{
-					plugin.debug("Spawning player: {0}", ap.getName());
+					plugin.debug("Spawning player {0}", ap.getName());
 
 					ap.teleport(loc);
 					ap.spawn();
@@ -1181,12 +1174,11 @@ public abstract class Arena implements Reloadable
 	/**
 	 * Decides a player's team color.
 	 *
-	 * @param pl Player to decide team color for
+	 * @param ap Player to decide team color for
 	 */
-	@Deprecated
-	protected String decideColor(ArenaPlayer pl)
+	protected String decideColor(ArenaPlayer ap)
 	{
-		return pl.getTeam().getColor().toString();
+		return ap.getTeam().getColor().toString();
 	}
 
 	/**

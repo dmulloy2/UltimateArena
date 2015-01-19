@@ -1,6 +1,6 @@
 /**
  * UltimateArena - a bukkit plugin
- * Copyright (C) 2012 - 2014 MineSworn and Affiliates
+ * Copyright (C) 2015 dmulloy2 and MineSworn
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -138,7 +138,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter boolean stopping;
 
 	// Global prefix
-	private @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
+	private final @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
 
 	@Override
 	public void onLoad()
