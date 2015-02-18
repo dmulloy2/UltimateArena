@@ -59,17 +59,19 @@ public abstract class ArenaCreator
 	public final void initializeArena()
 	{
 		Validate.isTrue(target == null, "Arena already initialized!");
-		target = getArenaZone();
+		target = createArenaZone();
 		target.setName(name);
 	}
 
 	/**
-	 * Gets a new ArenaZone for this creator.
+	 * Creates a new ArenaZone for this creator.
+	 * <p>
+	 * This <b>must</b> be overriden when custom ArenaZones are being used.
 	 *
 	 * @param plugin UltimateArena plugin instance
 	 * @return The ArenaZone
 	 */
-	protected ArenaZone getArenaZone()
+	protected ArenaZone createArenaZone()
 	{
 		return new ArenaZone(type);
 	}

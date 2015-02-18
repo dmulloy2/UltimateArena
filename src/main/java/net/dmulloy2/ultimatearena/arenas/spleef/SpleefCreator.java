@@ -4,6 +4,7 @@ import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.integration.WorldEditHandler;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.MaterialUtil;
 
@@ -244,7 +245,7 @@ public class SpleefCreator extends ArenaCreator
 				break;
 			case 6:
 				sendMessage("&3Please set the &eSpleef Ground Type&3.");
-				sendMessage("&3Use &e/ua sp <Material/ID>");
+				sendMessage("&3Use &e/ua sp <material>");
 				break;
 		}
 	}
@@ -256,5 +257,14 @@ public class SpleefCreator extends ArenaCreator
 	public void setSteps()
 	{
 		this.steps = 6;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ArenaZone createArenaZone()
+	{
+		return new SpleefZone(type);
 	}
 }
