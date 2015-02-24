@@ -3,6 +3,7 @@
  */
 package net.dmulloy2.ultimatearena.arenas.bomb;
 
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -10,7 +11,6 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Team;
-import net.dmulloy2.util.ListUtil;
 
 /**
  * @author dmulloy2
@@ -76,7 +76,7 @@ public class BombArena extends Arena
 	@Override
 	public List<String> getExtraInfo()
 	{
-		return ListUtil.toList("&3Red Team Power: &e" + redTeamPower);
+		return Arrays.asList("&3Red Team Power: &e" + redTeamPower);
 	}
 
 	@Override

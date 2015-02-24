@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -252,9 +251,9 @@ public class SignHandler
 	/**
 	 * Workaround for concurrency issues
 	 */
-	public final List<ArenaSign> getSigns()
+	public final ArenaSign[] getSigns()
 	{
-		return ListUtil.newList(signs);
+		return signs.toArray(new ArenaSign[0]);
 	}
 
 	// ---- ID Related Stuff

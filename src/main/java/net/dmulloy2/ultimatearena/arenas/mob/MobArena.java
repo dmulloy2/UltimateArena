@@ -1,6 +1,7 @@
 package net.dmulloy2.ultimatearena.arenas.mob;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -8,7 +9,6 @@ import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -304,6 +304,6 @@ public class MobArena extends Arena
 	@Override
 	public List<String> getExtraInfo()
 	{
-		return ListUtil.toList("&3Wave: &e" + wave);
+		return Arrays.asList("&3Wave: &e" + wave);
 	}
 }

@@ -28,7 +28,7 @@ public class KOTHFlag extends ArenaFlag
 	}
 
 	@Override
-	public void checkNear(List<ArenaPlayer> arenaPlayers)
+	public void checkNear(ArenaPlayer[] arenaPlayers)
 	{
 		if (! arena.isInGame())
 			return;

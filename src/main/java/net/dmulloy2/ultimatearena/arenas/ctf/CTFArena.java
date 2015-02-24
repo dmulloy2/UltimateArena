@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.arenas.ctf;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -130,7 +128,7 @@ public class CTFArena extends Arena
 		{
 			if (! isStopped())
 			{
-				List<ArenaPlayer> check = getActivePlayers();
+				ArenaPlayer[] check = getActivePlayers();
 
 				redFlag.checkNear(check);
 				blueFlag.checkNear(check);

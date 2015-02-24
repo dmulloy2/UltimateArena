@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.types;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -42,7 +40,7 @@ public abstract class ArenaFlag extends FlagBase
 	}
 
 	@Override
-	public abstract void checkNear(List<ArenaPlayer> arenaPlayers);
+	public abstract void checkNear(ArenaPlayer[] arenaPlayers);
 
 	protected final void setOwningTeam(Team team)
 	{

@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.types;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -56,5 +54,5 @@ public abstract class FlagBase
 		location.clone().add(0, 0, -2).getBlock().setType(Material.STONE);
 	}
 
-	public abstract void checkNear(List<ArenaPlayer> arenaPlayers);
+	public abstract void checkNear(ArenaPlayer[] arenaPlayers);
 }

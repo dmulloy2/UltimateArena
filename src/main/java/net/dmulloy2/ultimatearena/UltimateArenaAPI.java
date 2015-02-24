@@ -15,6 +15,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.comphenix.protocol.utility.Util;
+
 /**
  * Basic API for hooking into {@link UltimateArena}
  *
@@ -70,7 +72,7 @@ public class UltimateArenaAPI
 	 */
 	public final List<Arena> getActiveArenas()
 	{
-		return Collections.unmodifiableList(ultimateArena.getActiveArenas());
+		return Util.asList(ultimateArena.getActiveArenas());
 	}
 
 	/**

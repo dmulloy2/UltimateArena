@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.arenas.ctf;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -47,7 +45,7 @@ public class CTFFlagBase extends FlagBase
 	}
 
 	@Override
-	public void checkNear(List<ArenaPlayer> arenaPlayers)
+	public void checkNear(ArenaPlayer[] arenaPlayers)
 	{
 		flag.checkNear(arenaPlayers);
 

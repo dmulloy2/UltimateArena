@@ -35,7 +35,6 @@ import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.WordUtils;
@@ -1238,24 +1237,26 @@ public abstract class Arena implements Reloadable
 		return true;
 	}
 
+	private static final ArenaPlayer[] EMPTY_ARRAY = new ArenaPlayer[0];
+
 	/**
 	 * Workaround for concurrency issues.
-	 * <p>
-	 * Can not be used for adding or removing players.
+	 *
+	 * @return An array of active players
 	 */
-	public final List<ArenaPlayer> getActivePlayers()
+	public final ArenaPlayer[] getActivePlayers()
 	{
-		return ListUtil.newList(active);
+		return active.toArray(EMPTY_ARRAY);
 	}
 
 	/**
 	 * Workaround for concurrency issues.
-	 * <p>
-	 * Can not be used for adding or removing players.
+	 * 
+	 * @return An array of inactive players
 	 */
-	public final List<ArenaPlayer> getInactivePlayers()
+	public final ArenaPlayer[] getInactivePlayers()
 	{
-		return ListUtil.newList(inactive);
+		return inactive.toArray(EMPTY_ARRAY);
 	}
 
 	/**
@@ -1319,6 +1320,11 @@ public abstract class Arena implements Reloadable
 	public final boolean isActive()
 	{
 		return ! stopped;
+	}
+
+	public final ArenaFlag[] getFlags()
+	{
+		return flags.toArray(new ArenaFlag[0]);
 	}
 
 	// ---- Generic Methods

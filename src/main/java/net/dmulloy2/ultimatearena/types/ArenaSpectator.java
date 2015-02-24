@@ -3,8 +3,6 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -66,15 +64,15 @@ public final class ArenaSpectator
 	 */
 	public final void spawn()
 	{
-		List<ArenaPlayer> active = arena.getActivePlayers();
-		if (active.isEmpty())
+		ArenaPlayer[] active = arena.getActivePlayers();
+		if (active.length == 0)
 		{
 			sendMessage("&cThis arena is empty!");
 			plugin.getSpectatingHandler().removeSpectator(this);
 			return;
 		}
 
-		teleport(arena.getSpawn(active.get(0)));
+		teleport(arena.getSpawn(active[0]));
 
 		// Save Data
 		savePlayerData();

@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.arenas.bomb;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -37,7 +35,7 @@ public class BombFlag extends ArenaFlag
 	}
 
 	@Override
-	public void checkNear(List<ArenaPlayer> arenaPlayers)
+	public void checkNear(ArenaPlayer[] arenaPlayers)
 	{
 		if (fused)
 		{

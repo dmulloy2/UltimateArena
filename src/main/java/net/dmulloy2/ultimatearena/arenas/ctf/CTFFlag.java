@@ -1,7 +1,5 @@
 package net.dmulloy2.ultimatearena.arenas.ctf;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -133,7 +131,7 @@ public class CTFFlag
 		setFlag();
 	}
 
-	public final void checkNear(List<ArenaPlayer> arenaPlayers)
+	public final void checkNear(ArenaPlayer[] arenaPlayers)
 	{
 		if (stopped)
 			return;

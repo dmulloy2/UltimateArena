@@ -88,7 +88,6 @@ import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
 
@@ -351,22 +350,22 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		arenaTypeHandler.reload();
 
 		// Reload ArenaZones
-		for (ArenaZone az : ListUtil.newList(loadedArenas))
+		for (ArenaZone az : loadedArenas.toArray(new ArenaZone[0]))
 		{
 			az.reload();
 		}
 
 		// Reload active arenas
-		for (Arena a : ListUtil.newList(activeArenas))
+		for (Arena arena : activeArenas.toArray(new Arena[0]))
 		{
-			a.reload();
+			arena.reload();
 		}
 
 		// Load any new arenas
 		loadArenas();
 
 		// Reload classes
-		for (ArenaClass ac : ListUtil.newList(classes))
+		for (ArenaClass ac : classes.toArray(new ArenaClass[0]))
 		{
 			ac.reload();
 		}
@@ -537,7 +536,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private final void loadSigns()
 	{
 		signHandler = new SignHandler(this);
-		log("Loaded {0} signs!", signHandler.getSigns().size());
+		log("Loaded {0} signs!", signHandler.getSigns().length);
 	}
 
 	/**
@@ -601,15 +600,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			// Delete the file
 			File file = az.getFile();
 			if (file.exists())
-			{
 				file.delete();
-			}
 
 			// Stop the active arena, if applicable
-			for (Arena a : ListUtil.newList(activeArenas))
+			for (Arena arena : getActiveArenas())
 			{
-				if (a.getName().equalsIgnoreCase(name))
-					a.stop();
+				if (arena.getName().equalsIgnoreCase(name))
+					arena.stop();
 			}
 
 			// Delete any signs
@@ -912,8 +909,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private final boolean kickRandomPlayer(Arena arena)
 	{
 		List<ArenaPlayer> validPlayers = new ArrayList<>();
-		List<ArenaPlayer> totalPlayers = arena.getActivePlayers();
-		for (ArenaPlayer ap : totalPlayers)
+		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
 			if (! permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FULL))
 			{
@@ -1196,9 +1192,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 * <p>
 	 * Can not be used for modification.
 	 */
-	public final List<Arena> getActiveArenas()
+	public final Arena[] getActiveArenas()
 	{
-		return ListUtil.newList(activeArenas);
+		return activeArenas.toArray(new Arena[0]);
 	}
 
 	/**
