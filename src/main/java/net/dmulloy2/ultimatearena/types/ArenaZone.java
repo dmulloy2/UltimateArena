@@ -349,11 +349,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 					if (response.equals("Success"))
 					{
 						String format = vault.format(money);
-						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
+						ap.sendMessage("&a{0} has been added to your account!", format);
 					}
 					else
 					{
-						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", response));
+						ap.sendMessage("&cCould not give cash reward: {0}", response);
 					}
 				}
 			}

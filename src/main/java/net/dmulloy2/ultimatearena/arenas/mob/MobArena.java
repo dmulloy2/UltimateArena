@@ -9,7 +9,6 @@ import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
-import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -127,11 +126,11 @@ public class MobArena extends Arena
 				if (response.equals("Success"))
 				{
 					String format = vault.format(money);
-					ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
+					ap.sendMessage("&a{0} has been added to your account!", format);
 				}
 				else
 				{
-					ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", response));
+					ap.sendMessage("&cCould not give cash reward: {0}", response);
 				}
 			}
 		}
