@@ -9,6 +9,7 @@ import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
+import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -97,7 +98,7 @@ public class MobArena extends Arena
 	}
 
 	@Override
-	public void reward(ArenaPlayer pl)
+	public void reward(ArenaPlayer ap)
 	{
 		// Enable check
 		if (! getConfig().isGiveRewards())
@@ -110,23 +111,27 @@ public class MobArena extends Arena
 
 		for (ScaledReward reward : rewards)
 		{
-			ItemStack stack = reward.get(pl.getGameXP());
+			ItemStack stack = reward.get(ap.getGameXP());
 			if (stack.getAmount() > 0)
-				pl.giveItem(stack);
+				ap.giveItem(stack);
 		}
 
 		// Money
-		if (plugin.getConfig().getBoolean("moneyRewards", true))
+		if (plugin.getConfig().getBoolean("moneyRewards", true) || plugin.getConfig().getBoolean("cashRewards", true))
 		{
-			double amtCash = pl.getGameXP() / 10.0D;
-
-			if (plugin.isVaultEnabled())
+			double money = ap.getGameXP() / 10.0D;
+			if (money > 0.0D && plugin.isVaultEnabled())
 			{
 				VaultHandler vault = plugin.getVaultHandler();
-				if (vault.depositPlayer(pl.getPlayer(), amtCash))
+				String response = vault.depositPlayer(ap.getPlayer(), money);
+				if (response.equals("Success"))
 				{
-					String cash = vault.format(amtCash);
-					pl.sendMessage("&a{0} has been added to your balance!", cash);
+					String format = vault.format(money);
+					ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
+				}
+				else
+				{
+					ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", response));
 				}
 			}
 		}

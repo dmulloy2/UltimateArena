@@ -18,9 +18,10 @@
 # This configuration follows standard YAML procedure, found here:
 # http://yaml.org/
 
-# Whether or not cash rewards are given upon completion
+# Whether or not monetary rewards are given upon completion
+# This requires Vault and a compatible economy plugin
 # Input: boolean; default: true
-cashRewards: true
+moneyRewards: true
 
 # Time a player must stand still before joining the arena
 # Enabled - boolean

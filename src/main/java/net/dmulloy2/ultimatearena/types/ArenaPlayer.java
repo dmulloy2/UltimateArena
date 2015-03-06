@@ -412,7 +412,8 @@ public final class ArenaPlayer
 
 			if (refund > 0 && plugin.isVaultEnabled())
 			{
-				if (plugin.getVaultHandler().depositPlayer(player, refund))
+				String response = plugin.getVaultHandler().depositPlayer(player, refund);
+				if (response.equals("Success"))
 				{
 					String format = plugin.getVaultHandler().format(refund);
 					sendMessage("&3You have been refunded &e{0} &3for your class purchases.", format);

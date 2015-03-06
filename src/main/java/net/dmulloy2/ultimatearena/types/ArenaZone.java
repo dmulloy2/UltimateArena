@@ -332,7 +332,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			}
 		}
 
-		if (plugin.getConfig().getBoolean("moneyRewards", true))
+		// The configuration option can either be cashRewards or moneyRewards
+		// It was originally cashRewards, but I accidentally changed it
+		if (plugin.getConfig().getBoolean("moneyRewards", true) || plugin.getConfig().getBoolean("cashRewards", true))
 		{
 			if (plugin.isVaultEnabled())
 			{
@@ -343,14 +345,15 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 				if (money > 0.0D)
 				{
-					if (vault.depositPlayer(ap.getPlayer(), money))
+					String response = vault.depositPlayer(ap.getPlayer(), money);
+					if (response.equals("Success"))
 					{
 						String format = vault.format(money);
 						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&a{0} has been added to your account!", format));
 					}
 					else
 					{
-						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward."));
+						ap.sendMessage(plugin.getPrefix() + FormatUtil.format("&cCould not give cash reward: {0}", response));
 					}
 				}
 			}

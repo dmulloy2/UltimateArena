@@ -10,6 +10,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.Util;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -40,7 +41,10 @@ public class VaultHandler extends DependencyProvider<Vault>
 			ServicesManager sm = handler.getServer().getServicesManager();
 			RegisteredServiceProvider<Economy> provider = sm.getRegistration(Economy.class);
 			if (provider != null)
-				this.economy = provider.getProvider();
+			{
+				economy = provider.getProvider();
+				handler.getLogHandler().log("Using {0} for economy.", economy.getName());
+			}
 		}
 		catch (Throwable ex)
 		{
@@ -54,22 +58,38 @@ public class VaultHandler extends DependencyProvider<Vault>
 		economy = null;
 	}
 
-	public final boolean depositPlayer(Player player, double amount)
+	/**
+	 * Attempts to deposit a given amount into a given Player's balance.
+	 * 
+	 * @param player Player to give money to
+	 * @param amount Amount to give
+	 * @return Error message, if applicable
+	 */
+	public String depositPlayer(Player player, double amount)
 	{
 		if (! isEnabled())
-			return false;
+			return "Economy is disabled.";
 
 		try
 		{
-			return economy.depositPlayer(player, amount).transactionSuccess();
+			// In the future, we should probably use their Player instance,
+			// but for now it doesn't really matter, as most economy plugins
+			// will just use their name anyways.
+
+			EconomyResponse response = economy.depositPlayer(player.getName(), amount);
+			if (response.transactionSuccess())
+				return "Success";
+
+			return response.errorMessage;
 		}
 		catch (Throwable ex)
 		{
-			return economy.depositPlayer(player.getName(), amount).transactionSuccess();
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "depositPlayer({0}, {1})", player.getName(), amount));
+			return ex.toString();
 		}
 	}
 
-	public final boolean withdrawPlayer(Player player, double amount)
+	public boolean withdrawPlayer(Player player, double amount)
 	{
 		if (! isEnabled())
 			return false;
@@ -84,7 +104,7 @@ public class VaultHandler extends DependencyProvider<Vault>
 		}
 	}
 
-	public final String format(double amount)
+	public String format(double amount)
 	{
 		if (! isEnabled())
 			return Double.toString(amount);
@@ -101,7 +121,7 @@ public class VaultHandler extends DependencyProvider<Vault>
 		return Double.toString(amount);
 	}
 
-	public final double getBalance(Player player)
+	public double getBalance(Player player)
 	{
 		if (! isEnabled())
 			return 0.0D;
