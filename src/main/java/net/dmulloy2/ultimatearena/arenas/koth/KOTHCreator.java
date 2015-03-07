@@ -171,6 +171,7 @@ public class KOTHCreator extends ArenaCreator
 			{
 				target.getFlags().add(new ArenaLocation(player));
 				sendMessage("&eKOTH flag &3spawnpoint set.");
+				break; // Step completed
 			}
 			case 5:
 			{
