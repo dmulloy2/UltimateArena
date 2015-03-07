@@ -97,14 +97,13 @@ public class SpleefArena extends FFAArena
 	private final Location getBlockInSpleefArena()
 	{
 		int x = Util.random(spleefGround.getWidth() - 1);
-		int y = spleefGround.getMax().getY();
 		int z = Util.random(spleefGround.getLength() - 1);
 
 		int tries = 0;
-		Block block = spleefGround.getBlockAt(x, y, z);
+		Block block = spleefGround.getBlockAt(x, 0, z);
 		while (block.getType() != specialType)
 		{
-			block = spleefGround.getBlockAt(++x, y, ++z);
+			block = spleefGround.getBlockAt(++x, 0, ++z);
 			if (++tries >= MAX_TRIES)
 				break;
 		}
@@ -113,7 +112,7 @@ public class SpleefArena extends FFAArena
 		if (block.getType() != specialType)
 			block.setType(specialType);
 
-		return block.getLocation();
+		return block.getLocation().add(0.0D, 1.0D, 0.0D);
 	}
 
 	@Override

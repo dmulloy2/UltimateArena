@@ -3,6 +3,7 @@ package net.dmulloy2.ultimatearena.listeners;
 import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.FormatUtil;
@@ -314,7 +315,7 @@ public class EntityListener implements Listener
 
 					// Attempt to grab from their last damage cause
 					EntityDamageEvent damageEvent = pdied.getLastDamageCause();
-					DamageCause cause = damageEvent.getCause();
+					DamageCause cause = damageEvent != null ? damageEvent.getCause() : null;
 
 					if (cause == DamageCause.ENTITY_ATTACK)
 					{
@@ -404,10 +405,24 @@ public class EntityListener implements Listener
 							}
 						}
 					}
-
-					// There's probably nothing else we can do here, so just turn it into a string
-					ar.tellPlayers("&e{0} &3was killed by &e{1}", pdied.getName(), FormatUtil.getFriendlyName(cause));
-					dp.displayStats();
+					else if (cause != null)
+					{
+						// There's probably nothing else we can do here, so just turn it into a string
+						ar.tellPlayers("&e{0} &3was killed by &e{1}", pdied.getName(), FormatUtil.getFriendlyName(cause));
+						dp.displayStats();
+					}
+					else if (ar instanceof SpleefArena)
+					{
+						// If they were in spleef, they probably fell through the floor
+						ar.tellPlayers("&e{0} &3fell through the floor!", pdied.getName());
+						dp.displayStats();
+					}
+					else
+					{
+						// No idea
+						ar.tellPlayers("&e{0} &3died of unknown causes", pdied.getName());
+						dp.displayStats();
+					}
 				}
 			}
 		}

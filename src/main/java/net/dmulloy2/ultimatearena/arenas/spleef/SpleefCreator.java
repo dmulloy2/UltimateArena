@@ -173,15 +173,17 @@ public class SpleefCreator extends ArenaCreator
 			}
 			case 4:
 			{
+				Location location = player.getLocation().subtract(0.0D, 1.0D, 0.0D);
+
 				if (target.getFlags().isEmpty())
 				{
-					target.getFlags().add(new ArenaLocation(player));
+					target.getFlags().add(new ArenaLocation(location));
 					sendMessage("&3First point set. Please set the &e2nd &3point.");
 					return;
 				}
 				else
 				{
-					target.getFlags().add(new ArenaLocation(player));
+					target.getFlags().add(new ArenaLocation(location));
 					sendMessage("&eSpleef zone &3set.");
 					break; // Step completed
 				}
@@ -238,7 +240,8 @@ public class SpleefCreator extends ArenaCreator
 				sendMessage("&3Please set the &eLobby &3spawnpoint.");
 				break;
 			case 4:
-				sendMessage("&3Please set the &eSpleef zone&3.");
+				sendMessage("&3Please set the &eSpleef ground&3.");
+				sendMessage("&3This should be a 1 block thick rectangle where players will spawn");
 				break;
 			case 5:
 				sendMessage("&3Please set the &eOut zone&3.");

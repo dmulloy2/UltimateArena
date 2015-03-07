@@ -64,11 +64,11 @@ public class Field
 	public final void setType(Material mat)
 	{
 		World world = getWorld();
-		for (int x = min.getX(); x <= max.getX(); x++)
+		for (int x = min.getX(); x < max.getX() + 1; x++)
 		{
-			for (int y = min.getY(); y <= max.getY(); y++)
+			for (int y = min.getY(); y < max.getY() + 1; y++)
 			{
-				for (int z = min.getZ(); z <= max.getZ(); z++)
+				for (int z = min.getZ(); z < max.getZ() + 1; z++)
 				{
 					Block block = world.getBlockAt(x, y, z);
 					block.setType(mat);
@@ -80,11 +80,11 @@ public class Field
 	public void removeMaterials(List<Material> materials)
 	{
 		World world = getWorld();
-		for (int x = min.getX(); x < max.getX(); x++)
+		for (int x = min.getX(); x < max.getX() + 1; x++)
 		{
-			for (int y = min.getY(); y < max.getY(); y++)
+			for (int y = min.getY(); y < max.getY() + 1; y++)
 			{
-				for (int z = min.getZ(); z < max.getZ(); z++)
+				for (int z = min.getZ(); z < max.getZ() + 1; z++)
 				{
 					Block block = world.getBlockAt(x, y, z);
 					if (materials.contains(block.getType()))
