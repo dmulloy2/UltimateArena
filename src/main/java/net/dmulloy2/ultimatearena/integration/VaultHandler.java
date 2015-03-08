@@ -67,7 +67,7 @@ public class VaultHandler extends DependencyProvider<Vault>
 	 */
 	public String depositPlayer(Player player, double amount)
 	{
-		if (! isEnabled())
+		if (economy == null)
 			return "Economy is disabled.";
 
 		try
@@ -91,7 +91,7 @@ public class VaultHandler extends DependencyProvider<Vault>
 
 	public boolean withdrawPlayer(Player player, double amount)
 	{
-		if (! isEnabled())
+		if (economy == null)
 			return false;
 
 		try
@@ -106,7 +106,7 @@ public class VaultHandler extends DependencyProvider<Vault>
 
 	public String format(double amount)
 	{
-		if (! isEnabled())
+		if (economy == null)
 			return Double.toString(amount);
 
 		try
@@ -123,7 +123,7 @@ public class VaultHandler extends DependencyProvider<Vault>
 
 	public double getBalance(Player player)
 	{
-		if (! isEnabled())
+		if (economy == null)
 			return 0.0D;
 
 		try
@@ -134,11 +134,5 @@ public class VaultHandler extends DependencyProvider<Vault>
 		{
 			return economy.getBalance(player.getName());
 		}
-	}
-
-	@Override
-	public boolean isEnabled()
-	{
-		return super.isEnabled() && economy != null;
 	}
 }

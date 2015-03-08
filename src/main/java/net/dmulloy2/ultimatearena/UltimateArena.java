@@ -536,7 +536,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private final void loadSigns()
 	{
 		signHandler = new SignHandler(this);
-		log("Loaded {0} signs!", signHandler.getSigns().length);
+		log("Loaded {0} signs.", signHandler.getSigns().length);
 	}
 
 	/**
