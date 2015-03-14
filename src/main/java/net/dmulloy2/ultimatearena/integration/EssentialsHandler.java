@@ -73,9 +73,8 @@ public class EssentialsHandler extends DependencyProvider<Essentials>
 		catch (Throwable ex)
 		{
 			handler.getLogHandler().debug(Util.getUsefulStack(ex, "getEssentialsUser(" + player.getName() + ")"));
+			return null;
 		}
-
-		return null;
 	}
 
 	/**
@@ -122,8 +121,7 @@ public class EssentialsHandler extends DependencyProvider<Essentials>
 		catch (Throwable ex)
 		{
 			handler.getLogHandler().debug(Util.getUsefulStack(ex, "readEssentialsKit(" + name + ")"));
+			return null;
 		}
-
-		return null;
 	}
 }

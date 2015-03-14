@@ -29,7 +29,7 @@ public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
 
 	public ProtocolHandler(UltimateArena plugin)
 	{
-		super(plugin, "ProtocolLibrary");
+		super(plugin, "ProtocolLib");
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
 
 	public final void forceRespawn(Player player)
 	{
-		if (! isEnabled())
+		if (manager == null)
 			return;
 
 		try
@@ -67,13 +67,7 @@ public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
 		}
 		catch (Throwable ex)
 		{
-			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "forcing " + player.getName() + " to respawn"));
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "forcing {0} to respawn", player.getName()));
 		}
-	}
-
-	@Override
-	public boolean isEnabled()
-	{
-		return super.isEnabled() && manager != null;
 	}
 }

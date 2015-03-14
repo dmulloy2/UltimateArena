@@ -76,7 +76,7 @@ public class ClassSelectionGUI extends AbstractGUI
 						String article = FormatUtil.getArticle(name);
 						String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-						sendpMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
+						sendpMessage("&3You will {0} as {1} &e{2}", spawn, article, name);
 					}
 				}
 			}

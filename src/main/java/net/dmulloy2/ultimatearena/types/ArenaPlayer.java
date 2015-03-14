@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -217,18 +218,21 @@ public final class ArenaPlayer
 
 		if (arena.isValidClass(ac))
 		{
-			if (ac.getCost() != -1.0D && plugin.isVaultEnabled())
+			// Charge for the class if applicable
+			if (ac.getCost() > 0.0D && plugin.isVaultEnabled())
 			{
-				if (plugin.getVaultHandler().getBalance(player) >= ac.getCost())
+				VaultHandler handler = plugin.getVaultHandler();
+				if (handler.has(player, ac.getCost()))
 				{
-					if (plugin.getVaultHandler().withdrawPlayer(player, ac.getCost()))
+					String response = handler.withdrawPlayer(player, ac.getCost());
+					if (response.equals("Success"))
 					{
-						String format = plugin.getVaultHandler().format(ac.getCost());
-						sendMessage("&3You have purchased class &e{0} &3for &e{1}", ac.getName(), format);
+						String format = handler.format(ac.getCost());
+						sendMessage("&3You have purchased class &e{0} &3for &e{1}&3.", ac.getName(), format);
 					}
 					else
 					{
-						sendMessage("&cFailed to purchase class {0}.", ac.getName());
+						sendMessage("&cFailed to purchase class {0}: {1}", ac.getName(), response);
 						return false;
 					}
 				}
@@ -239,7 +243,7 @@ public final class ArenaPlayer
 				}
 
 				// Add to refund list if they didn't go negative, prevents exploiting
-				if (plugin.getVaultHandler().getBalance(player) > 0.0D)
+				if (handler.getBalance(player) >= 0.0D)
 					transactions.add(ac.getCost());
 			}
 
@@ -410,7 +414,7 @@ public final class ArenaPlayer
 			for (double transaction : transactions)
 				refund += transaction;
 
-			if (refund > 0 && plugin.isVaultEnabled())
+			if (refund > 0.0D && plugin.isVaultEnabled())
 			{
 				String response = plugin.getVaultHandler().depositPlayer(player, refund);
 				if (response.equals("Success"))
@@ -442,8 +446,9 @@ public final class ArenaPlayer
 				arena.endPlayer(this, true);
 				arena.tellPlayers("&e{0} &3has left the arena!", name);
 				break;
-			default:
+			case ERROR:
 				arena.endPlayer(this);
+				arena.tellPlayers("&e{0} &3left the arena due to an error!", name);
 				break;
 		}
 	}

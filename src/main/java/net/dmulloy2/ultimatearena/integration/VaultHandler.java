@@ -89,18 +89,40 @@ public class VaultHandler extends DependencyProvider<Vault>
 		}
 	}
 
-	public boolean withdrawPlayer(Player player, double amount)
+	public String withdrawPlayer(Player player, double amount)
+	{
+		if (economy == null)
+			return "Economy is disabled.";
+
+		try
+		{
+			EconomyResponse response = economy.withdrawPlayer(player.getName(), amount);
+			if (response.transactionSuccess())
+				return "Success";
+
+			return response.errorMessage;
+		}
+		catch (Throwable ex)
+		{
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "withdrawPlayer({0}, {1})", player.getName(), amount));
+			return ex.toString();
+		}
+	}
+
+	public boolean has(Player player, double amount)
 	{
 		if (economy == null)
 			return false;
 
 		try
 		{
-			return economy.withdrawPlayer(player, amount).transactionSuccess();
+			double balance = economy.getBalance(player.getName());
+			return balance >= amount;
 		}
 		catch (Throwable ex)
 		{
-			return economy.withdrawPlayer(player.getName(), amount).transactionSuccess();
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "has({0}, {1})", player.getName(), amount));
+			return false;
 		}
 	}
 
@@ -115,10 +137,9 @@ public class VaultHandler extends DependencyProvider<Vault>
 		}
 		catch (Throwable ex)
 		{
-			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "format(" + amount + ")"));
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "format({0})", amount));
+			return Double.toString(amount);
 		}
-
-		return Double.toString(amount);
 	}
 
 	public double getBalance(Player player)
@@ -128,11 +149,12 @@ public class VaultHandler extends DependencyProvider<Vault>
 
 		try
 		{
-			return economy.getBalance(player);
+			return economy.getBalance(player.getName());
 		}
 		catch (Throwable ex)
 		{
-			return economy.getBalance(player.getName());
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "getBalance({0})", player.getName()));
+			return 0.0D;
 		}
 	}
 }

@@ -4,8 +4,10 @@ import java.util.logging.Level;
 
 import net.dmulloy2.integration.DependencyProvider;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.types.Tuple;
 import net.dmulloy2.util.Util;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -26,25 +28,25 @@ public class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 	}
 
 	/**
-	 * Whether or not a given player has a selection.
+	 * Whether or not a given player has a cuboid selection.
 	 *
 	 * @param player {@link Player} to check
 	 */
-	public final boolean hasSelection(Player player)
+	public final boolean hasCuboidSelection(Player player)
 	{
 		if (! isEnabled())
 			return false;
 
 		try
 		{
-			return getSelection(player) != null;
+			Selection sel = getDependency().getSelection(player);
+			return sel instanceof CuboidSelection;
 		}
 		catch (Throwable ex)
 		{
 			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "hasSelection(" + player.getName() + ")"));
+			return false;
 		}
-
-		return false;
 	}
 
 	/**
@@ -52,42 +54,20 @@ public class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 	 *
 	 * @param player {@link Player} to get selection for
 	 */
-	public final Selection getSelection(Player player)
+	public final Tuple<Location, Location> getSelection(Player player)
 	{
 		if (! isEnabled())
 			return null;
 
 		try
 		{
-			return getDependency().getSelection(player);
+			Selection sel = getDependency().getSelection(player);
+			return new Tuple<>(sel.getMaximumPoint(), sel.getMinimumPoint());
 		}
 		catch (Throwable ex)
 		{
 			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "getSelection(" + player.getName() + ")"));
+			return null;
 		}
-
-		return null;
-	}
-
-	/**
-	 * Whether or not a given selection is a Cubiod Selection.
-	 *
-	 * @param sel {@link Selection} to check
-	 */
-	public final boolean isCuboidSelection(Selection sel)
-	{
-		if (! isEnabled())
-			return false;
-
-		try
-		{
-			return sel instanceof CuboidSelection;
-		}
-		catch (Throwable ex)
-		{
-			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "isCubioidSelection("));
-		}
-
-		return false;
 	}
 }

@@ -4,6 +4,7 @@ import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.integration.WorldEditHandler;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
+import net.dmulloy2.ultimatearena.types.Tuple;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -33,21 +34,15 @@ public class KOTHCreator extends ArenaCreator
 				WorldEditHandler worldEdit = plugin.getWorldEditHandler();
 				if (worldEdit != null && worldEdit.isEnabled())
 				{
-					if (! worldEdit.hasSelection(player))
+					if (! worldEdit.hasCuboidSelection(player))
 					{
 						sendMessage("&cYou must have a WorldEdit selection to do this!");
 						return;
 					}
 
-					com.sk89q.worldedit.bukkit.selections.Selection sel = worldEdit.getSelection(player);
-					if (! worldEdit.isCuboidSelection(sel))
-					{
-						sendMessage("&cYou must have a cuboid selection to do this!");
-						return;
-					}
-
-					Location arena1 = sel.getMaximumPoint();
-					Location arena2 = sel.getMinimumPoint();
+					Tuple<Location, Location> sel = worldEdit.getSelection(player);
+					Location arena1 = sel.getFirst();
+					Location arena2 = sel.getSecond();
 
 					// Perform some checks
 					if (arena1 == null || arena2 == null)
@@ -90,21 +85,15 @@ public class KOTHCreator extends ArenaCreator
 				WorldEditHandler worldEdit = plugin.getWorldEditHandler();
 				if (worldEdit != null && worldEdit.isEnabled())
 				{
-					if (! worldEdit.hasSelection(player))
+					if (! worldEdit.hasCuboidSelection(player))
 					{
 						sendMessage("&cYou must have a WorldEdit selection to do this!");
 						return;
 					}
 
-					com.sk89q.worldedit.bukkit.selections.Selection sel = worldEdit.getSelection(player);
-					if (! worldEdit.isCuboidSelection(sel))
-					{
-						sendMessage("&cYou must have a cuboid selection to do this!");
-						return;
-					}
-
-					Location lobby1 = sel.getMaximumPoint();
-					Location lobby2 = sel.getMinimumPoint();
+					Tuple<Location, Location> sel = worldEdit.getSelection(player);
+					Location lobby1 = sel.getFirst();
+					Location lobby2 = sel.getSecond();
 
 					// Perform some checks
 					if (lobby1 == null || lobby2 == null)
