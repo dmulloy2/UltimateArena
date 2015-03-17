@@ -797,6 +797,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
+		String permission = "ultimatearena.join." + az.getName().toLowerCase();
+		if (az.isNeedsPermission() && ! player.hasPermission(permission))
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to join this arena!"));
+			player.sendMessage(prefix + FormatUtil.format("&cPermission required: {0}", permission));
+			return;
+		}
+
 		ArenaPlayer ap = getArenaPlayer(player, true);
 		if (ap != null)
 		{

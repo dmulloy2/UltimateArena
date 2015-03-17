@@ -54,6 +54,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected int timesPlayed;
 
 	protected boolean disabled;
+	protected boolean needsPermission;
 
 	protected String worldName;
 	protected String defaultClass;
