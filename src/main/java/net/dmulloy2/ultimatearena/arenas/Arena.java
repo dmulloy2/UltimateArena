@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -1075,28 +1076,33 @@ public abstract class Arena implements Reloadable
 
 	private final void clearEntities()
 	{
-		plugin.debug("Clearing entities in arena {0}", name);
-
-		int count = 0;
-		for (Entity entity : world.getEntities())
+		try
 		{
-			if (entity != null && entity.isValid())
+			int count = 0;
+			for (Entity entity : world.getEntities())
 			{
-				if (! persistentEntities.contains(entity.getType()))
+				if (entity != null && entity.isValid())
 				{
-					if (isInside(entity.getLocation()))
+					if (! persistentEntities.contains(entity.getType()))
 					{
-						if (entity instanceof LivingEntity)
-							((LivingEntity) entity).setHealth(0.0D);
-
-						entity.remove();
-						count++;
+						if (isInside(Util.getLocationSafely(entity)))
+						{
+							if (entity instanceof LivingEntity)
+								((LivingEntity) entity).setHealth(0.0D);
+	
+							entity.remove();
+							count++;
+						}
 					}
 				}
 			}
+	
+			plugin.debug("Removed {0} entities from {1}", count, name);
 		}
-
-		plugin.debug("Removed {0} entities from {1}", count, name);
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "clearing entities in " + this));
+		}
 	}
 
 	private final void clearMaterials()
