@@ -42,12 +42,12 @@ public final class PlayerData
 	private int foodLevel;
 	private GameMode gameMode;
 	private double health;
+	private double maxHealth;
 	private ItemStack[] armorContents;
 	private ItemStack[] contents;
 	private int level;
 	private float saturation;
 	private int totalExperience;
-	private double maxHealth;
 
 	private final Player player;
 
@@ -62,12 +62,12 @@ public final class PlayerData
 		this.foodLevel = player.getFoodLevel();
 		this.gameMode = player.getGameMode();
 		this.health = player.getHealth();
+		this.maxHealth = player.getMaxHealth();
 		this.armorContents = player.getInventory().getArmorContents();
 		this.contents = player.getInventory().getContents();
 		this.level = player.getLevel();
 		this.saturation = player.getSaturation();
 		this.totalExperience = player.getTotalExperience();
-		this.maxHealth = player.getMaxHealth();
 		this.player = player;
 	}
 
@@ -81,12 +81,12 @@ public final class PlayerData
 		player.setFlying(flying);
 		player.setFoodLevel(foodLevel);
 		player.setGameMode(gameMode);
+		player.setMaxHealth(maxHealth);
 		player.setHealth(health);
 		player.getInventory().setArmorContents(armorContents);
 		player.getInventory().setContents(contents);
 		player.setLevel(level);
 		player.setSaturation(saturation);
 		player.setTotalExperience(totalExperience);
-		player.setMaxHealth(maxHealth);
 	}
 }
