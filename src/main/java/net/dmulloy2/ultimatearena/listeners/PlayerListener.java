@@ -179,7 +179,7 @@ public class PlayerListener implements Listener
 									{
 										if (arena.isInLobby())
 										{
-											if (arena.getPlayerCount() < arena.getAz().getMaxPlayers())
+											if (arena.getPlayerCount() < arena.getMaxPlayers())
 											{
 												plugin.attemptJoin(player, arena.getName());
 												return;

@@ -53,12 +53,11 @@ import org.bukkit.inventory.ItemStack;
 @Getter @Setter
 public class ArenaConfig extends Configuration
 {
-	// Generic
-	protected int gameTime, lobbyTime, maxDeaths;
+	// ---- Generic
+	protected boolean allowTeamKilling, countMobKills, canModifyWorld, unlimitedAmmo, rewardBasedOnXp, giveRewards;
+	protected int gameTime, lobbyTime, maxDeaths, maxPlayers, minPlayers;
+	protected String defaultClass;
 	protected double cashReward;
-
-	protected boolean allowTeamKilling, countMobKills, canModifyWorld;
-	protected boolean unlimitedAmmo = true, rewardBasedOnXp = true, giveRewards = true;
 
 	protected List<String> blacklistedClasses, whitelistedClasses;
 	protected List<Material> clearMaterials;
@@ -108,6 +107,17 @@ public class ArenaConfig extends Configuration
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
 		this.killStreaks = getDefaultKillStreak();
+
+		this.maxDeaths = 1;
+		this.maxPlayers = 24;
+		this.minPlayers = 1;
+		this.unlimitedAmmo = true;
+		this.rewardBasedOnXp = true;
+		this.giveRewards = true;
+
+		if (! plugin.getClasses().isEmpty())
+			this.defaultClass = plugin.getClasses().get(0).getName();
+
 		setCustomDefaults();
 	}
 

@@ -867,7 +867,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 					return;
 				}
 
-				if (active.getPlayerCount() < az.getMaxPlayers())
+				if (active.getPlayerCount() < active.getMaxPlayers())
 				{
 					active.addPlayer(player, team);
 					return;

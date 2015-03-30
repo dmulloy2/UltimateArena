@@ -214,14 +214,14 @@ public class FileHandler
 				az.setTimesPlayed(fc.getInt("played"));
 			}
 
-			az.setMaxPlayers(fc.getInt("maxPlayers"));
-			az.setDefaultClass(fc.getString("defaultClass"));
+			az.getConfig().setMaxPlayers(fc.getInt("maxPlayers", 24));
+			az.getConfig().setDefaultClass(fc.getString("defaultClass"));
 
 			az.setLoaded(true);
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading Arena: " + az.getName()));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading legacy arena " + az.getName()));
 			az.setLoaded(false);
 		}
 	}

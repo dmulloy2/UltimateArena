@@ -104,7 +104,7 @@ public final class ArenaPlayer
 
 		this.arena = arena;
 		this.plugin = plugin;
-		this.arenaClass = plugin.getArenaClass(arena.getAz().getDefaultClass());
+		this.arenaClass = plugin.getArenaClass(arena.getDefaultClass());
 	}
 
 	/**

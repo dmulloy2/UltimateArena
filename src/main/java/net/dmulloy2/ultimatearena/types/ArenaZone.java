@@ -61,8 +61,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 {
 	protected static transient final int CURRENT_VERSION = 3;
 
-	protected int maxPlayers = 24;
-
 	// ---- Stats
 	protected int liked;
 	protected int disliked;
@@ -72,7 +70,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected boolean needsPermission;
 
 	protected String worldName;
-	protected String defaultClass;
 
 	// ---- Type
 	protected String typeString;
@@ -161,17 +158,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 		// Load configuration settings
 		loadConfiguration();
-
-		// Default class
-		if (defaultClass == null || defaultClass.isEmpty())
-		{
-			if (! plugin.getClasses().isEmpty())
-			{
-				ArenaClass ac = plugin.getClasses().get(0);
-				if (ac != null)
-					this.defaultClass = ac.getName();
-			}
-		}
 
 		// Set lobby parameters
 		lobby.setParam(lobby1, lobby2);

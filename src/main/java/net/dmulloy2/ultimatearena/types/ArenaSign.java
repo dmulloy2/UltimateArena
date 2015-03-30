@@ -159,31 +159,31 @@ public final class ArenaSign implements ConfigurationSerializable
 			{
 				case DISABLED:
 					line.append("DISABLED (0/");
-					line.append(az.getMaxPlayers());
+					line.append(az.getConfig().getMaxPlayers());
 					line.append(")");
 					break;
 				case IDLE:
 					line.append("IDLE (0/");
-					line.append(az.getMaxPlayers());
+					line.append(az.getConfig().getMaxPlayers());
 					line.append(")");
 					break;
 				case INGAME:
 					line.append("INGAME (");
 					line.append(ar.getPlayerCount());
 					line.append("/");
-					line.append(az.getMaxPlayers());
+					line.append(az.getConfig().getMaxPlayers());
 					line.append(")");
 					break;
 				case LOBBY:
 					line.append("LOBBY (");
 					line.append(ar.getPlayerCount());
 					line.append("/");
-					line.append(az.getMaxPlayers());
+					line.append(az.getConfig().getMaxPlayers());
 					line.append(")");
 					break;
 				case STOPPING:
 					line.append("STOPPING (0/");
-					line.append(az.getMaxPlayers());
+					line.append(az.getConfig().getMaxPlayers());
 					line.append(")");
 					break;
 				default:
@@ -202,7 +202,7 @@ public final class ArenaSign implements ConfigurationSerializable
 			}
 
 			line.append(" (0/");
-			line.append(az.getMaxPlayers());
+			line.append(az.getConfig().getMaxPlayers());
 			line.append(")");
 		}
 
@@ -259,7 +259,7 @@ public final class ArenaSign implements ConfigurationSerializable
 		else
 		{
 			sign.setLine(2, FormatUtil.format("&aJoin"));
-			sign.setLine(3, "IDLE (0/" + az.getMaxPlayers() + ")");
+			sign.setLine(3, "IDLE (0/" + az.getConfig().getMaxPlayers() + ")");
 		}
 
 		sign.update();
@@ -276,7 +276,7 @@ public final class ArenaSign implements ConfigurationSerializable
 	@Override
 	public String toString()
 	{
-		return "ArenaSign { id = " + id + ", arenaName = " + arenaName + ", loc = " + loc + " }";
+		return String.format("ArenaSign[id=%s, arena=%s, loc=%s]", id, arenaName, loc);
 	}
 
 	/**

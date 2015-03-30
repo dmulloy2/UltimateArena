@@ -97,6 +97,7 @@ public abstract class Arena implements Reloadable
 	protected List<ArenaFlag> flags;
 	protected List<ArenaLocation> spawns;
 
+	private String defaultClass;
 	private List<String> blacklistedClasses;
 	private List<String> whitelistedClasses;
 
@@ -105,6 +106,8 @@ public abstract class Arena implements Reloadable
 	protected Team winningTeam;
 
 	protected int broadcastTimer = 45;
+	protected int maxPlayers = 24;
+	protected int minPlayers = 1;
 	protected int maxDeaths = 1;
 
 	protected int startingAmount;
@@ -174,12 +177,15 @@ public abstract class Arena implements Reloadable
 		this.maxGameTime = az.getConfig().getGameTime();
 		this.gameTimer = az.getConfig().getGameTime();
 		this.maxDeaths = az.getConfig().getMaxDeaths();
+		this.maxPlayers = az.getConfig().getMaxPlayers();
+		this.minPlayers = az.getConfig().getMinPlayers();
 		this.allowTeamKilling = az.getConfig().isAllowTeamKilling();
 		this.countMobKills = az.getConfig().isCountMobKills();
 		this.rewardBasedOnXp = az.getConfig().isRewardBasedOnXp();
 		this.killStreaks = az.getConfig().getKillStreaks();
 		this.giveRewards = az.getConfig().isGiveRewards();
 
+		this.defaultClass = az.getConfig().getDefaultClass();
 		this.blacklistedClasses = az.getConfig().getBlacklistedClasses();
 		this.whitelistedClasses = az.getConfig().getWhitelistedClasses();
 
@@ -262,7 +268,7 @@ public abstract class Arena implements Reloadable
 			plugin.getGuiHandler().open(player, csGUI);
 		}
 
-		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), az.getMaxPlayers());
+		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), maxPlayers);
 	}
 
 	/**
@@ -892,6 +898,13 @@ public abstract class Arena implements Reloadable
 	{
 		if (! started)
 		{
+			if (active.size() < minPlayers)
+			{
+				tellPlayers("&3Not enough people to play (&e{0} &3required)", minPlayers);
+				stop();
+				return;
+			}
+
 			plugin.log("Starting arena {0} with {1} players", name, active.size());
 
 			this.started = true;
