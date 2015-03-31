@@ -8,7 +8,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.number>LOCAL</project.build.number>
+    <project.build.number></project.build.number>
   </properties>
 
   <repositories>
@@ -39,7 +39,7 @@
         </property>
       </activation>
       <properties>
-        <project.build.number>${env.BUILD_NUMBER}</project.build.number>
+        <project.build.number>-b${env.BUILD_NUMBER}</project.build.number>
       </properties>
     </profile>
   </profiles>
