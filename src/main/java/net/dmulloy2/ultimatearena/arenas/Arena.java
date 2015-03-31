@@ -93,6 +93,7 @@ public abstract class Arena implements Reloadable
 	protected List<ArenaPlayer> inactive;
 	protected List<ArenaPlayer> toReward;
 	protected List<ArenaSpectator> spectators;
+	protected String lastJoin;
 
 	protected List<ArenaFlag> flags;
 	protected List<ArenaLocation> spawns;
@@ -122,6 +123,7 @@ public abstract class Arena implements Reloadable
 	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
 	protected boolean countMobKills;
+	protected boolean forceBalance;
 	protected boolean giveRewards;
 	protected boolean stopped;
 	protected boolean started;
@@ -184,6 +186,7 @@ public abstract class Arena implements Reloadable
 		this.rewardBasedOnXp = az.getConfig().isRewardBasedOnXp();
 		this.killStreaks = az.getConfig().getKillStreaks();
 		this.giveRewards = az.getConfig().isGiveRewards();
+		this.forceBalance = az.getConfig().isForceBalance();
 
 		this.defaultClass = az.getConfig().getDefaultClass();
 		this.blacklistedClasses = az.getConfig().getBlacklistedClasses();
@@ -269,6 +272,7 @@ public abstract class Arena implements Reloadable
 		}
 
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), maxPlayers);
+		this.lastJoin = pl.getName();
 	}
 
 	/**
@@ -903,6 +907,24 @@ public abstract class Arena implements Reloadable
 				tellPlayers("&3Not enough people to play (&e{0} &3required)", minPlayers);
 				stop();
 				return;
+			}
+
+			if (forceBalance && lastJoin != null)
+			{
+				updateTeams();
+				if (redTeamSize != blueTeamSize)
+				{
+					Player extra = Util.matchPlayer(lastJoin);
+					if (extra != null)
+					{
+						ArenaPlayer ap = getArenaPlayer(extra);
+						if (ap != null)
+						{
+							ap.leaveArena(LeaveReason.KICK);
+							ap.sendMessage("&3You have been kicked in the interest of fairness!");
+						}
+					}
+				}
 			}
 
 			plugin.log("Starting arena {0} with {1} players", name, active.size());

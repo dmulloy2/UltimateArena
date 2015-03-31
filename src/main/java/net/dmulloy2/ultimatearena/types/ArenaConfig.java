@@ -54,7 +54,7 @@ import org.bukkit.inventory.ItemStack;
 public class ArenaConfig extends Configuration
 {
 	// ---- Generic
-	protected boolean allowTeamKilling, countMobKills, canModifyWorld, unlimitedAmmo, rewardBasedOnXp, giveRewards;
+	protected boolean allowTeamKilling, countMobKills, canModifyWorld, unlimitedAmmo, rewardBasedOnXp, giveRewards, forceBalance;
 	protected int gameTime, lobbyTime, maxDeaths, maxPlayers, minPlayers;
 	protected String defaultClass;
 	protected double cashReward;
