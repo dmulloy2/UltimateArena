@@ -18,7 +18,9 @@
  */
 package net.dmulloy2.ultimatearena.listeners;
 
-import lombok.AllArgsConstructor;
+import java.lang.reflect.Method;
+
+import lombok.RequiredArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
@@ -47,7 +49,7 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EntityListener implements Listener
 {
 	private final UltimateArena plugin;
@@ -474,28 +476,24 @@ public class EntityListener implements Listener
 		}
 	}
 
-	// Line count for onEntityDeath = 223
+	// Line count for onEntityDeath = 238
 
-	private final String getWeapon(Player player)
+	private String getWeapon(Player player)
 	{
-		StringBuilder ret = new StringBuilder();
-
 		ItemStack inHand = player.getItemInHand();
 		if (inHand == null || inHand.getType() == Material.AIR)
 		{
-			ret.append("their fists");
+			return "their fists";
 		}
 		else
 		{
 			String name = FormatUtil.getFriendlyName(inHand.getType());
 			String article = FormatUtil.getArticle(name);
-			ret.append("&3" + article + " &e" + name);
+			return "&3" + article + " &e" + name;
 		}
-
-		return ret.toString();
 	}
 
-	private final Player getPlayer(Entity entity)
+	private Player getPlayer(Entity entity)
 	{
 		if (entity instanceof Player)
 		{
@@ -505,10 +503,25 @@ public class EntityListener implements Listener
 		if (entity instanceof Projectile)
 		{
 			Projectile proj = (Projectile) entity;
-			if (proj.getShooter() instanceof Player)
-				return (Player) proj.getShooter();
+			Object shooter = getShooter(proj);
+			if (shooter instanceof Player)
+				return (Player) shooter;
 		}
 
 		return null;
+	}
+
+	private Method getShooter;
+
+	private Object getShooter(Projectile proj)
+	{
+		try
+		{
+			if (getShooter == null)
+				getShooter = Projectile.class.getMethod("getShooter");
+			if (getShooter.getReturnType() == LivingEntity.class)
+				return getShooter.invoke(proj);
+		} catch (Throwable ex) { }
+		return proj.getShooter();
 	}
 }

@@ -1116,7 +1116,7 @@ public abstract class Arena implements Reloadable
 				{
 					if (! persistentEntities.contains(entity.getType()))
 					{
-						if (isInside(Util.getLocationSafely(entity)))
+						if (isInside(entity.getLocation()))
 						{
 							if (entity instanceof LivingEntity)
 								((LivingEntity) entity).setHealth(0.0D);
