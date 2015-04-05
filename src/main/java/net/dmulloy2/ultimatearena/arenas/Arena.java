@@ -128,6 +128,7 @@ public abstract class Arena implements Reloadable
 	protected boolean stopped;
 	protected boolean started;
 
+	protected boolean limitSpam;
 	protected boolean disabled;
 	protected boolean inLobby;
 	protected boolean inGame;

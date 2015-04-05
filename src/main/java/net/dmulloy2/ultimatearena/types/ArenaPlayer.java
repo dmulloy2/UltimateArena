@@ -342,11 +342,15 @@ public final class ArenaPlayer
 	public final void sendMessage(String string, Object... objects)
 	{
 		string = plugin.getPrefix() + FormatUtil.format(string, objects);
-		if (lastMessage.equals(string))
-			return;
+		if (arena.isLimitSpam())
+		{
+			if (lastMessage.equals(string))
+				return;
+
+			lastMessage = string;
+		}
 
 		getPlayer().sendMessage(string);
-		lastMessage = string;
 	}
 
 	/**

@@ -45,6 +45,7 @@ public class ConquestArena extends Arena
 		super(az);
 		this.redTeamPower = 1;
 		this.blueTeamPower = 1;
+		this.limitSpam = true;
 
 		for (ArenaLocation loc : az.getFlags())
 		{
