@@ -46,7 +46,7 @@ public abstract class ArenaFlag extends FlagBase
 		super(arena, location, plugin);
 
 		Wool wool = new Wool();
-		wool.setColor(getColor(8));
+		wool.setColor(DyeColor.SILVER);
 		Util.setData(notify, wool);
 	}
 
@@ -67,18 +67,5 @@ public abstract class ArenaFlag extends FlagBase
 		Wool wool = new Wool();
 		wool.setColor(team == Team.RED ? DyeColor.RED : DyeColor.BLUE);
 		Util.setData(notify, wool);
-	}
-
-	@Deprecated
-	protected final DyeColor getColor(int color)
-	{
-		if (color == 8)
-			return DyeColor.SILVER;
-		else if (color == 11)
-			return DyeColor.BLUE;
-		else if (color == 14)
-			return DyeColor.RED;
-		else
-			return DyeColor.WHITE;
 	}
 }

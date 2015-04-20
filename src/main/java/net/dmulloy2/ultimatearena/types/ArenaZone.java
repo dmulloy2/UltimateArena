@@ -495,7 +495,14 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	protected void newConfig()
 	{
-		config = getType().newConfig(this);
+		try
+		{
+			config = type.newConfig(this);
+		}
+		catch (Throwable ex)
+		{
+			type.getLogger().log(Level.WARNING, "Failed to obtain new config for " + name + ": ", ex);
+		}
 	}
 
 	/**
@@ -503,7 +510,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	protected final void saveConfiguration()
 	{
-		if (config == null) // Config not initialized yet
+		if (config == null) // Config not initialized
 			return;
 
 		Map<String, Object> def = getDefaultConfig().serialize();

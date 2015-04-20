@@ -458,7 +458,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 
 			ArenaZone az = type.getArenaZone(file);
-			if (az.isLoaded())
+			if (az != null && az.isLoaded())
 				logHandler.debug("Arena {0} loaded.", az.getName());
 		}
 		catch (Throwable ex)
@@ -470,34 +470,33 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private void loadClasses()
 	{
 		File folder = new File(getDataFolder(), "classes");
-		File[] children = folder.listFiles(new FileFilter()
+		FileFilter filter = new FileFilter()
 		{
 			@Override
 			public boolean accept(File file)
 			{
 				return file.getName().contains(".yml");
 			}
-		});
+		};
 
-		if (children.length == 0)
+		File[] files = folder.listFiles(filter);
+		if (files == null || files.length == 0)
 		{
 			generateStockClasses();
+			files = folder.listFiles(filter);
 		}
 
-		children = folder.listFiles();
-
 		int total = 0;
-		for (File file : children)
+
+		files:
+		for (File file : files)
 		{
-			boolean alreadyLoaded = false;
+			// Make sure it isn't already loaded
 			for (ArenaClass loaded : classes)
 			{
 				if (loaded.getFile().equals(file))
-					alreadyLoaded = true;
+					continue files;
 			}
-
-			if (alreadyLoaded)
-				continue;
 
 			ArenaClass ac = new ArenaClass(this, file);
 			if (ac.isLoaded())
@@ -896,9 +895,17 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 				return;
 			}
 
-			Arena arena = type.newArena(az);
-			if (arena == null)
+			Arena arena;
+
+			try
 			{
+				arena = type.newArena(az);
+				if (arena == null)
+					throw new NullPointerException();
+			}
+			catch (Throwable ex)
+			{
+				type.getLogger().log(Level.WARNING, "Failed to obtain new arena: ", ex);
 				player.sendMessage(prefix + FormatUtil.format("&c{0} does not define a valid arena!", type.getName()));
 				return;
 			}
@@ -1017,10 +1024,18 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
-		ArenaCreator ac = at.newCreator(player, name);
-		if (ac == null)
+		ArenaCreator ac;
+
+		try
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cCould not find an applicable ArenaCreator for \"{0}\"", type));
+			ac = at.newCreator(player, name);
+			if (ac == null)
+				throw new NullPointerException();
+		}
+		catch (Throwable ex)
+		{
+			player.sendMessage(prefix + FormatUtil.format("&cFailed to obtain ArenaCreator for {0}. Check console!", type));
+			at.getLogger().log(Level.WARNING, "Failed to obtain ArenaCreator for " + type + ": ", ex);
 			return;
 		}
 

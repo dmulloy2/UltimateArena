@@ -28,6 +28,7 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import net.dmulloy2.io.Closer;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
@@ -62,9 +63,9 @@ public abstract class ArenaType
 	// ---- Optional Hooks
 
 	/**
-	 * Called when this ArenaType is loaded.
+	 * Called when this ArenaType is enabled.
 	 */
-	public void onLoad() { }
+	public void onEnable() { }
 
 	/**
 	 * Called when this ArenaType is disabled.
@@ -153,12 +154,7 @@ public abstract class ArenaType
 		return getDescription().getStylized();
 	}
 
-	/**
-	 * Initializes this ArenaType. Should <b>ONLY</b> be called by the ArenaLoader.
-	 *
-	 * @throws IllegalArgumentException If this ArenaType is already initialized
-	 */
-	protected final void initialize(UltimateArena plugin, ArenaDescription description, ArenaClassLoader classLoader, File file,
+	final void initialize(UltimateArena plugin, ArenaDescription description, ArenaClassLoader classLoader, File file,
 			File dataFolder)
 	{
 		Validate.isTrue(! initialized, "Already initialized!");
@@ -197,8 +193,15 @@ public abstract class ArenaType
 	{
 		if (config == null)
 		{
-			saveDefaultConfig();
-			config = newConfig();
+			try
+			{
+				saveDefaultConfig();
+				config = newConfig();
+			}
+			catch (Throwable ex)
+			{
+				getLogger().log(Level.WARNING, "Failed to obtain configuration: ", ex);
+			}
 		}
 
 		return config;
@@ -256,58 +259,56 @@ public abstract class ArenaType
 	{
 		Validate.notEmpty(resourcePath, "resourcePath cannot be empty!");
 
-		resourcePath = resourcePath.replace('\\', '/');
-		InputStream in = getResource(resourcePath);
-		if (in == null)
+		File outFile = null;
+		try (Closer closer = new Closer())
 		{
-			logger.log(Level.WARNING, "The embedded resource '" + resourcePath + "' cannot be found in " + file);
-		}
+			resourcePath = resourcePath.replace('\\', '/');
+			InputStream in = closer.register(getResource(resourcePath));
+			if (in == null)
+			{
+				logger.log(Level.WARNING, "The embedded resource '" + resourcePath + "' cannot be found in " + file);
+			}
 
-		File outFile = new File(dataFolder, resourcePath);
-		int lastIndex = resourcePath.lastIndexOf('/');
-		File outDir = new File(dataFolder, resourcePath.substring(0, lastIndex >= 0 ? lastIndex : 0));
+			outFile = new File(dataFolder, resourcePath);
+			int lastIndex = resourcePath.lastIndexOf('/');
+			File outDir = new File(dataFolder, resourcePath.substring(0, lastIndex >= 0 ? lastIndex : 0));
 
-		if (! outDir.exists())
-		{
-			outDir.mkdirs();
-		}
+			if (! outDir.exists())
+			{
+				outDir.mkdirs();
+			}
 
-		try
-		{
 			if (! outFile.exists() || replace)
 			{
-				OutputStream out = new FileOutputStream(outFile);
+				OutputStream out = closer.register(new FileOutputStream(outFile));
 				byte[] buf = new byte[1024];
 				int len;
 				while ((len = in.read(buf)) > 0)
 				{
 					out.write(buf, 0, len);
 				}
-				out.close();
-				in.close();
 			}
 		}
 		catch (IOException ex)
 		{
-			logger.log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+			logger.log(Level.SEVERE, "Could not save " + resourcePath + " to " + outFile, ex);
 		}
 	}
 
 	private final void saveResource(InputStream in, File outFile)
 	{
-		try
+		try (Closer closer = new Closer())
 		{
+			closer.register(in);
 			if (! outFile.exists())
 			{
-				OutputStream out = new FileOutputStream(outFile);
+				OutputStream out = closer.register(new FileOutputStream(outFile));
 				byte[] buf = new byte[1024];
 				int len;
 				while ((len = in.read(buf)) > 0)
 				{
 					out.write(buf, 0, len);
 				}
-				out.close();
-				in.close();
 			}
 		}
 		catch (IOException ex)

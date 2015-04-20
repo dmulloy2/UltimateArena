@@ -59,12 +59,4 @@ public class InvalidArenaException extends Exception
 	{
 		super(message, cause);
 	}
-
-	public static final InvalidArenaException fromThrowable(Throwable ex)
-	{
-		if (ex instanceof InvalidArenaException)
-			return (InvalidArenaException) ex;
-
-		return new InvalidArenaException(ex);
-	}
 }

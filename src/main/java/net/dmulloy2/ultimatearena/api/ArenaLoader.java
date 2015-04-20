@@ -21,6 +21,7 @@ package net.dmulloy2.ultimatearena.api;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +32,6 @@ import net.dmulloy2.io.Closer;
 import net.dmulloy2.ultimatearena.UltimateArena;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
@@ -55,14 +54,23 @@ public class ArenaLoader
 		this.loaders = new HashMap<>();
 	}
 
-	protected final ArenaType loadArenaType(File file) throws Exception
+	protected final ArenaType loadArenaType(File file) throws InvalidArenaException
 	{
 		Validate.notNull(file, "file cannot be null!");
 		if (! file.exists())
-			throw new FileNotFoundException(file.getPath() + " does not exist");
+			throw new InvalidArenaException(new FileNotFoundException(file.getPath() + " does not exist"));
 
 		ArenaDescription description = getArenaDescription(file);
-		ArenaClassLoader loader = loadClasses(description.getName(), file);
+		ArenaClassLoader loader;
+
+		try
+		{
+			loader = loadClasses(description.getName(), file);
+		}
+		catch (MalformedURLException ex)
+		{
+			throw new InvalidArenaException("Failed to load classes from file " + file.getName(), ex);
+		}
 
 		Class<?> jarClass;
 
@@ -83,15 +91,22 @@ public class ArenaLoader
 		}
 		catch (ClassCastException ex)
 		{
-			throw new InvalidArenaException("Main class '" + description.getMain() + "' does not extend ArenaType", ex);
+			throw new InvalidArenaException("Main class '" + jarClass.getName() + "' does not extend ArenaType", ex);
 		}
 
-		ArenaType type = clazz.newInstance();
-		type.initialize(plugin, description, loader, file, new File(plugin.getDataFolder(), type.getName()));
-		return type;
+		try
+		{
+			ArenaType type = clazz.newInstance();
+			type.initialize(plugin, description, loader, file, new File(plugin.getDataFolder(), type.getName()));
+			return type;
+		}
+		catch (Throwable ex)
+		{
+			throw new InvalidArenaException("Failed to create and initialize instance", ex);
+		}
 	}
 
-	private final ArenaClassLoader loadClasses(String key, File file) throws Exception
+	private final ArenaClassLoader loadClasses(String key, File file) throws MalformedURLException
 	{
 		Validate.notNull(key, "key cannot be null!");
 		Validate.notNull(file, "file cannot be null!");
@@ -109,9 +124,8 @@ public class ArenaLoader
 	public final ArenaDescription getArenaDescription(File file) throws InvalidArenaException
 	{
 		Validate.notNull(file, "file cannot be null!");
-		Closer closer = new Closer();
 
-		try
+		try (Closer closer = new Closer())
 		{
 			JarFile jar = closer.register(new JarFile(file));
 			JarEntry entry = jar.getJarEntry("arena.yml");
@@ -142,13 +156,13 @@ public class ArenaLoader
 
 			return new ArenaDescription(name, main, stylized, version, author);
 		}
+		catch (InvalidArenaException ex)
+		{
+			throw ex;
+		}
 		catch (Throwable ex)
 		{
-			throw InvalidArenaException.fromThrowable(ex);
-		}
-		finally
-		{
-			closer.close();
+			throw new InvalidArenaException("Failed to read arena.yml from " + file.getName(), ex);
 		}
 	}
 
@@ -166,27 +180,10 @@ public class ArenaLoader
 				try
 				{
 					cachedClass = loader.findClass(name, false);
-				} catch (ClassNotFoundException e) { }
+				} catch (ClassNotFoundException ex) { }
 			}
 		}
 
 		return cachedClass;
-	}
-
-	public final void setClass(String name, Class<?> clazz)
-	{
-		Validate.notNull(name, "name cannot be null!");
-		Validate.notNull(clazz, "clazz cannot be null!");
-
-		if (! classes.containsKey(name))
-		{
-			classes.put(name, clazz);
-
-			if (ConfigurationSerializable.class.isAssignableFrom(clazz))
-			{
-				Class<? extends ConfigurationSerializable> serializable = clazz.asSubclass(ConfigurationSerializable.class);
-				ConfigurationSerialization.registerClass(serializable);
-			}
-		}
 	}
 }

@@ -123,7 +123,7 @@ public class ArenaTypeHandler implements Reloadable
 				dataFolder.mkdirs();
 
 			type.initialize(plugin, type.getDescription(), null, null, new File(types, type.getName().toLowerCase()));
-			type.onLoad();
+			type.onEnable();
 
 			// Attempt to move the config
 			attemptConfigMove(type);
@@ -183,7 +183,7 @@ public class ArenaTypeHandler implements Reloadable
 			if (sameName != null)
 				throw new IllegalArgumentException("Name '" + type.getName() + "' is already taken by: " + sameName);
 
-			type.onLoad();
+			type.onEnable();
 
 			type.loadConfig();
 			arenaTypes.put(type.getName(), type);

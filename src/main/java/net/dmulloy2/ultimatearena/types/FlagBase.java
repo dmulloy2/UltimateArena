@@ -53,6 +53,9 @@ public abstract class FlagBase
 		this.setup();
 	}
 
+	/**
+	 * Sets up this flag. Used to
+	 */
 	protected void setup()
 	{
 		this.notify = location.clone().add(0.0D, 5.0D, 0.0D).getBlock();
