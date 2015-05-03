@@ -732,7 +732,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 */
 	public final void attemptJoin(Player player, String name)
 	{
-		attemptJoin(player, name, -1);
+		attemptJoin(player, name, null);
 	}
 
 	/**
@@ -742,7 +742,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 * @param name Arena name
 	 * @param team Team number
 	 */
-	public final void attemptJoin(Player player, String name, int team)
+	public final void attemptJoin(Player player, String name, String team)
 	{
 		if (waiting.containsKey(player.getName()))
 		{
@@ -844,9 +844,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 * 
 	 * @param player Player
 	 * @param name Arena name
-	 * @param team Team number
+	 * @param team Team name/id
 	 */
-	public final void addPlayer(Player player, String name, int team)
+	public final void addPlayer(Player player, String name, String team)
 	{
 		try
 		{
@@ -860,7 +860,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 					return;
 				}
 
-				if (active.isInGame())
+				if (active.isInGame() && ! active.isJoinInProgress())
 				{
 					player.sendMessage(prefix + FormatUtil.format("&cThis arena has already started!"));
 					return;

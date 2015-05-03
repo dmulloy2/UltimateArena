@@ -38,7 +38,7 @@ saveInventories: true
 # Input: boolean; default: false
 debug: false
 
-# Timer XP bar
+# Whether or not to show the timer in the XP bar
 # Input: boolean; default: true
 timerXPBar: true
 
@@ -49,7 +49,6 @@ classSelector:
   title: "         &l&nSelect a class!&r"
   automatic: true
 
-# Restrict commands
 # Whether or not to restrict commands
 # See: whitelistedCommands
 # Input: boolean; default: true
@@ -73,6 +72,10 @@ whitelistedCommands:
 # Input: boolean; default: true
 globalMessages: true
 
-# Force Respawn
+# Whether or not to force players to respawn
 # Input: boolean; default: false
 forceRespawn: false
+
+# Whether or not to show unavailable classes in the GUI
+# Input: boolean; default: false
+showUnavailableClasses: false

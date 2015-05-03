@@ -32,6 +32,7 @@ import net.dmulloy2.types.EnchantmentType;
 import net.dmulloy2.types.ItemParser;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -253,10 +254,6 @@ public final class ArenaClass extends Configuration
 			}
 
 			cost = getDouble(values, "cost", -1.0D);
-			if (cost != -1.0D && plugin.isVaultEnabled())
-			{
-				description.add(FormatUtil.format("&7Cost: &a{0}", plugin.getVaultHandler().format(cost)));
-			}
 
 			ItemMeta meta = icon.getItemMeta();
 			meta.setDisplayName(title);
@@ -333,7 +330,7 @@ public final class ArenaClass extends Configuration
 		return enchants;
 	}
 
-	public final boolean checkPermission(Player player)
+	public final boolean hasPermission(Player player)
 	{
 		Validate.notNull(player, "player cannot be null!");
 		return ! needsPermission || plugin.getPermissionHandler().hasPermission(player, permissionNode);
@@ -342,6 +339,38 @@ public final class ArenaClass extends Configuration
 	public final ItemStack getIcon()
 	{
 		return icon.clone();
+	}
+
+	public final boolean checkAvailability(ArenaPlayer ap)
+	{
+		return checkAvailability(ap, true);
+	}
+
+	public final boolean checkAvailability(ArenaPlayer ap, boolean message)
+	{
+		if (! hasPermission(ap.getPlayer()))
+		{
+			if (message)
+				ap.sendMessage("&cYou do not have permission to use this class.");
+			return false;
+		}
+
+		Arena arena = ap.getArena();
+		if (! arena.isValidClass(this))
+		{
+			if (message)
+				ap.sendMessage("&cYou cannot use this class in this arena.");
+			return false;
+		}
+
+		if (! arena.getAvailableClasses(ap.getTeam()).contains(this))
+		{
+			if (message)
+				ap.sendMessage("&cThis class is not available to your team.");
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

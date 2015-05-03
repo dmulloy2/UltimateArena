@@ -54,25 +54,25 @@ public abstract class FlagBase
 	}
 
 	/**
-	 * Sets up this flag. Used to
+	 * Sets up this flag. Used to create the actual flag.
 	 */
 	protected void setup()
 	{
 		this.notify = location.clone().add(0.0D, 5.0D, 0.0D).getBlock();
 		this.notify.setType(Material.WOOL);
 
-		location.clone().add(1, 0, 0).getBlock().setType(Material.STONE);
-		location.clone().add(1, 0, 1).getBlock().setType(Material.STONE);
-		location.clone().add(-1, 0, -1).getBlock().setType(Material.STONE);
-		location.clone().add(1, 0, -1).getBlock().setType(Material.STONE);
-		location.clone().add(-1, 0, 1).getBlock().setType(Material.STONE);
-		location.clone().add(2, 0, 0).getBlock().setType(Material.STONE);
-		location.clone().add(-1, 0, 0).getBlock().setType(Material.STONE);
-		location.clone().add(-2, 0, 0).getBlock().setType(Material.STONE);
-		location.clone().add(0, 0, 1).getBlock().setType(Material.STONE);
-		location.clone().add(0, 0, 2).getBlock().setType(Material.STONE);
-		location.clone().add(0, 0, -1).getBlock().setType(Material.STONE);
-		location.clone().add(0, 0, -2).getBlock().setType(Material.STONE);
+		location.clone().add(1, 0, 0).getBlock().setType(Material.QUARTZ_BLOCK);
+		location.clone().add(1, 0, 1).getBlock().setType(Material.QUARTZ_BLOCK);
+		location.clone().add(-1, 0, -1).getBlock().setType(Material.QUARTZ_BLOCK);
+		location.clone().add(1, 0, -1).getBlock().setType(Material.QUARTZ_BLOCK);
+		location.clone().add(-1, 0, 1).getBlock().setType(Material.QUARTZ_BLOCK);
+		//location.clone().add(2, 0, 0).getBlock().setType(Material.QUARTZ_BLOCK);
+		location.clone().add(-1, 0, 0).getBlock().setType(Material.QUARTZ_BLOCK);
+		//location.clone().add(-2, 0, 0).getBlock().setType(Material.QUARTZ_BLOCK);
+		location.clone().add(0, 0, 1).getBlock().setType(Material.QUARTZ_BLOCK);
+		//location.clone().add(0, 0, 2).getBlock().setType(Material.QUARTZ_BLOCK);
+		location.clone().add(0, 0, -1).getBlock().setType(Material.QUARTZ_BLOCK);
+		//location.clone().add(0, 0, -2).getBlock().setType(Material.QUARTZ_BLOCK);
 	}
 
 	public abstract void checkNear(ArenaPlayer[] arenaPlayers);

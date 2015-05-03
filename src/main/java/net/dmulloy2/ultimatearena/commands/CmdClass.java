@@ -66,22 +66,16 @@ public class CmdClass extends UltimateArenaCommand
 			return;
 		}
 
-		if (! cl.checkPermission(player))
-		{
-			err("You do not have permissions for this class.");
+		if (! cl.checkAvailability(ap))
 			return;
-		}
 
-		if (! ap.setClass(cl))
+		if (ap.setClass(cl))
 		{
-			err("You cannot use this class in this arena.");
-			return;
+			String name = cl.getName();
+			String article = FormatUtil.getArticle(name);
+			String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
+
+			sendpMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
 		}
-
-		String name = cl.getName();
-		String article = FormatUtil.getArticle(name);
-		String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
-
-		sendpMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
 	}
 }

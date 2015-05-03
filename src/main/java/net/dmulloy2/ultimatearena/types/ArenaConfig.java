@@ -24,6 +24,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,8 @@ import org.bukkit.inventory.ItemStack;
 public class ArenaConfig extends Configuration
 {
 	// ---- Generic
-	protected boolean allowTeamKilling, countMobKills, canModifyWorld, unlimitedAmmo, rewardBasedOnXp, giveRewards, forceBalance;
+	protected boolean allowTeamKilling, countMobKills, canModifyWorld, unlimitedAmmo, rewardBasedOnXp, giveRewards, forceBalance,
+		joinInProgress;
 	protected int gameTime, lobbyTime, maxDeaths, maxPlayers, minPlayers;
 	protected String defaultClass;
 	protected double cashReward;
@@ -64,6 +66,7 @@ public class ArenaConfig extends Configuration
 
 	protected transient List<ItemStack> rewards;
 	protected transient List<ScaledReward> scaledRewards;
+	protected transient Map<Team, List<String>> mandatedClasses;
 	protected transient Map<Integer, List<KillStreak>> killStreaks;
 
 	// ---- Transient
@@ -103,6 +106,7 @@ public class ArenaConfig extends Configuration
 	{
 		this.rewards = new ArrayList<>();
 		this.scaledRewards = new ArrayList<>();
+		this.mandatedClasses = new HashMap<>();
 		this.clearMaterials = new ArrayList<>();
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
@@ -265,6 +269,23 @@ public class ArenaConfig extends Configuration
 					}
 
 					killStreaks.put(kills, streaks);
+				}
+			}
+
+			this.mandatedClasses = def.getMandatedClasses();
+			if (isSet(values, "mandatedClasses"))
+			{
+				this.mandatedClasses = new HashMap<>();
+
+				for (Entry<String, Object> entry : getSection(values, "mandatedClasses").entrySet())
+				{
+					Team team = Team.get(entry.getKey());
+					if (team == null)
+						continue;
+
+					@SuppressWarnings("unchecked")
+					List<String> classes = (List<String>) entry.getValue();
+					mandatedClasses.put(team, classes);
 				}
 			}
 

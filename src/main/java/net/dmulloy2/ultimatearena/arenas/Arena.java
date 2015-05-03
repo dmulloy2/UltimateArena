@@ -102,6 +102,7 @@ public abstract class Arena implements Reloadable
 	private List<String> blacklistedClasses;
 	private List<String> whitelistedClasses;
 
+	private Map<Team, List<String>> mandatedClasses;
 	private Map<Integer, List<KillStreak>> killStreaks;
 
 	protected Team winningTeam;
@@ -118,18 +119,19 @@ public abstract class Arena implements Reloadable
 	protected int redTeamSize;
 	protected int blueTeamSize;
 	protected int announced;
-
+	
 	protected boolean allowTeamKilling;
 	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
+	protected boolean joinInProgress;
 	protected boolean countMobKills;
 	protected boolean forceBalance;
 	protected boolean giveRewards;
+	protected boolean limitSpam;
+
+	protected boolean disabled;
 	protected boolean stopped;
 	protected boolean started;
-
-	protected boolean limitSpam;
-	protected boolean disabled;
 	protected boolean inLobby;
 	protected boolean inGame;
 
@@ -188,10 +190,12 @@ public abstract class Arena implements Reloadable
 		this.killStreaks = az.getConfig().getKillStreaks();
 		this.giveRewards = az.getConfig().isGiveRewards();
 		this.forceBalance = az.getConfig().isForceBalance();
+		this.joinInProgress = az.getConfig().isJoinInProgress();
 
 		this.defaultClass = az.getConfig().getDefaultClass();
 		this.blacklistedClasses = az.getConfig().getBlacklistedClasses();
 		this.whitelistedClasses = az.getConfig().getWhitelistedClasses();
+		this.mandatedClasses = az.getConfig().getMandatedClasses();
 
 		onReload();
 	}
@@ -205,8 +209,9 @@ public abstract class Arena implements Reloadable
 	 * Adds a player to the arena.
 	 *
 	 * @param player {@link Player} to add to an arena
+	 * @param teamId Team name/id
 	 */
-	public final void addPlayer(Player player, int team)
+	public final void addPlayer(Player player, String teamId)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Joining arena &e{0}&3... Please wait!", name));
 
@@ -222,7 +227,8 @@ public abstract class Arena implements Reloadable
 		}
 
 		// Set their team
-		pl.setTeam(team == -1 ? getTeam() : Team.getById(team));
+		Team team = teamId == null ? getTeam() : Team.get(teamId);
+		pl.setTeam(team);
 
 		// Teleport the player to the lobby spawn
 		spawnLobby(pl);
@@ -274,6 +280,31 @@ public abstract class Arena implements Reloadable
 
 		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), maxPlayers);
 		this.lastJoin = pl.getName();
+	}
+
+	/**
+	 * Gets a list of available classes for a given Team.
+	 * 
+	 * @param team Player team
+	 * @return Available classes
+	 */
+	public List<ArenaClass> getAvailableClasses(Team team)
+	{
+		List<String> classNames = mandatedClasses.get(team);
+		if (classNames != null && classNames.size() > 0)
+		{
+			List<ArenaClass> classes = new ArrayList<>();
+			for (String name : classNames)
+			{
+				ArenaClass ac = plugin.getArenaClass(name);
+				if (ac != null)
+					classes.add(ac);
+			}
+
+			return classes;
+		}
+
+		return plugin.getClasses();
 	}
 
 	/**

@@ -18,17 +18,23 @@
  */
 package net.dmulloy2.ultimatearena.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.dmulloy2.gui.AbstractGUI;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * @author dmulloy2
@@ -36,18 +42,40 @@ import org.bukkit.inventory.ItemStack;
 
 public class ClassSelectionGUI extends AbstractGUI
 {
+	private final List<ArenaClass> classes;
+	private final ArenaPlayer ap;
+
+	private final boolean showUnavailable;
 	private final UltimateArena plugin;
+
 	public ClassSelectionGUI(UltimateArena plugin, Player player)
 	{
 		super(plugin, player);
+		this.ap = plugin.getArenaPlayer(player);
+		this.classes = getClasses();
+
+		this.showUnavailable = plugin.getConfig().getBoolean("showUnavailableClasses", false);
 		this.plugin = plugin;
+
 		this.setup();
+	}
+
+	private List<ArenaClass> getClasses()
+	{
+		List<ArenaClass> classes = new ArrayList<>();
+		for (ArenaClass ac : ap.getArena().getAvailableClasses(ap.getTeam()))
+		{
+			if (showUnavailable || ac.checkAvailability(ap, false))
+				classes.add(ac);
+		}
+
+		return classes;
 	}
 
 	@Override
 	public int getSize()
 	{
-		return 27;
+		return NumberUtil.roundUp(classes.size(), 9);
 	}
 
 	@Override
@@ -59,40 +87,62 @@ public class ClassSelectionGUI extends AbstractGUI
 	@Override
 	public void stock(Inventory inventory)
 	{
-		ArenaPlayer ap = plugin.getArenaPlayer(player);
-		if (ap != null)
+		for (ArenaClass ac : classes)
 		{
-			Arena arena = ap.getArena();
-			for (ArenaClass ac : plugin.getClasses())
+			ItemStack icon = ac.getIcon();
+			ItemMeta meta = icon.getItemMeta();
+			List<String> lore = meta.getLore();
+
+			// Show cost if applicable
+			double cost = ac.getCost();
+			if (cost > 0.0D && plugin.isVaultEnabled())
 			{
-				if (ac.checkPermission(player) && arena.isValidClass(ac))
-					inventory.addItem(ac.getIcon());
+				VaultHandler handler = plugin.getVaultHandler();
+				String color = handler.has(player, cost) ? "&a" : "&c";
+				lore.add(FormatUtil.format("&7Cost: {0}{1}", color, handler.format(cost)));
 			}
+
+			// Show the reason they can't it use if applicable
+			if (showUnavailable)
+			{
+				Arena arena = ap.getArena();
+				if (! ac.hasPermission(player))
+				{
+					lore.add(FormatUtil.format("&cNo Permission!"));
+				}
+				else if (! arena.isValidClass(ac))
+				{
+					lore.add(FormatUtil.format("&cUnavailable in this arena!"));
+				}
+				else if (! arena.getAvailableClasses(ap.getTeam()).contains(this))
+				{
+					lore.add(FormatUtil.format("&cUnavailable to your team!"));
+				}
+			}
+
+			inventory.addItem(icon);
 		}
 	}
 
 	@Override
 	public void onInventoryClick(InventoryClickEvent event)
 	{
-		ArenaPlayer ap = plugin.getArenaPlayer(player);
-		if (ap != null)
+		ItemStack current = event.getCurrentItem();
+		if (current != null)
 		{
-			ItemStack current = event.getCurrentItem();
-			if (current != null)
+			ArenaClass ac = plugin.getArenaClass(current);
+			if (ac != null)
 			{
-				ArenaClass ac = plugin.getArenaClass(current);
-				if (ac != null)
+				if (! ac.checkAvailability(ap))
+					return;
+
+				if (ap.setClass(ac))
 				{
-					ap.setClass(ac);
+					String name = ac.getName();
+					String article = FormatUtil.getArticle(name);
+					String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-					if (ap.getArena().isInLobby())
-					{
-						String name = ac.getName();
-						String article = FormatUtil.getArticle(name);
-						String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
-
-						sendpMessage("&3You will {0} as {1} &e{2}", spawn, article, name);
-					}
+					sendpMessage("&3You will {0} as {1} &e{2}", spawn, article, name);
 				}
 			}
 		}

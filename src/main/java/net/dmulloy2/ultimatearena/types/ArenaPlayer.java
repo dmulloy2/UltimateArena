@@ -221,7 +221,7 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Sets the player's class.
+	 * Sets the player's class and charges them if applicable.
 	 *
 	 * @param ac {@link ArenaClass} to set the player's class to
 	 * @return True if the operation was successful, false if not
@@ -231,45 +231,40 @@ public final class ArenaPlayer
 	{
 		Validate.notNull(ac, "ac cannot be null!");
 
-		if (arena.isValidClass(ac))
+		// Charge for the class if applicable
+		if (ac.getCost() > 0.0D && plugin.isVaultEnabled())
 		{
-			// Charge for the class if applicable
-			if (ac.getCost() > 0.0D && plugin.isVaultEnabled())
+			VaultHandler handler = plugin.getVaultHandler();
+			if (handler.has(player, ac.getCost()))
 			{
-				VaultHandler handler = plugin.getVaultHandler();
-				if (handler.has(player, ac.getCost()))
+				String response = handler.withdrawPlayer(player, ac.getCost());
+				if (response.equals("Success"))
 				{
-					String response = handler.withdrawPlayer(player, ac.getCost());
-					if (response.equals("Success"))
-					{
-						String format = handler.format(ac.getCost());
-						sendMessage("&3You have purchased class &e{0} &3for &e{1}&3.", ac.getName(), format);
-					}
-					else
-					{
-						sendMessage("&cFailed to purchase class {0}: {1}", ac.getName(), response);
-						return false;
-					}
+					String format = handler.format(ac.getCost());
+					sendMessage("&3You have purchased class &e{0} &3for &e{1}&3.", ac.getName(), format);
 				}
 				else
 				{
-					sendMessage("&cFailed to purchase class {0}: Inadequate funds!", ac.getName());
+					sendMessage("&cFailed to purchase class {0}: {1}", ac.getName(), response);
 					return false;
 				}
-
-				// Add to refund list if they didn't go negative, prevents exploiting
-				if (handler.getBalance(player) >= 0.0D)
-					transactions.add(ac.getCost());
+			}
+			else
+			{
+				sendMessage("&cFailed to purchase class {0}: Inadequate funds!", ac.getName());
+				return false;
 			}
 
-			this.arenaClass = ac;
-			this.changeClassOnRespawn = true;
-
-			clearPotionEffects();
-			return true;
+			// Add to refund list if they didn't go negative, prevents exploiting
+			if (handler.getBalance(player) >= 0.0D)
+				transactions.add(ac.getCost());
 		}
 
-		return false;
+		this.arenaClass = ac;
+		this.changeClassOnRespawn = true;
+
+		clearPotionEffects();
+		return true;
 	}
 
 	/**

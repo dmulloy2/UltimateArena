@@ -20,7 +20,6 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
@@ -53,10 +52,7 @@ public class CmdForceJoin extends UltimateArenaCommand
 			return;
 		}
 
-		int team = -1;
-		if (args.length > 2)
-			team = NumberUtil.toInt(args[2]);
-
+		String team = args.length > 2 ? args[2] : null;
 		plugin.attemptJoin(player, args[0], team);
 	}
 }

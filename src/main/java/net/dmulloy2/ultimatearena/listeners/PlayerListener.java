@@ -207,11 +207,8 @@ public class PlayerListener implements Listener
 							ArenaClass ac = plugin.getArenaClass(sign.getLine(0));
 							if (ac != null)
 							{
-								if (! ac.checkPermission(player))
-								{
-									ap.sendMessage("&cYou do not have the necessary perms for this class");
+								if (! ac.checkAvailability(ap))
 									return;
-								}
 
 								if (ap.setClass(ac))
 								{
@@ -219,12 +216,9 @@ public class PlayerListener implements Listener
 									String article = FormatUtil.getArticle(name);
 									String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-									ap.sendMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
+									ap.sendMessage("&3You will {0} as {1} &e{2}", spawn, article, name);
 									return;
 								}
-
-								ap.sendMessage("&cYou cannot use this class in this arena!");
-								return;
 							}
 						}
 					}

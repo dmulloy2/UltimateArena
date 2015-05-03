@@ -20,10 +20,12 @@ package net.dmulloy2.ultimatearena.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.ChatColor;
 
 /**
+ * Represents the available Teams in an Arena.
  * @author dmulloy2
  */
 
@@ -39,11 +41,42 @@ public enum Team
 	private final ChatColor color;
 	private final String name;
 
+	/**
+	 * Gets a team by its name or id.
+	 * @param id Team name/id
+	 * @return Team, or NONE if not found
+	 */
+	public static Team get(String id)
+	{
+		return NumberUtil.isInt(id) ? getById(NumberUtil.toInt(id)) : getByName(id);
+	}
+
+	/**
+	 * Gets a team by its id.
+	 * @param id Team id
+	 * @return Team, or NONE if not found
+	 */
 	public static Team getById(int id)
 	{
 		for (Team team : values())
 		{
 			if (team.getId() == id)
+				return team;
+		}
+
+		return NONE;
+	}
+
+	/**
+	 * Gets a team by its name.
+	 * @param name Team name
+	 * @return Team, or NONE if not found
+	 */
+	public static Team getByName(String name)
+	{
+		for (Team team : values())
+		{
+			if (team.getName().equalsIgnoreCase(name))
 				return team;
 		}
 

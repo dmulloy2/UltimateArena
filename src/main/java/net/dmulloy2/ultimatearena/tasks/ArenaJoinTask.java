@@ -35,7 +35,7 @@ public class ArenaJoinTask extends BukkitRunnable
 	private final String name;
 	private final String arenaName;
 	private final UltimateArena plugin;
-	private final int team;
+	private final String team;
 
 	@Override
 	public void run()
