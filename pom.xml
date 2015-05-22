@@ -13,8 +13,8 @@
 
   <repositories>
     <repository>
-      <id>shadowvolt-repo</id>
-      <url>http://ci.shadowvolt.com/plugin/repository/everything/</url>
+      <id>dmulloy2-repo</id>
+      <url>http://repo.dmulloy2.net/content/groups/public/</url>
     </repository>
     <repository>
       <id>sk89q-repo</id>
@@ -29,6 +29,17 @@
       <url>http://nexus.theyeticave.net/content/groups/public/</url>
     </repository>
   </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>dmulloy2-repo</id>
+      <url>http://repo.dmulloy2.net/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>dmulloy2-repo</id>
+      <url>http://repo.dmulloy2.net/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
   <profiles>
     <profile>

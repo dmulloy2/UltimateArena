@@ -52,7 +52,7 @@ public final class ArenaSign implements ConfigurationSerializable
 	 *
 	 * @param plugin {@link UltimateArena} plugin instance
 	 * @param loc {@link Location} of the spawn
-	 * @param zone {@link ArenaZone} that the sign is for
+	 * @param az {@link ArenaZone} that the sign is for
 	 * @param id The sign's ID
 	 */
 	public ArenaSign(UltimateArena plugin, Location loc, ArenaZone az, int id)

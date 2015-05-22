@@ -395,7 +395,7 @@ public abstract class Arena implements Reloadable
 	 * Every player who has joined this arena will have an ArenaPlayer instance.
 	 * It is important to note, however, that players who are out will still
 	 * have arena player instances until the arena concludes. Use
-	 * {@link ArenaPlayer#isOut()} to check if they're still in the arena.
+	 * {@code player.isOut()} to make sure they're still in the arena.
 	 *
 	 * @param player Player
 	 * @param checkInactive Whether or not to check the inactive list as well
@@ -516,7 +516,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Alias for {@link #spawn(Player, Boolean)}.
+	 * Alias for {@link #spawn(Player, boolean)}.
 	 * <p>
 	 * Has the same effect of <code>spawn(player, false)</code>
 	 *
@@ -1234,7 +1234,7 @@ public abstract class Arena implements Reloadable
 	 *
 	 * @param player Player to get the leaderboard for
 	 * @return Leaderboard
-	 * @see {@link #getLeaderboard()}
+	 * @see #getLeaderboard()
 	 */
 	public List<String> getLeaderboard(Player player)
 	{

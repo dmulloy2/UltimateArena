@@ -52,8 +52,8 @@ import org.bukkit.potion.PotionEffect;
  * <p>
  * Every player who has joined this arena will have an ArenaPlayer instance. It
  * is important to note, however, that players who are out will still have arena
- * player instances until the arena concludes. Use {@link ArenaPlayer#isOut()}
- * to make sure the player is actually in the arena.
+ * player instances until the arena concludes. Use {@code player.isOut()} to
+ * make sure the player is still in the arena.
  *
  * @author dmulloy2
  */

@@ -253,7 +253,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	/**
 	 * Checks if a location is inside this arena.
 	 *
-	 * @param loc {@link Location} to check
+	 * @param location {@link Location} to check
 	 * @return True if the location is inside the arena, false if not
 	 */
 	public boolean isInside(Location location)

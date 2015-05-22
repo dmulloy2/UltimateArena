@@ -83,7 +83,6 @@ public abstract class ArenaCreator
 	 * <p>
 	 * This <b>must</b> be overriden when custom ArenaZones are being used.
 	 *
-	 * @param plugin UltimateArena plugin instance
 	 * @return The ArenaZone
 	 */
 	protected ArenaZone createArenaZone()

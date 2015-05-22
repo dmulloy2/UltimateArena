@@ -81,9 +81,8 @@ public abstract class ArenaType
 	 * Gets the {@link ArenaZone} associated with this ArenaType. Will return a
 	 * default ArenaZone if this method is not overriden.
 	 *
-	 * @param plugin UltimateArena instance
 	 * @param file Data file
-	 * @reutrn The ArenaZone
+	 * @return The ArenaZone
 	 */
 	public ArenaZone getArenaZone(File file)
 	{
@@ -320,7 +319,7 @@ public abstract class ArenaType
 	/**
 	 * Gets an embedded resource in this arena type's jar file.
 	 *
-	 * @param filename Filename of the resource
+	 * @param fileName Name of the resource
 	 * @return File, or null if it cannot be found
 	 */
 	protected final InputStream getResource(String fileName)
