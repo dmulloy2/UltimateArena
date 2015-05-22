@@ -516,7 +516,7 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Alias for {@link #spawn(Player, boolean)}.
+	 * Alias for {@link #spawn(ArenaPlayer, boolean)}.
 	 * <p>
 	 * Has the same effect of <code>spawn(player, false)</code>
 	 *
