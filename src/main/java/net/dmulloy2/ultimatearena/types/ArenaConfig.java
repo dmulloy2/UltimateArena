@@ -33,7 +33,6 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.dmulloy2.types.ItemParser;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ItemUtil;
@@ -172,13 +171,11 @@ public class ArenaConfig extends Configuration
 			this.giveRewards = getBoolean(values, "giveRewards", def.isGiveRewards());
 			this.rewardBasedOnXp = getBoolean(values, "rewardBasedOnXp", def.isRewardBasedOnXp());
 
-			ItemParser parser = new ItemParser(plugin);
-
 			if (giveRewards)
 			{
 				if (isSet(values, "rewards"))
 				{
-					this.rewards = parser.parse(getStringList(values, "rewards"));
+					this.rewards = ItemUtil.readItems(getStringList(values, "rewards"), plugin);
 				}
 				else
 				{
@@ -262,7 +259,7 @@ public class ArenaConfig extends Configuration
 						else
 						{
 							String item = FormatUtil.join(",", Arrays.copyOfRange(split, 2, split.length));
-							ItemStack stack = parser.parse(item);
+							ItemStack stack = ItemUtil.readItem(item, plugin);
 							if (stack != null)
 								streaks.add(new KillStreak(kills, message, stack));
 						}

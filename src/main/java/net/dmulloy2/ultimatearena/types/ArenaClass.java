@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import lombok.Getter;
 import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.EnchantmentType;
-import net.dmulloy2.types.ItemParser;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -175,9 +174,6 @@ public final class ArenaClass extends Configuration
 				}
 			}
 
-			// Item Parser
-			ItemParser parser = new ItemParser(plugin);
-
 			if (isSet(values, "tools"))
 			{
 				int nextSlot = 0;
@@ -186,7 +182,7 @@ public final class ArenaClass extends Configuration
 					int slot = NumberUtil.toInt(entry.getKey());
 					String value = entry.getValue().toString();
 
-					ItemStack stack = parser.parse(value);
+					ItemStack stack = ItemUtil.readItem(value, plugin);
 					if (stack != null)
 						tools.put(slot == -1 ? nextSlot : slot - 1, stack);
 
@@ -237,7 +233,7 @@ public final class ArenaClass extends Configuration
 
 			if (isSet(values, "icon"))
 			{
-				icon = parser.parse(getString(values, "icon", ""));
+				icon = ItemUtil.readItem(getString(values, "icon", ""), plugin);
 			}
 
 			if (icon == null)
