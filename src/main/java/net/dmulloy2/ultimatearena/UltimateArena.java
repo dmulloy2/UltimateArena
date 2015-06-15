@@ -137,8 +137,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	private @Getter boolean stopping;
 
-	// Global prefix
-	private final @Getter String prefix = FormatUtil.format("&6[&4&lUA&6] ");
+	private String prefix;
 
 	@Override
 	public void onLoad()
@@ -339,9 +338,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		loadSigns();
 	}
 
-	/**
-	 * Basic reload method.
-	 */
+	@Override
+	public String getPrefix()
+	{
+		if (prefix == null)
+			prefix = FormatUtil.format(getConfig().getString("prefix", "&6[&4&lUA&6] "));
+		return prefix;
+	}
+
 	@Override
 	public void reload()
 	{
