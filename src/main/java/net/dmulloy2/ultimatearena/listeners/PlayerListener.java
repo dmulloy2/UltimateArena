@@ -150,7 +150,9 @@ public class PlayerListener implements Listener
 				if (block.getState() instanceof Sign)
 				{
 					Sign sign = (Sign) block.getState();
-					if (sign.getLine(0).equalsIgnoreCase("[UltimateArena]"))
+					String line1 = sign.getLine(0);
+
+					if (line1.equalsIgnoreCase("[UltimateArena]"))
 					{
 						ArenaPlayer ap = plugin.getArenaPlayer(player);
 						if (ap != null)
@@ -199,12 +201,22 @@ public class PlayerListener implements Listener
 							}
 						}
 					}
+					else if (line1.equalsIgnoreCase("[Arena Status]"))
+					{
+						// Don't do anything
+						return;
+					}
+					else if (line1.equalsIgnoreCase("[Last Game]"))
+					{
+						// Don't do anything
+						return;
+					}
 					else
 					{
 						ArenaPlayer ap = plugin.getArenaPlayer(player);
 						if (ap != null)
 						{
-							ArenaClass ac = plugin.getArenaClass(sign.getLine(0));
+							ArenaClass ac = plugin.getArenaClass(line1);
 							if (ac != null)
 							{
 								if (! ac.checkAvailability(ap))

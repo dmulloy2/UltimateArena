@@ -95,6 +95,9 @@ public abstract class Arena implements Reloadable
 	protected List<ArenaSpectator> spectators;
 	protected String lastJoin;
 
+	protected List<String> finalLeaderboard;
+	protected int leaderboardIndex;
+
 	protected List<ArenaFlag> flags;
 	protected List<ArenaLocation> spawns;
 
@@ -825,7 +828,9 @@ public abstract class Arena implements Reloadable
 
 		plugin.removeActiveArena(this);
 		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
-		updateSigns();
+
+		plugin.getSignHandler().onArenaCompletion(this);
+		plugin.getSignHandler().updateSigns(az);
 	}
 
 	/**
@@ -864,6 +869,10 @@ public abstract class Arena implements Reloadable
 		active.remove(ap);
 		if (! disconnected)
 			inactive.add(ap);
+
+		// Add them to the final leaderboard
+		finalLeaderboard.set(leaderboardIndex, ap.getName());
+		leaderboardIndex--;
 
 		if (active.size() > 1)
 			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
@@ -968,6 +977,12 @@ public abstract class Arena implements Reloadable
 			this.gameMode = Mode.INGAME;
 
 			this.startingAmount = active.size();
+
+			this.finalLeaderboard = new ArrayList<>(startingAmount);
+			for (int i = 0; i < startingAmount; i++)
+				finalLeaderboard.add("");
+
+			this.leaderboardIndex = startingAmount - 1;
 
 			this.gameTimer = maxGameTime;
 			this.startTimer = -1;

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.dmulloy2.ultimatearena.handlers;
+package net.dmulloy2.ultimatearena.signs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +28,8 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.types.ArenaSign;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.signs.ArenaSign.SignType;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.Util;
 
@@ -46,7 +47,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class SignHandler
 {
-	private static final int CURRENT_VERSION = 1;
+	private static final int CURRENT_VERSION = 2;
 
 	private File file;
 	private FileConfiguration signsSave;
@@ -82,20 +83,60 @@ public class SignHandler
 			}
 
 			Map<String, Object> values = signsSave.getValues(false);
-			for (Entry<String, Object> value : values.entrySet())
+			if (values.containsKey("version"))
 			{
-				if (value.getKey().equals("version"))
+				int version = (int) values.get("version");
+				if (version == 1)
 				{
-					// Normally, we would do some sort of conversion here, but
-					// signs were broken beyond repair before this.
-					continue;
-				}
+					// Convert to modular sign format
+					signsSave.set("version", CURRENT_VERSION);
 
-				MemorySection mem = (MemorySection) value.getValue();
-				ArenaSign sign = new ArenaSign(plugin, mem.getValues(true));
-				if (sign != null)
+					for (Entry<String, Object> entry : values.entrySet())
+					{
+						if (entry.getKey().equals("version"))
+							continue;
+
+						MemorySection mem = (MemorySection) entry.getValue();
+						mem.set("type", "JOIN");
+					}
+				}
+			}
+
+			values = signsSave.getValues(false);
+			for (Entry<String, Object> entry : values.entrySet())
+			{
+				if (entry.getKey().equals("version"))
+					continue;
+
+				String id = entry.getKey();
+
+				try
 				{
-					signs.add(sign);
+					MemorySection section = (MemorySection) entry.getValue();
+					SignType type = SignType.valueOf(section.getString("type", "JOIN"));
+
+					ArenaSign sign = null;
+					switch (type)
+					{
+						case JOIN:
+							sign = new JoinSign(plugin, section);
+							break;
+						case LAST_GAME:
+							sign = new LastGameSign(plugin, section);
+							break;
+						case STATUS:
+							sign = new StatusSign(plugin, section);
+							break;
+						default:
+							throw new IllegalArgumentException("Unknown sign type: " + section.getString("type"));
+					}
+
+					if (sign != null)
+						signs.add(sign);
+				}
+				catch (Throwable ex)
+				{
+					plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "loading sign {0}", id));
 				}
 			}
 
@@ -122,13 +163,14 @@ public class SignHandler
 			if (! createNewSave(true))
 				return;
 
+			signsSave.set("version", CURRENT_VERSION);
+
 			for (ArenaSign sign : getSigns())
 			{
 				Map<String, Object> values = sign.serialize();
 				signsSave.set("" + sign.getId(), values);
 			}
 
-			signsSave.set("version", CURRENT_VERSION);
 			signsSave.save(file);
 		}
 		catch (Throwable ex)
@@ -232,6 +274,14 @@ public class SignHandler
 		for (ArenaSign sign : getSigns(az))
 		{
 			sign.update();
+		}
+	}
+
+	public final void onArenaCompletion(Arena arena)
+	{
+		for (ArenaSign sign : getSigns(arena.getAz()))
+		{
+			sign.onArenaCompletion(arena);
 		}
 	}
 

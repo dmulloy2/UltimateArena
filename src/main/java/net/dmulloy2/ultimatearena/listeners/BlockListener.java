@@ -21,8 +21,11 @@ package net.dmulloy2.ultimatearena.listeners;
 import lombok.AllArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.signs.ArenaSign;
+import net.dmulloy2.ultimatearena.signs.JoinSign;
+import net.dmulloy2.ultimatearena.signs.LastGameSign;
+import net.dmulloy2.ultimatearena.signs.StatusSign;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
@@ -105,7 +108,8 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onSignChange(SignChangeEvent event)
 	{
-		if (event.getLine(0).equalsIgnoreCase("[UltimateArena]"))
+		String line1 = event.getLine(0);
+		if (line1.equalsIgnoreCase("[UltimateArena]"))
 		{
 			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
 			{
@@ -119,7 +123,7 @@ public class BlockListener implements Listener
 					{
 						int id = plugin.getSignHandler().getFreeId(1);
 
-						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
+						ArenaSign sign = new JoinSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);
 
 						event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
@@ -144,7 +148,7 @@ public class BlockListener implements Listener
 					{
 						int id = plugin.getSignHandler().getFreeId(1);
 
-						ArenaSign sign = new ArenaSign(plugin, event.getBlock().getLocation(), az, id);
+						ArenaSign sign = new JoinSign(plugin, event.getBlock().getLocation(), az, id);
 						plugin.getSignHandler().addSign(sign);
 
 						event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Join Sign!"));
@@ -166,6 +170,66 @@ public class BlockListener implements Listener
 				event.setLine(3, "");
 			}
 		}
+		else if (line1.equalsIgnoreCase("[Arena Status]"))
+		{
+			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
+			{
+				ArenaZone az = plugin.getArenaZone(event.getLine(1));
+				if (az != null)
+				{
+					int id = plugin.getSignHandler().getFreeId(1);
+
+					ArenaSign sign = new StatusSign(plugin, event.getBlock().getLocation(), az, id);
+					plugin.getSignHandler().addSign(sign);
+
+					event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Status Sign!"));
+				}
+				else
+				{
+					event.setLine(0, FormatUtil.format("[UltimateArena]"));
+					event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+					event.setLine(2, "");
+					event.setLine(3, "");
+				}
+			}
+			else
+			{
+				event.setLine(0, FormatUtil.format("[UltimateArena]"));
+				event.setLine(1, FormatUtil.format("&4No permission"));
+				event.setLine(2, "");
+				event.setLine(3, "");
+			}
+		}
+		else if (line1.equalsIgnoreCase("[Last Game]"))
+		{
+			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
+			{
+				ArenaZone az = plugin.getArenaZone(event.getLine(1));
+				if (az != null)
+				{
+					int id = plugin.getSignHandler().getFreeId(1);
+
+					ArenaSign sign = new LastGameSign(plugin, event.getBlock().getLocation(), az, id);
+					plugin.getSignHandler().addSign(sign);
+
+					event.getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format("&aCreated new Leaderboard Sign!"));
+				}
+				else
+				{
+					event.setLine(0, FormatUtil.format("[UltimateArena]"));
+					event.setLine(1, FormatUtil.format("&4Invalid Arena"));
+					event.setLine(2, "");
+					event.setLine(3, "");
+				}
+			}
+			else
+			{
+				event.setLine(0, FormatUtil.format("[UltimateArena]"));
+				event.setLine(1, FormatUtil.format("&4No permission"));
+				event.setLine(2, "");
+				event.setLine(3, "");
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -176,7 +240,10 @@ public class BlockListener implements Listener
 		if (block.getState() instanceof Sign)
 		{
 			Sign s = (Sign) block.getState();
-			if (s.getLine(0).equalsIgnoreCase("[UltimateArena]"))
+			String line1 = s.getLine(0);
+
+			if (line1.equalsIgnoreCase("[UltimateArena]") || line1.equalsIgnoreCase("[Arena Status]")
+					|| line1.startsWith("[Last "))
 			{
 				ArenaSign sign = plugin.getSignHandler().getSign(block.getLocation());
 				if (sign != null)
@@ -184,7 +251,7 @@ public class BlockListener implements Listener
 					if (plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 					{
 						plugin.getSignHandler().deleteSign(sign);
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cDeleted Join sign!"));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cSuccessfully removed arena sign!"));
 					}
 					else
 					{

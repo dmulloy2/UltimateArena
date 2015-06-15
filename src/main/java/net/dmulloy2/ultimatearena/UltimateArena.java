@@ -69,7 +69,6 @@ import net.dmulloy2.ultimatearena.commands.CmdTeleport;
 import net.dmulloy2.ultimatearena.commands.CmdUndo;
 import net.dmulloy2.ultimatearena.commands.CmdVersion;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
-import net.dmulloy2.ultimatearena.handlers.SignHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.integration.EssentialsHandler;
 import net.dmulloy2.ultimatearena.integration.ProtocolHandler;
@@ -78,12 +77,13 @@ import net.dmulloy2.ultimatearena.integration.WorldEditHandler;
 import net.dmulloy2.ultimatearena.listeners.BlockListener;
 import net.dmulloy2.ultimatearena.listeners.EntityListener;
 import net.dmulloy2.ultimatearena.listeners.PlayerListener;
+import net.dmulloy2.ultimatearena.signs.ArenaSign;
+import net.dmulloy2.ultimatearena.signs.SignHandler;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSign;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
@@ -136,8 +136,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private List<Arena> activeArenas = new ArrayList<>();
 
 	private @Getter boolean stopping;
-
-	private String prefix;
 
 	@Override
 	public void onLoad()
@@ -338,11 +336,19 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		loadSigns();
 	}
 
+	private boolean prefixObtained;
+	private String prefix = FormatUtil.format("&6[&4&lUA&6]&3 ");
+
 	@Override
 	public String getPrefix()
 	{
-		if (prefix == null)
-			prefix = FormatUtil.format(getConfig().getString("prefix", "&6[&4&lUA&6] "));
+		if (! prefixObtained)
+		{
+			prefixObtained = true;
+			if (getConfig().isSet("prefix"))
+				return prefix = FormatUtil.format(getConfig().getString("prefix"));
+		}
+
 		return prefix;
 	}
 
