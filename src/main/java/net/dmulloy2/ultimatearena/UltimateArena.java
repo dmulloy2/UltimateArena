@@ -285,7 +285,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 	}
 
-	private final void setupIntegration()
+	private void setupIntegration()
 	{
 		try
 		{
@@ -329,7 +329,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// Loading
-	private final void loadFiles()
+	private void loadFiles()
 	{
 		loadClasses();
 		loadArenas();
@@ -361,13 +361,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		arenaTypeHandler.reload();
 
 		// Reload ArenaZones
-		for (ArenaZone az : loadedArenas.toArray(new ArenaZone[0]))
+		for (ArenaZone az : loadedArenas.toArray(new ArenaZone[loadedArenas.size()]))
 		{
 			az.reload();
 		}
 
 		// Reload active arenas
-		for (Arena arena : activeArenas.toArray(new Arena[0]))
+		for (Arena arena : activeArenas.toArray(new Arena[activeArenas.size()]))
 		{
 			arena.reload();
 		}
@@ -376,7 +376,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		loadArenas();
 
 		// Reload classes
-		for (ArenaClass ac : classes.toArray(new ArenaClass[0]))
+		for (ArenaClass ac : classes.toArray(new ArenaClass[classes.size()]))
 		{
 			ac.reload();
 		}
@@ -385,7 +385,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		loadClasses();
 	}
 
-	private final void checkFiles()
+	private void checkFiles()
 	{
 		File dataFolder = getDataFolder();
 		if (! dataFolder.exists())
@@ -406,10 +406,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		File configsFile = new File(dataFolder, "configs");
-		if (configsFile.exists())
+		if (! configsFile.exists())
 		{
-			if (configsFile.listFiles().length == 0)
-				configsFile.mkdir();
+			configsFile.mkdir();
 		}
 
 		File typesFile = new File(dataFolder, "types");
@@ -426,7 +425,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	}
 
 	// Load Stuff
-	private final void loadArenas()
+	private void loadArenas()
 	{
 		File folder = new File(getDataFolder(), "arenas");
 		File[] children = folder.listFiles(new FileFilter()
@@ -438,6 +437,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			}
 		});
 
+		if (children == null || children.length == 0)
+			return;
+
 		for (File file : children)
 		{
 			loadArena(file);
@@ -446,7 +448,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		logHandler.log("Loaded {0} arenas.", loadedArenas.size());
 	}
 
-	private final void loadArena(File file)
+	private void loadArena(File file)
 	{
 		try
 		{
@@ -535,7 +537,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			"archer", "brute", "dumbass", "gunner", "healer", "shotgun", "sniper", "spleef"
 	);
 
-	private final void generateStockClasses()
+	private void generateStockClasses()
 	{
 		for (String stockClass : STOCK_CLASSES)
 		{
@@ -543,10 +545,10 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 	}
 
-	private final void loadSigns()
+	private void loadSigns()
 	{
 		signHandler = new SignHandler(this);
-		log("Loaded {0} signs.", signHandler.getSigns().length);
+		log("Loaded {0} signs.", signHandler.getSignCount());
 	}
 
 	/**
@@ -1167,7 +1169,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 *
 	 * @param command Command to check
 	 * @return True if the command is whitelisted, false if not
-	 * @throws IllegalException if command is null
+	 * @throws IllegalArgumentException if command is null
 	 */
 	public final boolean isWhitelistedCommand(String command)
 	{

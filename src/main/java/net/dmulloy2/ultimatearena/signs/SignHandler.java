@@ -321,7 +321,12 @@ public class SignHandler
 	 */
 	public final ArenaSign[] getSigns()
 	{
-		return signs.toArray(new ArenaSign[0]);
+		return signs.toArray(new ArenaSign[signs.size()]);
+	}
+
+	public final int getSignCount()
+	{
+		return signs.size();
 	}
 
 	// ---- ID Related Stuff

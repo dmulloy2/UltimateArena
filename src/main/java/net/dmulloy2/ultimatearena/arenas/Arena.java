@@ -1343,8 +1343,6 @@ public abstract class Arena implements Reloadable
 		return true;
 	}
 
-	private static final ArenaPlayer[] EMPTY_ARRAY = new ArenaPlayer[0];
-
 	/**
 	 * Workaround for concurrency issues.
 	 *
@@ -1352,7 +1350,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final ArenaPlayer[] getActivePlayers()
 	{
-		return active.toArray(EMPTY_ARRAY);
+		return active.toArray(new ArenaPlayer[active.size()]);
 	}
 
 	/**
@@ -1362,7 +1360,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final ArenaPlayer[] getInactivePlayers()
 	{
-		return inactive.toArray(EMPTY_ARRAY);
+		return inactive.toArray(new ArenaPlayer[inactive.size()]);
 	}
 
 	/**
@@ -1430,7 +1428,7 @@ public abstract class Arena implements Reloadable
 
 	public final ArenaFlag[] getFlags()
 	{
-		return flags.toArray(new ArenaFlag[0]);
+		return flags.toArray(new ArenaFlag[flags.size()]);
 	}
 
 	// ---- Generic Methods
