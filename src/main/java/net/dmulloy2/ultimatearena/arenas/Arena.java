@@ -870,9 +870,12 @@ public abstract class Arena implements Reloadable
 		if (! disconnected)
 			inactive.add(ap);
 
-		// Add them to the final leaderboard
-		finalLeaderboard.set(leaderboardIndex, ap.getName());
-		leaderboardIndex--;
+		// Add them to the final leaderboard if applicable
+		if (finalLeaderboard != null)
+		{
+			finalLeaderboard.set(leaderboardIndex, ap.getName());
+			leaderboardIndex--;
+		}
 
 		if (active.size() > 1)
 			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
