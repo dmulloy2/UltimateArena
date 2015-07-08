@@ -226,7 +226,7 @@ public class SignHandler
 	{
 		for (ArenaSign sign : getSigns())
 		{
-			if (Util.checkLocation(sign.getLoc().getLocation(), loc))
+			if (Util.coordsEqual(sign.getLoc().getLocation(), loc))
 				return sign;
 		}
 

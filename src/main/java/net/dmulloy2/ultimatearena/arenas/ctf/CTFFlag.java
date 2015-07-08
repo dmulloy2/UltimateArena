@@ -261,7 +261,7 @@ public class CTFFlag
 		Block last = lastloc.getBlock();
 		Block current = myloc.getBlock();
 
-		if (! Util.checkLocation(lastloc, myloc))
+		if (! Util.coordsEqual(lastloc, myloc))
 		{
 			last.setType(lastBlockType);
 			last.getState().setData(lastBlockDat);
