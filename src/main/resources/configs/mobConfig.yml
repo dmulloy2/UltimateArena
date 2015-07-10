@@ -14,3 +14,22 @@ scaledRewards:
   - "SLIME_BALL, 550"
   - "GLOWSTONE_DUST, 450"
   - "SULPHUR, 425"
+waves:
+  1:
+    - "ZOMBIE"
+    - "ZOMBIE"
+    - "ZOMBIE"
+  2:
+    - "ZOMBIE"
+    - "ZOMBIE"
+    - "SKELETON"
+  4:
+    - "SPIDER"
+  7:
+    - "BLAZE"
+    - "BLAZE"
+  10:
+    - "PIG_ZOMBIE"
+    - "ENDERMAN"
+  13:
+    - "GHAST"

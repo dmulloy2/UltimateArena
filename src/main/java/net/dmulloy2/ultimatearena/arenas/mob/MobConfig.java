@@ -18,11 +18,16 @@
  */
 package net.dmulloy2.ultimatearena.arenas.mob;
 
+import static net.dmulloy2.util.ListUtil.toList;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -30,8 +35,10 @@ import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.util.ItemUtil;
+import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -44,6 +51,7 @@ import org.bukkit.inventory.ItemStack;
 public class MobConfig extends ArenaConfig
 {
 	private int maxWave;
+	private Map<Integer, List<String>> waves;
 
 	public MobConfig(UltimateArena plugin, String type, File file)
 	{
@@ -60,12 +68,65 @@ public class MobConfig extends ArenaConfig
 	{
 		this.countMobKills = true;
 		this.maxWave = 15;
+		this.waves = defaultWaves();
+	}
+
+	private Map<Integer, List<String>> defaultWaves()
+	{
+		Map<Integer, List<String>> ret = new LinkedHashMap<>();
+		ret.put(1, toList("ZOMBIE", "ZOMBIE", "ZOMBIE"));
+		ret.put(2, toList("ZOMBIE", "ZOMBIE", "SKELETON"));
+		ret.put(4, toList("SPIDER"));
+		ret.put(7, toList("BLAZE", "BLAZE"));
+		ret.put(10, toList("PIG_ZOMBIE", "ENDERMAN"));
+		ret.put(13, toList("GHAST"));
+		return ret;
 	}
 
 	@Override
 	public void loadCustomOptions(YamlConfiguration fc, ArenaConfig def)
 	{
 		this.maxWave = fc.getInt("maxWave", ((MobConfig) def).getMaxWave());
+
+		if (fc.isSet("waves"))
+		{
+			this.waves = new LinkedHashMap<>();
+
+			ConfigurationSection section = fc.getConfigurationSection("waves");
+			Set<String> keys = section.getKeys(false);
+			for (String wave : keys)
+			{
+				int waveNumber = NumberUtil.toInt(wave);
+				if (waveNumber == -1)
+				{
+					plugin.getLogHandler().log(Level.WARNING, "Invalid wave number: {0}", wave);
+					continue;
+				}
+
+				// Validate the mobs list
+				List<String> mobs = new ArrayList<>();
+				for (String mob : section.getStringList(wave))
+				{
+					mob = mob.toUpperCase().replace(" ", "_");
+
+					try
+					{
+						EntityType.valueOf(mob);
+						mobs.add(mob);
+					}
+					catch (IllegalArgumentException ex)
+					{
+						plugin.getLogHandler().log(Level.WARNING, "Invalid entity type: {0}", mob);
+					}
+				}
+
+				waves.put(waveNumber, mobs);
+			}
+		}
+		else
+		{
+			this.waves = ((MobConfig) def).getWaves();
+		}
 	}
 
 	@Override

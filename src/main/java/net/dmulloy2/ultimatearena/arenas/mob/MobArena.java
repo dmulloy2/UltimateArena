@@ -21,6 +21,7 @@ package net.dmulloy2.ultimatearena.arenas.mob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
@@ -48,9 +49,11 @@ public class MobArena extends Arena
 	private int mobTimer, mobSpawn, mobPerWave;
 	private int maxWave, wave;
 
+	private Map<Integer, List<String>> waves;
+
 	private List<LivingEntity> mobs;
 	private List<String> spawning;
-
+	
 	public MobArena(ArenaZone az)
 	{
 		super(az);
@@ -77,34 +80,15 @@ public class MobArena extends Arena
 		this.mobPerWave = 4 + ((int) (wave * 1.5)) + (active.size() * 3);
 		this.mobTimer = (wave * 4) + 20;
 
-		// TODO: Make entities spawned configurable
 		if (wave <= 1)
 		{
 			mobTimer = 1;
 		}
-		if (wave > 1)
+
+		for (int wave : waves.keySet())
 		{
-			spawning.add("ZOMBIE");
-			spawning.add("ZOMBIE");
-			spawning.add("SKELETON");
-		}
-		if (wave > 3)
-		{
-			spawning.add("SPIDER");
-		}
-		if (wave > 6)
-		{
-			spawning.add("BLAZE");
-			spawning.add("BLAZE");
-		}
-		if (wave > 9)
-		{
-			spawning.add("PIG_ZOMBIE");
-			spawning.add("ENDERMAN");
-		}
-		if (wave > 12)
-		{
-			spawning.add("GHAST");
+			if (this.wave >= wave)
+				spawning.addAll(waves.get(wave));
 		}
 	}
 
@@ -315,6 +299,7 @@ public class MobArena extends Arena
 	{
 		this.countMobKills = true;
 		this.maxWave = getConfig().getMaxWave();
+		this.waves = getConfig().getWaves();
 	}
 
 	@Override

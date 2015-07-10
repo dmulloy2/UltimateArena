@@ -88,6 +88,8 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <minimizeJar>true</minimizeJar>
               <artifactSet>
                 <includes>
                   <include>net.dmulloy2:swornapi*</include>
@@ -173,7 +175,7 @@
     <dependency>
       <groupId>com.comphenix.protocol</groupId>
       <artifactId>ProtocolLib</artifactId>
-      <version>3.6.3-SNAPSHOT</version>
+      <version>3.6.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
