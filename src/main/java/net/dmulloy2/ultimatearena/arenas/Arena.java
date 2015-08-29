@@ -57,6 +57,7 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -1366,14 +1367,6 @@ public abstract class Arena implements Reloadable
 		return inactive.toArray(new ArenaPlayer[inactive.size()]);
 	}
 
-	/**
-	 * @return the amount of players currently in the arena
-	 */
-	public final int getPlayerCount()
-	{
-		return active.size();
-	}
-
 	private final void updateTeams()
 	{
 		this.redTeamSize = 0;
@@ -1419,6 +1412,54 @@ public abstract class Arena implements Reloadable
 		return null;
 	}
 
+	public final ArenaFlag[] getFlags()
+	{
+		return flags.toArray(new ArenaFlag[flags.size()]);
+	}
+
+	// ---- Public API
+
+	/**
+	 * Gets the number of Players currently in this Arena.
+	 * 
+	 * @return Number of Players.
+	 */
+	public final int getPlayerCount()
+	{
+		return active.size();
+	}
+
+	/**
+	 * Gets the maximum number of Players permitted by this Arena.
+	 * 
+	 * @return Max number of Players.
+	 */
+	public final int getMaxPlayers()
+	{
+		return maxPlayers;
+	}
+
+	/**
+	 * Gets this Arena's {@link ArenaType}.
+	 * 
+	 * @return This Arena's type.
+	 */
+	public final ArenaType getType()
+	{
+		return type;
+	}
+
+	/**
+	 * Gets this Arena's type name. Equivalent to
+	 * <code>getType().getStylizedName()</code>
+	 * 
+	 * @return This Arena's type name.
+	 */
+	public final String getTypeName()
+	{
+		return type.getStylizedName();
+	}
+
 	/**
 	 * Whether or not this arena is active.
 	 *
@@ -1429,16 +1470,34 @@ public abstract class Arena implements Reloadable
 		return ! stopped;
 	}
 
-	public final ArenaFlag[] getFlags()
+	/**
+	 * Gets this Arena's status. Timer is included if this Arena is ingame or in
+	 * the lobby.
+	 * 
+	 * @return This Arena's status.
+	 */
+	public final String getStatus()
 	{
-		return flags.toArray(new ArenaFlag[flags.size()]);
+		switch (gameMode)
+		{
+			case DISABLED:
+				return ChatColor.RED + "Disabled";
+			case IDLE:
+				return ChatColor.YELLOW + "Idle";
+			case INGAME:
+				return ChatColor.GREEN + "In Game - " + gameTimer;
+			case LOBBY:
+				return ChatColor.GREEN + "Lobby - " + startTimer;
+			case STOPPING:
+				return ChatColor.YELLOW + "Stopping";
+			default:
+				// This really shouldn't happen, but just in case
+				return ChatColor.YELLOW + FormatUtil.getFriendlyName(gameMode);
+		}
 	}
 
 	// ---- Generic Methods
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -1451,9 +1510,6 @@ public abstract class Arena implements Reloadable
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
@@ -1462,9 +1518,6 @@ public abstract class Arena implements Reloadable
 		return hash;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

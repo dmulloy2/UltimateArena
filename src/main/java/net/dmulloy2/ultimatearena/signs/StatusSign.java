@@ -52,7 +52,7 @@ public class StatusSign extends ArenaSign
 					line3.append(ChatColor.YELLOW + "Idle");
 					break;
 				case INGAME:
-					line3.append(ChatColor.GREEN + "In Game - ").append(ar.getGameMode());
+					line3.append(ChatColor.GREEN + "In Game - ").append(ar.getGameTimer());
 					break;
 				case LOBBY:
 					line3.append(ChatColor.GREEN + "Lobby - ").append(ar.getStartTimer());

@@ -139,10 +139,22 @@ public class UltimateArenaAPI
 	 * Gets an {@link Arena} by name.
 	 *
 	 * @param name Name of the Arena
+	 * @return The Arena, or null if not found.
 	 */
 	public final Arena getArena(String name)
 	{
 		return ultimateArena.getArena(name);
+	}
+
+	/**
+	 * Gets the {@link Arena} a Player is in.
+	 * 
+	 * @param player Player to get arena for
+	 * @return The Arena, or null if not found.
+	 */
+	public final Arena getArena(Player player)
+	{
+		return ultimateArena.getArena(player);
 	}
 
 	/**

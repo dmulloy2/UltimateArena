@@ -685,10 +685,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 * Gets the Arena that a Player is in.
 	 * 
 	 * @param player Player
-	 * @return The arena or null if not found
-	 * @deprecated Use ArenaPlayers instead
+	 * @return The Arena, or null if not found.
 	 */
-	@Deprecated
 	public final Arena getArena(Player player)
 	{
 		ArenaPlayer ap = getArenaPlayer(player);
