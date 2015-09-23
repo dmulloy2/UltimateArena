@@ -18,6 +18,8 @@
  */
 package net.dmulloy2.ultimatearena.arenas.ffa;
 
+import java.util.List;
+
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -97,5 +99,19 @@ public class FFAArena extends Arena
 	protected String decideColor(ArenaPlayer ap)
 	{
 		return "&d";
+	}
+
+	@Override
+	public void onStop()
+	{
+		if (active.size() > 1)
+		{
+			// Reward the leader if we run out of time
+			List<ArenaPlayer> lb = getLeaderboard();
+			if (! lb.isEmpty())
+				this.winner = lb.get(0);
+
+			reward(winner);
+		}
 	}
 }

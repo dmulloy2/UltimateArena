@@ -412,7 +412,6 @@ public final class ArenaPlayer
 		this.deaths++;
 
 		arena.onPlayerDeath(this);
-		board.update();
 
 		if (plugin.getConfig().getBoolean("forceRespawn", false) && plugin.isProtocolEnabled())
 			plugin.getProtocolHandler().forceRespawn(player);
