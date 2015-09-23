@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import lombok.Getter;
+import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
@@ -199,5 +200,11 @@ public class KOTHArena extends Arena
 	public KOTHConfig getConfig()
 	{
 		return (KOTHConfig) super.getConfig();
+	}
+
+	@Override
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	{
+		board.addEntry("Points", player.getDataInt("kothPoints"));
 	}
 }

@@ -21,6 +21,7 @@ package net.dmulloy2.ultimatearena.arenas.conquest;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
@@ -129,6 +130,13 @@ public class ConquestArena extends Arena
 		ret.add("&3Red Team Power: &e" + redTeamPower);
 		ret.add("&3Blue Team Power: &e" + blueTeamPower);
 		return ret;
+	}
+
+	@Override
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	{
+		board.addEntry("Red Power", redTeamPower);
+		board.addEntry("Blue Power", blueTeamPower);
 	}
 
 	@Override

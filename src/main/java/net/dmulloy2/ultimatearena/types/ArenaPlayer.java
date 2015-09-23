@@ -27,9 +27,9 @@ import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -80,8 +80,9 @@ public final class ArenaPlayer
 	private UUID uniqueId;
 	private Location spawnBack;
 
-	private ArenaClass arenaClass;
 	private PlayerData playerData;
+	private ArenaClass arenaClass;
+	private ArenaScoreboard board;
 
 	private Player player;
 	private Arena arena;
@@ -105,6 +106,7 @@ public final class ArenaPlayer
 		this.arena = arena;
 		this.plugin = plugin;
 		this.arenaClass = plugin.getArenaClass(arena.getDefaultClass());
+		this.board = new ArenaScoreboard(plugin, this);
 	}
 
 	/**
@@ -238,7 +240,7 @@ public final class ArenaPlayer
 			if (handler.has(player, ac.getCost()))
 			{
 				String response = handler.withdrawPlayer(player, ac.getCost());
-				if (response.equals("Success"))
+				if (response == null)
 				{
 					String format = handler.format(ac.getCost());
 					sendMessage("&3You have purchased class &e{0} &3for &e{1}&3.", ac.getName(), format);
@@ -353,12 +355,13 @@ public final class ArenaPlayer
 	 */
 	public final void displayStats()
 	{
-		getPlayer().sendMessage(FormatUtil.format("&3----------------------------"));
+		// Scoreboards!
+		/* getPlayer().sendMessage(FormatUtil.format("&3----------------------------"));
 		getPlayer().sendMessage(FormatUtil.format("&3Kills: &e{0}", kills));
 		getPlayer().sendMessage(FormatUtil.format("&3Deaths: &e{0}", deaths));
 		getPlayer().sendMessage(FormatUtil.format("&3Streak: &e{0}", killStreak));
 		getPlayer().sendMessage(FormatUtil.format("&3GameXP: &e{0}", gameXP));
-		getPlayer().sendMessage(FormatUtil.format("&3----------------------------"));
+		getPlayer().sendMessage(FormatUtil.format("&3----------------------------")); */
 	}
 
 	/**
@@ -409,6 +412,7 @@ public final class ArenaPlayer
 		this.deaths++;
 
 		arena.onPlayerDeath(this);
+		board.update();
 
 		if (plugin.getConfig().getBoolean("forceRespawn", false) && plugin.isProtocolEnabled())
 			plugin.getProtocolHandler().forceRespawn(player);
@@ -431,7 +435,7 @@ public final class ArenaPlayer
 			if (refund > 0.0D && plugin.isVaultEnabled())
 			{
 				String response = plugin.getVaultHandler().depositPlayer(player, refund);
-				if (response.equals("Success"))
+				if (response == null)
 				{
 					String format = plugin.getVaultHandler().format(refund);
 					sendMessage("&3You have been refunded &e{0} &3for your class purchases.", format);
@@ -542,6 +546,11 @@ public final class ArenaPlayer
 	public final boolean isOnline()
 	{
 		return player != null && player.isOnline();
+	}
+
+	public final void updateScoreboard()
+	{
+		board.update();
 	}
 
 	// ---- Generic Methods

@@ -35,6 +35,7 @@ import net.dmulloy2.chat.ChatUtil;
 import net.dmulloy2.chat.ClickEvent;
 import net.dmulloy2.chat.ComponentBuilder;
 import net.dmulloy2.chat.HoverEvent;
+import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -854,6 +855,9 @@ public abstract class Arena implements Reloadable
 	{
 		plugin.debug("Ending player {0}, disconnected: {1}", ap.getName(), disconnected);
 
+		// Dispose of the scoreboard
+		ap.getBoard().dispose();
+
 		// API stuff
 		onPlayerQuit(ap);
 
@@ -1117,6 +1121,9 @@ public abstract class Arena implements Reloadable
 
 			// XP Bar
 			decideXPBar(ap);
+
+			// Scoreboard
+			ap.updateScoreboard();
 		}
 
 		if (active.size() <= 0)
@@ -1494,6 +1501,11 @@ public abstract class Arena implements Reloadable
 				// This really shouldn't happen, but just in case
 				return ChatColor.YELLOW + FormatUtil.getFriendlyName(gameMode);
 		}
+	}
+
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	{
+		
 	}
 
 	// ---- Generic Methods

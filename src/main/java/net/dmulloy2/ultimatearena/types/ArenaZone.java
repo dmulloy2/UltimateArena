@@ -30,13 +30,13 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.io.FileSerialization;
 import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
@@ -348,7 +348,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				if (money > 0.0D)
 				{
 					String response = vault.depositPlayer(ap.getPlayer(), money);
-					if (response.equals("Success"))
+					if (response == null)
 					{
 						String format = vault.format(money);
 						ap.sendMessage("&a{0} has been added to your account!", format);

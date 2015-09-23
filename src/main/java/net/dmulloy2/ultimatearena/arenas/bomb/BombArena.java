@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
+import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -92,6 +93,12 @@ public class BombArena extends Arena
 	public List<String> getExtraInfo()
 	{
 		return Arrays.asList("&3Red Team Power: &e" + redTeamPower);
+	}
+
+	@Override
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	{
+		board.addEntry("Red Power", redTeamPower);
 	}
 
 	@Override

@@ -23,8 +23,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import net.dmulloy2.integration.VaultHandler;
+import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
@@ -125,7 +126,7 @@ public class MobArena extends Arena
 			{
 				VaultHandler vault = plugin.getVaultHandler();
 				String response = vault.depositPlayer(ap.getPlayer(), money);
-				if (response.equals("Success"))
+				if (response == null)
 				{
 					String format = vault.format(money);
 					ap.sendMessage("&a{0} has been added to your account!", format);
@@ -312,5 +313,11 @@ public class MobArena extends Arena
 	public List<String> getExtraInfo()
 	{
 		return Arrays.asList("&3Wave: &e" + wave);
+	}
+
+	@Override
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	{
+		board.addEntry("Wave", wave);
 	}
 }

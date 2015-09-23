@@ -456,19 +456,19 @@ public class EntityListener implements Listener
 					Player killer = lentity.getKiller();
 					if (plugin.isInArena(killer))
 					{
-						ArenaPlayer ak = plugin.getArenaPlayer(killer);
+						ArenaPlayer ap = plugin.getArenaPlayer(killer);
 
 						// Selectively count mob kills
-						if (ak.getArena().isCountMobKills())
+						if (ap.getArena().isCountMobKills())
 						{
-							ak.addXP(25);
-							ak.setKills(ak.getKills() + 1);
-							ak.setKillStreak(ak.getKillStreak() + 1);
-							ak.getArena().handleKillStreak(ak);
+							ap.addXP(25);
+							ap.setKills(ap.getKills() + 1);
+							ap.setKillStreak(ap.getKillStreak() + 1);
+							ap.getArena().handleKillStreak(ap);
 
 							String name = FormatUtil.getFriendlyName(lentity.getType());
-							ak.sendMessage("&e{0} &3killed {1} &e{2}", killer.getName(), FormatUtil.getArticle(name), name);
-							ak.displayStats();
+							ap.sendMessage("&e{0} &3killed {1} &e{2}", killer.getName(), FormatUtil.getArticle(name), name);
+							ap.displayStats();
 						}
 					}
 				}

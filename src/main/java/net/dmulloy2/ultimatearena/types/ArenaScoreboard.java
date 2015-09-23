@@ -1,0 +1,79 @@
+/**
+ * (c) 2015 dmulloy2
+ */
+package net.dmulloy2.ultimatearena.types;
+
+import net.dmulloy2.types.CustomScoreboard;
+import net.dmulloy2.types.CustomScoreboard.EntryFormat;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.util.FormatUtil;
+
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
+
+/**
+ * @author dmulloy2
+ */
+
+public final class ArenaScoreboard
+{
+	private static final String OBJECTIVE = "UltimateArena";
+
+	private CustomScoreboard board;
+	private final ArenaPlayer player;
+	private final UltimateArena plugin;
+
+	public ArenaScoreboard(UltimateArena plugin, ArenaPlayer player)
+	{
+		this.plugin = plugin;
+		this.player = player;
+		this.setup();
+	}
+
+	private void setup()
+	{
+		Scoreboard board = player.getPlayer().getScoreboard();
+		if (board == null)
+			board = plugin.getServer().getScoreboardManager().getNewScoreboard();
+
+		Arena arena = player.getArena();
+
+		this.board = CustomScoreboard.newBuilder(board, OBJECTIVE)
+			.displayName(FormatUtil.format("&3[ &e{0} &3]", WordUtils.capitalize(arena.getName())))
+			.displaySlot(DisplaySlot.SIDEBAR)
+			.entryFormat(EntryFormat.ON_LINE)
+			.keyPrefix(FormatUtil.format("&3"))
+			.valuePrefix(FormatUtil.format(": &e"))
+			.addEntry("Timer", arena.getStartTimer())
+			.addEntry("Kills", player.getKills())
+			.addEntry("Deaths", player.getDeaths())
+			.addEntry("KDR", player.getKDR())
+			.addEntry("Streak", player.getKillStreak())
+			.addEntry("XP", player.getGameXP())
+			.build();
+
+		arena.addScoreboardEntries(this.board, player);
+		this.board.applyTo(player.getPlayer());
+	}
+
+	public void update()
+	{
+		Arena arena = player.getArena();
+		board.addEntry("Timer", arena.isInLobby() ? arena.getStartTimer() : arena.getGameTimer());
+		board.addEntry("Kills", player.getKills());
+		board.addEntry("Deaths", player.getDeaths());
+		board.addEntry("KDR", player.getKDR());
+		board.addEntry("Streak", player.getKillStreak());
+		board.addEntry("XP", player.getGameXP());
+		arena.addScoreboardEntries(board, player);
+		board.update();
+	}
+
+	public void dispose()
+	{
+		board.dispose();
+		board.applyTo(player.getPlayer());
+	}
+}

@@ -18,8 +18,12 @@
  */
 package net.dmulloy2.ultimatearena.arenas.ctf;
 
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -177,5 +181,18 @@ public class CTFArena extends Arena
 	{
 		redFlag.getFlag().onPlayerDeath(ap);
 		blueFlag.getFlag().onPlayerDeath(ap);
+	}
+
+	@Override
+	public List<String> getExtraInfo()
+	{
+		return Arrays.asList("&3Red: &e" + redCap, "&3Blue: &e" + blueCap);
+	}
+
+	@Override
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	{
+		board.addEntry("Red", redCap);
+		board.addEntry("Blue", blueCap);
 	}
 }
