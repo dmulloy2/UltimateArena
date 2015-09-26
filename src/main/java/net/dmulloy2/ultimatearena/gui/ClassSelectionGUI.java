@@ -99,7 +99,7 @@ public class ClassSelectionGUI extends AbstractGUI
 			{
 				VaultHandler handler = plugin.getVaultHandler();
 				String color = handler.has(player, cost) ? "&a" : "&c";
-				lore.add(FormatUtil.format("&7Cost: {0}{1}", color, handler.format(cost)));
+				lore.add(FormatUtil.format(plugin.getMessage("gui.cost"), color, handler.format(cost)));
 			}
 
 			// Show the reason they can't it use if applicable
@@ -108,15 +108,15 @@ public class ClassSelectionGUI extends AbstractGUI
 				Arena arena = ap.getArena();
 				if (! ac.hasPermission(player))
 				{
-					lore.add(FormatUtil.format("&cNo Permission!"));
+					lore.add(FormatUtil.format(plugin.getMessage("guiNoPermission")));
 				}
 				else if (! arena.isValidClass(ac))
 				{
-					lore.add(FormatUtil.format("&cUnavailable in this arena!"));
+					lore.add(FormatUtil.format(plugin.getMessage("guiUnavailableArena")));
 				}
 				else if (! arena.getAvailableClasses(ap.getTeam()).contains(this))
 				{
-					lore.add(FormatUtil.format("&cUnavailable to your team!"));
+					lore.add(FormatUtil.format(plugin.getMessage("guiUnavailableTeam")));
 				}
 			}
 
@@ -142,7 +142,7 @@ public class ClassSelectionGUI extends AbstractGUI
 					String article = FormatUtil.getArticle(name);
 					String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-					sendpMessage("&3You will {0} as {1} &e{2}", spawn, article, name);
+					sendpMessage(plugin.getMessage("classSpawn"), spawn, article, name);
 				}
 			}
 		}

@@ -59,7 +59,7 @@ public class SpleefArena extends FFAArena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellAllPlayers("&e{0} &3has won the Spleef match at &e{1}", winner.getName(), name);
+			tellAllPlayers(getMessage("spleefWon"), winner.getName(), name);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class SpleefArena extends FFAArena
 				}
 				else
 				{
-					tellPlayers("&3Not enough people to play!");
+					tellPlayers(getMessage("notEnoughPeople"), 2);
 				}
 
 				// Refresh the ground

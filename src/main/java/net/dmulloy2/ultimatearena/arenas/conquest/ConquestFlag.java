@@ -81,7 +81,7 @@ public class ConquestFlag extends ArenaFlag
 
 				for (ArenaPlayer apl : players)
 				{
-					apl.sendMessage("&3Capping! &e{0}&3%", power);
+					apl.sendMessage(getMessage("capping"), power);
 				}
 
 				if (power == 0)
@@ -100,7 +100,7 @@ public class ConquestFlag extends ArenaFlag
 
 				for (ArenaPlayer apl : players)
 				{
-					apl.sendMessage("&3Capping! &e{0}&3%", power);
+					apl.sendMessage(getMessage("capping"), power);
 				}
 
 				if (power == 0)
@@ -124,7 +124,7 @@ public class ConquestFlag extends ArenaFlag
 				{
 					for (ArenaPlayer apl : players)
 					{
-						apl.sendMessage("&3Capped!");
+						apl.sendMessage(getMessage("capped"));
 					}
 
 					capped = true;
@@ -134,7 +134,7 @@ public class ConquestFlag extends ArenaFlag
 				{
 					for (ArenaPlayer apl : players)
 					{
-						apl.sendMessage("&3Capping! &e{0}&3%", power);
+						apl.sendMessage(getMessage("capping"), power);
 					}
 				}
 			}
@@ -150,7 +150,7 @@ public class ConquestFlag extends ArenaFlag
 				{
 					for (ArenaPlayer apl : players)
 					{
-						apl.sendMessage("&3Capped!");
+						apl.sendMessage(getMessage("capped"));
 					}
 
 					capped = true;
@@ -160,7 +160,7 @@ public class ConquestFlag extends ArenaFlag
 				{
 					for (ArenaPlayer apl : players)
 					{
-						apl.sendMessage("&3Capping! &e{0}&3%", power);
+						apl.sendMessage(getMessage("capping"), power);
 					}
 				}
 			}

@@ -23,12 +23,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
+import net.dmulloy2.util.FormatUtil;
 
 /**
  * @author dmulloy2
@@ -58,18 +60,18 @@ public class CmdList extends UltimateArenaCommand
 
 		List<String> lines = new ArrayList<String>();
 		StringBuilder line = new StringBuilder();
-		line.append("&3====[ &eUltimateArenas &3]====");
+		line.append(FormatUtil.format(getMessage("genericHeader"), "UltimateArenas"));
 		lines.add(line.toString());
 
 		// Sort by total plays
-		HashMap<ArenaZone, Integer> playMap = new HashMap<ArenaZone, Integer>();
+		Map<ArenaZone, Integer> playMap = new HashMap<>();
 
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
 			playMap.put(az, az.getTimesPlayed());
 		}
 
-		List<Entry<ArenaZone, Integer>> sortedEntries = new ArrayList<Entry<ArenaZone, Integer>>(playMap.entrySet());
+		List<Entry<ArenaZone, Integer>> sortedEntries = new ArrayList<>(playMap.entrySet());
 		Collections.sort(sortedEntries, new Comparator<Entry<ArenaZone, Integer>>()
 		{
 			@Override
@@ -80,6 +82,7 @@ public class CmdList extends UltimateArenaCommand
 		});
 
 		// Now display them
+		// TODO: Add this to messages.yml?
 		for (Entry<ArenaZone, Integer> entry : sortedEntries)
 		{
 			ArenaZone az = entry.getKey();

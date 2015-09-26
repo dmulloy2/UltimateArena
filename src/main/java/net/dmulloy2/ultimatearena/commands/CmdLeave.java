@@ -43,7 +43,7 @@ public class CmdLeave extends UltimateArenaCommand
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
 		if (ap == null)
 		{
-			err("You must be in an arena to do this!");
+			err(getMessage("notInArena"));
 			return;
 		}
 

@@ -114,7 +114,7 @@ public class EssentialsHandler extends DependencyProvider<Essentials>
 		}
 		catch (Throwable ex)
 		{
-			player.sendMessage("&4Error: &cCould not give Essentials kit: &4{0}", ex.toString());
+			player.sendMessage(player.getPlugin().getMessage("essentialsKitError"), ex.toString());
 			handler.getLogHandler().debug(Util.getUsefulStack(ex, "giveKitItems(" + player.getName() + ")"));
 		}
 	}

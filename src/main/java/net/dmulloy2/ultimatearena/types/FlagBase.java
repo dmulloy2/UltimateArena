@@ -76,4 +76,9 @@ public abstract class FlagBase
 	}
 
 	public abstract void checkNear(ArenaPlayer[] arenaPlayers);
+
+	protected String getMessage(String key)
+	{
+		return plugin.getMessage(key);
+	}
 }

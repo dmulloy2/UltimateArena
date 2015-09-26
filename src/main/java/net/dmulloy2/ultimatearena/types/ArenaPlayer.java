@@ -243,17 +243,17 @@ public final class ArenaPlayer
 				if (response == null)
 				{
 					String format = handler.format(ac.getCost());
-					sendMessage("&3You have purchased class &e{0} &3for &e{1}&3.", ac.getName(), format);
+					sendMessage(plugin.getMessage("purchasedClass"), ac.getName(), format);
 				}
 				else
 				{
-					sendMessage("&cFailed to purchase class {0}: {1}", ac.getName(), response);
+					sendMessage(plugin.getMessage("purchaseFailed"), ac.getName(), response);
 					return false;
 				}
 			}
 			else
 			{
-				sendMessage("&cFailed to purchase class {0}: Inadequate funds!", ac.getName());
+				sendMessage(plugin.getMessage("purchaseFailed"), ac.getName(), "Inadequate funds!");
 				return false;
 			}
 
@@ -437,7 +437,7 @@ public final class ArenaPlayer
 				if (response == null)
 				{
 					String format = plugin.getVaultHandler().format(refund);
-					sendMessage("&3You have been refunded &e{0} &3for your class purchases.", format);
+					sendMessage(plugin.getMessage("classRefund"), format);
 				}
 			}
 		}
@@ -446,26 +446,26 @@ public final class ArenaPlayer
 		{
 			case COMMAND:
 				arena.endPlayer(this);
-				sendMessage("&3You have left the arena!");
-				arena.tellPlayers("&e{0} &3has left the arena!", name);
+				sendMessage(plugin.getMessage("youLeft"));
+				arena.tellPlayers(plugin.getMessage("leaveBroadcast"), name);
 				break;
 			case DEATHS:
 				arena.endPlayer(this);
-				sendMessage("&3You have exceeded the death limit!");
-				arena.tellPlayers("&e{0} &3has been eliminated!", name);
+				sendMessage(plugin.getMessage("youDied"));
+				arena.tellPlayers(plugin.getMessage("elimination"), name);
 				break;
 			case KICK:
 				arena.endPlayer(this);
-				sendMessage("&cYou have been kicked from the arena!");
-				arena.tellPlayers("&e{0} &3has been kicked from the arena!", name);
+				sendMessage(plugin.getMessage("youWereKicked"));
+				arena.tellPlayers(plugin.getMessage("kickBroadcast"), name);
 				break;
 			case QUIT:
 				arena.endPlayer(this, true);
-				arena.tellPlayers("&e{0} &3has left the arena!", name);
+				arena.tellPlayers(plugin.getMessage("leaveBroadcast"), name);
 				break;
 			case ERROR:
 				arena.endPlayer(this);
-				arena.tellPlayers("&e{0} &3left the arena due to an error!", name);
+				arena.tellPlayers(plugin.getMessage("errorBroadcast"), name);
 				break;
 		}
 	}

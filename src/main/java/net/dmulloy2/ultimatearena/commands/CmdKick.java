@@ -50,14 +50,14 @@ public class CmdKick extends UltimateArenaCommand
 		Player player = Util.matchPlayer(args[0]);
 		if (player == null)
 		{
-			err("Player \"&c{0}&4\" not found!", args[0]);
+			err(getMessage("playerNotFound"), args[0]);
 			return;
 		}
 
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
 		if (ap == null)
 		{
-			err("That player is not in an arena!");
+			err(getMessage("playerNotInArena"));
 			return;
 		}
 

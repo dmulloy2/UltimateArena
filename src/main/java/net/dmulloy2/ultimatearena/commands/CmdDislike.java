@@ -46,17 +46,17 @@ public class CmdDislike extends UltimateArenaCommand
 		ArenaZone az = plugin.getArenaZone(args[0]);
 		if (az == null)
 		{
-			err("This arena doesn't exist!");
+			err(getMessage("arenaNotFound"));
 			return;
 		}
 
 		if (az.hasVoted(player))
 		{
-			err("You already voted for this arena!");
+			err(getMessage("alreadyVoted"));
 			return;
 		}
 
-		sendpMessage("&cYou have disliked: " + az.getName());
+		sendpMessage(getMessage("youDisliked"), az.getName());
 
 		az.setDisliked(az.getDisliked() + 1);
 		az.getVoted().add(player.getName());

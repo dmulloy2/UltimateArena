@@ -70,8 +70,7 @@ public class KOTHFlag extends ArenaFlag
 			if (capturer != null)
 			{
 				capturer.putData("kothPoints", capturer.getDataInt("kothPoints") + 1);
-				capturer.sendMessage("&3You have capped for &e1 &3point! (&e{0}&3/&e{1}&3)", capturer.getDataInt("kothPoints"),
-						arena.getMaxPoints());
+				capturer.sendMessage(getMessage("kothCap"), capturer.getDataInt("kothPoints"), arena.getMaxPoints());
 				leadChange();
 			}
 		}
@@ -85,7 +84,7 @@ public class KOTHFlag extends ArenaFlag
 		{
 			if (leader == null || ! ap.getUniqueId().equals(leader.getUniqueId()))
 			{
-				arena.tellPlayers("&e{0} &3has taken the lead!", ap.getName());
+				arena.tellPlayers(getMessage("kothLead"), ap.getName());
 				leader = ap;
 			}
 		}

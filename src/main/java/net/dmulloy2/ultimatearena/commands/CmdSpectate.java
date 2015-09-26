@@ -46,7 +46,7 @@ public class CmdSpectate extends UltimateArenaCommand
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
 		if (ap != null)
 		{
-			err("You cannot spectate while in an arena!");
+			err(getMessage("spectateInArena"));
 			return;
 		}
 
@@ -54,20 +54,23 @@ public class CmdSpectate extends UltimateArenaCommand
 		if (spectator != null)
 		{
 			plugin.getSpectatingHandler().removeSpectator(spectator);
-			sendpMessage("&3You are no longer spectating!");
+			sendpMessage(getMessage("noLongerSpectating"));
 			return;
 		}
 
 		Arena arena = getArena(0);
-		if (arena == null || ! arena.isActive())
+		if (arena == null)
+			return;
+
+		if (! arena.isActive())
 		{
-			err("You must specify a valid arena!");
+			err(getMessage("mustSpecifyActive"));
 			return;
 		}
 
 		plugin.getSpectatingHandler().addSpectator(arena, player);
 
-		sendpMessage("&3You are now spectating &e{0}", arena.getName());
-		sendpMessage("&3To stop spectating, use &e/ua spectate &3again");
+		sendpMessage(getMessage("nowSpectating"), arena.getName());
+		sendpMessage(getMessage("stopSpectating"));
 	}
 }

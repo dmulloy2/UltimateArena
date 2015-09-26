@@ -218,7 +218,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		List<String> lines = new ArrayList<String>();
 
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(name)));
+		line.append(FormatUtil.format(plugin.getMessage("genericHeader"), WordUtils.capitalize(name)));
 		lines.add(line.toString());
 
 		// Calculate percentage
@@ -228,7 +228,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		double percentage = (double) plays / (double) total * 100;
 
 		line = new StringBuilder();
-		line.append(FormatUtil.format("&3Plays: &e{0}&3/&e{1} &3(&e{2}%&3)", plays, total, percentage));
+		line.append(FormatUtil.format(plugin.getMessage("statPlays"), plays, total, percentage));
 		lines.add(line.toString());
 
 		// Calculate popularity
@@ -242,7 +242,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 
 		line = new StringBuilder();
-		line.append(FormatUtil.format("&3Popularity: &e{0}&3/&e{1} &3(&e{2}%&3)", liked, voted.size(), percentage));
+		line.append(FormatUtil.format(plugin.getMessage("statPopularity"), liked, voted.size(), percentage));
 		lines.add(line.toString());
 
 		return lines;
@@ -351,11 +351,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 					if (response == null)
 					{
 						String format = vault.format(money);
-						ap.sendMessage("&a{0} has been added to your account!", format);
+						ap.sendMessage(plugin.getMessage("cashReward"), format);
 					}
 					else
 					{
-						ap.sendMessage("&cCould not give cash reward: {0}", response);
+						ap.sendMessage(plugin.getMessage("cashFailed"), response);
 					}
 				}
 			}

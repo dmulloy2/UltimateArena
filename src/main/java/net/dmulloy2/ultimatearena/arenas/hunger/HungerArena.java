@@ -42,7 +42,7 @@ public class HungerArena extends Arena
 	public void announceWinner()
 	{
 		if (winner != null)
-			tellAllPlayers("&e{0} &3is the victor!", winner.getName());
+			tellAllPlayers(getMessage("tributeWon"), winner.getName());
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class HungerArena extends Arena
 				}
 				else
 				{
-					tellPlayers("&3Not enough people to play!");
+					tellPlayers(getMessage("notEnoughPeople"), 2);
 				}
 			}
 		}
@@ -93,7 +93,7 @@ public class HungerArena extends Arena
 		super.onPlayerDeath(pl);
 
 		pl.getPlayer().getWorld().strikeLightningEffect(pl.getPlayer().getLocation());
-		tellPlayers("&3Tribute &e{0} &3has fallen!", pl.getName());
+		tellPlayers(getMessage("tributeFallen"), pl.getName());
 	}
 
 	@Override

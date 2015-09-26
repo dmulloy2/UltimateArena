@@ -36,7 +36,7 @@ public class PvPArena extends Arena
 	@Override
 	public void announceWinner()
 	{
-		tellAllPlayers("&e{0} team &3won the match at &e{1}", getWinningTeam(), name);
+		tellAllPlayers(getMessage("teamWon"), getWinningTeam(), name);
 	}
 
 	@Override
@@ -44,9 +44,9 @@ public class PvPArena extends Arena
 	{
 		if (isInGame())
 		{
-			if (startingAmount <= 1)
+			if (startingAmount < 2)
 			{
-				tellPlayers("&3Not enough people to play!");
+				tellPlayers(getMessage("notEnoughPeople"), 2);
 
 				stop();
 				return;

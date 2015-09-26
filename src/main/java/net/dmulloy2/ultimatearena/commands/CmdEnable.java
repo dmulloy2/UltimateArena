@@ -49,7 +49,7 @@ public class CmdEnable extends UltimateArenaCommand
 			if (a.getName().equalsIgnoreCase(args[0]))
 			{
 				a.setDisabled(false);
-				sendpMessage("&aYou have enabled {0}!", a.getName());
+				sendpMessage(getMessage("youEnabled"), a.getName());
 				return;
 			}
 		}
@@ -59,11 +59,11 @@ public class CmdEnable extends UltimateArenaCommand
 			if (az.getName().equalsIgnoreCase(args[0]))
 			{
 				az.setDisabled(false);
-				sendpMessage("&aYou have enabled {0}!", az.getName());
+				sendpMessage(getMessage("youEnabled"), az.getName());
 				return;
 			}
 		}
 
-		err("Could not find an Arena by the name of \"&c{0}&4\"!", args[0]);
+		err(getMessage("arenaNotFound"), args[0]);
 	}
 }

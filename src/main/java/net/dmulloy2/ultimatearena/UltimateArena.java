@@ -70,6 +70,7 @@ import net.dmulloy2.ultimatearena.commands.CmdTeleport;
 import net.dmulloy2.ultimatearena.commands.CmdUndo;
 import net.dmulloy2.ultimatearena.commands.CmdVersion;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
+import net.dmulloy2.ultimatearena.handlers.MessageHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
 import net.dmulloy2.ultimatearena.integration.EssentialsHandler;
 import net.dmulloy2.ultimatearena.integration.ProtocolHandler;
@@ -114,6 +115,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	private @Getter SpectatingHandler spectatingHandler;
 	private @Getter ArenaTypeHandler arenaTypeHandler;
 	private @Getter ResourceHandler resourceHandler;
+	private @Getter MessageHandler messageHandler;
 	private @Getter FileHandler fileHandler;
 	private @Getter SignHandler signHandler;
 	private @Getter GUIHandler guiHandler;
@@ -164,7 +166,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Register generic handlers
 		permissionHandler = new PermissionHandler(this);
-		// resourceHandler = new ResourceHandler(this);
+		messageHandler = new MessageHandler(this);
 		commandHandler = new CommandHandler(this);
 		guiHandler = new GUIHandler(this);
 
@@ -269,11 +271,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		logHandler.debug(string, objects);
 	}
 
-	// Messaging
 	public final String getMessage(String key)
 	{
-		// return resourceHandler.getMessage(key);
-		throw new UnsupportedOperationException("Not supported yet.");
+		return messageHandler.getMessage(key);
 	}
 
 	public void broadcast(String string, Object... objects)
@@ -336,19 +336,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		loadSigns();
 	}
 
-	private boolean prefixObtained;
-	private String prefix = FormatUtil.format("&6[&4&lUA&6]&3 ");
+	private String prefix = null;
 
 	@Override
 	public String getPrefix()
 	{
-		if (! prefixObtained)
-		{
-			prefixObtained = true;
-			if (getConfig().isSet("prefix"))
-				return prefix = FormatUtil.format(getConfig().getString("prefix"));
-		}
-
+		if (prefix == null)
+			return prefix = messageHandler.getMessage("prefix");
 		return prefix;
 	}
 
@@ -630,13 +624,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			// Remove it from the list
 			loadedArenas.remove(az);
 
-			player.sendMessage(prefix + FormatUtil.format("&3Successfully deleted arena: &e{0}", name));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("arenaDelete"), name));
 
 			log("Successfully deleted arena: {0}!", name);
 		}
 		else
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cCould not find an arena by the name of \"{0}\"!", name));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("arenaNotFound"), name));
 		}
 	}
 
@@ -756,19 +750,19 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	{
 		if (waiting.containsKey(player.getName()))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are already waiting!"));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("alreadyWaiting")));
 			return;
 		}
 
 		if (isInArena(player))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are already in an arena!"));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("alreadyInArena")));
 			return;
 		}
 
 		if (isCreatingArena(player))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are in the middle of making an arena!"));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("makingArena")));
 			return;
 		}
 
@@ -776,7 +770,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		{
 			if (! InventoryUtil.isEmpty(player.getInventory()))
 			{
-				player.sendMessage(prefix + FormatUtil.format("&cPlease clear your inventory!"));
+				player.sendMessage(prefix + FormatUtil.format(getMessage("clearInventory")));
 				return;
 			}
 		}
@@ -784,7 +778,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		ArenaZone az = getArenaZone(name);
 		if (az == null)
 		{
-			player.sendMessage(prefix + FormatUtil.format("&3Unknown arena: &e{0}", name));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("unknownArena"), name));
 
 			List<ArenaZone> matches = matchArena(name);
 			if (matches.size() > 0)
@@ -795,7 +789,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 					joiner.append(match.getName());
 				}
 
-				player.sendMessage(prefix + FormatUtil.format("&3Did you mean: &e{0}&3?", joiner.toString()));
+				player.sendMessage(prefix + FormatUtil.format(getMessage("didYouMean"), joiner.toString()));
 			}
 
 			return;
@@ -803,15 +797,15 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		if (az.isDisabled())
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cThis arena is disabled!"));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("arenaDisabled")));
 			return;
 		}
 
 		String permission = "ultimatearena.join." + az.getName().toLowerCase();
 		if (az.isNeedsPermission() && ! player.hasPermission(permission))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou do not have permission to join this arena!"));
-			player.sendMessage(prefix + FormatUtil.format("&cPermission required: {0}", permission));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("noPermission")));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("permissionRequired"), permission));
 			return;
 		}
 
@@ -825,7 +819,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 				{
 					if (arena.isInGame())
 					{
-						player.sendMessage(prefix + FormatUtil.format("&cYou cannot leave and rejoin this arena!"));
+						player.sendMessage(prefix + FormatUtil.format(getMessage("cantLeaveAndRejoin")));
 						return;
 					}
 				}
@@ -841,7 +835,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			join.runTaskLater(this, wait);
 			waiting.put(player.getName(), join);
 
-			player.sendMessage(prefix + FormatUtil.format("&3Please stand still for &e{0} &3seconds!", seconds));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("standStill"), seconds));
 		}
 		else
 		{
@@ -866,13 +860,13 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			{
 				if (active.isStopped())
 				{
-					player.sendMessage(prefix + FormatUtil.format("&cThis arena is stopping!"));
+					player.sendMessage(prefix + FormatUtil.format(getMessage("arenaStopping")));
 					return;
 				}
 
 				if (active.isInGame() && ! active.isJoinInProgress())
 				{
-					player.sendMessage(prefix + FormatUtil.format("&cThis arena has already started!"));
+					player.sendMessage(prefix + FormatUtil.format(getMessage("arenaStarted")));
 					return;
 				}
 
@@ -884,7 +878,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 				if (! permissionHandler.hasPermission(player, Permission.JOIN_FULL))
 				{
-					player.sendMessage(prefix + FormatUtil.format("&cThis arena is full!"));
+					player.sendMessage(prefix + FormatUtil.format(getMessage("arenaJoin")));
 					return;
 				}
 
@@ -894,14 +888,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 					return;
 				}
 
-				player.sendMessage(prefix + FormatUtil.format("&cCould not force join the arena!"));
+				player.sendMessage(prefix + FormatUtil.format(getMessage("couldntForceJoin")));
 				return;
 			}
 
 			ArenaType type = az.getType();
 			if (type == null)
 			{
-				player.sendMessage(prefix + FormatUtil.format("&cCould not find a valid type for arena: {0}", az.getName()));
+				player.sendMessage(prefix + FormatUtil.format(getMessage("invalidType"), az.getName()));
 				return;
 			}
 
@@ -916,7 +910,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			catch (Throwable ex)
 			{
 				type.getLogger().log(Level.WARNING, "Failed to obtain new arena: ", ex);
-				player.sendMessage(prefix + FormatUtil.format("&c{0} does not define a valid arena!", type.getName()));
+				player.sendMessage(prefix + FormatUtil.format(getMessage("invalidArena"), type.getName()));
 				return;
 			}
 
@@ -927,7 +921,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		catch (Throwable ex)
 		{
 			logHandler.log(Level.SEVERE, Util.getUsefulStack(ex, "adding " + player.getName() + " to arena " + name));
-			player.sendMessage(prefix + FormatUtil.format("&cFailed to add you to the arena! Contact an Administrator!"));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("failedToAdd")));
 		}
 	}
 
@@ -1014,7 +1008,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	{
 		if (isCreatingArena(player))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are already creating an arena!"));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("alreadyCreating")));
 			return;
 		}
 
@@ -1022,7 +1016,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		{
 			if (az.getName().equalsIgnoreCase(name))
 			{
-				player.sendMessage(prefix + FormatUtil.format("&cAn arena by this name already exists!"));
+				player.sendMessage(prefix + FormatUtil.format(getMessage("arenaAlreadyExists")));
 				return;
 			}
 		}
@@ -1030,7 +1024,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		ArenaType at = arenaTypeHandler.getArenaType(type);
 		if (at == null)
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cArena Type {0} does not exist!", type));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("typeDoesntExist"), type));
 			return;
 		}
 
@@ -1044,7 +1038,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 		catch (Throwable ex)
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cFailed to obtain ArenaCreator for {0}. Check console!", type));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("creationFailed"), type));
 			at.getLogger().log(Level.WARNING, "Failed to obtain ArenaCreator for " + type + ": ", ex);
 			return;
 		}
@@ -1094,7 +1088,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	{
 		if (! isCreatingArena(player))
 		{
-			player.sendMessage(prefix + FormatUtil.format("&cYou are not creating an arena!"));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("notCreating")));
 			return;
 		}
 
@@ -1113,7 +1107,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		if (ac != null)
 		{
 			makingArena.remove(ac);
-			player.sendMessage(prefix + FormatUtil.format("&3Stopped the creation of arena: &e{0}", ac.getArenaName()));
+			player.sendMessage(prefix + FormatUtil.format(getMessage("stoppedCreating"), ac.getArenaName()));
 		}
 	}
 

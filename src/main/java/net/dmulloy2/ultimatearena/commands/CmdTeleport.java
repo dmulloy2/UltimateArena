@@ -46,20 +46,20 @@ public class CmdTeleport extends UltimateArenaCommand
 	{
 		if (plugin.isInArena(player))
 		{
-			err("You cannot teleport while in an arena!");
+			err(getMessage("teleportInArena"));
 			return;
 		}
 
 		ArenaZone az = plugin.getArenaZone(args[0]);
 		if (az == null)
 		{
-			err("Arena \"&c{0}&4\" not found!", args[0]);
+			err(getMessage("arenaNotFound"), args[0]);
 			return;
 		}
 
 		Location loc = az.getLobby1().getLocation();
 		player.teleport(loc.clone().add(0.0D, 1.0D, 0.0D));
 
-		sendpMessage("&3You have been teleported to the spawn of &e{0}&3!", az.getName());
+		sendpMessage(getMessage("teleported"), az.getName());
 	}
 }

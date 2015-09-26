@@ -61,7 +61,7 @@ public class BlockListener implements Listener
 				Arena arena = ap.getArena();
 				if (! arena.getConfig().isCanModifyWorld())
 				{
-					ap.sendMessage("&cYou cannot break this!");
+					ap.sendMessage(plugin.getMessage("cantBreak"));
 					event.setCancelled(true);
 				}
 			}
@@ -70,7 +70,7 @@ public class BlockListener implements Listener
 				Player player = event.getPlayer();
 				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot break this!"));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("cantBreak")));
 					event.setCancelled(true);
 				}
 			}
@@ -89,7 +89,7 @@ public class BlockListener implements Listener
 				Arena arena = ap.getArena();
 				if (! arena.getConfig().isCanModifyWorld())
 				{
-					ap.sendMessage("&cYou cannot place this!");
+					ap.sendMessage(plugin.getMessage("cantBuild"));
 					event.setCancelled(true);
 				}
 			}
@@ -98,7 +98,7 @@ public class BlockListener implements Listener
 				Player player = event.getPlayer();
 				if (! plugin.getPermissionHandler().hasPermission(player, Permission.BUILD))
 				{
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot place this!"));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("cantBuild")));
 					event.setCancelled(true);
 				}
 			}

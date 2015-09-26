@@ -40,7 +40,12 @@ public abstract class UltimateArenaCommand extends Command
 	protected final Arena getArena(int arg)
 	{
 		if (args.length > arg)
-			return plugin.getArena(args[arg]);
+		{
+			Arena arena = plugin.getArena(args[arg]);
+			if (arena == null)
+				err(getMessage("arenaNotFound"), args[arg]);
+			return arena;
+		}
 
 		if (isPlayer())
 		{
@@ -49,6 +54,7 @@ public abstract class UltimateArenaCommand extends Command
 				return ap.getArena();
 		}
 
+		err(getMessage("mustSpecifyArena"));
 		return null;
 	}
 

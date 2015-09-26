@@ -82,7 +82,7 @@ public final class ArenaSpectator
 		ArenaPlayer[] active = arena.getActivePlayers();
 		if (active.length == 0)
 		{
-			sendMessage("&cThis arena is empty!");
+			sendMessage(plugin.getMessage("arenaEmpty"));
 			plugin.getSpectatingHandler().removeSpectator(this);
 			return;
 		}

@@ -45,17 +45,17 @@ public class CmdLike extends UltimateArenaCommand
 		ArenaZone az = plugin.getArenaZone(args[0]);
 		if (az == null)
 		{
-			err("This arena doesn't exist!");
+			err(getMessage("arenaNotFound"), args[0]);
 			return;
 		}
 
 		if (az.hasVoted(player))
 		{
-			err("You already voted for this arena!");
+			err(getMessage("alreadyVoting"));
 			return;
 		}
 
-		sendpMessage("&aYou have voted for: {0}!", az.getName());
+		sendpMessage(getMessage("youLiked"), az.getName());
 
 		az.setLiked(az.getLiked() + 1);
 		az.getVoted().add(player.getName());

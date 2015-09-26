@@ -89,7 +89,7 @@ public class CTFFlagBase extends FlagBase
 						{
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();
-							ap.sendMessage("&aFlag Captured! &c+ 500 XP");
+							ap.sendMessage(getMessage("youCapturedFlag"));
 
 							ap.getPlayer().removePotionEffect(PotionEffectType.SLOW);
 							ap.getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
@@ -98,26 +98,24 @@ public class CTFFlagBase extends FlagBase
 							{
 								if (ap.getTeam() == apl.getTeam())
 								{
-									apl.sendMessage("&aUnlocked 10 seconds of crits!");
+									apl.sendMessage(getMessage("youUnlockedCrits"));
 									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
 									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
 								}
 							}
 
 							ap.setGameXP(ap.getGameXP() + 500);
-							arena.tellPlayers("&e{0} &3captured the &e{1} &3flag!", ap.getName(), enemyflag.getFlagType());
+							arena.tellPlayers(getMessage("flagCaptured"), ap.getName(), enemyflag.getFlagType());
 
 							if (team == Team.RED)
 							{
 								arena.setRedCap(arena.getRedCap() + 1);
-								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", team,
-										arena.getRedCap());
+								arena.tellPlayers(getMessage("teamCaptures"), team, arena.getRedCap());
 							}
 							else if (team == Team.BLUE)
 							{
 								arena.setBlueCap(arena.getBlueCap() + 1);
-								arena.tellPlayers("&e{0} &3team has &e{1}&3/&e3 &3captures!", team,
-										arena.getBlueCap());
+								arena.tellPlayers(getMessage("teamCaptures"), team, arena.getBlueCap());
 							}
 
 							return;

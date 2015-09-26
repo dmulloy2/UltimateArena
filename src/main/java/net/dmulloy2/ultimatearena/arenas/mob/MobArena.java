@@ -73,8 +73,8 @@ public class MobArena extends Arena
 	{
 		if (wave > 0)
 		{
-			tellPlayers("&aYou survived the wave!");
-			tellPlayers("&aNow going to wave &c{0}&a!", wave);
+			tellPlayers(getMessage("survivedWave"));
+			tellPlayers(getMessage("nextWave"), wave);
 		}
 
 		this.wave++;
@@ -129,11 +129,11 @@ public class MobArena extends Arena
 				if (response == null)
 				{
 					String format = vault.format(money);
-					ap.sendMessage("&a{0} has been added to your account!", format);
+					ap.sendMessage(getMessage("cashReward"), format);
 				}
 				else
 				{
-					ap.sendMessage("&cCould not give cash reward: {0}", response);
+					ap.sendMessage(getMessage("cashFailed"), response);
 				}
 			}
 		}
@@ -286,11 +286,11 @@ public class MobArena extends Arena
 		{
 			if (wave > maxWave)
 			{
-				tellPlayers("&3You have beat the MobArena!");
+				tellPlayers(getMessage("beatMob"));
 			}
 			else
 			{
-				tellPlayers("&3You survived the MobArena!");
+				tellPlayers(getMessage("survivedMob"));
 			}
 		}
 	}

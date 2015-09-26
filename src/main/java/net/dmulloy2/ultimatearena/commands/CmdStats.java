@@ -46,7 +46,7 @@ public class CmdStats extends UltimateArenaCommand
 		ArenaZone az = plugin.getArenaZone(args[0]);
 		if (az == null)
 		{
-			err("Could not find an arena by the name of \"&c{0}&4\"!", args[0]);
+			err(getMessage("arenaNotFound"), args[0]);
 			return;
 		}
 

@@ -41,11 +41,11 @@ public final class ArenaScoreboard
 		Arena arena = player.getArena();
 
 		this.board = CustomScoreboard.newBuilder(board, OBJECTIVE)
-			.displayName(FormatUtil.format("&3[ &e{0} &3]", WordUtils.capitalize(arena.getName())))
+			.displayName(FormatUtil.format(plugin.getMessage("scoreboardHeader"), WordUtils.capitalize(arena.getName())))
 			.displaySlot(DisplaySlot.SIDEBAR)
 			.entryFormat(EntryFormat.ON_LINE)
-			.keyPrefix(FormatUtil.format("&3"))
-			.valuePrefix(FormatUtil.format(": &e"))
+			.keyPrefix(FormatUtil.format(plugin.getMessage("keyPrefix")))
+			.valuePrefix(FormatUtil.format(plugin.getMessage("valPrefix")))
 			.addEntry("Timer", arena.getStartTimer())
 			.addEntry("Kills", player.getKills())
 			.addEntry("Deaths", player.getDeaths())

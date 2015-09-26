@@ -46,12 +46,9 @@ public class CmdInfo extends UltimateArenaCommand
 	{
 		Arena arena = getArena(0);
 		if (arena == null)
-		{
-			err("Please specify a valid arena!");
 			return;
-		}
 
-		sendMessage("&3====[ &e{0} &3]====", WordUtils.capitalize(arena.getName()));
+		sendMessage(getMessage("genericHeader"), WordUtils.capitalize(arena.getName()));
 
 		if (arena.getExtraInfo() != null)
 		{
@@ -61,7 +58,7 @@ public class CmdInfo extends UltimateArenaCommand
 
 		sendMessage(""); // Empty line
 
-		sendMessage("&3Active Players:");
+		sendMessage(getMessage("activePlayers"));
 		for (String s : arena.getLeaderboard(player))
 		{
 			sendMessage(s);

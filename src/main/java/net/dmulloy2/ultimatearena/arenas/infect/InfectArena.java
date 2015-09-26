@@ -43,11 +43,11 @@ public class InfectArena extends PvPArena
 	{
 		if (winningTeam == Team.BLUE)
 		{
-			tellAllPlayers("&3The infected win!");
+			tellAllPlayers(getMessage("infectedWon"));
 		}
 		else if (winningTeam == Team.RED)
 		{
-			tellAllPlayers("&3The humans have survived!");
+			tellAllPlayers(getMessage("humansWon"));
 		}
 	}
 
@@ -56,9 +56,9 @@ public class InfectArena extends PvPArena
 	{
 		if (startTimer <= 0)
 		{
-			if (startingAmount <= 1)
+			if (startingAmount < 2)
 			{
-				tellPlayers("&3Not enough people to play!");
+				tellPlayers(getMessage("notEnoughPeople"), 2);
 				stop();
 				return;
 			}
@@ -79,7 +79,7 @@ public class InfectArena extends PvPArena
 				}
 				else
 				{
-					tellPlayers("&3One team is empty! game ended!");
+					tellPlayers(getMessage("teamEmpty"));
 					stop();
 				}
 			}
@@ -94,9 +94,9 @@ public class InfectArena extends PvPArena
 			if (ap != null && ap.isOnline())
 			{
 				ap.setTeam(Team.BLUE);
-				ap.sendMessage("&3You are patient zero!");
+				ap.sendMessage(getMessage("patientZero"));
 				onSpawn(ap);
-				tellPlayers("&e{0} &3is the zombie!", ap.getName());
+				tellPlayers(getMessage("zombie"), ap.getName());
 			}
 			else
 			{
@@ -106,7 +106,7 @@ public class InfectArena extends PvPArena
 		else
 		{
 			// Shouldn't happen...
-			tellPlayers("&cCould not choose a zombie! Aborting...");
+			tellPlayers(getMessage("couldntFindZombie"));
 			stop();
 		}
 	}
@@ -134,7 +134,7 @@ public class InfectArena extends PvPArena
 	{
 		if (pl.getTeam() == Team.RED)
 		{
-			pl.sendMessage("&3You have joined the infected!");
+			pl.sendMessage(getMessage("joinedInfected"));
 			pl.setTeam(Team.BLUE);
 		}
 	}

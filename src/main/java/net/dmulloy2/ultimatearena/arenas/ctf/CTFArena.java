@@ -68,15 +68,15 @@ public class CTFArena extends Arena
 		{
 			if (! simpleTeamCheck())
 			{
-				tellPlayers("&3One team is empty! game ended!");
+				tellPlayers(getMessage("teamEmpty"));
 
 				stop();
 			}
 			else
 			{
-				if (startingAmount <= 1)
+				if (startingAmount < 2)
 				{
-					tellPlayers("&3Not enough people to play!");
+					tellPlayers(getMessage("notEnoughPeople"), 2);
 
 					stop();
 				}

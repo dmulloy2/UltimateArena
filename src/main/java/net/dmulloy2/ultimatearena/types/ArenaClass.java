@@ -347,7 +347,7 @@ public final class ArenaClass extends Configuration
 		if (! hasPermission(ap.getPlayer()))
 		{
 			if (message)
-				ap.sendMessage("&cYou do not have permission to use this class.");
+				ap.sendMessage(plugin.getMessage("noClassPermission"));
 			return false;
 		}
 
@@ -355,14 +355,14 @@ public final class ArenaClass extends Configuration
 		if (! arena.isValidClass(this))
 		{
 			if (message)
-				ap.sendMessage("&cYou cannot use this class in this arena.");
+				ap.sendMessage(plugin.getMessage("invalidClass"));
 			return false;
 		}
 
 		if (! arena.getAvailableClasses(ap.getTeam()).contains(this))
 		{
 			if (message)
-				ap.sendMessage("&cThis class is not available to your team.");
+				ap.sendMessage(plugin.getMessage("unavailableClass"));
 			return false;
 		}
 

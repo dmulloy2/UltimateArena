@@ -48,7 +48,7 @@ public class CmdClass extends UltimateArenaCommand
 		ArenaPlayer ap = plugin.getArenaPlayer(player);
 		if (ap == null)
 		{
-			err("You must be in an arena to do this!");
+			err(getMessage("notInArena"));
 			return;
 		}
 
@@ -62,7 +62,7 @@ public class CmdClass extends UltimateArenaCommand
 		ArenaClass cl = plugin.getArenaClass(args[0]);
 		if (cl == null)
 		{
-			err("Could not find a class by the name of \"&c{0}&4\"!", args[0]);
+			err(getMessage("classNotFound"), args[0]);
 			return;
 		}
 
@@ -75,7 +75,7 @@ public class CmdClass extends UltimateArenaCommand
 			String article = FormatUtil.getArticle(name);
 			String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-			sendpMessage("&3You will {0} as {1}: &e{2}", spawn, article, name);
+			sendpMessage(getMessage("classSpawn"), spawn, article, name);
 		}
 	}
 }

@@ -58,7 +58,7 @@ public class BombArena extends Arena
 		{
 			if (! simpleTeamCheck())
 			{
-				tellPlayers("&3One team is empty! Game ended!");
+				tellPlayers(getMessage("teamEmpty"));
 
 				stop();
 				return;
@@ -123,11 +123,11 @@ public class BombArena extends Arena
 			{
 				if (ap.getTeam() == Team.RED)
 				{
-					ap.sendMessage("&3Your power is now: &e{0}", redTeamPower);
+					ap.sendMessage(getMessage("yourPower"), redTeamPower);
 				}
 				else
 				{
-					ap.sendMessage("&3The other team''s power is now: &e{0}", redTeamPower);
+					ap.sendMessage(getMessage("theirPower"), redTeamPower);
 				}
 			}
 		}

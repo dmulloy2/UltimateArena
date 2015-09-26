@@ -42,7 +42,7 @@ public class CmdUndo extends UltimateArenaCommand
 	{
 		if (! plugin.isCreatingArena(player))
 		{
-			err("You are not creating an arena!");
+			err(getMessage("notCreating"));
 			return;
 		}
 

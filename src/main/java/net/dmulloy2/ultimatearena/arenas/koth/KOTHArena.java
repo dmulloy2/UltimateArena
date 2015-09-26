@@ -101,7 +101,7 @@ public class KOTHArena extends Arena
 		{
 			if (ap.getDataInt("kothPoints") >= max)
 			{
-				tellAllPlayers("&3Player &e{0} &3has won!", ap.getName());
+				tellAllPlayers(getMessage("playerWon"), ap.getName());
 
 				stop();
 
@@ -165,15 +165,9 @@ public class KOTHArena extends Arena
 		{
 			if (ap != null)
 			{
-				StringBuilder line = new StringBuilder();
-				line.append(FormatUtil.format("&3#{0}. ", pos));
-				line.append(ap.getTeam().getColor());
-				line.append(FormatUtil.format(ap.getName().equals(player.getName()) ? "&l" : ""));
-				line.append(FormatUtil.format(ap.getName() + "&r"));
-				line.append(FormatUtil.format("  &3Kills: &e{0}", ap.getKills()));
-				line.append(FormatUtil.format("  &3Deaths: &e{0}", ap.getDeaths()));
-				line.append(FormatUtil.format("  &3Points: &e{0}", ap.getDataInt("kothPoints")));
-				leaderboard.add(line.toString());
+				leaderboard.add(FormatUtil.format(getMessage("kothLb"),
+						pos, decideColor(ap), ap.getName().equals(player.getName()) ? "&l" : "", ap.getName(), ap.getKills(), ap.getDeaths(), ap.getDataInt("kothPoints")
+				));
 				pos++;
 			}
 		}

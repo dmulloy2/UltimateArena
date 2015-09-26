@@ -32,9 +32,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.chat.BaseComponent;
 import net.dmulloy2.chat.ChatUtil;
-import net.dmulloy2.chat.ClickEvent;
-import net.dmulloy2.chat.ComponentBuilder;
-import net.dmulloy2.chat.HoverEvent;
+import net.dmulloy2.chat.ComponentSerializer;
 import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -218,7 +216,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void addPlayer(Player player, String teamId)
 	{
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Joining arena &e{0}&3... Please wait!", name));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("joiningArena"), name));
 
 		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
 
@@ -283,7 +281,7 @@ public abstract class Arena implements Reloadable
 			plugin.getGuiHandler().open(player, csGUI);
 		}
 
-		tellPlayers("&a{0} has joined the arena! ({1}/{2})", pl.getName(), active.size(), maxPlayers);
+		tellPlayers(getMessage("joinedArena"), pl.getName(), active.size(), maxPlayers);
 		this.lastJoin = pl.getName();
 	}
 
@@ -340,12 +338,13 @@ public abstract class Arena implements Reloadable
 			return;
 
 		// Allow players to click and insert into chat
-		BaseComponent[] components = new ComponentBuilder(FormatUtil.format(plugin.getPrefix() + "&3Type "))
+		/* BaseComponent[] components = new ComponentBuilder(FormatUtil.format(plugin.getPrefix() + "&3Type "))
 			.append(FormatUtil.format("&e/ua join {0}", name))
 			.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/ua join " + name))
 			.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, FormatUtil.format("&eClick to join {0}!", name)))
 			.append(FormatUtil.format(" &3to join!"))
-			.create();
+			.create(); */
+		BaseComponent[] components = ComponentSerializer.parse(FormatUtil.format(getMessage("clickToJoin"), name));
 
 		for (Player player : Util.getOnlinePlayers())
 		{
@@ -508,7 +507,7 @@ public abstract class Arena implements Reloadable
 				else
 				{
 					// We couldn't find a spawnpoint for some reason :(
-					ap.sendMessage("&cError spawning: Null spawnpoint!");
+					ap.sendMessage(getMessage("nullSpawnpoint"));
 					ap.leaveArena(LeaveReason.ERROR);
 				}
 			}
@@ -555,7 +554,7 @@ public abstract class Arena implements Reloadable
 		}
 		else
 		{
-			ap.sendMessage("&cError spawning: Null spawnpoint!");
+			ap.sendMessage(getMessage("nullSpawnpoint"));
 			ap.leaveArena(LeaveReason.ERROR);
 		}
 	}
@@ -746,7 +745,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void disable()
 	{
-		tellPlayers("&cThis arena has been disabled!");
+		tellPlayers(getMessage("hasBeenDisabled"));
 
 		this.gameTimer = -1;
 
@@ -829,7 +828,7 @@ public abstract class Arena implements Reloadable
 			this.gameMode = Mode.IDLE;
 
 		plugin.removeActiveArena(this);
-		plugin.broadcast("&e{0} &3arena has concluded!", WordUtils.capitalize(name));
+		plugin.broadcast(getMessage("concluded"), WordUtils.capitalize(name));
 
 		plugin.getSignHandler().onArenaCompletion(this);
 		plugin.getSignHandler().updateSigns(az);
@@ -883,7 +882,7 @@ public abstract class Arena implements Reloadable
 		}
 
 		if (active.size() > 1)
-			tellPlayers("&3There are &e{0} &3players remaining!", active.size());
+			tellPlayers(getMessage("playersRemaining"), active.size());
 	}
 
 	/**
@@ -953,7 +952,7 @@ public abstract class Arena implements Reloadable
 		{
 			if (active.size() < minPlayers)
 			{
-				tellPlayers("&3Not enough people to play (&e{0} &3required)", minPlayers);
+				tellPlayers(getMessage("notEnoughPeople"), minPlayers);
 				stop();
 				return;
 			}
@@ -970,7 +969,7 @@ public abstract class Arena implements Reloadable
 						if (ap != null)
 						{
 							ap.leaveArena(LeaveReason.KICK);
-							ap.sendMessage("&3You have been kicked in the interest of fairness!");
+							ap.sendMessage(getMessage("fairnessKick"));
 						}
 					}
 				}
@@ -1080,43 +1079,27 @@ public abstract class Arena implements Reloadable
 			// Timer Stuff
 			if (! pauseStartTimer)
 			{
-				if (startTimer == 120)
+				if (startTimer == 120 || startTimer == 60 || startTimer == 45 || startTimer == 30 || startTimer == 15)
 				{
-					ap.sendMessage("&e120 &3seconds until start!");
-				}
-				if (startTimer == 60)
-				{
-					ap.sendMessage("&e60 &3seconds until start!");
-				}
-				if (startTimer == 45)
-				{
-					ap.sendMessage("&e45 &3seconds until start!");
-				}
-				if (startTimer == 30)
-				{
-					ap.sendMessage("&e30 &3seconds until start!");
-				}
-				if (startTimer == 15)
-				{
-					ap.sendMessage("&e15 &3seconds until start!");
+					ap.sendMessage(getMessage("secondsUntilStart"), startTimer);
 				}
 				if (startTimer > 0 && startTimer < 11)
 				{
-					ap.sendMessage("&e{0} &3second(s) until start!", startTimer);
+					ap.sendMessage(getMessage("secondsUntilStart"), startTimer);
 				}
 			}
 
 			if (gameTimer > 0 && gameTimer < 21)
 			{
-				ap.sendMessage("&e{0} &3second(s) until end!", gameTimer);
+				ap.sendMessage(getMessage("secondsUntilEnd"), gameTimer);
 			}
 			if (gameTimer == 60 && maxGameTime > 60)
 			{
-				ap.sendMessage("&e{0} &3minute(s) until end!", gameTimer / 60);
+				ap.sendMessage(getMessage("minutesUntilEnd"), gameTimer / 60);
 			}
 			if (gameTimer == maxGameTime / 2)
 			{
-				ap.sendMessage("&e{0} &3second(s) until end!", maxGameTime / 2);
+				ap.sendMessage(getMessage("secondsUntilEnd"), maxGameTime / 2);
 			}
 
 			// XP Bar
@@ -1168,7 +1151,7 @@ public abstract class Arena implements Reloadable
 	{
 		if (isInGame())
 		{
-			player.sendMessage(plugin.getPrefix() + FormatUtil.format("&cThis arena is already in progress!"));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("arenaInProgress")));
 			return;
 		}
 
@@ -1178,7 +1161,7 @@ public abstract class Arena implements Reloadable
 
 		gameTimer--;
 
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3You have forcefully started &e{0}&3!", name));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("forceStart"), name));
 	}
 
 	private static final List<EntityType> persistentEntities = Arrays.asList(
@@ -1271,15 +1254,9 @@ public abstract class Arena implements Reloadable
 		{
 			if (ap != null)
 			{
-				StringBuilder line = new StringBuilder();
-				line.append(FormatUtil.format("&3#{0}. ", pos));
-				line.append(FormatUtil.format(decideColor(ap)));
-				line.append(FormatUtil.format(ap.getName().equals(player.getName()) ? "&l" : ""));
-				line.append(FormatUtil.format(ap.getName() + "&r"));
-				line.append(FormatUtil.format("  &3Kills: &e{0}", ap.getKills()));
-				line.append(FormatUtil.format("  &3Deaths: &e{0}", ap.getDeaths()));
-				line.append(FormatUtil.format("  &3KDR: &e{0}", ap.getKDR()));
-				leaderboard.add(line.toString());
+				leaderboard.add(FormatUtil.format(getMessage("leaderboard"),
+						pos, decideColor(ap), ap.getName().equals(player.getName()) ? "&l" : "", ap.getName(), ap.getKills(), ap.getDeaths(), ap.getKDR()
+				));
 				pos++;
 			}
 		}
@@ -1320,15 +1297,15 @@ public abstract class Arena implements Reloadable
 	{
 		if (winningTeam == Team.BLUE)
 		{
-			tellAllPlayers("&eBlue &3team won!");
+			tellAllPlayers(getMessage("blueWon"));
 		}
 		else if (winningTeam == Team.RED)
 		{
-			tellAllPlayers("&eRed &3team won!");
+			tellAllPlayers(getMessage("redWon"));
 		}
 		else if (winningTeam == null)
 		{
-			tellAllPlayers("&3Game ended in a tie!");
+			tellAllPlayers(getMessage("tie"));
 		}
 	}
 
@@ -1506,6 +1483,11 @@ public abstract class Arena implements Reloadable
 	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
 	{
 		
+	}
+
+	public final String getMessage(String key)
+	{
+		return plugin.getMessage(key);
 	}
 
 	// ---- Generic Methods

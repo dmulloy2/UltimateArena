@@ -64,7 +64,7 @@ public class BombFlag extends ArenaFlag
 			{
 				if (timer == 30 || timer == 20 || timer == 10 || timer <= 5)
 				{
-					arena.tellPlayers("&3Bomb &e{0} &3will explode in &e{1} &3seconds!", bombNumber, timer);
+					arena.tellPlayers(getMessage("bombWillExplode"), bombNumber, timer);
 				}
 
 				if (timer < 1)
@@ -90,7 +90,7 @@ public class BombFlag extends ArenaFlag
 					this.fused = false;
 					this.exploded = true;
 
-					arena.tellPlayers("&cRED &3team blew up bomb &e{0}&3!", bombNumber);
+					arena.tellPlayers(getMessage("bombBlewUp"), bombNumber);
 				}
 			}
 		}
@@ -123,12 +123,12 @@ public class BombFlag extends ArenaFlag
 					{
 						// team 1 is fusing
 						fuser++;
-						capturer.sendMessage("&3Fusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", bombNumber, fuser);
+						capturer.sendMessage(getMessage("fusingBomb"), bombNumber, fuser);
 						if (fuser >= 10)
 						{
 							fuser = 0;
 							fused = true;
-							arena.tellPlayers("&3Bomb &e{0} &3is now &efused&3!", bombNumber);
+							arena.tellPlayers(getMessage("bombFused"), bombNumber);
 						}
 					}
 				}
@@ -138,13 +138,13 @@ public class BombFlag extends ArenaFlag
 					if (fused)
 					{
 						fuser++;
-						capturer.sendMessage("&3Defusing Bomb &e{0}! &3(&e{1}&3/&e10&3)", bombNumber, fuser);
+						capturer.sendMessage(getMessage("defusingBomb"), bombNumber, fuser);
 						if (fuser >= 10)
 						{
 							fuser = 0;
 							fused = false;
 							timer = 45;
-							arena.tellPlayers("&3Bomb &e{0} &3is now &edefused&3!", bombNumber);
+							arena.tellPlayers(getMessage("bombDefused"), bombNumber);
 						}
 					}
 				}

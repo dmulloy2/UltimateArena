@@ -43,12 +43,9 @@ public class CmdStart extends UltimateArenaCommand
 	{
 		Arena arena = getArena(0);
 		if (arena == null)
-		{
-			err("Please specify a valid arena!");
 			return;
-		}
 
-		sendpMessage("&3Force starting arena &e{0}&3...", arena.getName());
+		sendpMessage(getMessage("forceStarting"), arena.getName());
 		arena.forceStart(player);
 	}
 }

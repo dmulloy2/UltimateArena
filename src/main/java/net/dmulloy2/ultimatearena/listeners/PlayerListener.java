@@ -228,7 +228,7 @@ public class PlayerListener implements Listener
 									String article = FormatUtil.getArticle(name);
 									String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
-									ap.sendMessage("&3You will {0} as {1} &e{2}", spawn, article, name);
+									ap.sendMessage(plugin.getMessage("classSpawn"), spawn, article, name);
 									return;
 								}
 							}
@@ -332,7 +332,7 @@ public class PlayerListener implements Listener
 			ArenaPlayer ap = plugin.getArenaPlayer(event.getPlayer());
 			if (ap != null)
 			{
-				ap.sendMessage("&cYou cannot teleport while ingame!");
+				ap.sendMessage(plugin.getMessage("teleportInArena"));
 				event.setCancelled(true);
 			}
 		}
@@ -350,8 +350,8 @@ public class PlayerListener implements Listener
 				String cmd = event.getMessage();
 				if (! cmd.contains("/ua") && ! plugin.isWhitelistedCommand(cmd))
 				{
-					ap.sendMessage("&3You cannot use non-ua commands in an arena!");
-					ap.sendMessage("&3If you wish to use commands again, use &e/ua leave");
+					ap.sendMessage(plugin.getMessage("nonUaCommand"));
+					ap.sendMessage(plugin.getMessage("commandsAgain"));
 					event.setCancelled(true);
 				}
 			}

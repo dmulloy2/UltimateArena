@@ -94,7 +94,7 @@ public class CTFFlag
 
 	private final void sayTimeLeft()
 	{
-		arena.tellPlayers("&e{0} &3seconds left until &e{1} &3flag returns!", timer, flagType);
+		arena.tellPlayers(arena.getMessage("ctfTimeLeft"), timer, flagType);
 	}
 
 	private final void setup()
@@ -123,7 +123,7 @@ public class CTFFlag
 
 	private final void fall()
 	{
-		arena.tellPlayers("&e{0} &3has dropped the &e{1} &3flag!", riding.getName(), flagType);
+		arena.tellPlayers(arena.getMessage("flagDropped"), riding.getName(), flagType);
 
 		this.timer = 15;
 		this.toloc = riding.getPlayer().getLocation();
@@ -170,7 +170,7 @@ public class CTFFlag
 
 						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
 						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
-						arena.tellPlayers("&e{0} &3picked up the &e{1} &3flag!", ap.getName(), flagType);
+						arena.tellPlayers(arena.getMessage("flagPickedUp"), ap.getName(), flagType);
 						return;
 					}
 					else
@@ -178,9 +178,9 @@ public class CTFFlag
 						if (! myloc.equals(returnto))
 						{
 							// If the flag is not at its flagstand
-							ap.sendMessage("&aFlag Returned! &c+50 XP");
+							ap.sendMessage(arena.getMessage("youReturnedFlag"));
 							ap.setGameXP(ap.getGameXP() + 50);
-							arena.tellPlayers("&e{0} &3returned the &e{1} &3flag!", ap.getName(), flagType);
+							arena.tellPlayers(arena.getMessage("flagReturned"), ap.getName(), flagType);
 							respawn();
 							return;
 						}
@@ -243,7 +243,7 @@ public class CTFFlag
 				{
 					respawn();
 
-					arena.tellPlayers("&3The &e{0} &3flag has respawned!", flagType);
+					arena.tellPlayers(arena.getMessage("flagRespawned"), flagType);
 				}
 				else
 				{

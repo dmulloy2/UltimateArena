@@ -48,7 +48,7 @@ public class CmdForceJoin extends UltimateArenaCommand
 		Player player = Util.matchPlayer(args[1]);
 		if (player == null)
 		{
-			err("Player \"&c{0}&4\" not found!", args[1]);
+			err(getMessage("playerNotFound"), args[1]);
 			return;
 		}
 

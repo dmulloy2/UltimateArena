@@ -125,7 +125,7 @@ public class EntityListener implements Listener
 				if (arena.isInLobby())
 				{
 					// Prevent lobby PvP
-					ap.sendMessage("&cYou cannot PvP in the lobby!");
+					ap.sendMessage(plugin.getMessage("lobbyPvp"));
 					event.setCancelled(true);
 					return;
 				}
@@ -135,7 +135,7 @@ public class EntityListener implements Listener
 				{
 					if (dp.getTeam() == ap.getTeam())
 					{
-						ap.sendMessage("&cYou cannot hurt your team mate!");
+						ap.sendMessage(plugin.getMessage("friendlyFire"));
 						event.setCancelled(true);
 						return;
 					}
@@ -143,7 +143,7 @@ public class EntityListener implements Listener
 			}
 			else
 			{
-				ap.sendMessage("&cYou cannot hurt players not in the arena!");
+				ap.sendMessage(plugin.getMessage("hurtOutside"));
 				event.setCancelled(true);
 				return;
 			}
@@ -152,7 +152,7 @@ public class EntityListener implements Listener
 		{
 			if (plugin.isInArena(defender))
 			{
-				attacker.sendMessage(plugin.getPrefix() + FormatUtil.format("&cYou cannot hurt players while they are in an arena!"));
+				attacker.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("hurtInside")));
 				event.setCancelled(true);
 				return;
 			}
@@ -208,7 +208,7 @@ public class EntityListener implements Listener
 								if (health > 0.0D && health < maxHealth)
 								{
 									heal.setHealth(Math.min(health + 2.0D, maxHealth));
-									ap.sendMessage("&3You have healed &e{0} &3for &e1 &3heart!", dp.getName());
+									ap.sendMessage(plugin.getMessage("healer"), dp.getName());
 								}
 							}
 						}
@@ -269,13 +269,13 @@ public class EntityListener implements Listener
 					Player killer = pdied.getKiller();
 					if (killer.getName().equals(pdied.getName())) // Suicide
 					{
-						ar.tellPlayers("&e{0} &3commited &esuicide&3!", pdied.getName());
+						ar.tellPlayers(plugin.getMessage("suicide"), pdied.getName());
 						dp.displayStats();
 					}
 					else
 					{
 						// PvP
-						ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(), getWeapon(killer));
+						ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
 						dp.displayStats();
 
 						// Handle killer
@@ -299,7 +299,7 @@ public class EntityListener implements Listener
 						LivingEntity lentity = pdied.getKiller();
 						String name = FormatUtil.getFriendlyName(lentity.getType());
 
-						ar.tellPlayers("&e{0} &3was killed by &3{1} &e{2}", pdied.getName(), FormatUtil.getArticle(name), name);
+						ar.tellPlayers(plugin.getMessage("pvpKill"), pdied.getName(), FormatUtil.getArticle(name), name);
 						dp.displayStats();
 						return;
 					}
@@ -309,7 +309,7 @@ public class EntityListener implements Listener
 						if (proj.getShooter() instanceof Player)
 						{
 							Player killer = (Player) proj.getShooter();
-							ar.tellPlayers("&e{0} &3killed &e{1} &3with &e{2}", killer.getName(), pdied.getName(), getWeapon(killer));
+							ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
 							dp.displayStats();
 
 							// Handle killer
@@ -327,7 +327,7 @@ public class EntityListener implements Listener
 							LivingEntity lentity = pdied.getKiller();
 							String name = FormatUtil.getFriendlyName(lentity.getType());
 
-							ar.tellPlayers("&e{0} &3was killed by {1} &e{2}", pdied.getName(), FormatUtil.getArticle(name), name);
+							ar.tellPlayers(plugin.getMessage("pveDeath"), pdied.getName(), FormatUtil.getArticle(name), name);
 							dp.displayStats();
 							return;
 						}
@@ -348,7 +348,7 @@ public class EntityListener implements Listener
 								if (damager instanceof Player)
 								{
 									Player killer = (Player) damager;
-									ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(), getWeapon(killer));
+									ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
 									dp.displayStats();
 
 									// Handle killer
@@ -366,7 +366,7 @@ public class EntityListener implements Listener
 								else
 								{
 									String name = FormatUtil.getFriendlyName(damager.getType());
-									ar.tellPlayers("&e{0} &3was killed by &3{1} &e{2}", pdied.getName(), FormatUtil.getArticle(name), name);
+									ar.tellPlayers(plugin.getMessage("pveDeath"), pdied.getName(), FormatUtil.getArticle(name), name);
 									dp.displayStats();
 								}
 
@@ -390,10 +390,7 @@ public class EntityListener implements Listener
 										if (proj.getShooter() instanceof Player)
 										{
 											Player killer = (Player) proj.getShooter();
-
-											ar.tellPlayers("&e{0} &3killed &e{1} &3with {2}", killer.getName(), pdied.getName(),
-													getWeapon(killer));
-
+											ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
 											dp.displayStats();
 
 											// Handle killer
@@ -410,12 +407,8 @@ public class EntityListener implements Listener
 										}
 										else
 										{
-											String name = "";
-											if (proj.getShooter() instanceof LivingEntity)
-												name = FormatUtil.getFriendlyName(((LivingEntity) proj.getShooter()).getType());
-
-											ar.tellPlayers("&e{0} &3was shot by &3{1} &e{2}", pdied.getName(), FormatUtil.getArticle(name),
-													name);
+											String name = proj.getShooter() instanceof LivingEntity ? FormatUtil.getFriendlyName(((LivingEntity) proj.getShooter()).getType()) : "";
+											ar.tellPlayers(plugin.getMessage("pveDeath"), pdied.getName(), FormatUtil.getArticle(name), name);
 											dp.displayStats();
 										}
 
@@ -428,19 +421,19 @@ public class EntityListener implements Listener
 					else if (cause != null)
 					{
 						// There's probably nothing else we can do here, so just turn it into a string
-						ar.tellPlayers("&e{0} &3was killed by &e{1}", pdied.getName(), FormatUtil.getFriendlyName(cause));
+						ar.tellPlayers(plugin.getMessage("genericDeath"), pdied.getName(), FormatUtil.getFriendlyName(cause));
 						dp.displayStats();
 					}
 					else if (ar instanceof SpleefArena)
 					{
 						// If they were in spleef, they probably fell through the floor
-						ar.tellPlayers("&e{0} &3fell through the floor!", pdied.getName());
+						ar.tellPlayers(plugin.getMessage("spleefDeath"), pdied.getName());
 						dp.displayStats();
 					}
 					else
 					{
 						// No idea
-						ar.tellPlayers("&e{0} &3died of unknown causes", pdied.getName());
+						ar.tellPlayers(plugin.getMessage("unknownDeath"), pdied.getName());
 						dp.displayStats();
 					}
 				}
@@ -467,7 +460,7 @@ public class EntityListener implements Listener
 							ap.getArena().handleKillStreak(ap);
 
 							String name = FormatUtil.getFriendlyName(lentity.getType());
-							ap.sendMessage("&e{0} &3killed {1} &e{2}", killer.getName(), FormatUtil.getArticle(name), name);
+							ap.sendMessage(plugin.getMessage("pveKill"), killer.getName(), FormatUtil.getArticle(name), name);
 							ap.displayStats();
 						}
 					}
