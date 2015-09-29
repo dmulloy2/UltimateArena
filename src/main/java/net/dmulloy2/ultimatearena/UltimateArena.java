@@ -342,7 +342,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	public String getPrefix()
 	{
 		if (prefix == null)
-			return prefix = messageHandler.getMessage("prefix");
+			return prefix = FormatUtil.format(messageHandler.getMessage("prefix"));
 		return prefix;
 	}
 

@@ -58,7 +58,6 @@ public class MessageHandler implements Reloadable
 
 	public String getMessage(String key)
 	{
-		key = key.toLowerCase();
 		if (messages.containsKey(key))
 			return messages.get(key);
 
@@ -107,7 +106,6 @@ public class MessageHandler implements Reloadable
 		Reader defConfigStream = new InputStreamReader(plugin.getResource(FILE_NAME), Charsets.UTF_8);
 		if (defConfigStream != null)
 		{
-			System.out.println("setting default config");
 			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 			config.setDefaults(defConfig);
 			config.options().copyDefaults(true);
@@ -121,7 +119,6 @@ public class MessageHandler implements Reloadable
 
 		try
 		{
-			System.out.println("saving config");
 			getConfig().save(file);
 		}
 		catch (IOException ex)
