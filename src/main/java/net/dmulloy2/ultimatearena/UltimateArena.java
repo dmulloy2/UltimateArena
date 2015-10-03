@@ -162,8 +162,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Configuration
 		saveDefaultConfig();
+		reloadConfig();
+
 		Config.load(this);
-		// reloadConfig();
 
 		// Register generic handlers
 		permissionHandler = new PermissionHandler(this);
@@ -351,7 +352,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	public void reload()
 	{
 		// Reload config
-		// reloadConfig();
+		reloadConfig();
 		Config.load(this);
 
 		arenaTypeHandler.reload();
