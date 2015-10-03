@@ -27,4 +27,10 @@ public class DisabledScoreboard implements ArenaScoreboard
 	{
 
 	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return false;
+	}
 }

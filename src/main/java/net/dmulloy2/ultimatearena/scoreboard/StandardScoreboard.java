@@ -79,4 +79,10 @@ public final class StandardScoreboard implements ArenaScoreboard
 		board.dispose();
 		board.applyTo(player.getPlayer());
 	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return true;
+	}
 }

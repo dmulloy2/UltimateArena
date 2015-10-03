@@ -12,4 +12,6 @@ public interface ArenaScoreboard
 	public abstract void update();
 
 	public abstract void dispose();
+
+	public abstract boolean isEnabled();
 }

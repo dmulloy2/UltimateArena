@@ -347,6 +347,9 @@ public final class ArenaPlayer
 	 */
 	public final void sendMessage(String string, Object... objects)
 	{
+		if (string.isEmpty())
+			return; // Don't send empty messages
+
 		string = plugin.getPrefix() + FormatUtil.format(string, objects);
 		if (arena.isLimitSpam())
 		{
@@ -360,17 +363,34 @@ public final class ArenaPlayer
 	}
 
 	/**
+	 * Sends the player a formatted message.
+	 * 
+	 * @param string Base message
+	 * @param objects Objects to format in
+	 */
+	public final void sendMessageRaw(String string, Object... objects)
+	{
+		if (string.isEmpty())
+			return;
+
+		string = FormatUtil.format(string, objects);
+		getPlayer().sendMessage(string);
+	}
+
+	/**
 	 * Displays the player's ingame statistics.
 	 */
 	public final void displayStats()
 	{
-		// Scoreboards!
-		/* getPlayer().sendMessage(FormatUtil.format("&3----------------------------"));
-		getPlayer().sendMessage(FormatUtil.format("&3Kills: &e{0}", kills));
-		getPlayer().sendMessage(FormatUtil.format("&3Deaths: &e{0}", deaths));
-		getPlayer().sendMessage(FormatUtil.format("&3Streak: &e{0}", killStreak));
-		getPlayer().sendMessage(FormatUtil.format("&3GameXP: &e{0}", gameXP));
-		getPlayer().sendMessage(FormatUtil.format("&3----------------------------")); */
+		if (! board.isEnabled())
+		{
+			sendMessageRaw(plugin.getMessage("statHeader"));
+			sendMessageRaw(plugin.getMessage("statKills"), kills);
+			sendMessageRaw(plugin.getMessage("statDeaths"), deaths);
+			sendMessageRaw(plugin.getMessage("statStreak"), killStreak);
+			sendMessageRaw(plugin.getMessage("statXP"), gameXP);
+			sendMessageRaw(plugin.getMessage("statHeader"));
+		}
 	}
 
 	/**
@@ -519,7 +539,7 @@ public final class ArenaPlayer
 	 *
 	 * @return Player instance
 	 */
-	public final Player getPlayer()
+	public final Player sendMessageRaw()
 	{
 		return player;
 	}

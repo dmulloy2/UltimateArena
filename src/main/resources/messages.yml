@@ -168,6 +168,13 @@ scoreboardHeader: "&3[ &e{0} &3]"
 keyPrefix: "&3"
 valPrefix: ": &e"
 
+# Stats
+statHeader: "&3----------------------------"
+statKills: "&3Kills: &e{0}"
+statDeaths: "&3Deaths: &e{0}"
+statStreak: "&3Streak: &e{0}"
+statXP: "&3GameXP: &e{0}"
+
 # Etc
 essentialsKitError: "&4Error: &cCould not give Essentials kit: &4{0}"
 arenaEmpty: "&cThis arena is empty!"
