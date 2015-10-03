@@ -28,8 +28,12 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.integration.VaultHandler;
+import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.scoreboard.ArenaScoreboard;
+import net.dmulloy2.ultimatearena.scoreboard.DisabledScoreboard;
+import net.dmulloy2.ultimatearena.scoreboard.StandardScoreboard;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -106,7 +110,12 @@ public final class ArenaPlayer
 		this.arena = arena;
 		this.plugin = plugin;
 		this.arenaClass = plugin.getArenaClass(arena.getDefaultClass());
-		this.board = new ArenaScoreboard(plugin, this);
+
+		if (Config.scoreboardEnabled)
+			this.board = new StandardScoreboard(plugin, this);
+		else
+			this.board = DisabledScoreboard.getInstance();
+		// TODO ViewIt integration
 	}
 
 	/**
@@ -413,7 +422,7 @@ public final class ArenaPlayer
 
 		arena.onPlayerDeath(this);
 
-		if (plugin.getConfig().getBoolean("forceRespawn", false) && plugin.isProtocolEnabled())
+		if (Config.forceRespawn && plugin.isProtocolEnabled())
 			plugin.getProtocolHandler().forceRespawn(player);
 	}
 

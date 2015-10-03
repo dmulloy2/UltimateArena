@@ -79,3 +79,8 @@ forceRespawn: false
 # Whether or not to show unavailable classes in the GUI
 # Input: boolean; default: false
 showUnavailableClasses: false
+
+# Scoreboard settings
+# enabled: boolean; default: true
+scoreboard:
+  enabled: true

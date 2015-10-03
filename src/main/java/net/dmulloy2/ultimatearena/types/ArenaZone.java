@@ -34,6 +34,7 @@ import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.io.FileSerialization;
 import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -334,9 +335,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			}
 		}
 
-		// The configuration option can either be cashRewards or moneyRewards
-		// It was originally cashRewards, but I accidentally changed it
-		if (plugin.getConfig().getBoolean("moneyRewards", true) || plugin.getConfig().getBoolean("cashRewards", true))
+		if (Config.moneyRewards)
 		{
 			if (plugin.isVaultEnabled())
 			{

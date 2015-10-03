@@ -162,7 +162,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		// Configuration
 		saveDefaultConfig();
-		reloadConfig();
+		Config.load(this);
+		// reloadConfig();
 
 		// Register generic handlers
 		permissionHandler = new PermissionHandler(this);
@@ -278,7 +279,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public void broadcast(String string, Object... objects)
 	{
-		if (getConfig().getBoolean("globalMessages", true))
+		if (Config.globalMessages)
 		{
 			String broadcast = FormatUtil.format(string, objects);
 			getServer().broadcastMessage(prefix + broadcast);
@@ -350,7 +351,8 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	public void reload()
 	{
 		// Reload config
-		reloadConfig();
+		// reloadConfig();
+		Config.load(this);
 
 		arenaTypeHandler.reload();
 
@@ -766,7 +768,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 			return;
 		}
 
-		if (! getConfig().getBoolean("saveInventories", true))
+		if (! Config.saveInventories)
 		{
 			if (! InventoryUtil.isEmpty(player.getInventory()))
 			{
@@ -827,9 +829,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		ArenaJoinTask join = new ArenaJoinTask(player.getName(), name, this, team);
-		if (getConfig().getBoolean("joinTimer.enabled", true))
+		if (Config.joinTimerEnabled)
 		{
-			int seconds = getConfig().getInt("joinTimer.wait", 3);
+			int seconds = Config.joinTimerWait;
 			int wait = seconds * 20;
 
 			join.runTaskLater(this, wait);
@@ -1165,7 +1167,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	 */
 	public final boolean isWhitelistedCommand(String command)
 	{
-		if (! getConfig().getBoolean("restrictCommands", true))
+		if (! Config.restrictCommands)
 			return true;
 
 		Validate.notNull(command, "command cannot be null!");
@@ -1174,7 +1176,7 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		if (whitelistedCommands == null)
 		{
 			whitelistedCommands = new ArrayList<>();
-			for (String whitelisted : getConfig().getStringList("whitelistedCommands"))
+			for (String whitelisted : Config.whitelistedCommands)
 			{
 				// Normalize whitelisted
 				if (! whitelisted.startsWith("/"))

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.types.CustomScoreboard;
+import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -119,7 +120,7 @@ public class MobArena extends Arena
 		}
 
 		// Money
-		if (plugin.getConfig().getBoolean("moneyRewards", true) || plugin.getConfig().getBoolean("cashRewards", true))
+		if (Config.moneyRewards)
 		{
 			double money = ap.getGameXP() / 10.0D;
 			if (money > 0.0D && plugin.isVaultEnabled())

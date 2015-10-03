@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.dmulloy2.gui.AbstractGUI;
 import net.dmulloy2.integration.VaultHandler;
+import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
@@ -45,7 +46,6 @@ public class ClassSelectionGUI extends AbstractGUI
 	private final List<ArenaClass> classes;
 	private final ArenaPlayer ap;
 
-	private final boolean showUnavailable;
 	private final UltimateArena plugin;
 
 	public ClassSelectionGUI(UltimateArena plugin, Player player)
@@ -53,8 +53,6 @@ public class ClassSelectionGUI extends AbstractGUI
 		super(plugin, player);
 		this.ap = plugin.getArenaPlayer(player);
 		this.classes = getClasses();
-
-		this.showUnavailable = plugin.getConfig().getBoolean("showUnavailableClasses", false);
 		this.plugin = plugin;
 
 		this.setup();
@@ -65,7 +63,7 @@ public class ClassSelectionGUI extends AbstractGUI
 		List<ArenaClass> classes = new ArrayList<>();
 		for (ArenaClass ac : ap.getArena().getAvailableClasses(ap.getTeam()))
 		{
-			if (showUnavailable || ac.checkAvailability(ap, false))
+			if (Config.showUnavailableClasses || ac.checkAvailability(ap, false))
 				classes.add(ac);
 		}
 
@@ -81,7 +79,7 @@ public class ClassSelectionGUI extends AbstractGUI
 	@Override
 	public String getTitle()
 	{
-		return FormatUtil.format(plugin.getConfig().getString("classSelector.title", "         &l&nSelect a class!&r"));
+		return Config.classSelectorTitle;
 	}
 
 	@Override
@@ -103,7 +101,7 @@ public class ClassSelectionGUI extends AbstractGUI
 			}
 
 			// Show the reason they can't it use if applicable
-			if (showUnavailable)
+			if (Config.showUnavailableClasses)
 			{
 				Arena arena = ap.getArena();
 				if (! ac.hasPermission(player))

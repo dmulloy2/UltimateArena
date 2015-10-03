@@ -35,6 +35,7 @@ import net.dmulloy2.chat.ChatUtil;
 import net.dmulloy2.chat.ComponentSerializer;
 import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.api.event.ArenaJoinEvent;
@@ -275,7 +276,7 @@ public abstract class Arena implements Reloadable
 		active.add(pl);
 
 		// Open Class Selector
-		if (plugin.getConfig().getBoolean("classSelector.automatic", true))
+		if (Config.classSelectorAutomatic)
 		{
 			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
 			plugin.getGuiHandler().open(player, csGUI);
@@ -334,7 +335,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void announce()
 	{
-		if (! plugin.getConfig().getBoolean("globalMessages", true))
+		if (! Config.globalMessages)
 			return;
 
 		// Allow players to click and insert into chat
@@ -1128,7 +1129,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void decideXPBar(ArenaPlayer ap)
 	{
-		if (plugin.getConfig().getBoolean("timerXPBar", true))
+		if (Config.timerXPBar)
 		{
 			if (isInGame())
 			{

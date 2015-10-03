@@ -1,12 +1,13 @@
 /**
  * (c) 2015 dmulloy2
  */
-package net.dmulloy2.ultimatearena.types;
+package net.dmulloy2.ultimatearena.scoreboard;
 
 import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.types.CustomScoreboard.EntryFormat;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.FormatUtil;
 
 import org.apache.commons.lang.WordUtils;
@@ -17,7 +18,7 @@ import org.bukkit.scoreboard.Scoreboard;
  * @author dmulloy2
  */
 
-public final class ArenaScoreboard
+public final class StandardScoreboard implements ArenaScoreboard
 {
 	private static final String OBJECTIVE = "UltimateArena";
 
@@ -25,7 +26,7 @@ public final class ArenaScoreboard
 	private final ArenaPlayer player;
 	private final UltimateArena plugin;
 
-	public ArenaScoreboard(UltimateArena plugin, ArenaPlayer player)
+	public StandardScoreboard(UltimateArena plugin, ArenaPlayer player)
 	{
 		this.plugin = plugin;
 		this.player = player;
@@ -58,6 +59,7 @@ public final class ArenaScoreboard
 		this.board.applyTo(player.getPlayer());
 	}
 
+	@Override
 	public void update()
 	{
 		Arena arena = player.getArena();
@@ -71,6 +73,7 @@ public final class ArenaScoreboard
 		board.update();
 	}
 
+	@Override
 	public void dispose()
 	{
 		board.dispose();
