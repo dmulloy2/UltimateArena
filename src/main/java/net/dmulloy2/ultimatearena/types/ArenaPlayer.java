@@ -539,7 +539,7 @@ public final class ArenaPlayer
 	 *
 	 * @return Player instance
 	 */
-	public final Player sendMessageRaw()
+	public final Player getPlayer()
 	{
 		return player;
 	}
