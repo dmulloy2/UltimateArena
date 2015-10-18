@@ -166,9 +166,11 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 		Config.load(this);
 
+		messageHandler = new MessageHandler(this);
+		prefix = FormatUtil.format(messageHandler.getMessage("prefix"));
+
 		// Register generic handlers
 		permissionHandler = new PermissionHandler(this);
-		messageHandler = new MessageHandler(this);
 		commandHandler = new CommandHandler(this);
 		guiHandler = new GUIHandler(this);
 
@@ -343,8 +345,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	@Override
 	public String getPrefix()
 	{
-		if (prefix == null)
-			return prefix = FormatUtil.format(messageHandler.getMessage("prefix"));
 		return prefix;
 	}
 
@@ -354,6 +354,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		// Reload config
 		reloadConfig();
 		Config.load(this);
+
+		messageHandler.reload();
+		prefix = FormatUtil.format(messageHandler.getMessage("prefix"));
 
 		arenaTypeHandler.reload();
 

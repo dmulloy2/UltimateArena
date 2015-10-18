@@ -170,6 +170,7 @@ public class ArenaConfig extends Configuration
 			this.unlimitedAmmo = getBoolean(values, "unlimitedAmmo", def.isUnlimitedAmmo());
 			this.giveRewards = getBoolean(values, "giveRewards", def.isGiveRewards());
 			this.rewardBasedOnXp = getBoolean(values, "rewardBasedOnXp", def.isRewardBasedOnXp());
+			this.defaultClass = getString(values, "defaultClass", def.getDefaultClass());
 
 			if (giveRewards)
 			{

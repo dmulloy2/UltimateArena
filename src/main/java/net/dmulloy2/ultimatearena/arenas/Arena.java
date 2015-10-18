@@ -345,7 +345,7 @@ public abstract class Arena implements Reloadable
 			.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, FormatUtil.format("&eClick to join {0}!", name)))
 			.append(FormatUtil.format(" &3to join!"))
 			.create(); */
-		BaseComponent[] components = ComponentSerializer.parse(FormatUtil.format(getMessage("clickToJoin"), name));
+		BaseComponent[] components = ComponentSerializer.parse(FormatUtil.format(getMessage("clickToJoin").replace("%s", name)));
 
 		for (Player player : Util.getOnlinePlayers())
 		{
@@ -355,13 +355,11 @@ public abstract class Arena implements Reloadable
 				{
 					if (announced == 0)
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&e{0} &3arena has been created!",
-								type.getStylizedName()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("arenaCreated"), type.getStylizedName()));
 					}
 					else
 					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&3Hurry up and join the &e{0} &3arena!",
-								type.getStylizedName()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("hurryAndJoin"), type.getStylizedName()));
 					}
 
 					ChatUtil.sendMessage(player, components);
