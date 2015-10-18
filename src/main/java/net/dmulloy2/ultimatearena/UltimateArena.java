@@ -174,10 +174,14 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		commandHandler = new CommandHandler(this);
 		guiHandler = new GUIHandler(this);
 
-		// Register UA handlers
 		spectatingHandler = new SpectatingHandler(this);
-		arenaTypeHandler = new ArenaTypeHandler(this);
 		fileHandler = new FileHandler(this);
+
+		// Order is important here
+		loadClasses();
+		arenaTypeHandler = new ArenaTypeHandler(this);
+		loadArenas();
+		loadSigns();
 
 		// Integration
 		setupIntegration();
@@ -217,9 +221,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		pm.registerEvents(new EntityListener(this), this);
 		pm.registerEvents(new BlockListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
-
-		// Load files
-		loadFiles();
 
 		// Arena Updater, runs every second
 		new ArenaUpdateTask().runTaskTimer(this, TimeUtil.toTicks(1), TimeUtil.toTicks(1));
@@ -330,14 +331,6 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 	public final boolean isWorldEditEnabled()
 	{
 		return worldEditHandler != null && worldEditHandler.isEnabled();
-	}
-
-	// Loading
-	private void loadFiles()
-	{
-		loadClasses();
-		loadArenas();
-		loadSigns();
 	}
 
 	private String prefix = null;
