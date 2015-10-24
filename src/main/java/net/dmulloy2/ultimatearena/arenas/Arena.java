@@ -652,6 +652,8 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void tellPlayers(String string, Object... objects)
 	{
+		if (string.isEmpty()) return;
+
 		for (ArenaPlayer ap : active)
 		{
 			ap.sendMessage(string, objects);
@@ -673,6 +675,8 @@ public abstract class Arena implements Reloadable
 	 */
 	public final void tellAllPlayers(String string, Object... objects)
 	{
+		if (string.isEmpty()) return;
+
 		tellPlayers(string, objects);
 
 		for (ArenaPlayer ap : inactive)

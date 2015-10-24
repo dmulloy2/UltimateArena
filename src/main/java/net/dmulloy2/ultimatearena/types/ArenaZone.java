@@ -400,7 +400,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		}
 
 		loadCustomOptions(config);
-		loadConfiguration();
 	}
 
 	/**
