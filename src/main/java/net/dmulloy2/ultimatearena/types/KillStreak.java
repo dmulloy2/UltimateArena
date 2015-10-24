@@ -30,6 +30,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Tameable;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 /**
  * @author dmulloy2
@@ -98,6 +100,8 @@ public final class KillStreak
 		}
 		else if (type == Type.MOB)
 		{
+			MetadataValue meta = new FixedMetadataValue(ap.getPlugin(), true);
+			
 			World world = ap.getPlayer().getWorld();
 			Location location = ap.getPlayer().getLocation();
 
@@ -110,6 +114,9 @@ public final class KillStreak
 					Tameable tame = (Tameable) entity;
 					tame.setTamed(true);
 					tame.setOwner(ap.getPlayer());
+
+					// Used in the entity listener
+					entity.setMetadata("ua_attack_dog_" + ap.getName(), meta);
 				}
 
 				if (target != null && entity instanceof Monster)

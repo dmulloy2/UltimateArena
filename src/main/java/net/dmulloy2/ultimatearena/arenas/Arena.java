@@ -1479,10 +1479,7 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
-	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
-	{
-		
-	}
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player) { }
 
 	public final String getMessage(String key)
 	{

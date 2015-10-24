@@ -33,6 +33,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -110,6 +111,16 @@ public class EntityListener implements Listener
 		Player attacker = getPlayer(event.getDamager());
 		if (attacker == null)
 			return;
+
+		// Prevent attacking attack dogs
+		if (event.getEntity() instanceof Wolf)
+		{
+			if (event.getEntity().hasMetadata("ua_attack_dog_" + attacker.getName()))
+			{
+				event.setCancelled(true);
+				return;
+			}
+		}
 
 		Player defender = getPlayer(event.getEntity());
 		if (defender == null)
