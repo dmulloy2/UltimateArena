@@ -220,11 +220,31 @@ public abstract class ArenaType
 	 * Saves this type's default config
 	 *
 	 * @param defaultType if this is a default arena type
+	 * @deprecated Meaning is misleading
+	 * @see #saveDefaultConfig()
+	 * @see #saveDefaultJarConfig()
 	 */
+	@Deprecated
 	public void saveDefaultConfig(boolean defaultType)
+	{
+		if (defaultType)
+			saveDefaultJarConfig();
+		else
+			saveDefaultConfig();
+	}
+
+	/**
+	 * Saves this type's default config from the UltimateArena jar.
+	 * <p>
+	 * Note: This should only be called by default types.
+	 */
+	protected void saveDefaultJarConfig()
 	{
 		String name = getName().toLowerCase();
 		InputStream in = plugin.getResource("configs/" + name + "Config.yml");
+		if (in == null)
+			throw new IllegalStateException("saveDefaultJarConfig() can only be called by default types!");
+
 		File outFile = new File(dataFolder, "config.yml");
 		if (! outFile.exists())
 			saveResource(in, outFile);

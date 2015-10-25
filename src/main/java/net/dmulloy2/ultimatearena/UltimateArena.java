@@ -399,9 +399,11 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 		}
 
 		File configsFile = new File(dataFolder, "configs");
-		if (! configsFile.exists())
+		if (configsFile.exists())
 		{
-			configsFile.mkdir();
+			String[] children = configsFile.list();
+			if (children == null || children.length == 0)
+				configsFile.delete();
 		}
 
 		File typesFile = new File(dataFolder, "types");

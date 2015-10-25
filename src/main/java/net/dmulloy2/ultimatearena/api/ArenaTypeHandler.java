@@ -129,7 +129,7 @@ public class ArenaTypeHandler implements Reloadable
 			attemptConfigMove(type);
 
 			// Save and load configs
-			type.saveDefaultConfig(true);
+			type.saveDefaultJarConfig();
 			type.loadConfig();
 
 			arenaTypes.put(type.getName(), type);
@@ -147,15 +147,14 @@ public class ArenaTypeHandler implements Reloadable
 		if (! dataFile.exists())
 			dataFile.mkdirs();
 
-		String name = type.getName().toLowerCase();
-		File configFile = new File(dataFile, name + "Config.yml");
+		File configFile = new File(dataFile, "config.yml");
 		if (! configFile.exists())
 		{
 			// Check if the old file exists
 			File configs = new File(plugin.getDataFolder(), "configs");
 			if (configs.exists())
 			{
-				File config = new File(configs, "config.yml");
+				File config = new File(configs, type.getName().toLowerCase() + "Config.yml");
 				if (config.exists())
 				{
 					try
@@ -169,6 +168,10 @@ public class ArenaTypeHandler implements Reloadable
 						plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "copying config file: " + config.getName()));
 					}
 				}
+
+				String[] children = configs.list();
+				if (children == null || children.length == 0)
+					configs.delete();
 			}
 		}
 	}
