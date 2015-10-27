@@ -283,7 +283,9 @@ public class UltimateArena extends SwornPlugin implements Reloadable
 
 	public void broadcast(String string, Object... objects)
 	{
-		if (Config.globalMessages)
+		Validate.notNull(string, "string cannot be null!");
+
+		if (Config.globalMessages && ! string.isEmpty())
 		{
 			String broadcast = FormatUtil.format(string, objects);
 			getServer().broadcastMessage(prefix + broadcast);

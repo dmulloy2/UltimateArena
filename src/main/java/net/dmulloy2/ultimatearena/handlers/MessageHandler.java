@@ -108,7 +108,9 @@ public class MessageHandler implements Reloadable
 		{
 			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 			config.setDefaults(defConfig);
+
 			config.options().copyDefaults(true);
+			config.options().copyHeader(true);
 		}
 	}
 

@@ -1,4 +1,10 @@
 # UltimateArena Messages
+# By dmulloy2
+
+# To remove messages, set them to ""
+# Removing the line will replace it with the default
+# This supports all color codes (including rainbow, &z)
+# The plugin will format in information using {0}, {1} and so on
 
 prefix: "&6[&4&lUA&6]&3 "
 
