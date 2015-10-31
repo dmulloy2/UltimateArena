@@ -229,7 +229,7 @@ public final class ArenaClass extends Configuration
 			}
 
 			needsPermission = getBoolean(values, "needsPermission", false);
-			permissionNode = "ultimatearena.class." + name.toLowerCase().replaceAll("\s", "_");
+			permissionNode = "ultimatearena.class." + name.toLowerCase().replaceAll("\\s", "_");
 
 			if (isSet(values, "icon"))
 			{
