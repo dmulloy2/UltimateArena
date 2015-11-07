@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -47,23 +49,35 @@ public class MessageHandler implements Reloadable
 	private File file;
 
 	private final Map<String, String> messages;
+	private final List<String> disabled;
+
 	private final UltimateArena plugin;
 
 	public MessageHandler(UltimateArena plugin)
 	{
 		this.messages = new HashMap<>();
+		this.disabled = new ArrayList<>();
 		this.plugin = plugin;
 		this.reload();
 	}
 
 	public String getMessage(String key)
 	{
+		if (disabled.contains(key))
+			return "";
+
 		if (messages.containsKey(key))
 			return messages.get(key);
 
 		String message = config.getString(key);
 		if (message != null)
 		{
+			if (message.isEmpty() || ! config.getBoolean(key + ".enabled", true))
+			{
+				disabled.add(key);
+				return "";
+			}
+
 			messages.put(key, message);
 			return message;
 		}
@@ -71,10 +85,16 @@ public class MessageHandler implements Reloadable
 		return "[Missing message \"" + key + "\"]";
 	}
 
+	public boolean isDisabled(String key)
+	{
+		return getMessage(key).isEmpty();
+	}
+
 	@Override
 	public void reload()
 	{
 		messages.clear();
+		disabled.clear();
 
 		saveDefaultConfig();
 		reloadConfig();

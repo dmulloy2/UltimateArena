@@ -339,13 +339,8 @@ public abstract class Arena implements Reloadable
 			return;
 
 		// Allow players to click and insert into chat
-		/* BaseComponent[] components = new ComponentBuilder(FormatUtil.format(plugin.getPrefix() + "&3Type "))
-			.append(FormatUtil.format("&e/ua join {0}", name))
-			.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/ua join " + name))
-			.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, FormatUtil.format("&eClick to join {0}!", name)))
-			.append(FormatUtil.format(" &3to join!"))
-			.create(); */
-		BaseComponent[] components = ComponentSerializer.parse(FormatUtil.format(getMessage("clickToJoin").replace("%s", name)));
+		String clickToJoin = getMessage("clickToJoin");
+		BaseComponent[] components = clickToJoin.isEmpty() ? null : ComponentSerializer.parse(FormatUtil.format(clickToJoin.replace("%s", name)));
 
 		for (Player player : Util.getOnlinePlayers())
 		{
@@ -353,16 +348,18 @@ public abstract class Arena implements Reloadable
 			{
 				if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
 				{
+					String message = "";
+					
 					if (announced == 0)
-					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("arenaCreated"), type.getStylizedName()));
-					}
+						message = FormatUtil.format(getMessage("arenaCreated"), type.getStylizedName());
 					else
-					{
-						player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("hurryAndJoin"), type.getStylizedName()));
-					}
+						message = FormatUtil.format(getMessage("hurryAndJoin"), type.getStylizedName());
 
-					ChatUtil.sendMessage(player, components);
+					if (! message.isEmpty())
+						player.sendMessage(plugin.getPrefix() + message);
+
+					if (components != null)
+						ChatUtil.sendMessage(player, components);
 				}
 			}
 		}
