@@ -63,9 +63,6 @@ public class Config
 	@Key("scoreboard.enabled")
 	public static boolean scoreboardEnabled = true;
 
-	@Key("spectator.mode")
-	public static String spectatorMode = "SPECTATOR";
-
 	@Key("spectator.flight")
 	public static boolean spectatorFlight = true;
 

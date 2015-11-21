@@ -255,6 +255,9 @@ public class EntityListener implements Listener
 	public void onEntityDeathMonitor(EntityDeathEvent event)
 	{
 		LivingEntity entity = event.getEntity();
+		if (entity == null)
+			return;
+
 		if (plugin.isInArena(entity.getLocation()))
 		{
 			event.getDrops().clear();
@@ -459,35 +462,31 @@ public class EntityListener implements Listener
 		}
 		else
 		{
-			if (died instanceof LivingEntity)
+			if (died.getKiller() instanceof Player)
 			{
-				LivingEntity lentity = died;
-				if (lentity.getKiller() instanceof Player)
+				Player killer = died.getKiller();
+				if (plugin.isInArena(killer))
 				{
-					Player killer = lentity.getKiller();
-					if (plugin.isInArena(killer))
+					ArenaPlayer ap = plugin.getArenaPlayer(killer);
+
+					// Selectively count mob kills
+					if (ap.getArena().isCountMobKills())
 					{
-						ArenaPlayer ap = plugin.getArenaPlayer(killer);
+						ap.addXP(25);
+						ap.setKills(ap.getKills() + 1);
+						ap.setKillStreak(ap.getKillStreak() + 1);
+						ap.getArena().handleKillStreak(ap);
 
-						// Selectively count mob kills
-						if (ap.getArena().isCountMobKills())
-						{
-							ap.addXP(25);
-							ap.setKills(ap.getKills() + 1);
-							ap.setKillStreak(ap.getKillStreak() + 1);
-							ap.getArena().handleKillStreak(ap);
-
-							String name = FormatUtil.getFriendlyName(lentity.getType());
-							ap.sendMessage(plugin.getMessage("pveKill"), killer.getName(), FormatUtil.getArticle(name), name);
-							ap.displayStats();
-						}
+						String name = FormatUtil.getFriendlyName(died.getType());
+						ap.sendMessage(plugin.getMessage("pveKill"), killer.getName(), FormatUtil.getArticle(name), name);
+						ap.displayStats();
 					}
 				}
 			}
 		}
 	}
 
-	// Line count for onEntityDeath = 238
+	// Line count for onEntityDeath = 218
 
 	private String getWeapon(Player player)
 	{
