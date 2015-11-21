@@ -25,6 +25,7 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSpectator;
 import net.dmulloy2.util.FormatUtil;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -43,6 +44,7 @@ public class PlayerSelectionGUI extends AbstractGUI
 	{
 		super(plugin, player);
 		this.plugin = plugin;
+		this.setup();
 	}
 
 	@Override
@@ -68,7 +70,7 @@ public class PlayerSelectionGUI extends AbstractGUI
 			{
 				ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 				SkullMeta meta = (SkullMeta) head.getItemMeta();
-				meta.setDisplayName(ap.getName() + "''s Head");
+				meta.setDisplayName(ChatColor.RESET + ap.getName());
 				meta.setOwner(ap.getName());
 				head.setItemMeta(meta);
 

@@ -96,8 +96,8 @@ public class PlayerListener implements Listener
 		ArenaSpectator as = plugin.getSpectatingHandler().getSpectator(player);
 		if (as != null)
 		{
-			as.clear();
 			plugin.getSpectatingHandler().removeSpectator(as);
+			as.clear();
 		}
 
 		if (player.hasMetadata("UA"))

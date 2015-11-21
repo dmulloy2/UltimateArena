@@ -20,6 +20,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
@@ -95,27 +96,28 @@ public final class ArenaSpectator
 		// Clear inventory
 		clearInventory();
 
-		// Make sure the player is in survival
-		Player player = getPlayer();
+		// Put them into survival
 		player.setGameMode(GameMode.SURVIVAL);
 
-		// Heal up the Player
+		// Hide them if applicable
+		if (Config.spectatorInvisible)
+		{
+			for (ArenaPlayer ap : arena.getActivePlayers())
+			{
+				ap.getPlayer().hidePlayer(player);
+			}
+		}
+
+		// Heal them up
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
-		player.setHealth(20);
+		player.setHealth(player.getMaxHealth());
 
-		// Allow flight
-		player.setAllowFlight(true);
-		player.setFlySpeed(0.1F);
+		// Let them fly
+		player.setAllowFlight(Config.spectatorFlight);
 
-		// Give them a compass
+		// Give them a selector compass
 		player.getInventory().addItem(new ItemStack(Material.COMPASS));
-
-		// Hide the player
-		for (ArenaPlayer ap : arena.getActivePlayers())
-		{
-			ap.getPlayer().hidePlayer(player);
-		}
 
 		this.active = true;
 	}
@@ -124,21 +126,23 @@ public final class ArenaSpectator
 	{
 		reset();
 
-		Player player = getPlayer();
-		for (ArenaPlayer ap : arena.getActivePlayers())
+		if (Config.spectatorInvisible)
 		{
-			ap.getPlayer().showPlayer(player);
-		}
-
-		for (ArenaPlayer ap : arena.getInactivePlayers())
-		{
-			if (ap != null && ap.isOnline())
+			for (ArenaPlayer ap : arena.getActivePlayers())
 			{
 				ap.getPlayer().showPlayer(player);
 			}
+
+			for (ArenaPlayer ap : arena.getInactivePlayers())
+			{
+				if (ap != null && ap.isOnline())
+				{
+					ap.getPlayer().showPlayer(player);
+				}
+			}
 		}
 
-		teleport(spawnBack);
+		player.teleport(spawnBack);
 
 		this.active = false;
 	}
@@ -148,7 +152,6 @@ public final class ArenaSpectator
 	 */
 	public final void clearInventory()
 	{
-		Player player = getPlayer();
 		PlayerInventory inv = player.getInventory();
 
 		player.closeInventory();
@@ -165,7 +168,6 @@ public final class ArenaSpectator
 	 */
 	public final void clearPotionEffects()
 	{
-		Player player = getPlayer();
 		for (PotionEffect effect : player.getActivePotionEffects())
 		{
 			player.removePotionEffect(effect.getType());
@@ -174,7 +176,7 @@ public final class ArenaSpectator
 
 	public void sendMessage(String string, Object... objects)
 	{
-		getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
 	/**
@@ -185,12 +187,12 @@ public final class ArenaSpectator
 	 */
 	public final void teleport(Location location)
 	{
-		getPlayer().teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		player.teleport(location.clone().add(0.5D, 1.0D, 0.5D));
 	}
 
 	public final void savePlayerData()
 	{
-		this.playerData = new PlayerData(getPlayer());
+		this.playerData = new PlayerData(player);
 	}
 
 	public final void reset()
@@ -198,11 +200,6 @@ public final class ArenaSpectator
 		clearInventory();
 		clearPotionEffects();
 		playerData.apply();
-	}
-
-	public final Player getPlayer()
-	{
-		return player;
 	}
 
 	/**

@@ -55,16 +55,17 @@ public class EntityListener implements Listener
 {
 	private final UltimateArena plugin;
 
+	// Stop block damage in arenas
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event)
 	{
 		if (plugin.isInArena(event.getLocation()))
 		{
-			// Prevent block damage in arenas
 			event.blockList().clear();
 		}
 	}
 
+	// Prevent food level change in the lobby
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
@@ -77,7 +78,6 @@ public class EntityListener implements Listener
 				Arena a = ap.getArena();
 				if (a.isInLobby())
 				{
-					// Prevent food level change
 					player.setFoodLevel(20);
 					event.setCancelled(true);
 				}
@@ -85,6 +85,7 @@ public class EntityListener implements Listener
 		}
 	}
 
+	// Stop combustion in the lobby
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityCombust(EntityCombustEvent event)
 	{
@@ -112,7 +113,7 @@ public class EntityListener implements Listener
 		if (attacker == null)
 			return;
 
-		// Prevent attacking attack dogs
+		// Prevent attacking your attack dogs
 		if (event.getEntity() instanceof Wolf)
 		{
 			if (event.getEntity().hasMetadata("ua_attack_dog_" + attacker.getName()))
@@ -170,6 +171,7 @@ public class EntityListener implements Listener
 		}
 	}
 
+	// Repair armor and in-hand items
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageByEntityMonitor(EntityDamageByEntityEvent event)
 	{
@@ -229,10 +231,10 @@ public class EntityListener implements Listener
 		}
 	}
 
+	// Cancel damage in the lobby
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
-		// Cancels all forms of damage in the lobby
 		if (event.getEntity() instanceof Player)
 		{
 			Player player = (Player) event.getEntity();
@@ -248,20 +250,25 @@ public class EntityListener implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDeath(EntityDeathEvent event)
+	// Clear drops in arenas
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDeathMonitor(EntityDeathEvent event)
 	{
-		// Handles deaths inside arenas
-		Entity died = event.getEntity();
-		if (died == null)
-			return;
-
-		// Clear the drops if in an arena
-		if (plugin.isInArena(died.getLocation()))
+		LivingEntity entity = event.getEntity();
+		if (plugin.isInArena(entity.getLocation()))
 		{
 			event.getDrops().clear();
 			event.setDroppedExp(0);
 		}
+	}
+
+	// Handle deaths in arenas
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityDeath(EntityDeathEvent event)
+	{
+		LivingEntity died = event.getEntity();
+		if (died == null)
+			return;
 
 		if (died instanceof Player)
 		{
@@ -454,7 +461,7 @@ public class EntityListener implements Listener
 		{
 			if (died instanceof LivingEntity)
 			{
-				LivingEntity lentity = (LivingEntity) died;
+				LivingEntity lentity = died;
 				if (lentity.getKiller() instanceof Player)
 				{
 					Player killer = lentity.getKiller();

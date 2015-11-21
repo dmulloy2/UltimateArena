@@ -84,3 +84,10 @@ showUnavailableClasses: false
 # enabled: boolean; default: true
 scoreboard:
   enabled: true
+
+# Spectator settings
+# flight: whether or not to allow flying
+# invisible: whether or not to hide spectators
+spectator:
+  flight: true
+  invisible: true

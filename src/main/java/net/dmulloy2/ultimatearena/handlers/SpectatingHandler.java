@@ -24,6 +24,7 @@ import net.dmulloy2.ultimatearena.gui.PlayerSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaSpectator;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -34,6 +35,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -47,6 +49,7 @@ public class SpectatingHandler implements Listener
 {
 	private boolean registered;
 	private final UltimateArena plugin;
+
 	public SpectatingHandler(UltimateArena plugin)
 	{
 		this.plugin = plugin;
@@ -212,6 +215,20 @@ public class SpectatingHandler implements Listener
 				{
 					event.setCancelled(true);
 				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onEntityTarget(EntityTargetEvent event)
+	{
+		Entity entity = event.getTarget();
+		if (entity instanceof Player)
+		{
+			Player player = (Player) entity;
+			if (isSpectating(player))
+			{
+				event.setCancelled(true);
 			}
 		}
 	}
