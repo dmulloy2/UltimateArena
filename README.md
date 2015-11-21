@@ -5,6 +5,7 @@ UltimateArena is a completely customizable arena plugin with 10 different arena 
 Development builds of UltimateArena can be found at our Jenkins server: http://ci.shadowvolt.com/job/UltimateArena/
 
 ## Useful Links
+* [API Documentation](https://github.com/MineSworn/UltimateArena/wiki/API)
 * [Configuration](https://github.com/MineSworn/UltimateArena/wiki/Configuration)
 * [Issue Tracker](https://github.com/MineSworn/UltimateArena/issues) 
 * [Permissions](https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/plugin.yml#L14)

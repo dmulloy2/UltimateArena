@@ -137,14 +137,14 @@ public class ArenaLoader
 			Map<?, ?> map = (Map<?, ?>) yaml.load(stream);
 
 			String name = (String) map.get("name");
-			Validate.notNull(name, "Name cannot be null");
-			Validate.isTrue(name.matches("^[A-Za-z0-9 _.-]+$"), "Name '" + name + "' contains invalid chargacters");
+			Validate.notNull(name, "Missing required key: name");
+			Validate.isTrue(name.matches("^[A-Za-z0-9 _.-]+$"), "Name '" + name + "' contains invalid characters");
 
 			String main = (String) map.get("main");
-			Validate.notNull(main, "Main class cannot be null");
+			Validate.notNull(main, "Missing required key: main");
 
 			String version = (String) map.get("version");
-			Validate.notNull(version, "Version cannot be null");
+			Validate.notNull(version, "Missing required key: version");
 
 			String author = (String) map.get("author");
 			if (author == null)
