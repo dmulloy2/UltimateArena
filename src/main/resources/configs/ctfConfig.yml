@@ -1,5 +1,5 @@
 # Main configuration file for the ctf arena type
-# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+# https://github.com/MineSworn/UltimateArena/wiki/Configuration
 
 gameTime: 440
 lobbyTime: 80

@@ -1,5 +1,5 @@
 # Main configuration file for the hunger arena type
-# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+# https://github.com/MineSworn/UltimateArena/wiki/Configuration
 
 gameTime: 9000
 lobbyTime: 70

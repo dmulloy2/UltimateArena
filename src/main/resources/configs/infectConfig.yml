@@ -1,5 +1,5 @@
 # Main configuration file for the infect arena type
-# http://dev.bukkit.org/bukkit-plugins/ultimatearena/pages/configuration/
+# https://github.com/MineSworn/UltimateArena/wiki/Configuration
 
 gameTime: 180
 lobbyTime: 90
