@@ -45,7 +45,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -404,8 +403,9 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	/**
 	 * Loads custom options.
+	 * @param config Configuration
 	 */
-	protected void loadCustomOptions(FileConfiguration fc) { }
+	protected void loadCustomOptions(YamlConfiguration config) { }
 
 	/**
 	 * Saves this arena to disk

@@ -20,6 +20,7 @@ package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -123,9 +124,10 @@ public class MessageHandler implements Reloadable
 		config = YamlConfiguration.loadConfiguration(file);
 
 		// Look for defaults in the jar
-		Reader defConfigStream = new InputStreamReader(plugin.getResource(FILE_NAME), Charsets.UTF_8);
-		if (defConfigStream != null)
+		InputStream stream = plugin.getResource(FILE_NAME);
+		if (stream != null)
 		{
+			Reader defConfigStream = new InputStreamReader(stream, Charsets.UTF_8);
 			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 			config.setDefaults(defConfig);
 

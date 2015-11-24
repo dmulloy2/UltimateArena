@@ -200,8 +200,7 @@ public class ArenaConfig extends Configuration
 						for (ItemStack item : rewards)
 						{
 							ScaledReward reward = new ScaledReward(item, 200.0D);
-							if (reward != null)
-								scaledRewards.add(reward);
+							scaledRewards.add(reward);
 						}
 					}
 					else

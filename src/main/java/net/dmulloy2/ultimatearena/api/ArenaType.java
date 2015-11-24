@@ -286,6 +286,7 @@ public abstract class ArenaType
 			if (in == null)
 			{
 				logger.log(Level.WARNING, "The embedded resource '" + resourcePath + "' cannot be found in " + file);
+				return;
 			}
 
 			outFile = new File(dataFolder, resourcePath);

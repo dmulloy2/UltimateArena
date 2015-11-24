@@ -29,7 +29,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.MaterialUtil;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * @author dmulloy2
@@ -64,9 +64,9 @@ public class SpleefZone extends ArenaZone
 	}
 
 	@Override
-	public void loadCustomOptions(FileConfiguration fc)
+	public void loadCustomOptions(YamlConfiguration config)
 	{
-		this.specialTypeString = fc.getString("specialTypeString");
+		this.specialTypeString = config.getString("specialTypeString");
 		this.specialType = MaterialUtil.getMaterial(specialTypeString);
 	}
 

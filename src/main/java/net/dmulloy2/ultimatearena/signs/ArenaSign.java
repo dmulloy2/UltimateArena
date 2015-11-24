@@ -153,6 +153,7 @@ public abstract class ArenaSign implements ConfigurationSerializable
 
 	/**
 	 * Called when the Arena completes.
+	 * @param arena The arena
 	 */
 	public void onArenaCompletion(Arena arena) { }
 
@@ -186,5 +187,9 @@ public abstract class ArenaSign implements ConfigurationSerializable
 		return data;
 	}
 
+	/**
+	 * Serializes custom data.
+	 * @param data Data map
+	 */
 	protected void serializeCustomData(Map<String, Object> data) { }
 }

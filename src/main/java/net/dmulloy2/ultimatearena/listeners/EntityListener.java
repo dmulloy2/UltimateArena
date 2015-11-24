@@ -29,6 +29,7 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -40,11 +41,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.BlockProjectileSource;
 
 /**
  * @author dmulloy2
@@ -75,8 +76,8 @@ public class EntityListener implements Listener
 			ArenaPlayer ap = plugin.getArenaPlayer(player);
 			if (ap != null)
 			{
-				Arena a = ap.getArena();
-				if (a.isInLobby())
+				Arena arena = ap.getArena();
+				if (arena.isInLobby())
 				{
 					player.setFoodLevel(20);
 					event.setCancelled(true);
@@ -89,10 +90,9 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityCombust(EntityCombustEvent event)
 	{
-		Entity entity = event.getEntity();
-		if (entity instanceof Player)
+		if (event.getEntity() instanceof Player)
 		{
-			Player player = (Player) entity;
+			Player player = (Player) event.getEntity();
 			ArenaPlayer ap = plugin.getArenaPlayer(player);
 			if (ap != null)
 			{
@@ -255,9 +255,6 @@ public class EntityListener implements Listener
 	public void onEntityDeathMonitor(EntityDeathEvent event)
 	{
 		LivingEntity entity = event.getEntity();
-		if (entity == null)
-			return;
-
 		if (plugin.isInArena(entity.getLocation()))
 		{
 			event.getDrops().clear();
@@ -269,37 +266,31 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		LivingEntity died = event.getEntity();
-		if (died == null)
-			return;
-
-		if (died instanceof Player)
+		if (event.getEntity() instanceof Player)
 		{
-			Player pdied = (Player) died;
-			ArenaPlayer dp = plugin.getArenaPlayer(pdied);
-			if (dp != null)
+			Player died = (Player) event.getEntity();
+			ArenaPlayer ap = plugin.getArenaPlayer(died);
+			if (ap != null)
 			{
 				// Prevent duplicate deaths
-				if (dp.isDead()) return;
-				dp.onDeath();
+				if (ap.isDead()) return;
+				ap.onDeath();
 
-				Arena ar = dp.getArena();
+				Arena arena = ap.getArena();
 
-				if (pdied.getKiller() instanceof Player)
+				Player killer = died.getKiller();
+				if (killer != null)
 				{
-					Player killer = pdied.getKiller();
-					if (killer.getName().equals(pdied.getName())) // Suicide
+					if (killer.equals(died))
 					{
-						ar.tellPlayers(plugin.getMessage("suicide"), pdied.getName());
-						dp.displayStats();
+						arena.tellPlayers(plugin.getMessage("suicide"), died.getName());
+						ap.displayStats();
 					}
 					else
 					{
-						// PvP
-						ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
-						dp.displayStats();
+						arena.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), died.getName(), getWeapon(killer));
+						ap.displayStats();
 
-						// Handle killer
 						ArenaPlayer kp = plugin.getArenaPlayer(killer);
 						if (kp != null)
 						{
@@ -314,161 +305,104 @@ public class EntityListener implements Listener
 				}
 				else
 				{
-					// From this point on, we will return when there is a valid match
-					if (pdied.getKiller() instanceof LivingEntity)
-					{
-						LivingEntity lentity = pdied.getKiller();
-						String name = FormatUtil.getFriendlyName(lentity.getType());
-
-						ar.tellPlayers(plugin.getMessage("pvpKill"), pdied.getName(), FormatUtil.getArticle(name), name);
-						dp.displayStats();
-						return;
-					}
-					else if (pdied.getKiller() instanceof Projectile)
-					{
-						Projectile proj = (Projectile) pdied.getKiller();
-						if (proj.getShooter() instanceof Player)
-						{
-							Player killer = (Player) proj.getShooter();
-							ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
-							dp.displayStats();
-
-							// Handle killer
-							ArenaPlayer kp = plugin.getArenaPlayer(killer);
-							kp.setKills(kp.getKills() + 1);
-							kp.setKillStreak(kp.getKillStreak() + 1);
-							kp.getArena().handleKillStreak(kp);
-							kp.addXP(100);
-
-							kp.displayStats();
-							return;
-						}
-						else if (proj.getShooter() instanceof LivingEntity)
-						{
-							LivingEntity lentity = pdied.getKiller();
-							String name = FormatUtil.getFriendlyName(lentity.getType());
-
-							ar.tellPlayers(plugin.getMessage("pveDeath"), pdied.getName(), FormatUtil.getArticle(name), name);
-							dp.displayStats();
-							return;
-						}
-					}
-
 					// Attempt to grab from their last damage cause
-					EntityDamageEvent damageEvent = pdied.getLastDamageCause();
-					DamageCause cause = damageEvent != null ? damageEvent.getCause() : null;
-
-					if (cause == DamageCause.ENTITY_ATTACK)
+					EntityDamageEvent damageEvent = died.getLastDamageCause();
+					if (damageEvent instanceof EntityDamageByEntityEvent)
 					{
-						if (damageEvent instanceof EntityDamageByEntityEvent)
+						EntityDamageByEntityEvent damageByEntity = (EntityDamageByEntityEvent) damageEvent;
+						Entity damager = damageByEntity.getDamager();
+						if (damager instanceof Player)
 						{
-							EntityDamageByEntityEvent damageByEntity = (EntityDamageByEntityEvent) damageEvent;
-							Entity damager = damageByEntity.getDamager();
-							if (damager != null)
+							killer = (Player) damager;
+							arena.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), died.getName(), getWeapon(killer));
+							ap.displayStats();
+
+							ArenaPlayer kp = plugin.getArenaPlayer(killer);
+							if (kp != null)
 							{
-								if (damager instanceof Player)
-								{
-									Player killer = (Player) damager;
-									ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
-									dp.displayStats();
+								kp.setKills(kp.getKills() + 1);
+								kp.setKillStreak(kp.getKillStreak() + 1);
+								kp.getArena().handleKillStreak(kp);
+								kp.addXP(100);
 
-									// Handle killer
-									ArenaPlayer kp = plugin.getArenaPlayer(killer);
-									if (kp != null)
-									{
-										kp.setKills(kp.getKills() + 1);
-										kp.setKillStreak(kp.getKillStreak() + 1);
-										kp.getArena().handleKillStreak(kp);
-										kp.addXP(100);
-
-										kp.displayStats();
-									}
-								}
-								else
-								{
-									String name = FormatUtil.getFriendlyName(damager.getType());
-									ar.tellPlayers(plugin.getMessage("pveDeath"), pdied.getName(), FormatUtil.getArticle(name), name);
-									dp.displayStats();
-								}
-
-								return;
+								kp.displayStats();
 							}
 						}
-					}
-					else if (cause == DamageCause.PROJECTILE)
-					{
-						if (damageEvent instanceof EntityDamageByEntityEvent)
+						else if (damager instanceof Projectile)
 						{
-							EntityDamageByEntityEvent damageByEntity = (EntityDamageByEntityEvent) damageEvent;
-							Entity damager = damageByEntity.getDamager();
-							if (damager != null)
+							Projectile proj = (Projectile) damager;
+							Object shooter = getShooter(proj);
+
+							if (shooter instanceof Player)
 							{
-								if (damager instanceof Projectile)
+								killer = (Player) damager;
+								arena.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), died.getName(), getWeapon(killer));
+								ap.displayStats();
+
+								ArenaPlayer kp = plugin.getArenaPlayer(killer);
+								if (kp != null)
 								{
-									Projectile proj = (Projectile) damager;
-									if (proj.getShooter() != null)
-									{
-										if (proj.getShooter() instanceof Player)
-										{
-											Player killer = (Player) proj.getShooter();
-											ar.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), pdied.getName(), getWeapon(killer));
-											dp.displayStats();
+									kp.setKills(kp.getKills() + 1);
+									kp.setKillStreak(kp.getKillStreak() + 1);
+									kp.getArena().handleKillStreak(kp);
+									kp.addXP(100);
 
-											// Handle killer
-											ArenaPlayer kp = plugin.getArenaPlayer(killer);
-											if (kp != null)
-											{
-												kp.setKills(kp.getKills() + 1);
-												kp.setKillStreak(kp.getKillStreak() + 1);
-												kp.getArena().handleKillStreak(kp);
-												kp.addXP(100);
-
-												kp.displayStats();
-											}
-										}
-										else
-										{
-											String name = proj.getShooter() instanceof LivingEntity ? FormatUtil.getFriendlyName(((LivingEntity) proj.getShooter()).getType()) : "";
-											ar.tellPlayers(plugin.getMessage("pveDeath"), pdied.getName(), FormatUtil.getArticle(name), name);
-											dp.displayStats();
-										}
-
-										return;
-									}
+									kp.displayStats();
 								}
 							}
+							else if (shooter instanceof Entity)
+							{
+								Entity entity = (Entity) shooter;
+								String name = FormatUtil.getFriendlyName(entity.getType());
+								arena.tellPlayers(plugin.getMessage("pveDeath"), died.getName(), FormatUtil.getArticle(name), name);
+								ap.displayStats();
+							}
+							else if (shooter instanceof BlockProjectileSource)
+							{
+								BlockProjectileSource source = (BlockProjectileSource) shooter;
+								Block block = source.getBlock();
+								String name = FormatUtil.getFriendlyName(block.getType());
+								arena.tellPlayers(plugin.getMessage("pveDeath"), died.getName(), FormatUtil.getArticle(name), name);
+								ap.displayStats();
+							}
+						}
+						else
+						{
+							String name = FormatUtil.getFriendlyName(damager.getType());
+							arena.tellPlayers(plugin.getMessage("pveDeath"), died.getName(), FormatUtil.getArticle(name), name);
+							ap.displayStats();
 						}
 					}
-					else if (cause != null)
+					else if (damageEvent != null)
 					{
-						// There's probably nothing else we can do here, so just turn it into a string
-						ar.tellPlayers(plugin.getMessage("genericDeath"), pdied.getName(), FormatUtil.getFriendlyName(cause));
-						dp.displayStats();
+						// Stringify it best we can
+						arena.tellPlayers(plugin.getMessage("genericDeath"), died.getName(), FormatUtil.getFriendlyName(damageEvent.getCause()));
+						ap.displayStats();
 					}
-					else if (ar instanceof SpleefArena)
+					else if (arena instanceof SpleefArena)
 					{
-						// If they were in spleef, they probably fell through the floor
-						ar.tellPlayers(plugin.getMessage("spleefDeath"), pdied.getName());
-						dp.displayStats();
+						// If it's spleef, they probably fell through the floor
+						arena.tellPlayers(plugin.getMessage("spleefDeath"), died.getName());
+						ap.displayStats();
 					}
 					else
 					{
 						// No idea
-						ar.tellPlayers(plugin.getMessage("unknownDeath"), pdied.getName());
-						dp.displayStats();
+						arena.tellPlayers(plugin.getMessage("unknownDeath"), died.getName());
+						ap.displayStats();
 					}
 				}
 			}
 		}
 		else
 		{
-			if (died.getKiller() instanceof Player)
+			LivingEntity died = event.getEntity();
+			Player killer = died.getKiller();
+			if (killer != null)
 			{
-				Player killer = died.getKiller();
-				if (plugin.isInArena(killer))
+				ArenaPlayer ap = plugin.getArenaPlayer(killer);
+				if (ap != null)
 				{
-					ArenaPlayer ap = plugin.getArenaPlayer(killer);
-
 					// Selectively count mob kills
 					if (ap.getArena().isCountMobKills())
 					{
@@ -485,8 +419,6 @@ public class EntityListener implements Listener
 			}
 		}
 	}
-
-	// Line count for onEntityDeath = 218
 
 	private String getWeapon(Player player)
 	{

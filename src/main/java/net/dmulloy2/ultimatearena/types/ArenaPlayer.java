@@ -187,6 +187,8 @@ public final class ArenaPlayer
 			case "boots":
 				getPlayer().getInventory().setBoots(stack);
 				return;
+			default:
+				throw new IllegalArgumentException("Unsupported slot: " + slot);
 		}
 	}
 
@@ -495,6 +497,9 @@ public final class ArenaPlayer
 			case ERROR:
 				arena.endPlayer(this);
 				arena.tellPlayers(plugin.getMessage("errorBroadcast"), name);
+				break;
+			default:
+				arena.endPlayer(this);
 				break;
 		}
 	}

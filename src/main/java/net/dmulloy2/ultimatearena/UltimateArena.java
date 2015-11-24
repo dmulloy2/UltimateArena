@@ -37,7 +37,6 @@ import net.dmulloy2.handlers.LogHandler;
 import net.dmulloy2.handlers.PermissionHandler;
 import net.dmulloy2.handlers.ResourceHandler;
 import net.dmulloy2.integration.VaultHandler;
-import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.types.SimpleVector;
 import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -109,7 +108,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
-public class UltimateArena extends SwornPlugin implements Reloadable
+public class UltimateArena extends SwornPlugin
 {
 	// Handlers
 	private @Getter SpectatingHandler spectatingHandler;

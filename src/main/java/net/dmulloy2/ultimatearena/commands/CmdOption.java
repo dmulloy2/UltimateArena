@@ -28,6 +28,7 @@ import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.util.Util;
 
 /**
  * @author dmulloy2
@@ -120,16 +121,19 @@ public class CmdOption extends UltimateArenaCommand
 //					az.getConfig().setMaxPoints(NumberUtil.toInt(value));
 //					break;
 				case "allowTeamKilling":
-					az.getConfig().setAllowTeamKilling((boolean) value);
+					az.getConfig().setAllowTeamKilling(Util.toBoolean(value));
 					break;
 				case "countMobKills":
-					az.getConfig().setCountMobKills((boolean) value);
+					az.getConfig().setCountMobKills(Util.toBoolean(value));
 					break;
 				case "rewardBasedOnXp":
-					az.getConfig().setRewardBasedOnXp((boolean) value);
+					az.getConfig().setRewardBasedOnXp(Util.toBoolean(value));
 					break;
 				case "giveRewards":
-					az.getConfig().setGiveRewards((boolean) value);
+					az.getConfig().setGiveRewards(Util.toBoolean(value));
+					break;
+				default:
+					err("Unsupported option: &c{0}", option);
 					break;
 			}
 
@@ -169,16 +173,19 @@ public class CmdOption extends UltimateArenaCommand
 //					ac.setMaxPoints(NumberUtil.toInt(value));
 //					break;
 				case "allowTeamKilling":
-					ac.setAllowTeamKilling((boolean) value);
+					ac.setAllowTeamKilling(Util.toBoolean(value));
 					break;
 				case "countMobKills":
-					ac.setCountMobKills((boolean) value);
+					ac.setCountMobKills(Util.toBoolean(value));
 					break;
 				case "rewardBasedOnXp":
-					ac.setRewardBasedOnXp((boolean) value);
+					ac.setRewardBasedOnXp(Util.toBoolean(value));
 					break;
 				case "giveRewards":
-					ac.setGiveRewards((boolean) value);
+					ac.setGiveRewards(Util.toBoolean(value));
+					break;
+				default:
+					err("Unsupported option: &c{0}", option);
 					break;
 			}
 

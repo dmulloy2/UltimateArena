@@ -1480,6 +1480,11 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
+	/**
+	 * Adds scoreboard entries specific to this arena.
+	 * @param board Scoreboard to add entries to
+	 * @param player Player to add entries for
+	 */
 	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player) { }
 
 	public final String getMessage(String key)

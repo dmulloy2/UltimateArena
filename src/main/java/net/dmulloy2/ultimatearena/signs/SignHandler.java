@@ -131,8 +131,7 @@ public class SignHandler
 							throw new IllegalArgumentException("Unknown sign type: " + section.getString("type"));
 					}
 
-					if (sign != null)
-						signs.add(sign);
+					signs.add(sign);
 				}
 				catch (Throwable ex)
 				{
