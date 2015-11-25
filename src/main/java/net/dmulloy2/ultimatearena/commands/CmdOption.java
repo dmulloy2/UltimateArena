@@ -18,10 +18,13 @@
  */
 package net.dmulloy2.ultimatearena.commands;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
+import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
@@ -34,10 +37,10 @@ import net.dmulloy2.util.Util;
  * @author dmulloy2
  */
 
-// TODO: Update this for 3.0
 public class CmdOption extends UltimateArenaCommand
 {
-	private static Map<String, Type> options;
+	private static List<Field> options;
+
 	public CmdOption(UltimateArena plugin)
 	{
 		super(plugin);
@@ -55,41 +58,47 @@ public class CmdOption extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		String option = args[2];
-		if (! options.containsKey(option))
+		Field option = getOption(args[2]);
+		if (option == null)
 		{
-			StringBuilder line = new StringBuilder();
-			line.append("Available options: ");
-			for (String s : options.keySet())
+			StringJoiner joiner = new StringJoiner("&4, &c");
+
+			for (Field field : options)
 			{
-				line.append("&c" + s + "&4, ");
+				joiner.append(field.getName());
 			}
 
-			if (line.lastIndexOf(", ") != -1)
-			{
-				line.delete(line.lastIndexOf(","), line.length());
-			}
-
-			err(line.toString());
+			err("Unknown option \"&c{0}&4\"!", args[2]);
+			err("Available options: &c{0}", joiner.toString());
 			return;
 		}
 
-		Object value = null;
-		Type type = options.get(option);
-		if (type == Integer.TYPE)
+		// Convert to the proper type
+		Object value = args[3];
+		if (option.getType().equals(int.class))
 		{
-			if (! NumberUtil.isInt(args[3]))
+			if (! NumberUtil.isInt(value))
 			{
-				err("\"&c{0}&4\" is not a valid integer!");
+				err("\"&c{0}&4\" is not a valid integer!", value);
 				return;
 			}
 
-			value = NumberUtil.toInt(args[3]);
+			value = NumberUtil.toInt(value);
 		}
-		else if (type == Boolean.TYPE)
+		else if (option.getType().equals(double.class))
 		{
-			value = Boolean.parseBoolean(args[3]);
+			if (! NumberUtil.isDouble(args[3]))
+			{
+				err("\"&c{0}&4\" is not a valid double!", value);
+				return;
+			}
+
+			value = NumberUtil.toDouble(value);
 		}
+		else if (option.getType().equals(boolean.class))
+		{
+			value = Util.toBoolean(value);
+		} // else it's a string and we're ok
 
 		if (args[0].equalsIgnoreCase("arena"))
 		{
@@ -100,99 +109,58 @@ public class CmdOption extends UltimateArenaCommand
 				return;
 			}
 
-			switch (option)
+			ArenaConfig config = az.getConfig();
+
+			try
 			{
-				case "gameTime":
-					az.getConfig().setGameTime(NumberUtil.toInt(value));
-					break;
-				case "lobbyTime":
-					az.getConfig().setLobbyTime(NumberUtil.toInt(value));
-					break;
-				case "maxDeaths":
-					az.getConfig().setMaxDeaths(NumberUtil.toInt(value));
-					break;
-//				case "maxWave":
-//					az.getConfig().setMaxWave(NumberUtil.toInt(value));
-//					break;
-				case "cashReward":
-					az.getConfig().setCashReward(NumberUtil.toInt(value));
-					break;
-//				case "maxPoints":
-//					az.getConfig().setMaxPoints(NumberUtil.toInt(value));
-//					break;
-				case "allowTeamKilling":
-					az.getConfig().setAllowTeamKilling(Util.toBoolean(value));
-					break;
-				case "countMobKills":
-					az.getConfig().setCountMobKills(Util.toBoolean(value));
-					break;
-				case "rewardBasedOnXp":
-					az.getConfig().setRewardBasedOnXp(Util.toBoolean(value));
-					break;
-				case "giveRewards":
-					az.getConfig().setGiveRewards(Util.toBoolean(value));
-					break;
-				default:
-					err("Unsupported option: &c{0}", option);
-					break;
+				boolean accessible = option.isAccessible();
+				option.setAccessible(true);
+
+				option.set(config, value);
+
+				option.setAccessible(accessible);
+			}
+			catch (Throwable ex)
+			{
+				err("Failed to set option &c{0} &4to &c{1}&4! Check console!", option, value);
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "setting {0} to {1}", option, value));
 			}
 
 			az.saveToDisk();
 			az.reload();
 
-			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for arena &e{2}", option, value, az.getName());
+			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for arena &e{2}", option.getName(), value, az.getName());
 		}
 		else if (args[0].equalsIgnoreCase("config"))
 		{
-			ArenaType at = plugin.getArenaTypeHandler().getArenaType(args[0]);
-			ArenaConfig ac = at.getConfig();
-			if (ac == null)
+			ArenaType type = plugin.getArenaTypeHandler().getArenaType(args[1]);
+			if (type == null)
 			{
-				err("\"&c{0}&4\" is not a valid Field Type!");
+				err("\"&c{0}&4\" is not a valid arena type!", args[1]);
 				return;
 			}
 
-			switch (option)
+			ArenaConfig config = type.getConfig();
+
+			try
 			{
-				case "gameTime":
-					ac.setGameTime(NumberUtil.toInt(value));
-					break;
-				case "lobbyTime":
-					ac.setLobbyTime(NumberUtil.toInt(value));
-					break;
-				case "maxDeaths":
-					ac.setMaxDeaths(NumberUtil.toInt(value));
-					break;
-//				case "maxWave":
-//					ac.setMaxWave(NumberUtil.toInt(value));
-//					break;
-				case "cashReward":
-					ac.setCashReward(NumberUtil.toInt(value));
-					break;
-//				case "maxPoints":
-//					ac.setMaxPoints(NumberUtil.toInt(value));
-//					break;
-				case "allowTeamKilling":
-					ac.setAllowTeamKilling(Util.toBoolean(value));
-					break;
-				case "countMobKills":
-					ac.setCountMobKills(Util.toBoolean(value));
-					break;
-				case "rewardBasedOnXp":
-					ac.setRewardBasedOnXp(Util.toBoolean(value));
-					break;
-				case "giveRewards":
-					ac.setGiveRewards(Util.toBoolean(value));
-					break;
-				default:
-					err("Unsupported option: &c{0}", option);
-					break;
+				boolean accessible = option.isAccessible();
+				option.setAccessible(true);
+
+				option.set(config, value);
+
+				option.setAccessible(accessible);
+			}
+			catch (Throwable ex)
+			{
+				err("Failed to set option &c{0} &4to &c{1}&4! Check console!", option, value);
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "setting {0} to {1}", option, value));
 			}
 
-			ac.save();
-			ac.reload();
+			config.save();
+			config.reload();
 
-			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for type &e{2}", option, value, ac.getType());
+			sendpMessage("&3You have set \"&e{0}&3\" to \"&e{1}&3\" for type &e{2}", option.getName(), value, type.getName());
 		}
 		else
 		{
@@ -200,19 +168,35 @@ public class CmdOption extends UltimateArenaCommand
 		}
 	}
 
+	private Field getOption(String option)
+	{
+		for (Field field : options)
+		{
+			if (field.getName().equalsIgnoreCase(option))
+			{
+				return field;
+			}
+		}
+
+		return null;
+	}
+
 	static
 	{
-		options = new HashMap<String, Type>();
-		options.put("gameTime", Integer.TYPE);
-		options.put("lobbyTime", Integer.TYPE);
-		options.put("maxDeaths", Integer.TYPE);
-		options.put("maxWave", Integer.TYPE);
-		options.put("cashReward", Integer.TYPE);
-		options.put("maxPoints", Integer.TYPE);
-		options.put("allowTeamKilling", Boolean.TYPE);
-		options.put("countMobKills", Boolean.TYPE);
-		options.put("rewardBasedOnXp", Boolean.TYPE);
-		options.put("giveRewards", Boolean.TYPE);
-		// TODO Add more options
+		options = new ArrayList<>();
+
+		Field[] fields = ArenaConfig.class.getDeclaredFields();
+		for (Field field : fields)
+		{
+			// Skip transient, final, and static
+			int modifiers = field.getModifiers();
+			if (Modifier.isTransient(modifiers) || Modifier.isFinal(modifiers) || Modifier.isStatic(modifiers))
+				continue;
+
+			// We only support the following types: boolean, integer, string,double
+			Class<?> type = field.getType();
+			if (type.equals(int.class) || type.equals(boolean.class) || type.equals(String.class) || type.equals(double.class))
+				options.add(field);
+		}
 	}
 }

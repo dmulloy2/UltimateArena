@@ -377,15 +377,12 @@ public class ArenaConfig extends Configuration
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Map<String, Object> serialize()
 	{
 		Map<String, Object> data = new LinkedHashMap<>();
 
-		for (Field field : getClass().getDeclaredFields())
+		for (Field field : ArenaConfig.class.getDeclaredFields())
 		{
 			try
 			{
@@ -447,18 +444,12 @@ public class ArenaConfig extends Configuration
 	 */
 	protected void serializeCustomOptions(Map<String, Object> data) { }
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void reload()
 	{
-		// Make sure this config still exists
+		// Just... don't delete and reload.
 		if (! file.exists())
-		{
-			plugin.getClasses().remove(this);
 			return;
-		}
 
 		// Reset defaults
 		this.setDefaults();
