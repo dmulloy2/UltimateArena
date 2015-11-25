@@ -22,10 +22,10 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.material.Wool;
 
 /**
@@ -45,9 +45,10 @@ public abstract class ArenaFlag extends FlagBase
 	{
 		super(arena, location, plugin);
 
-		Wool wool = new Wool();
-		wool.setColor(DyeColor.SILVER);
-		Util.setData(notify, wool);
+		BlockState state = notify.getState();
+		state.setType(Material.WOOL);
+		state.setData(new Wool(DyeColor.SILVER));
+		state.update(true);
 	}
 
 	@Override
@@ -64,8 +65,9 @@ public abstract class ArenaFlag extends FlagBase
 	{
 		this.owningTeam = team;
 
-		Wool wool = new Wool();
-		wool.setColor(team == Team.RED ? DyeColor.RED : DyeColor.BLUE);
-		Util.setData(notify, wool);
+		BlockState state = notify.getState();
+		state.setType(Material.WOOL);
+		state.setData(new Wool(team == Team.RED ? DyeColor.RED : DyeColor.BLUE));
+		state.update(true);
 	}
 }
