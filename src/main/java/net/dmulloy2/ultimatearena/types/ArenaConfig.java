@@ -158,19 +158,24 @@ public class ArenaConfig extends Configuration
 			config.load(file);
 
 			Map<String, Object> values = config.getValues(false);
-			this.gameTime = getInt(values, "gameTime", def.getGameTime());
-			this.lobbyTime = getInt(values, "lobbyTime", def.getLobbyTime());
-			this.maxPlayers = getInt(values, "maxPlayers", def.getMaxPlayers());
-			this.minPlayers = getInt(values, "minPlayers", def.getMinPlayers());
-			this.maxDeaths = Math.max(1, getInt(values, "maxDeaths", def.getMaxDeaths()));
 			this.allowTeamKilling = getBoolean(values, "allowTeamKilling", def.isAllowTeamKilling());
-			this.cashReward = getDouble(values, "cashReward", def.getCashReward());
 			this.countMobKills = getBoolean(values, "countMobKills", def.isCountMobKills());
 			this.canModifyWorld = getBoolean(values, "canModifyWorld", def.isCanModifyWorld());
 			this.unlimitedAmmo = getBoolean(values, "unlimitedAmmo", def.isUnlimitedAmmo());
-			this.giveRewards = getBoolean(values, "giveRewards", def.isGiveRewards());
 			this.rewardBasedOnXp = getBoolean(values, "rewardBasedOnXp", def.isRewardBasedOnXp());
+			this.giveRewards = getBoolean(values, "giveRewards", def.isGiveRewards());
+			this.forceBalance = getBoolean(values, "forceBalance", def.isForceBalance());
+			this.joinInProgress = getBoolean(values, "joinInProgress", def.isJoinInProgress());
+
+			this.gameTime = getInt(values, "gameTime", def.getGameTime());
+			this.lobbyTime = getInt(values, "lobbyTime", def.getLobbyTime());
+			this.maxDeaths = Math.max(1, getInt(values, "maxDeaths", def.getMaxDeaths()));
+			this.maxPlayers = getInt(values, "maxPlayers", def.getMaxPlayers());
+			this.minPlayers = getInt(values, "minPlayers", def.getMinPlayers());
+
 			this.defaultClass = getString(values, "defaultClass", def.getDefaultClass());
+
+			this.cashReward = getDouble(values, "cashReward", def.getCashReward());
 
 			if (giveRewards)
 			{
