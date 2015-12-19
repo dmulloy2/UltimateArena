@@ -48,7 +48,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 
 /**
@@ -115,6 +114,7 @@ public final class ArenaPlayer
 			this.board = new StandardScoreboard(plugin, this);
 		else
 			this.board = DisabledScoreboard.getInstance();
+
 		// TODO ViewIt integration
 	}
 
@@ -230,7 +230,7 @@ public final class ArenaPlayer
 
 		Player player = getPlayer();
 		if (! player.hasMetadata("UA"))
-			player.setMetadata("UA", new FixedMetadataValue(plugin, true));
+			player.setMetadata("UA", plugin.getUAIdentifier());
 	}
 
 	/**

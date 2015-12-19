@@ -19,47 +19,46 @@
 package net.dmulloy2.ultimatearena.api.event;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import org.bukkit.Location;
 
 /**
- * Represents an event relating to arenas.
- *
+ * Called when a player is spawned in an Arena.
  * @author dmulloy2
  */
 
-public abstract class ArenaEvent extends Event
+public final class ArenaSpawnEvent extends ArenaPlayerEvent
 {
-	private static final HandlerList handlers = new HandlerList();
+	private Location location;
 
-	protected final Arena arena;
-
-	public ArenaEvent(Arena arena)
+	public ArenaSpawnEvent(Arena arena, ArenaPlayer player, Location location)
 	{
-		Validate.notNull(arena, "arena cannot be null!");
-		this.arena = arena;
+		super(arena, player);
+
+		Validate.notNull(location, "location cannot be null!");
+		this.location = location;
 	}
 
 	/**
-	 * Gets the {@link Arena} involved in this event.
+	 * Gets the current spawn Location.
 	 * 
-	 * @return The Arena, will not be null
+	 * @return The Location
 	 */
-	public final Arena getArena()
+	public Location getLocation()
 	{
-		return arena;
+		return location;
 	}
 
-	@Override
-	public HandlerList getHandlers()
+	/**
+	 * Sets the spawn Location.
+	 * 
+	 * @param location The new location, cannot be null
+	 */
+	public void setLocation(Location location)
 	{
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList()
-	{
-		return handlers;
+		Validate.notNull(location, "location cannot be null!");
+		this.location = location;
 	}
 }

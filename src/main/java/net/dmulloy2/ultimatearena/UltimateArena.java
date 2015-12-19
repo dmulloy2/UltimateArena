@@ -98,6 +98,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -105,12 +107,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
+ * UltimateArena main class
  * @author dmulloy2
  */
 
 public class UltimateArena extends SwornPlugin
 {
-	// Handlers
 	private @Getter SpectatingHandler spectatingHandler;
 	private @Getter ArenaTypeHandler arenaTypeHandler;
 	private @Getter ResourceHandler resourceHandler;
@@ -125,16 +127,17 @@ public class UltimateArena extends SwornPlugin
 	private @Getter ProtocolHandler protocolHandler;
 	private @Getter VaultHandler vaultHandler;
 
-	// Public lists and maps
 	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<>();
 	private @Getter List<ArenaCreator> makingArena = new ArrayList<>();
 	private @Getter List<String> pluginsUsingAPI = new ArrayList<>();
 	private @Getter List<ArenaZone> loadedArenas = new ArrayList<>();
 	private @Getter List<ArenaClass> classes = new ArrayList<>();
 
-	// Private lists
 	private List<String> whitelistedCommands;
 	private List<Arena> activeArenas = new ArrayList<>();
+
+	private MetadataValue uaIdentifier;
+	private String prefix;
 
 	private @Getter boolean stopping;
 
@@ -152,6 +155,9 @@ public class UltimateArena extends SwornPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
+
+		// Create identifier
+		uaIdentifier = new FixedMetadataValue(this, true);
 
 		// Register LogHandler
 		logHandler = new LogHandler(this);
@@ -334,7 +340,10 @@ public class UltimateArena extends SwornPlugin
 		return worldEditHandler != null && worldEditHandler.isEnabled();
 	}
 
-	private String prefix = null;
+	public MetadataValue getUAIdentifier()
+	{
+		return uaIdentifier;
+	}
 
 	@Override
 	public String getPrefix()

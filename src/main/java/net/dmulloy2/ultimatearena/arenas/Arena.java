@@ -38,8 +38,11 @@ import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
+import net.dmulloy2.ultimatearena.api.event.ArenaConcludeEvent;
 import net.dmulloy2.ultimatearena.api.event.ArenaJoinEvent;
 import net.dmulloy2.ultimatearena.api.event.ArenaLeaveEvent;
+import net.dmulloy2.ultimatearena.api.event.ArenaSpawnEvent;
+import net.dmulloy2.ultimatearena.api.event.ArenaStartEvent;
 import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
 import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
@@ -183,20 +186,22 @@ public abstract class Arena implements Reloadable
 	@Override
 	public final void reload()
 	{
+		this.allowTeamKilling = az.getConfig().isAllowTeamKilling();
+		this.countMobKills = az.getConfig().isCountMobKills();
+		this.rewardBasedOnXp = az.getConfig().isRewardBasedOnXp();
+		this.giveRewards = az.getConfig().isGiveRewards();
+		this.forceBalance = az.getConfig().isForceBalance();
+		this.joinInProgress = az.getConfig().isJoinInProgress();
+
 		this.maxGameTime = az.getConfig().getGameTime();
 		this.gameTimer = az.getConfig().getGameTime();
 		this.maxDeaths = az.getConfig().getMaxDeaths();
 		this.maxPlayers = az.getConfig().getMaxPlayers();
 		this.minPlayers = az.getConfig().getMinPlayers();
-		this.allowTeamKilling = az.getConfig().isAllowTeamKilling();
-		this.countMobKills = az.getConfig().isCountMobKills();
-		this.rewardBasedOnXp = az.getConfig().isRewardBasedOnXp();
-		this.killStreaks = az.getConfig().getKillStreaks();
-		this.giveRewards = az.getConfig().isGiveRewards();
-		this.forceBalance = az.getConfig().isForceBalance();
-		this.joinInProgress = az.getConfig().isJoinInProgress();
 
 		this.defaultClass = az.getConfig().getDefaultClass();
+
+		this.killStreaks = az.getConfig().getKillStreaks();
 		this.blacklistedClasses = az.getConfig().getBlacklistedClasses();
 		this.whitelistedClasses = az.getConfig().getWhitelistedClasses();
 		this.mandatedClasses = az.getConfig().getMandatedClasses();
@@ -219,34 +224,34 @@ public abstract class Arena implements Reloadable
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("joiningArena"), name));
 
-		ArenaPlayer pl = new ArenaPlayer(player, this, plugin);
+		ArenaPlayer ap = new ArenaPlayer(player, this, plugin);
 
-		ArenaJoinEvent event = new ArenaJoinEvent(player, pl, this);
+		// API - cancellable join event
+		ArenaJoinEvent event = new ArenaJoinEvent(this, ap);
 		plugin.getServer().getPluginManager().callEvent(event);
 		if (event.isCancelled())
 		{
-			pl.sendMessage(event.getCancelMessage() != null ? event.getCancelMessage() : "&3Unexpected exit!");
-			pl.clear();
+			ap.sendMessage(event.getCancelMessage() != null ? event.getCancelMessage() : "&3Unexpected exit!");
+			ap.clear();
 			return;
 		}
 
-		// Set their team
+		// API - onJoin
+		onJoin(ap);
+
 		Team team = teamId == null ? getTeam() : Team.get(teamId);
-		pl.setTeam(team);
+		ap.setTeam(team);
 
 		// Teleport the player to the lobby spawn
-		spawnLobby(pl);
+		spawnLobby(ap);
 
 		// Save vital data
-		pl.savePlayerData();
+		ap.savePlayerData();
 
-		// Add metadata
 		player.setMetadata("UA", new FixedMetadataValue(plugin, true));
 
-		// Clear Inventory
-		pl.clearInventory();
+		ap.clearInventory();
 
-		// Make sure the player is in survival
 		player.setGameMode(GameMode.SURVIVAL);
 
 		// Heal up the Player
@@ -259,21 +264,19 @@ public abstract class Arena implements Reloadable
 		player.setFlySpeed(0.1F);
 		player.setFlying(false);
 
-		// Disable god mode
+		// Disable Essentials god mode
 		if (plugin.isEssentialsEnabled())
 			plugin.getEssentialsHandler().disableGodMode(player);
 
-		// Clear potion effects
-		pl.clearPotionEffects();
+		ap.clearPotionEffects();
 
-		// Decide Hat
-		pl.decideHat(false);
+		ap.decideHat(false);
 
-		// API
-		onJoin(pl);
+		active.add(ap);
 
-		// Add the player
-		active.add(pl);
+		// Alert the other players
+		tellPlayers(getMessage("joinedArena"), ap.getName(), active.size(), maxPlayers);
+		this.lastJoin = ap.getName();
 
 		// Open Class Selector
 		if (Config.classSelectorAutomatic)
@@ -282,8 +285,8 @@ public abstract class Arena implements Reloadable
 			plugin.getGuiHandler().open(player, csGUI);
 		}
 
-		tellPlayers(getMessage("joinedArena"), pl.getName(), active.size(), maxPlayers);
-		this.lastJoin = pl.getName();
+		if (started)
+			spawn(ap);
 	}
 
 	/**
@@ -491,6 +494,9 @@ public abstract class Arena implements Reloadable
 				if (loc != null)
 				{
 					plugin.debug("Spawning player {0}", ap.getName());
+
+					ArenaSpawnEvent event = new ArenaSpawnEvent(this, ap, loc);
+					loc = event.getLocation();
 
 					ap.teleport(loc);
 					ap.spawn();
@@ -824,6 +830,10 @@ public abstract class Arena implements Reloadable
 
 	private final void conclude()
 	{
+		// API - conclude event
+		ArenaConcludeEvent event = new ArenaConcludeEvent(this);
+		plugin.getServer().getPluginManager().callEvent(event);
+
 		if (! disabled)
 			this.gameMode = Mode.IDLE;
 
@@ -857,11 +867,12 @@ public abstract class Arena implements Reloadable
 		// Dispose of the scoreboard
 		ap.getBoard().dispose();
 
-		// API stuff
-		onPlayerQuit(ap);
-
-		ArenaLeaveEvent event = new ArenaLeaveEvent(ap.getPlayer(), ap, this);
+		// API - leave event
+		ArenaLeaveEvent event = new ArenaLeaveEvent(this, ap);
 		plugin.getServer().getPluginManager().callEvent(event);
+
+		// API - onPlayerQuit
+		onPlayerQuit(ap);
 
 		// Reset them
 		ap.reset();
@@ -877,8 +888,11 @@ public abstract class Arena implements Reloadable
 		// Add them to the final leaderboard if applicable
 		if (finalLeaderboard != null)
 		{
-			finalLeaderboard.set(leaderboardIndex, ap.getName());
-			leaderboardIndex--;
+			try
+			{
+				finalLeaderboard.set(leaderboardIndex, ap.getName());
+				leaderboardIndex--;
+			} catch (IndexOutOfBoundsException ex) { }
 		}
 
 		if (active.size() > 1)
@@ -957,6 +971,14 @@ public abstract class Arena implements Reloadable
 				return;
 			}
 
+			// API - start event
+			ArenaStartEvent event = new ArenaStartEvent(this);
+			plugin.getServer().getPluginManager().callEvent(event);
+
+			// API - onStart
+			onStart();
+
+			// Balance teams if applicable
 			if (forceBalance && lastJoin != null)
 			{
 				updateTeams();
@@ -985,16 +1007,15 @@ public abstract class Arena implements Reloadable
 
 			this.startingAmount = active.size();
 
+			// Setup the leaderboard for leaderboard signs
 			this.finalLeaderboard = new ArrayList<>(startingAmount);
-			for (int i = 0; i < startingAmount; i++)
-				finalLeaderboard.add("");
+			Collections.fill(finalLeaderboard, "");
 
 			this.leaderboardIndex = startingAmount - 1;
 
 			this.gameTimer = maxGameTime;
 			this.startTimer = -1;
 
-			onStart();
 			spawnAll();
 		}
 	}

@@ -21,7 +21,7 @@ package net.dmulloy2.ultimatearena.api.event;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 
-import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -31,13 +31,61 @@ import org.bukkit.event.HandlerList;
  * @author dmulloy2
  */
 
-public class ArenaJoinEvent extends ArenaEvent
+public final class ArenaJoinEvent extends ArenaPlayerEvent implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
 
-	public ArenaJoinEvent(Player player, ArenaPlayer arenaPlayer, Arena arena)
+	private String cancelMessage;
+	private boolean cancelled;
+
+	public ArenaJoinEvent(Arena arena, ArenaPlayer player)
 	{
-		super(player, arenaPlayer, arena);
+		super(arena, player);
+	}
+
+	/**
+	 * Sets the cancellation state of this event. Cancelling the join event
+	 * prevents a player from joining the Arena. If you cancel this event, you
+	 * should set the {@code cancelMessage} so players aren't confused!
+	 * 
+	 * @param cancel cancellation state
+	 */
+	@Override
+	public void setCancelled(boolean cancel)
+	{
+		this.cancelled = cancel;
+	}
+
+	/**
+	 * Gets the cancellation state of this event.
+	 * 
+	 * @return True if it is cancelled, false if not.
+	 */
+	@Override
+	public boolean isCancelled()
+	{
+		return cancelled;
+	}
+
+	/**
+	 * Sets this event's cancel message. The cancel message displays if the
+	 * event is cancelled.
+	 * 
+	 * @param message cancel message, shouldn't be empty
+	 */
+	public void setCancelMessage(String message)
+	{
+		this.cancelMessage = message;
+	}
+
+	/**
+	 * Gets the cancel message of this event.
+	 * 
+	 * @return The cancel message, may be null
+	 */
+	public String getCancelMessage()
+	{
+		return cancelMessage;
 	}
 
 	@Override

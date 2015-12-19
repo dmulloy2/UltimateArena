@@ -21,23 +21,20 @@ package net.dmulloy2.ultimatearena.api.event;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 /**
- * Called when a player leaves an arena. Note that this event isn't actually
- * cancellable.
- *
+ * Called when a player leaves an Arena.
  * @author dmulloy2
  */
 
-public class ArenaLeaveEvent extends ArenaEvent
+public final class ArenaLeaveEvent extends ArenaPlayerEvent
 {
 	private static final HandlerList handlers = new HandlerList();
 
-	public ArenaLeaveEvent(Player player, ArenaPlayer arenaPlayer, Arena arena)
+	public ArenaLeaveEvent(Arena arena, ArenaPlayer player)
 	{
-		super(player, arenaPlayer, arena);
+		super(arena, player);
 	}
 
 	@Override

@@ -30,7 +30,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Tameable;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
 /**
@@ -100,8 +99,8 @@ public final class KillStreak
 		}
 		else if (type == Type.MOB)
 		{
-			MetadataValue meta = new FixedMetadataValue(ap.getPlugin(), true);
-			
+			MetadataValue meta = ap.getPlugin().getUAIdentifier();
+
 			World world = ap.getPlayer().getWorld();
 			Location location = ap.getPlayer().getLocation();
 

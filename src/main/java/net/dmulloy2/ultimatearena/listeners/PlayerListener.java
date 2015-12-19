@@ -348,7 +348,7 @@ public class PlayerListener implements Listener
 			if (! plugin.getPermissionHandler().hasPermission(player, Permission.BYPASS))
 			{
 				String cmd = event.getMessage();
-				if (! cmd.contains("/ua") && ! plugin.isWhitelistedCommand(cmd))
+				if (! cmd.startsWith("/ua") && ! plugin.isWhitelistedCommand(cmd))
 				{
 					ap.sendMessage(plugin.getMessage("nonUaCommand"));
 					ap.sendMessage(plugin.getMessage("commandsAgain"));

@@ -20,46 +20,15 @@ package net.dmulloy2.ultimatearena.api.event;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 /**
- * Represents an event relating to arenas.
- *
+ * Called when an Arena concludes.
  * @author dmulloy2
  */
 
-public abstract class ArenaEvent extends Event
+public final class ArenaConcludeEvent extends ArenaEvent
 {
-	private static final HandlerList handlers = new HandlerList();
-
-	protected final Arena arena;
-
-	public ArenaEvent(Arena arena)
+	public ArenaConcludeEvent(Arena arena)
 	{
-		Validate.notNull(arena, "arena cannot be null!");
-		this.arena = arena;
-	}
-
-	/**
-	 * Gets the {@link Arena} involved in this event.
-	 * 
-	 * @return The Arena, will not be null
-	 */
-	public final Arena getArena()
-	{
-		return arena;
-	}
-
-	@Override
-	public HandlerList getHandlers()
-	{
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList()
-	{
-		return handlers;
+		super(arena);
 	}
 }

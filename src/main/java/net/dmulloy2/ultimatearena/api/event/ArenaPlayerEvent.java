@@ -19,47 +19,45 @@
 package net.dmulloy2.ultimatearena.api.event;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import org.bukkit.entity.Player;
 
 /**
- * Represents an event relating to arenas.
- *
+ * ArenaEvents involving players
  * @author dmulloy2
  */
 
-public abstract class ArenaEvent extends Event
+public abstract class ArenaPlayerEvent extends ArenaEvent
 {
-	private static final HandlerList handlers = new HandlerList();
+	protected final ArenaPlayer player;
 
-	protected final Arena arena;
-
-	public ArenaEvent(Arena arena)
+	public ArenaPlayerEvent(Arena arena, ArenaPlayer player)
 	{
-		Validate.notNull(arena, "arena cannot be null!");
-		this.arena = arena;
+		super(arena);
+
+		Validate.notNull(player, "player cannot be null!");
+		this.player = player;
 	}
 
 	/**
-	 * Gets the {@link Arena} involved in this event.
+	 * Gets the Bukkit Player involved in this event.
 	 * 
-	 * @return The Arena, will not be null
+	 * @return The player, will not be null
 	 */
-	public final Arena getArena()
+	public final Player getPlayer()
 	{
-		return arena;
+		return player.getPlayer();
 	}
 
-	@Override
-	public HandlerList getHandlers()
+	/**
+	 * Gets the ArenaPlayer involved in this event.
+	 * 
+	 * @return The arena player, will not be null
+	 */
+	public final ArenaPlayer getArenaPlayer()
 	{
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList()
-	{
-		return handlers;
+		return player;
 	}
 }
