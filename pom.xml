@@ -89,7 +89,7 @@
             </goals>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
-              <minimizeJar>true</minimizeJar>
+              <!--<minimizeJar>true</minimizeJar>-->
               <artifactSet>
                 <includes>
                   <include>net.dmulloy2:swornapi*</include>

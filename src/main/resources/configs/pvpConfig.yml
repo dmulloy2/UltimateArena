@@ -4,6 +4,7 @@
 gameTime: 600
 lobbyTime: 90
 maxDeaths: 3
+minPlayers: 2
 allowTeamKilling: false
 countMobKills: false
 rewardBasedOnXp: true

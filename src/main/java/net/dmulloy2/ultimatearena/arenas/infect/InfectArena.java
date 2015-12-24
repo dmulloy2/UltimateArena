@@ -56,12 +56,13 @@ public class InfectArena extends PvPArena
 	{
 		if (startTimer <= 0)
 		{
-			if (startingAmount < 2)
+			// Handled in PvPArena#onReload()
+			/*if (startingAmount < 2)
 			{
 				tellPlayers(getMessage("notEnoughPeople"), 2);
 				stop();
 				return;
-			}
+			}*/
 
 			if (! simpleTeamCheck())
 			{

@@ -239,6 +239,7 @@ public abstract class Arena implements Reloadable
 		// API - onJoin
 		onJoin(ap);
 
+		// Determine their team
 		Team team = teamId == null ? getTeam() : Team.get(teamId);
 		ap.setTeam(team);
 
@@ -273,6 +274,7 @@ public abstract class Arena implements Reloadable
 		ap.decideHat(false);
 
 		active.add(ap);
+		updateTeams();
 
 		// Alert the other players
 		tellPlayers(getMessage("joinedArena"), ap.getName(), active.size(), maxPlayers);
@@ -377,7 +379,6 @@ public abstract class Arena implements Reloadable
 	 */
 	public final Team getBalancedTeam()
 	{
-		updateTeams();
 		return redTeamSize > blueTeamSize ? Team.BLUE : Team.RED;
 	}
 
@@ -388,8 +389,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public boolean simpleTeamCheck()
 	{
-		updateTeams();
-		return redTeamSize == 0 || blueTeamSize == 0 ? startingAmount < 1 : true;
+		return (redTeamSize == 0 || blueTeamSize == 0) ? startingAmount < 1 : true;
 	}
 
 	/**
@@ -871,9 +871,6 @@ public abstract class Arena implements Reloadable
 		ArenaLeaveEvent event = new ArenaLeaveEvent(this, ap);
 		plugin.getServer().getPluginManager().callEvent(event);
 
-		// API - onPlayerQuit
-		onPlayerQuit(ap);
-
 		// Reset them
 		ap.reset();
 		ap.teleport(ap.getSpawnBack());
@@ -884,6 +881,7 @@ public abstract class Arena implements Reloadable
 		active.remove(ap);
 		if (! disconnected)
 			inactive.add(ap);
+		updateTeams();
 
 		// Add them to the final leaderboard if applicable
 		if (finalLeaderboard != null)
@@ -897,14 +895,17 @@ public abstract class Arena implements Reloadable
 
 		if (active.size() > 1)
 			tellPlayers(getMessage("playersRemaining"), active.size());
+
+		// API - onPlayerEnd
+		onPlayerEnd(ap);
 	}
 
 	/**
-	 * Called when an {@link ArenaPlayer} quits.
-	 *
-	 * @param ap ArenaPlayer who quit
+	 * Called after an {@link ArenaPlayer} is ended.
+	 * 
+	 * @param ap Ended ArenaPlayer
 	 */
-	public void onPlayerQuit(ArenaPlayer ap) { }
+	public void onPlayerEnd(ArenaPlayer ap) { }
 
 	/**
 	 * Basic timer checker.
@@ -964,6 +965,7 @@ public abstract class Arena implements Reloadable
 	{
 		if (! started)
 		{
+			// Make sure there are enough players
 			if (active.size() < minPlayers)
 			{
 				tellPlayers(getMessage("notEnoughPeople"), minPlayers);
@@ -981,7 +983,6 @@ public abstract class Arena implements Reloadable
 			// Balance teams if applicable
 			if (forceBalance && lastJoin != null)
 			{
-				updateTeams();
 				if (redTeamSize != blueTeamSize)
 				{
 					Player extra = Util.matchPlayer(lastJoin);
@@ -1034,35 +1035,25 @@ public abstract class Arena implements Reloadable
 			return;
 
 		checkTimers();
-		updateTeams();
 		check();
 
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			// Null check
-			if (ap == null)
-			{
-				active.remove(ap);
-				inactive.remove(ap);
-				continue;
-			}
-
 			// Make sure they're still online
 			if (! ap.isOnline())
 			{
-				// Attempt to end them
 				ap.leaveArena(LeaveReason.QUIT);
 				continue;
 			}
 
-			// End if they've reached the death limit and they're alive
+			// Kick them if they've reached the death limit and they're alive
 			if (ap.getDeaths() >= maxDeaths && ap.getPlayer().getHealth() > 0.0D)
 			{
 				ap.leaveArena(LeaveReason.DEATHS);
 				continue;
 			}
 
-			// Hats
+			// Lobby hats
 			if (isInLobby())
 				ap.decideHat(false);
 
@@ -1130,6 +1121,7 @@ public abstract class Arena implements Reloadable
 			ap.updateScoreboard();
 		}
 
+		// Stop if its empty
 		if (active.size() <= 0)
 			stop();
 
@@ -1372,7 +1364,12 @@ public abstract class Arena implements Reloadable
 		return inactive.toArray(new ArenaPlayer[inactive.size()]);
 	}
 
-	private final void updateTeams()
+	/**
+	 * Updates the size of the red and blue teams.
+	 * @see #getRedTeamSize()
+	 * @see #getBlueTeamSize()
+	 */
+	protected final void updateTeams()
 	{
 		this.redTeamSize = 0;
 		this.blueTeamSize = 0;
@@ -1381,7 +1378,7 @@ public abstract class Arena implements Reloadable
 		{
 			if (ap.getTeam() == Team.RED)
 				redTeamSize++;
-			else
+			else if (ap.getTeam() == Team.BLUE)
 				blueTeamSize++;
 		}
 	}

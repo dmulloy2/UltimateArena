@@ -34,7 +34,7 @@ minutesUntilEnd: "&e{0} &3minute(s) until end!"
 secondsUntilEnd: "&e{0} &3second(s) until end!"
 cashReward: "&a{0} has been added to your account!"
 cashFailed: "&cCould not give cash reward: {0}"
-teamWon: "&e{0} team &3won the match at &e{1}"
+teamWon: "&e{0} team &3won the match at &e{1}&3!"
 
 # Game Specific
 yourPower: "&3Your power is now: &e{0}"

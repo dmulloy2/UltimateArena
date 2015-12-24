@@ -206,7 +206,7 @@ public class CTFFlag
 		}
 	}
 
-	public final void onPlayerQuit(ArenaPlayer ap)
+	public final void onPlayerEnd(ArenaPlayer ap)
 	{
 		if (riding != null && riding.equals(ap))
 			fall();
