@@ -62,11 +62,14 @@ public class Field
 		if (! initialized)
 			return false;
 
+		Validate.notNull(loc, "loc cannot be null!");
+
 		World world = loc.getWorld();
-		int locX = loc.getBlockX();
-		int locZ = loc.getBlockZ();
-		if (getWorld().getUID().equals(world.getUID()))
+		if (getWorld().equals(world))
 		{
+			int locX = loc.getBlockX();
+			int locZ = loc.getBlockZ();
+
 			if (locX >= min.getX() && locX <= max.getX())
 				return locZ >= min.getZ() && locZ <= max.getZ();
 		}

@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -37,17 +36,15 @@ import org.bukkit.scheduler.BukkitTask;
  * @author dmulloy2
  */
 
-@Getter
-@Setter
 public class CTFArena extends Arena
 {
-	private CTFFlagBase redFlag;
-	private CTFFlagBase blueFlag;
+	private @Getter CTFFlagBase redFlag;
+	private @Getter CTFFlagBase blueFlag;
 
-	private int redCap, blueCap;
+	private int redCap;
+	private int blueCap;
 
 	private BukkitTask moveTask;
-	private String lastcap;
 
 	public CTFArena(ArenaZone az)
 	{
@@ -58,91 +55,11 @@ public class CTFArena extends Arena
 		this.redFlag.initialize();
 		this.blueFlag.initialize();
 
+		// 12 seems arbitrary. Why not 20 ticks?
 		this.moveTask = new ExecuteMove().runTaskTimer(plugin, 12, 1);
 	}
 
-	@Override
-	public void check()
-	{
-		if (startTimer <= 0)
-		{
-			if (! simpleTeamCheck())
-			{
-				tellPlayers(getMessage("teamEmpty"));
-
-				stop();
-			}
-			else
-			{
-				if (startingAmount < 2)
-				{
-					tellPlayers(getMessage("notEnoughPeople"), 2);
-
-					stop();
-				}
-			}
-		}
-
-		if (redCap >= 3 || blueCap >= 3)
-		{
-			setWinningTeam(Team.RED);
-
-			this.lastcap = "&cRED";
-
-			if (blueCap >= 3)
-			{
-				this.lastcap = "&9BLUE";
-
-				setWinningTeam(Team.BLUE);
-			}
-
-			winGame();
-		}
-		else
-		{
-			redFlag.getFlag().tick();
-			blueFlag.getFlag().tick();
-		}
-	}
-
-	@Override
-	public Team getTeam()
-	{
-		return getBalancedTeam();
-	}
-
-	public void winGame()
-	{
-		if (redCap >= 3 && blueCap >= 3)
-		{
-			setWinningTeam(null);
-
-			stop();
-
-			rewardTeam(null);
-			return;
-		}
-
-		stop();
-
-		rewardTeam(winningTeam);
-	}
-
-	@Override
-	public void onStop()
-	{
-		redFlag.getFlag().setStopped(true);
-		blueFlag.getFlag().setStopped(true);
-
-		redFlag.getFlag().getReturnto().getBlock().setType(Material.AIR);
-		blueFlag.getFlag().getReturnto().getBlock().setType(Material.AIR);
-		redFlag.getFlag().despawn();
-		blueFlag.getFlag().despawn();
-
-		moveTask.cancel();
-		moveTask = null;
-	}
-
+	// TODO: Move this to onMove()
 	public class ExecuteMove extends BukkitRunnable
 	{
 		@Override
@@ -163,17 +80,58 @@ public class CTFArena extends Arena
 	}
 
 	@Override
-	public void announceWinner()
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
 	{
-		if (lastcap != null)
-			tellPlayers("&e{0} &3team won the game!", lastcap);
+		board.addEntry("Red", redCap);
+		board.addEntry("Blue", blueCap);
+	}
+
+	public void capture(Team team)
+	{
+		if (team == Team.RED)
+		{
+			redCap++;
+			tellPlayers(getMessage("teamCaptures"), team, redCap);
+
+			if (redCap >= 3)
+			{
+				setWinningTeam(Team.RED);
+				stop();
+				rewardTeam(Team.RED);
+			}
+		}
+		else if (team == Team.BLUE)
+		{
+			blueCap++;
+			tellPlayers(getMessage("teamCaptures"), team, blueCap);
+
+			if (blueCap >= 3)
+			{
+				setWinningTeam(Team.BLUE);
+				stop();
+				rewardTeam(Team.BLUE);
+			}
+		}
 	}
 
 	@Override
-	public void onPlayerEnd(ArenaPlayer ap)
+	public void check()
 	{
-		redFlag.getFlag().onPlayerEnd(ap);
-		blueFlag.getFlag().onPlayerEnd(ap);
+		// Basically just timers
+		redFlag.getFlag().tick();
+		blueFlag.getFlag().tick();
+	}
+
+	@Override
+	public List<String> getExtraInfo()
+	{
+		return Arrays.asList("&3Red: &e" + redCap, "&3Blue: &e" + blueCap);
+	}
+
+	@Override
+	public Team getTeam()
+	{
+		return getBalancedTeam();
 	}
 
 	@Override
@@ -184,15 +142,40 @@ public class CTFArena extends Arena
 	}
 
 	@Override
-	public List<String> getExtraInfo()
+	public void onPlayerEnd(ArenaPlayer ap)
 	{
-		return Arrays.asList("&3Red: &e" + redCap, "&3Blue: &e" + blueCap);
+		if (isInGame())
+		{
+			redFlag.getFlag().onPlayerEnd(ap);
+			blueFlag.getFlag().onPlayerEnd(ap);
+
+			if (redTeamSize == 0 || blueTeamSize == 0)
+			{
+				tellPlayers(getMessage("teamEmpty"));
+				stop();
+			}
+		}
 	}
 
 	@Override
-	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	public void onReload()
 	{
-		board.addEntry("Red", redCap);
-		board.addEntry("Blue", blueCap);
+		// 2 players are required to play
+		this.minPlayers = Math.max(2, minPlayers);
+	}
+
+	@Override
+	public void onStop()
+	{
+		redFlag.getFlag().setStopped(true);
+		blueFlag.getFlag().setStopped(true);
+
+		redFlag.getFlag().getReturnto().getBlock().setType(Material.AIR);
+		blueFlag.getFlag().getReturnto().getBlock().setType(Material.AIR);
+		redFlag.getFlag().despawn();
+		blueFlag.getFlag().despawn();
+
+		moveTask.cancel();
+		moveTask = null;
 	}
 }

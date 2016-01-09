@@ -33,6 +33,7 @@ import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -289,10 +290,10 @@ public class PlayerListener implements Listener
 	public void onPlayerMoveMonitor(PlayerMoveEvent event)
 	{
 		// If they didnt move, don't do anything.
-		if (event.getFrom().getBlockX() == event.getTo().getBlockX()
-				&& event.getFrom().getBlockZ() == event.getTo().getBlockZ())
+		if (Util.coordsEqual(event.getFrom(), event.getTo()))
 			return;
 
+		// Make sure they dont move during the cooldown
 		Player player = event.getPlayer();
 		ArenaJoinTask task = plugin.getWaiting().get(player.getName());
 		if (task != null)
@@ -309,7 +310,11 @@ public class PlayerListener implements Listener
 		ArenaPlayer ap = plugin.getArenaPlayer(event.getPlayer());
 		if (ap != null)
 		{
+			// API - onMove
 			Arena arena = ap.getArena();
+			arena.onMove(ap);
+
+			// Keep them in the arena
 			if (! arena.isInside(event.getTo()))
 			{
 				if (! arena.isInside(event.getFrom()))
@@ -324,6 +329,7 @@ public class PlayerListener implements Listener
 		}
 	}
 
+	// Disallow teleportation in arenas
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
@@ -338,6 +344,7 @@ public class PlayerListener implements Listener
 		}
 	}
 
+	// Block non-UA non-whitelisted commands in arenas
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{

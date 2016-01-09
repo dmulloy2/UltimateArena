@@ -51,42 +51,6 @@ public class InfectArena extends PvPArena
 		}
 	}
 
-	@Override
-	public void check()
-	{
-		if (startTimer <= 0)
-		{
-			// Handled in PvPArena#onReload()
-			/*if (startingAmount < 2)
-			{
-				tellPlayers(getMessage("notEnoughPeople"), 2);
-				stop();
-				return;
-			}*/
-
-			if (! simpleTeamCheck())
-			{
-				if (redTeamSize == 0)
-				{
-					setWinningTeam(Team.BLUE);
-					stop();
-					rewardTeam(Team.BLUE);
-				}
-				else if (blueTeamSize == 0)
-				{
-					setWinningTeam(Team.RED);
-					stop();
-					rewardTeam(Team.RED);
-				}
-				else
-				{
-					tellPlayers(getMessage("teamEmpty"));
-					stop();
-				}
-			}
-		}
-	}
-
 	private final void chooseInfected(int tries)
 	{
 		if (tries < 16)
@@ -137,6 +101,26 @@ public class InfectArena extends PvPArena
 		{
 			pl.sendMessage(getMessage("joinedInfected"));
 			pl.setTeam(Team.BLUE);
+		}
+	}
+
+	@Override
+	public void onPlayerEnd(ArenaPlayer ap)
+	{
+		if (isInGame())
+		{
+			if (redTeamSize == 0)
+			{
+				setWinningTeam(Team.BLUE);
+				stop();
+				rewardTeam(Team.BLUE);
+			}
+			else if (blueTeamSize == 0)
+			{
+				setWinningTeam(Team.RED);
+				stop();
+				rewardTeam(Team.RED);
+			}
 		}
 	}
 

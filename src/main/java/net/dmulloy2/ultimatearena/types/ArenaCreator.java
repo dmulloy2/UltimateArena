@@ -18,12 +18,17 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -200,6 +205,25 @@ public abstract class ArenaCreator
 	protected final void sendMessage(String string, Object... objects)
 	{
 		getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
+	}
+
+	protected final void checkOverlap(Location loc1, Location loc2)
+	{
+		List<String> overlap = new ArrayList<>();
+		for (ArenaZone az : plugin.getLoadedArenas())
+		{
+			if (az.isInside(loc1) || az.isInside(loc2))
+				overlap.add(az.getName());
+		}
+
+		if (! overlap.isEmpty())
+		{
+			if (overlap.size() == 1)
+				sendMessage("&4These points overlap an existing arena: &c{0}&4!", overlap.get(0));
+			else
+				sendMessage("&4These points overlap existing arenas: &c{0}&4!", new StringJoiner("&4, &c").appendAll(overlap));
+			sendMessage("&4This is known to cause some errors! Type &c/ua undo &4to undo!");
+		}
 	}
 
 	// ---- Generic Methods

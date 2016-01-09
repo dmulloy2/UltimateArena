@@ -258,9 +258,13 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	public boolean isInside(Location location)
 	{
+		Validate.notNull(location, "location cannot be null!");
+
+		World world = getWorld();
+
 		try
 		{
-			return lobby.isInside(location) || arena.isInside(location);
+			return world.equals(location.getWorld()) && (lobby.isInside(location) || arena.isInside(location));
 		}
 		catch (Throwable ex)
 		{
@@ -268,7 +272,6 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			{
 				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "performing location check for " + name));
 
-				World world = getWorld();
 				if (world == null)
 					plugin.getLogHandler().log(Level.WARNING, "This is caused by a null world. Does world {0} exist?", worldName);
 

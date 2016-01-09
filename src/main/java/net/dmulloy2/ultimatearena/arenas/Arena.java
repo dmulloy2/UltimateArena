@@ -69,7 +69,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -249,7 +248,7 @@ public abstract class Arena implements Reloadable
 		// Save vital data
 		ap.savePlayerData();
 
-		player.setMetadata("UA", new FixedMetadataValue(plugin, true));
+		player.setMetadata("UA", plugin.getUAIdentifier());
 
 		ap.clearInventory();
 
@@ -271,7 +270,7 @@ public abstract class Arena implements Reloadable
 
 		ap.clearPotionEffects();
 
-		ap.decideHat(false);
+		decideHat(ap);
 
 		active.add(ap);
 		updateTeams();
@@ -289,6 +288,15 @@ public abstract class Arena implements Reloadable
 
 		if (started)
 			spawn(ap);
+	}
+
+	/**
+	 * Decide a player's hat
+	 * @param ap Player to give hat to
+	 */
+	public void decideHat(ArenaPlayer ap)
+	{
+		ap.decideHat(false);
 	}
 
 	/**
@@ -791,7 +799,7 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			endPlayer(ap, false);
+			endPlayer(ap, LeaveReason.END_GAME);
 		}
 
 		for (ArenaSpectator as : spectators)
@@ -845,24 +853,14 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Alias for {@link #endPlayer(ArenaPlayer, boolean)}.
-	 * <p>
-	 * Same as calling {@code endPlayer(ap, false)}.
-	 */
-	public final void endPlayer(ArenaPlayer ap)
-	{
-		endPlayer(ap, false);
-	}
-
-	/**
 	 * Ends an {@link ArenaPlayer}.
 	 *
 	 * @param ap Player to end
-	 * @param disconnected Whether or not they disconnected
+	 * @param reason Reason they're being ended
 	 */
-	public final void endPlayer(ArenaPlayer ap, boolean disconnected)
+	public final void endPlayer(ArenaPlayer ap, LeaveReason reason)
 	{
-		plugin.debug("Ending player {0}, disconnected: {1}", ap.getName(), disconnected);
+		plugin.debug("Ending player {0}, reason: {1}", ap.getName(), reason);
 
 		// Dispose of the scoreboard
 		ap.getBoard().dispose();
@@ -879,7 +877,7 @@ public abstract class Arena implements Reloadable
 
 		// Remove from lists
 		active.remove(ap);
-		if (! disconnected)
+		if (reason != LeaveReason.QUIT)
 			inactive.add(ap);
 		updateTeams();
 
@@ -893,7 +891,28 @@ public abstract class Arena implements Reloadable
 			} catch (IndexOutOfBoundsException ex) { }
 		}
 
-		if (active.size() > 1)
+		// Let everyone know why
+		switch (reason)
+		{
+			case COMMAND:
+			case QUIT:
+				tellPlayers(getMessage("leaveBroadcast"), ap.getName());
+				break;
+			case DEATHS:
+				tellPlayers(getMessage("elimination"), ap.getName());
+				break;
+			case ERROR:
+				tellPlayers(getMessage("errorBroadcast"), ap.getName());
+				break;
+			case KICK:
+				tellPlayers(getMessage("kickBroadcast"), ap.getName());
+				break;
+			case END_GAME:
+			case POWER:
+				break;
+		}
+
+		if (reason != LeaveReason.END_GAME && active.size() > 1)
 			tellPlayers(getMessage("playersRemaining"), active.size());
 
 		// API - onPlayerEnd
@@ -940,6 +959,8 @@ public abstract class Arena implements Reloadable
 		// End the game
 		if (gameTimer <= 0)
 		{
+			tellPlayers(getMessage("outOfTime"));
+
 			onPreOutOfTime();
 			stop();
 			onOutOfTime();
@@ -1055,7 +1076,7 @@ public abstract class Arena implements Reloadable
 
 			// Lobby hats
 			if (isInLobby())
-				ap.decideHat(false);
+				decideHat(ap);
 
 			// Class stuff
 			ArenaClass ac = ap.getArenaClass();
@@ -1122,7 +1143,7 @@ public abstract class Arena implements Reloadable
 		}
 
 		// Stop if its empty
-		if (active.size() <= 0)
+		if (active.size() == 0)
 			stop();
 
 		// Update signs
@@ -1133,6 +1154,12 @@ public abstract class Arena implements Reloadable
 	 * Called when the arena is updated. Generally every second or so.
 	 */
 	public void check() { }
+
+	/**
+	 * Called when a player in this Arena moves.
+	 * @param ap Moving player
+	 */
+	public void onMove(ArenaPlayer ap) { }
 
 	/**
 	 * Decides the timer xp bar for an {@link ArenaPlayer}.

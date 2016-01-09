@@ -171,7 +171,7 @@ public class ArenaConfig extends Configuration
 			this.lobbyTime = getInt(values, "lobbyTime", def.getLobbyTime());
 			this.maxDeaths = Math.max(1, getInt(values, "maxDeaths", def.getMaxDeaths()));
 			this.maxPlayers = getInt(values, "maxPlayers", def.getMaxPlayers());
-			this.minPlayers = getInt(values, "minPlayers", def.getMinPlayers());
+			this.minPlayers = Math.max(1, getInt(values, "minPlayers", def.getMinPlayers()));
 
 			this.defaultClass = getString(values, "defaultClass", def.getDefaultClass());
 

@@ -751,14 +751,15 @@ public class UltimateArena extends SwornPlugin
 	}
 
 	/**
-	 * Attempt to join an arena with a given team.
+	 * Attempt to join an arena on a given team.
 	 * 
-	 * @param player Player
-	 * @param name Arena name
-	 * @param team Team number
+	 * @param player Player joining
+	 * @param name Arena to join
+	 * @param team Team to join
 	 */
 	public final void attemptJoin(Player player, String name, String team)
 	{
+		// Make sure they can join
 		if (waiting.containsKey(player.getName()))
 		{
 			sendpMessage(player, FormatUtil.format(getMessage("alreadyWaiting")));
@@ -786,6 +787,7 @@ public class UltimateArena extends SwornPlugin
 			}
 		}
 
+		// Make sure the arena exists
 		ArenaZone az = getArenaZone(name);
 		if (az == null)
 		{
@@ -812,6 +814,7 @@ public class UltimateArena extends SwornPlugin
 			return;
 		}
 
+		// Permission check
 		String permission = "ultimatearena.join." + az.getName().toLowerCase();
 		if (az.isNeedsPermission() && ! player.hasPermission(permission))
 		{
@@ -820,6 +823,7 @@ public class UltimateArena extends SwornPlugin
 			return;
 		}
 
+		// Make sure they weren't in this arena already
 		ArenaPlayer ap = getArenaPlayer(player, true);
 		if (ap != null)
 		{
@@ -837,6 +841,33 @@ public class UltimateArena extends SwornPlugin
 			}
 		}
 
+		// Check the arena
+		Arena arena = getArena(name);
+		if (arena != null)
+		{
+			if (arena.isStopped())
+			{
+				sendpMessage(player, FormatUtil.format(getMessage("arenaStopping")));
+				return;
+			}
+
+			if (arena.isInGame() && ! arena.isJoinInProgress())
+			{
+				sendpMessage(player, FormatUtil.format(getMessage("arenaStarted")));
+				return;
+			}
+
+			if (arena.getPlayerCount() >= arena.getMaxPlayers())
+			{
+				if (! permissionHandler.hasPermission(player, Permission.JOIN_FULL))
+				{
+					sendpMessage(player, FormatUtil.format(getMessage("arenaFull")));
+					return;
+				}
+			}
+		}
+
+		// Make 'em wait so they dont abuse the teleportation
 		ArenaJoinTask join = new ArenaJoinTask(player.getName(), name, this, team);
 		if (Config.joinTimerEnabled)
 		{
@@ -869,6 +900,7 @@ public class UltimateArena extends SwornPlugin
 			Arena active = getArena(name);
 			if (active != null)
 			{
+				// Some redundant checks in case anything changed
 				if (active.isStopped())
 				{
 					sendpMessage(player, FormatUtil.format(getMessage("arenaStopping")));
@@ -889,10 +921,11 @@ public class UltimateArena extends SwornPlugin
 
 				if (! permissionHandler.hasPermission(player, Permission.JOIN_FULL))
 				{
-					sendpMessage(player, FormatUtil.format(getMessage("arenaJoin")));
+					sendpMessage(player, FormatUtil.format(getMessage("arenaFull")));
 					return;
 				}
 
+				// Sorry, random person!
 				if (kickRandomPlayer(active))
 				{
 					active.addPlayer(player, team);
@@ -910,6 +943,7 @@ public class UltimateArena extends SwornPlugin
 				return;
 			}
 
+			// Try to create the arena
 			Arena arena;
 
 			try
@@ -943,20 +977,15 @@ public class UltimateArena extends SwornPlugin
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
 			if (! permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FULL))
-			{
 				validPlayers.add(ap);
-			}
 		}
 
-		int rand = Util.random(validPlayers.size());
-		ArenaPlayer apl = validPlayers.get(rand);
-		if (apl != null)
-		{
-			apl.leaveArena(LeaveReason.KICK);
-			return true;
-		}
+		if (validPlayers.isEmpty())
+			return false;
 
-		return false;
+		ArenaPlayer ap = validPlayers.get(Util.random(validPlayers.size()));
+		ap.leaveArena(LeaveReason.KICK);
+		return true;
 	}
 
 	/**

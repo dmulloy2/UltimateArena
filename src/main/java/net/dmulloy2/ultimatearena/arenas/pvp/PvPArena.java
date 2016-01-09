@@ -37,7 +37,9 @@ public class PvPArena extends Arena
 	@Override
 	public void announceWinner()
 	{
-		tellAllPlayers(getMessage("teamWon"), getWinningTeam(), name);
+		Team winner = getWinningTeam();
+		if (winner != null)
+			tellAllPlayers(getMessage("teamWon"), winner, name);
 	}
 
 	@Override

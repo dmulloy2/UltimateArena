@@ -105,19 +105,9 @@ public class CTFFlagBase extends FlagBase
 							}
 
 							ap.setGameXP(ap.getGameXP() + 500);
+
 							arena.tellPlayers(getMessage("flagCaptured"), ap.getName(), enemyflag.getFlagType());
-
-							if (team == Team.RED)
-							{
-								arena.setRedCap(arena.getRedCap() + 1);
-								arena.tellPlayers(getMessage("teamCaptures"), team, arena.getRedCap());
-							}
-							else if (team == Team.BLUE)
-							{
-								arena.setBlueCap(arena.getBlueCap() + 1);
-								arena.tellPlayers(getMessage("teamCaptures"), team, arena.getBlueCap());
-							}
-
+							arena.capture(team);
 							return;
 						}
 					}

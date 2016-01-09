@@ -18,8 +18,6 @@
  */
 package net.dmulloy2.ultimatearena.arenas.ffa;
 
-import java.util.List;
-
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -41,54 +39,6 @@ public class FFAArena extends Arena
 	}
 
 	@Override
-	public Location getSpawn(ArenaPlayer ap)
-	{
-		if (isInLobby())
-		{
-			return super.getSpawn(ap);
-		}
-
-		return getRandomSpawn(ap);
-	}
-
-	@Override
-	public void onSpawn(ArenaPlayer ap)
-	{
-		ap.decideHat(true);
-	}
-
-	@Override
-	public void check()
-	{
-		if (isInGame())
-		{
-			if (isEmpty())
-			{
-				setWinningTeam(null);
-
-				if (startingAmount > 1)
-				{
-					if (active.size() > 0)
-					{
-						this.winner = active.get(0);
-					}
-				}
-
-				stop();
-
-				if (startingAmount > 1)
-				{
-					rewardTeam(winningTeam);
-				}
-				else
-				{
-					tellPlayers(getMessage("notEnoughPeople"), 2);
-				}
-			}
-		}
-	}
-
-	@Override
 	public void announceWinner()
 	{
 		if (winner != null)
@@ -102,16 +52,58 @@ public class FFAArena extends Arena
 	}
 
 	@Override
+	public void decideHat(ArenaPlayer ap)
+	{
+		ap.decideHat(true);
+	}
+
+	@Override
+	public Location getSpawn(ArenaPlayer ap)
+	{
+		if (isInLobby())
+		{
+			return super.getSpawn(ap);
+		}
+
+		return getRandomSpawn(ap);
+	}
+
+	@Override
+	public void onPlayerEnd(ArenaPlayer ap)
+	{
+		if (isInGame())
+		{
+			// Last player standing wins
+			if (active.size() == 1)
+			{
+				this.winner = active.get(0);
+
+				setWinningTeam(null);
+				stop();
+				rewardTeam(null);
+			}
+		}
+	}
+
+	@Override
+	public void onReload()
+	{
+		// Two players required
+		this.minPlayers = Math.max(2, minPlayers);
+	}
+
+	/*@Override
 	public void onStop()
 	{
+		// Reward the leader if we run out of time
+		// TODO: Make this configurable?
 		if (active.size() > 1)
 		{
-			// Reward the leader if we run out of time
 			List<ArenaPlayer> lb = getLeaderboard();
 			if (! lb.isEmpty())
 				this.winner = lb.get(0);
 
 			reward(winner);
 		}
-	}
+	}*/
 }

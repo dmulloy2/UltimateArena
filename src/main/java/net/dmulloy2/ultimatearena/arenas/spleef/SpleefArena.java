@@ -29,6 +29,7 @@ import net.dmulloy2.util.Util;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -63,47 +64,44 @@ public class SpleefArena extends FFAArena
 	}
 
 	@Override
-	public void check()
+	public void onMove(ArenaPlayer ap)
+	{
+		// Kill them if they're under the arena
+		Player player = ap.getPlayer();
+		if (player.getHealth() > 0.0D)
+		{
+			if (outZone.isUnder(player.getLocation()))
+				player.setHealth(0.0D);
+		}
+	}
+
+	@Override
+	public void onPlayerEnd(ArenaPlayer ap)
 	{
 		if (isInGame())
 		{
-			if (isEmpty())
+			if (active.size() == 1)
 			{
 				setWinningTeam(null);
-
-				if (startingAmount > 1)
-				{
-					if (active.size() > 0)
-						this.winner = active.get(0);
-				}
-
 				stop();
-
-				if (startingAmount > 1)
-				{
-					rewardTeam(winningTeam);
-				}
-				else
-				{
-					tellPlayers(getMessage("notEnoughPeople"), 2);
-				}
-
-				// Refresh the ground
-				spleefGround.setType(specialType);
-			}
-			else
-			{
-				for (ArenaPlayer ap : getActivePlayers())
-				{
-					Location loc = ap.getPlayer().getLocation();
-					if (ap.getPlayer().getHealth() > 0.0D)
-					{
-						if (outZone.isUnder(loc))
-							ap.getPlayer().setHealth(0.0D);
-					}
-				}
+				rewardTeam(null);
 			}
 		}
+	}
+
+	@Override
+	public void onStop()
+	{
+		// Refresh the ground
+		spleefGround.setType(specialType);
+	}
+
+	@Override
+	public void onReload()
+	{
+		// 2 players required
+		this.minPlayers = Math.max(2, minPlayers);
+		this.specialType = ((SpleefZone) az).getSpecialType();
 	}
 
 	// Completely arbitrary number
@@ -143,11 +141,5 @@ public class SpleefArena extends FFAArena
 			return super.getSpawn(ap);
 
 		return getBlockInSpleefArena();
-	}
-
-	@Override
-	public void onReload()
-	{
-		this.specialType = ((SpleefZone) az).getSpecialType();
 	}
 }

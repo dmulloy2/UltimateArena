@@ -55,69 +55,75 @@ public class ConquestArena extends Arena
 	}
 
 	@Override
+	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
+	{
+		board.addEntry("Red Power", redTeamPower);
+		board.addEntry("Blue Power", blueTeamPower);
+	}
+
+	@Override
 	public void check()
 	{
-		for (ArenaPlayer ap : getActivePlayers())
+		if (isInGame())
 		{
+			// If either team has no power, the other team wins
+
 			if (blueTeamPower <= 0)
 			{
-				if (ap.getTeam() == Team.BLUE)
-					endPlayer(ap, false);
+				setWinningTeam(Team.RED);
+				stop();
+				rewardTeam(Team.RED);
+				return;
 			}
-			else if (redTeamPower <= 0)
+
+			if (redTeamPower <= 0)
 			{
-				if (ap.getTeam() == Team.RED)
-					endPlayer(ap, false);
+				setWinningTeam(Team.BLUE);
+				stop();
+				rewardTeam(Team.BLUE);
+				return;
 			}
-		}
 
-		if (blueTeamPower <= 0)
-			setWinningTeam(Team.RED);
+			// If either team has all the flags, they win
 
-		if (redTeamPower <= 0)
-			setWinningTeam(Team.BLUE);
+			int red = 0;
+			int blue = 0;
 
-		int red = 0;
-		int blue = 0;
-
-		for (ArenaFlag flag : getFlags())
-		{
-			flag.checkNear(getActivePlayers());
-
-			if (flag.isCapped())
+			for (ArenaFlag flag : getFlags())
 			{
-				if (flag.getOwningTeam() == Team.RED)
-					red++;
-				else
-					blue++;
+				flag.checkNear(getActivePlayers());
+
+				if (flag.isCapped())
+				{
+					if (flag.getOwningTeam() == Team.RED)
+						red++;
+					else
+						blue++;
+				}
 			}
-		}
 
-		if (red == flags.size())
-		{
-			setWinningTeam(Team.RED);
+			if (red == flags.size())
+			{
+				setWinningTeam(Team.RED);
+				stop();
+				rewardTeam(Team.RED);
+				return;
+			}
 
-			stop();
+			if (blue == flags.size())
+			{
+				setWinningTeam(Team.BLUE);
+				stop();
+				rewardTeam(Team.BLUE);
+				return;
+			}
 
-			rewardTeam(Team.RED);
-		}
-		else if (blue == flags.size())
-		{
-			setWinningTeam(Team.BLUE);
+			// If either team is empty, it's no contest
 
-			stop();
-
-			rewardTeam(Team.BLUE);
-		}
-
-		if (startTimer <= 0)
-		{
 			if (! simpleTeamCheck())
 			{
 				setWinningTeam(null);
-
 				stop();
-
 				rewardTeam(null);
 			}
 		}
@@ -130,13 +136,6 @@ public class ConquestArena extends Arena
 		ret.add("&3Red Team Power: &e" + redTeamPower);
 		ret.add("&3Blue Team Power: &e" + blueTeamPower);
 		return ret;
-	}
-
-	@Override
-	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
-	{
-		board.addEntry("Red Power", redTeamPower);
-		board.addEntry("Blue Power", blueTeamPower);
 	}
 
 	@Override
@@ -179,9 +178,8 @@ public class ConquestArena extends Arena
 	@Override
 	public void onPlayerDeath(ArenaPlayer pl)
 	{
-		int majority = 0;
 		int red = 0;
-		int blu = 0;
+		int blue = 0;
 
 		for (ArenaFlag flag : getFlags())
 		{
@@ -193,16 +191,14 @@ public class ConquestArena extends Arena
 			else if (flag.getOwningTeam() == Team.BLUE)
 			{
 				if (flag.isCapped())
-					blu++;
+					blue++;
 			}
 		}
 
-		majority = blu > red ? 1 : 2;
-
-		if (majority == 1)
-			redTeamPower--;
-		else
-			blueTeamPower--;
+		if (red > blue)
+			blueTeamPower -= (red - blue);
+		else if (blue > red)
+			redTeamPower -= (blue - red);
 
 		if (pl.getTeam() == Team.RED)
 		{
@@ -226,6 +222,12 @@ public class ConquestArena extends Arena
 					ap.sendMessage(getMessage("theirPower"), blueTeamPower);
 			}
 		}
+	}
+
+	@Override
+	public void onReload()
+	{
+		this.minPlayers = Math.max(2, minPlayers);
 	}
 
 	@Override

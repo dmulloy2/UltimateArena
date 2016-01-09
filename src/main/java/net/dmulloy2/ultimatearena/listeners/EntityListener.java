@@ -26,6 +26,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.Material;
@@ -255,8 +256,11 @@ public class EntityListener implements Listener
 	public void onEntityDeathMonitor(EntityDeathEvent event)
 	{
 		LivingEntity entity = event.getEntity();
-		if (plugin.isInArena(entity.getLocation()))
+		ArenaZone inside = plugin.getZoneInside(entity.getLocation());
+		if (inside != null)
 		{
+			plugin.getLogHandler().debug("Clearing {0}'s drops in arena {1}", entity, inside);
+
 			event.getDrops().clear();
 			event.setDroppedExp(0);
 		}
