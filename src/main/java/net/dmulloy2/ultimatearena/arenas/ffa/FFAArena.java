@@ -18,6 +18,14 @@
  */
 package net.dmulloy2.ultimatearena.arenas.ffa;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
@@ -92,18 +100,71 @@ public class FFAArena extends Arena
 		this.minPlayers = Math.max(2, minPlayers);
 	}
 
-	/*@Override
-	public void onStop()
+	private ArenaPlayer mostKills()
 	{
-		// Reward the leader if we run out of time
-		// TODO: Make this configurable?
-		if (active.size() > 1)
-		{
-			List<ArenaPlayer> lb = getLeaderboard();
-			if (! lb.isEmpty())
-				this.winner = lb.get(0);
+		List<ArenaPlayer> players = getActive();
+		if (players.isEmpty()) return null;
+		if (players.size() == 1) return players.get(0);
 
-			reward(winner);
+		Map<ArenaPlayer, Integer> map = new HashMap<>();
+		for (ArenaPlayer ap : players)
+			map.put(ap, ap.getKills());
+
+		List<Entry<ArenaPlayer, Integer>> sortedEntries = new ArrayList<>(map.entrySet());
+		Collections.sort(sortedEntries, new Comparator<Entry<ArenaPlayer, Integer>>()
+		{
+			@Override
+			public int compare(Entry<ArenaPlayer, Integer> entry1, Entry<ArenaPlayer, Integer> entry2)
+			{
+				return -entry1.getValue().compareTo(entry2.getValue());
+			}
+		});
+
+		return sortedEntries.get(0).getKey();
+	}
+
+	@Override
+	public void onPreOutOfTime()
+	{
+		switch (winCondition)
+		{
+			case LAST_MAN_STANDING:
+				break;
+			case MOST_KILLS:
+			{
+				ArenaPlayer ap = mostKills();
+				if (ap != null)
+				{
+					ap.setCanReward(true);
+					this.winner = ap;
+				}
+				break;
+			}
+			case BEST_KDR:
+			{
+				List<ArenaPlayer> leaderboard = getLeaderboard();
+				if (! leaderboard.isEmpty())
+				{
+					ArenaPlayer ap = leaderboard.get(0);
+					ap.setCanReward(true);
+					this.winner = ap;
+				}
+				break;
+			}
 		}
-	}*/
+	}
+
+	@Override
+	public void onOutOfTime()
+	{
+		switch (winCondition)
+		{
+			case LAST_MAN_STANDING:
+				break;
+			case MOST_KILLS:
+			case BEST_KDR:
+				rewardTeam(null);
+				break;
+		}
+	}
 }

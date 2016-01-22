@@ -64,6 +64,7 @@ public class ArenaConfig extends Configuration
 	protected List<Material> clearMaterials;
 
 	protected transient List<ItemStack> rewards;
+	protected transient WinCondition winCondition;
 	protected transient List<ScaledReward> scaledRewards;
 	protected transient Map<Team, List<String>> mandatedClasses;
 	protected transient Map<Integer, List<KillStreak>> killStreaks;
@@ -110,6 +111,7 @@ public class ArenaConfig extends Configuration
 		this.blacklistedClasses = new ArrayList<>();
 		this.whitelistedClasses = new ArrayList<>();
 		this.killStreaks = getDefaultKillStreak();
+		this.winCondition = WinCondition.LAST_MAN_STANDING;
 
 		this.maxDeaths = 1;
 		this.maxPlayers = 24;
@@ -176,6 +178,10 @@ public class ArenaConfig extends Configuration
 			this.defaultClass = getString(values, "defaultClass", def.getDefaultClass());
 
 			this.cashReward = getDouble(values, "cashReward", def.getCashReward());
+
+			WinCondition condition = WinCondition.fromConfig(getString(values, "winCondition", "default"));
+			if (condition != null)
+				this.winCondition = condition;
 
 			if (giveRewards)
 			{

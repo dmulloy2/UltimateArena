@@ -56,6 +56,7 @@ import net.dmulloy2.ultimatearena.types.KillStreak;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.types.Team;
+import net.dmulloy2.ultimatearena.types.WinCondition;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
@@ -111,6 +112,7 @@ public abstract class Arena implements Reloadable
 	private Map<Team, List<String>> mandatedClasses;
 	private Map<Integer, List<KillStreak>> killStreaks;
 
+	protected WinCondition winCondition;
 	protected Team winningTeam;
 
 	protected int broadcastTimer = 45;
@@ -201,6 +203,7 @@ public abstract class Arena implements Reloadable
 		this.defaultClass = az.getConfig().getDefaultClass();
 
 		this.killStreaks = az.getConfig().getKillStreaks();
+		this.winCondition = az.getConfig().getWinCondition();
 		this.blacklistedClasses = az.getConfig().getBlacklistedClasses();
 		this.whitelistedClasses = az.getConfig().getWhitelistedClasses();
 		this.mandatedClasses = az.getConfig().getMandatedClasses();
