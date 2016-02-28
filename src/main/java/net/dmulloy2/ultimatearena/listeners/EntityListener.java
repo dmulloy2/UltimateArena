@@ -259,7 +259,7 @@ public class EntityListener implements Listener
 		ArenaZone inside = plugin.getZoneInside(entity.getLocation());
 		if (inside != null)
 		{
-			plugin.getLogHandler().debug("Clearing {0}'s drops in arena {1}", entity, inside);
+			plugin.getLogHandler().debug("Clearing drops from {0} in arena {1}", entity, inside);
 
 			event.getDrops().clear();
 			event.setDroppedExp(0);
