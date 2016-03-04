@@ -18,8 +18,6 @@
  */
 package net.dmulloy2.ultimatearena.listeners;
 
-import java.lang.reflect.Method;
-
 import lombok.RequiredArgsConstructor;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -47,6 +45,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.BlockProjectileSource;
+import org.bukkit.projectiles.ProjectileSource;
 
 /**
  * @author dmulloy2
@@ -184,7 +183,7 @@ public class EntityListener implements Listener
 		if (ap != null)
 		{
 			// Repair in-hand item
-			ItemStack inHand = player.getItemInHand();
+			ItemStack inHand = player.getInventory().getItemInMainHand();
 			if (inHand != null && inHand.getType() != Material.AIR)
 			{
 				if (inHand.getType().getMaxDurability() != 0)
@@ -335,7 +334,7 @@ public class EntityListener implements Listener
 						else if (damager instanceof Projectile)
 						{
 							Projectile proj = (Projectile) damager;
-							Object shooter = getShooter(proj);
+							ProjectileSource shooter = proj.getShooter();
 
 							if (shooter instanceof Player)
 							{
@@ -426,7 +425,7 @@ public class EntityListener implements Listener
 
 	private String getWeapon(Player player)
 	{
-		ItemStack inHand = player.getItemInHand();
+		ItemStack inHand = player.getInventory().getItemInMainHand();
 		if (inHand == null || inHand.getType() == Material.AIR)
 		{
 			return "their fists";
@@ -449,25 +448,11 @@ public class EntityListener implements Listener
 		if (entity instanceof Projectile)
 		{
 			Projectile proj = (Projectile) entity;
-			Object shooter = getShooter(proj);
+			ProjectileSource shooter = proj.getShooter();
 			if (shooter instanceof Player)
 				return (Player) shooter;
 		}
 
 		return null;
-	}
-
-	private Method getShooter;
-
-	private Object getShooter(Projectile proj)
-	{
-		try
-		{
-			if (getShooter == null)
-				getShooter = Projectile.class.getMethod("getShooter");
-			if (getShooter.getReturnType() == LivingEntity.class)
-				return getShooter.invoke(proj);
-		} catch (Throwable ex) { }
-		return proj.getShooter();
 	}
 }

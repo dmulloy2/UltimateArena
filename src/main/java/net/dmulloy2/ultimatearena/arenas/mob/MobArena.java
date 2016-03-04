@@ -39,6 +39,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Skeleton.SkeletonType;
+import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
@@ -219,7 +220,7 @@ public class MobArena extends Arena
 										item.addEnchantment(Enchantment.ARROW_DAMAGE, enchantmentLevel);
 									}
 
-									newMob.getEquipment().setItemInHand(item);
+									newMob.getEquipment().setItemInMainHand(item);
 								}
 							}
 							// Special zombies
@@ -242,7 +243,7 @@ public class MobArena extends Arena
 											item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
 										}
 
-										newMob.getEquipment().setItemInHand(item);
+										newMob.getEquipment().setItemInMainHand(item);
 									}
 									else if (rand == 5)
 									{
@@ -251,8 +252,9 @@ public class MobArena extends Arena
 									}
 									else if (rand == 0)
 									{
-										// Villager zombies
-										((Zombie) newMob).setVillager(true);
+										// Make them a random villager profession
+										Profession profession = Profession.values()[Util.random(Profession.values().length)];
+										((Zombie) newMob).setVillagerProfession(profession);
 									}
 								}
 							}

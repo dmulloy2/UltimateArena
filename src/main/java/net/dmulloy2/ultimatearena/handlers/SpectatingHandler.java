@@ -137,7 +137,7 @@ public class SpectatingHandler implements Listener
 		Player player = event.getPlayer();
 		if (isSpectating(player))
 		{
-			if (player.getItemInHand().getType() == Material.COMPASS)
+			if (player.getInventory().getItemInMainHand().getType() == Material.COMPASS)
 			{
 				PlayerSelectionGUI psGUI = new PlayerSelectionGUI(plugin, player);
 				plugin.getGuiHandler().open(player, psGUI);
