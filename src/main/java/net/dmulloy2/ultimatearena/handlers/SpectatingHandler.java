@@ -22,6 +22,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.gui.PlayerSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaSpectator;
+import net.dmulloy2.util.CompatUtil;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -137,7 +138,7 @@ public class SpectatingHandler implements Listener
 		Player player = event.getPlayer();
 		if (isSpectating(player))
 		{
-			if (player.getInventory().getItemInMainHand().getType() == Material.COMPASS)
+			if (CompatUtil.getItemInMainHand(player).getType() == Material.COMPASS)
 			{
 				PlayerSelectionGUI psGUI = new PlayerSelectionGUI(plugin, player);
 				plugin.getGuiHandler().open(player, psGUI);

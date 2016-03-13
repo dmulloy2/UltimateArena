@@ -162,6 +162,8 @@ public class UltimateArena extends SwornPlugin
 		// Register LogHandler
 		logHandler = new LogHandler(this);
 
+		checkVersion();
+
 		// I/O
 		checkFiles();
 

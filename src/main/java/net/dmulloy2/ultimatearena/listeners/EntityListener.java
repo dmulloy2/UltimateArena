@@ -25,6 +25,7 @@ import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
+import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.Material;
@@ -183,7 +184,7 @@ public class EntityListener implements Listener
 		if (ap != null)
 		{
 			// Repair in-hand item
-			ItemStack inHand = player.getInventory().getItemInMainHand();
+			ItemStack inHand = CompatUtil.getItemInMainHand(player);
 			if (inHand != null && inHand.getType() != Material.AIR)
 			{
 				if (inHand.getType().getMaxDurability() != 0)
@@ -425,7 +426,7 @@ public class EntityListener implements Listener
 
 	private String getWeapon(Player player)
 	{
-		ItemStack inHand = player.getInventory().getItemInMainHand();
+		ItemStack inHand = CompatUtil.getItemInMainHand(player);
 		if (inHand == null || inHand.getType() == Material.AIR)
 		{
 			return "their fists";
