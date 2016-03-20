@@ -1,7 +1,6 @@
 /**
  * UltimateArena - fully customizable PvP arenas
- * Copyright (C) 2012 - 2015 MineSworn
- * Copyright (C) 2013 - 2015 dmulloy2
+ * Copyright (C) 2016 dmulloy2
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +19,7 @@ package net.dmulloy2.ultimatearena.integration;
 
 import java.util.logging.Level;
 
-import lombok.Getter;
-import net.dmulloy2.integration.DependencyProvider;
+import net.dmulloy2.integration.TypelessProvider;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.util.Util;
 
@@ -37,8 +35,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
  * @author dmulloy2
  */
 
-@Getter
-public class ProtocolHandler extends DependencyProvider<ProtocolLibrary>
+public class ProtocolHandler extends TypelessProvider
 {
 	private ProtocolManager manager;
 
