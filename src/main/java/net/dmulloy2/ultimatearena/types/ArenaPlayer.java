@@ -484,7 +484,7 @@ public final class ArenaPlayer
 				break;
 			case POWER:
 				sendMessage(plugin.getMessage("powerKick"));
-			case QUIT:
+			default:
 				break;
 		}
 	}

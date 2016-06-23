@@ -23,14 +23,18 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
+import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.MaterialUtil;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -38,6 +42,8 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityCombustByBlockEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -87,13 +93,15 @@ public class EntityListener implements Listener
 		}
 	}
 
-	// Stop combustion in the lobby
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityCombust(EntityCombustEvent event)
 	{
-		if (event.getEntity() instanceof Player)
+		Entity entity = event.getEntity();
+		EntityType type = entity.getType();
+		if (type == EntityType.PLAYER)
 		{
-			Player player = (Player) event.getEntity();
+			// Stop combustion in the lobby
+			Player player = (Player) entity;
 			ArenaPlayer ap = plugin.getArenaPlayer(player);
 			if (ap != null)
 			{
@@ -102,6 +110,30 @@ public class EntityListener implements Listener
 				{
 					player.setFireTicks(0);
 					event.setCancelled(true);
+				}
+			}
+		}
+		else if (type == EntityType.SKELETON || type == EntityType.ZOMBIE)
+		{
+			if (ArenaConfig.Global.mobPreservation)
+			{
+				// Skip the other cases
+				if (event instanceof EntityCombustByBlockEvent || event instanceof EntityCombustByEntityEvent)
+					return;
+
+				// Stop zombies and skeletons from combusting from the sun if applicable
+				World world = entity.getWorld();
+				if (world.getTime() <= 13500L)
+				{
+					ArenaZone az = plugin.getZoneInside(entity.getLocation());
+					if (az != null)
+					{
+						Arena arena = plugin.getArena(az.getName());
+						if (arena != null && arena.getConfig().isPreserveMobs())
+						{
+							event.setCancelled(true);
+						}
+					}
 				}
 			}
 		}
@@ -433,7 +465,7 @@ public class EntityListener implements Listener
 		}
 		else
 		{
-			String name = FormatUtil.getFriendlyName(inHand.getType());
+			String name = MaterialUtil.getName(inHand);
 			String article = FormatUtil.getArticle(name);
 			return "&3" + article + " &e" + name;
 		}

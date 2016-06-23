@@ -55,7 +55,7 @@ public class ArenaConfig extends Configuration
 {
 	// ---- Generic
 	protected boolean allowTeamKilling, countMobKills, canModifyWorld, unlimitedAmmo, rewardBasedOnXp, giveRewards, forceBalance,
-		joinInProgress;
+		joinInProgress, preserveMobs;
 	protected int gameTime, lobbyTime, maxDeaths, maxPlayers, minPlayers;
 	protected String defaultClass;
 	protected double cashReward;
@@ -168,6 +168,9 @@ public class ArenaConfig extends Configuration
 			this.giveRewards = getBoolean(values, "giveRewards", def.isGiveRewards());
 			this.forceBalance = getBoolean(values, "forceBalance", def.isForceBalance());
 			this.joinInProgress = getBoolean(values, "joinInProgress", def.isJoinInProgress());
+
+			if (this.preserveMobs = getBoolean(values, "preserveMobs", def.isPreserveMobs()))
+				Global.mobPreservation = true;
 
 			this.gameTime = getInt(values, "gameTime", def.getGameTime());
 			this.lobbyTime = getInt(values, "lobbyTime", def.getLobbyTime());
@@ -468,5 +471,18 @@ public class ArenaConfig extends Configuration
 		// Reload
 		this.loaded = false;
 		this.loaded = load();
+	}
+
+	/**
+	 * Global registry of enabled config values. If a config value is never
+	 * enabled, it isn't checked elsewhere and there's no performance hit.
+	 * <p>
+	 * <i>To be expanded</i>
+	 * 
+	 * @author dmulloy2
+	 */
+	public static class Global
+	{
+		public static boolean mobPreservation = false;
 	}
 }

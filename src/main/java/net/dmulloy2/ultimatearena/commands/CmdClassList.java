@@ -18,13 +18,13 @@
  */
 package net.dmulloy2.ultimatearena.commands;
 
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.inventory.ItemStack;
+
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.util.FormatUtil;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.inventory.ItemStack;
+import net.dmulloy2.util.MaterialUtil;
 
 /**
  * @author dmulloy2
@@ -52,7 +52,7 @@ public class CmdClassList extends UltimateArenaCommand
 			sendMessage(getMessage("classHeader"), name);
 			for (ItemStack weapon : ac.getTools().values())
 			{
-				name = FormatUtil.getFriendlyName(weapon.getType());
+				name = MaterialUtil.getName(weapon);
 				sendMessage(getMessage("classItem"), name, weapon.getAmount());
 			}
 		}
