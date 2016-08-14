@@ -19,7 +19,6 @@
 package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -29,8 +28,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.chat.BaseComponent;
 import net.dmulloy2.chat.ChatUtil;
 import net.dmulloy2.chat.ComponentSerializer;
@@ -68,11 +65,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Base arena class. Can be extended to create custom arena types.
@@ -1209,10 +1207,6 @@ public abstract class Arena implements Reloadable
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("forceStart"), name));
 	}
 
-	private static final List<EntityType> persistentEntities = Arrays.asList(
-			EntityType.PLAYER, EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
-	);
-
 	private final void clearEntities()
 	{
 		try
@@ -1222,20 +1216,17 @@ public abstract class Arena implements Reloadable
 			{
 				if (entity != null && entity.isValid())
 				{
-					if (! persistentEntities.contains(entity.getType()))
+					if (! Config.persistentEntities.contains(entity.getType().name()))
 					{
 						if (isInside(entity.getLocation()))
 						{
-							if (entity instanceof LivingEntity)
-								((LivingEntity) entity).setHealth(0.0D);
-	
 							entity.remove();
 							count++;
 						}
 					}
 				}
 			}
-	
+
 			plugin.debug("Removed {0} entities from {1}", count, name);
 		}
 		catch (Throwable ex)

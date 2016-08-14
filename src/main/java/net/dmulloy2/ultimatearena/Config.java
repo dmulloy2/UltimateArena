@@ -11,6 +11,7 @@ import net.dmulloy2.config.ConfigParser;
 import net.dmulloy2.config.Key;
 import net.dmulloy2.config.ValueOptions;
 import net.dmulloy2.config.ValueOptions.ValueOption;
+import net.dmulloy2.util.ListUtil;
 
 /**
  * @author dmulloy2
@@ -68,4 +69,10 @@ public class Config
 
 	@Key("spectator.invisible")
 	public static boolean spectatorInvisible = true;
+
+	@Key("persistentEntities")
+	@ValueOptions(ValueOption.LIST_UPPER_CASE)
+	public static List<String> persistentEntities = ListUtil.toList(
+			"PLAYER", "PAINTING", "ITEM_FRAME", "VILLAGER"
+	);
 }
