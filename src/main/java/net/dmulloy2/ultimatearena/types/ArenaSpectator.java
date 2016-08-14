@@ -20,6 +20,9 @@ package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
+
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -217,36 +220,27 @@ public final class ArenaSpectator
 
 	// ---- Generic Methods
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
+		if (obj == this) return true;
+		
 		if (obj instanceof ArenaSpectator)
 		{
 			ArenaSpectator that = (ArenaSpectator) obj;
-			return that.uniqueId.equals(uniqueId) && that.arena.equals(arena);
+			return Objects.equals(uniqueId, that.uniqueId) &&
+					Objects.equals(arena, that.arena);
 		}
 
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
-		int hash = 41;
-		hash *= 1 + uniqueId.hashCode();
-		hash *= 1 + arena.hashCode();
-		return hash;
+		return Objects.hash(uniqueId, arena);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

@@ -20,6 +20,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -157,9 +158,6 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		return new ArenaLocation(l1.worldName, Math.min(l1.x, l2.x), Math.min(l1.y, l2.y), Math.min(l1.z, l2.z));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Map<String, Object> serialize()
 	{
@@ -173,50 +171,35 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		return result;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
+		if (obj == this) return true;
+		
 		if (obj instanceof ArenaLocation)
 		{
 			ArenaLocation that = (ArenaLocation) obj;
-			if (x != that.x || y != that.y || z != that.z)
-				return false;
-
-			return worldName.equals(that.worldName);
+			return x == that.x &&
+					y == that.y &&
+					z == that.z &&
+					worldName.equals(that.worldName);
 		}
 
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
-		int hash = 39;
-		hash *= x;
-		hash *= y;
-		hash *= z;
-		hash *= worldName.hashCode();
-		return hash;
+		return Objects.hash(x, y, z, worldName);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{
-		return "ArenaLocation { x = " + x + ", y = " + y + ", z = " + z + ", worldName = " + worldName + " }";
+		return "ArenaLocation[x=" + x + ", y=" + y + ", z=" + z + ", worldName=" + worldName + "]";
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public ArenaLocation clone()
 	{

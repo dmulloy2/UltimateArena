@@ -20,6 +20,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -228,38 +229,29 @@ public abstract class ArenaCreator
 
 	// ---- Generic Methods
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj instanceof ArenaCreator)
 		{
 			ArenaCreator that = (ArenaCreator) obj;
-			return that.target.equals(target);
+			return Objects.equals(name, that.name) &&
+					Objects.equals(playerName, that.playerName) &&
+					Objects.equals(type, that.type);
 		}
 
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
-		int hash = 37;
-		hash *= target.hashCode();
-		return hash;
+		return Objects.hash(name, playerName, type);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{
-		return "ArenaCreator { name = " + name + ", player = " + playerName + ", type = " + type.getName() + " }";
+		return "ArenaCreator[name=" + name + ", player=" + playerName + ", type=" + type.getName() + "]";
 	}
 }

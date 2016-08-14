@@ -28,6 +28,7 @@ public enum LeaveReason
 	DEATHS,
 	END_GAME,
 	ERROR,
+	GENERIC,
 	KICK,
 	POWER,
 	QUIT,

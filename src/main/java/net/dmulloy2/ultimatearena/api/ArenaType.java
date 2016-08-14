@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -372,35 +373,26 @@ public abstract class ArenaType
 
 	// ---- Generic Methods
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
+		if (obj == this) return true;
+		
 		if (obj instanceof ArenaType)
 		{
 			ArenaType that = (ArenaType) obj;
-			return that.getName().equals(getName());
+			return Objects.equals(getName(), that.getName());
 		}
 
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
-		int hash = 38;
-		hash *= 1 + getName().hashCode();
-		return hash;
+		return Objects.hash(getName());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

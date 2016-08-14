@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -479,11 +480,13 @@ public final class ArenaPlayer
 			case ERROR:
 				// Callers should send a specific error message
 				break;
+			case GENERIC:
 			case KICK:
 				sendMessage(plugin.getMessage("youWereKicked"));
 				break;
 			case POWER:
 				sendMessage(plugin.getMessage("powerKick"));
+				break;
 			default:
 				break;
 		}
@@ -573,36 +576,27 @@ public final class ArenaPlayer
 
 	// ---- Generic Methods
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
+		if (obj == this) return true;
+		
 		if (obj instanceof ArenaPlayer)
 		{
 			ArenaPlayer that = (ArenaPlayer) obj;
-			return that.uniqueId.equals(uniqueId) && that.arena.equals(arena);
+			return Objects.equals(uniqueId, that.uniqueId) &&
+					Objects.equals(arena, that.arena);
 		}
 
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
-		int hash = 34;
-		hash *= 1 + uniqueId.hashCode();
-		hash *= 1 + arena.hashCode();
-		return hash;
+		return Objects.hash(uniqueId, arena);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

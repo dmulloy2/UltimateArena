@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -632,35 +633,26 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- Generic Methods
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
+		if (obj == this) return true;
+
 		if (obj instanceof ArenaZone)
 		{
 			ArenaZone that = (ArenaZone) obj;
-			return that.getName().equals(name);
+			return Objects.equals(name, that.name);
 		}
 
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode()
 	{
-		int hash = 36;
-		hash *= 1 + name.hashCode();
-		return hash;
+		return Objects.hash(name);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{

@@ -1181,14 +1181,14 @@ public class UltimateArena extends SwornPlugin
 	/**
 	 * Dumps plugins currently using the UltimateArena API to console.
 	 *
-	 * @return Plugins using the API, or null if none
+	 * @return Plugins using the API
 	 */
 	public final List<String> dumpRegistrations()
 	{
 		if (pluginsUsingAPI.isEmpty())
 		{
 			logHandler.log("No plugins currently using the UltimateArena API");
-			return null;
+			return pluginsUsingAPI;
 		}
 
 		StringJoiner joiner = new StringJoiner(", ");

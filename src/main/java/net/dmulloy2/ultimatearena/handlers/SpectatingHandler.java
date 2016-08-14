@@ -65,11 +65,13 @@ public class SpectatingHandler implements Listener
 
 	public ArenaSpectator getSpectator(Player player)
 	{
+		String uniqueId = player.getUniqueId().toString();
+		
 		for (Arena arena : plugin.getActiveArenas())
 		{
 			for (ArenaSpectator spectator : arena.getSpectators())
 			{
-				if (spectator.getUniqueId().equals(player.getUniqueId().toString()))
+				if (spectator.getUniqueId().equals(uniqueId))
 					return spectator;
 			}
 		}

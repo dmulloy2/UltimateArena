@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -907,6 +908,7 @@ public abstract class Arena implements Reloadable
 			case ERROR:
 				tellPlayers(getMessage("errorBroadcast"), ap.getName());
 				break;
+			case GENERIC:
 			case KICK:
 				tellPlayers(getMessage("kickBroadcast"), ap.getName());
 				break;
@@ -1548,7 +1550,7 @@ public abstract class Arena implements Reloadable
 		if (obj instanceof Arena)
 		{
 			Arena that = (Arena) obj;
-			return this.name.equals(that.name);
+			return Objects.equals(name, that.name);
 		}
 
 		return false;
@@ -1557,9 +1559,7 @@ public abstract class Arena implements Reloadable
 	@Override
 	public int hashCode()
 	{
-		int hash = 35;
-		hash *= 1 + name.hashCode();
-		return hash;
+		return Objects.hash(name);
 	}
 
 	@Override

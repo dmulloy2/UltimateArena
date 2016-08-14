@@ -20,7 +20,9 @@ package net.dmulloy2.ultimatearena.api;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -46,7 +48,7 @@ import com.google.common.io.Files;
  * @author dmulloy2
  */
 
-public class ArenaTypeHandler implements Reloadable
+public final class ArenaTypeHandler implements Reloadable
 {
 	private final Map<String, ArenaType> arenaTypes;
 	private final UltimateArena plugin;
@@ -58,9 +60,9 @@ public class ArenaTypeHandler implements Reloadable
 		this.loadArenaTypes();
 	}
 
-	public final ArenaType getArenaType(String name)
+	public ArenaType getArenaType(String name)
 	{
-		Validate.notEmpty(name, "Name cannot be empty!");
+		Validate.notEmpty(name, "name cannot be null or empty!");
 
 		for (ArenaType type : arenaTypes.values())
 		{
@@ -71,7 +73,7 @@ public class ArenaTypeHandler implements Reloadable
 		return null;
 	}
 
-	public final void loadArenaTypes()
+	public void loadArenaTypes()
 	{
 		File directory = new File(plugin.getDataFolder(), "types");
 		if (! directory.exists())
@@ -110,7 +112,7 @@ public class ArenaTypeHandler implements Reloadable
 		}
 	}
 
-	private final void loadArenaType(ArenaType type)
+	private void loadArenaType(ArenaType type)
 	{
 		try
 		{
@@ -140,7 +142,7 @@ public class ArenaTypeHandler implements Reloadable
 		}
 	}
 
-	private final void attemptConfigMove(ArenaType type)
+	private void attemptConfigMove(ArenaType type)
 	{
 		// Create data folder
 		File dataFile = type.getDataFolder();
@@ -176,7 +178,7 @@ public class ArenaTypeHandler implements Reloadable
 		}
 	}
 
-	private final void loadArenaType(ArenaLoader loader, File file)
+	private void loadArenaType(ArenaLoader loader, File file)
 	{
 		try
 		{
@@ -197,7 +199,7 @@ public class ArenaTypeHandler implements Reloadable
 		}
 	}
 
-	public final void disable()
+	public void disable()
 	{
 		for (ArenaType type : arenaTypes.values())
 		{
@@ -229,5 +231,10 @@ public class ArenaTypeHandler implements Reloadable
 				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "reloading arena type '" + type.getName() + "'"));
 			}
 		}
+	}
+
+	public List<ArenaType> getArenaTypes()
+	{
+		return new ArrayList<>(arenaTypes.values());
 	}
 }

@@ -21,19 +21,19 @@ package net.dmulloy2.ultimatearena;
 import java.util.Collections;
 import java.util.List;
 
+import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
+import net.dmulloy2.util.ListUtil;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import com.comphenix.protocol.utility.Util;
 
 /**
  * Basic API for hooking into {@link UltimateArena}
@@ -41,7 +41,7 @@ import com.comphenix.protocol.utility.Util;
  * @author dmulloy2
  */
 
-public class UltimateArenaAPI
+public final class UltimateArenaAPI
 {
 	protected final UltimateArena ultimateArena;
 	protected final Plugin accessingPlugin;
@@ -57,8 +57,9 @@ public class UltimateArenaAPI
 	 *
 	 * @param player {@link Player} in question
 	 */
-	public final boolean isInArena(Player player)
+	public boolean isInArena(Player player)
 	{
+		Validate.notNull(player, "player cannot be null!");
 		return ultimateArena.isInArena(player);
 	}
 
@@ -67,8 +68,9 @@ public class UltimateArenaAPI
 	 *
 	 * @param loc {@link Location} in question
 	 */
-	public final boolean isInArena(Location loc)
+	public boolean isInArena(Location loc)
 	{
+		Validate.notNull(loc, "loc cannot be null!");
 		return ultimateArena.isInArena(loc);
 	}
 
@@ -78,8 +80,9 @@ public class UltimateArenaAPI
 	 * @param player {@link Player} instance
 	 * @return The player's {@link ArenaPlayer} instance, may be null
 	 */
-	public final ArenaPlayer getArenaPlayer(Player player)
+	public ArenaPlayer getArenaPlayer(Player player)
 	{
+		Validate.notNull(player, "player cannot be null!");
 		return ultimateArena.getArenaPlayer(player);
 	}
 
@@ -88,27 +91,27 @@ public class UltimateArenaAPI
 	 *
 	 * @return An unmodifiable {@link List} of all active {@link Arena}s
 	 */
-	public final List<Arena> getActiveArenas()
+	public List<Arena> getActiveArenas()
 	{
-		return Util.asList(ultimateArena.getActiveArenas());
+		return ListUtil.toList(ultimateArena.getActiveArenas());
 	}
 
 	/**
-	 * Gets all loaded {@link ArenaZone}s. The list returned is not modifiable.
+	 * Gets all loaded {@link ArenaZone ArenaZones}. The list returned is not modifiable.
 	 *
-	 * @return An unmodifiable {@link List} of all loaded {@link ArenaZone}s
+	 * @return A list of all loaded ArenaZones
 	 */
-	public final List<ArenaZone> getLoadedArenas()
+	public List<ArenaZone> getLoadedArenas()
 	{
 		return Collections.unmodifiableList(ultimateArena.getLoadedArenas());
 	}
 
 	/**
-	 * Gets all loaded {@link ArenaClass}es. The list returned is not modifiable.
+	 * Gets all loaded {@link ArenaClass ArenaClasses}. The list returned is not modifiable.
 	 *
-	 * @return An unmodifiable {@link List} of all loaded {@link ArenaClass}es
+	 * @return A list of all loaded ArenaClasses
 	 */
-	public final List<ArenaClass> getClasses()
+	public List<ArenaClass> getClasses()
 	{
 		return Collections.unmodifiableList(ultimateArena.getClasses());
 	}
@@ -116,22 +119,24 @@ public class UltimateArenaAPI
 	/**
 	 * Gets an {@link ArenaClass} by name.
 	 *
-	 * @param name Name of the {@link ArenaClass}
-	 * @return {@link ArenaClass} based upon name
+	 * @param name Name of the class
+	 * @return The class, or null if not found
 	 */
-	public final ArenaClass getArenaClass(String name)
+	public ArenaClass getArenaClass(String name)
 	{
+		Validate.notNull(name, "name cannot be null!");
 		return ultimateArena.getArenaClass(name);
 	}
 
 	/**
 	 * Gets an {@link ArenaZone} by name.
 	 *
-	 * @param name Name of the {@link ArenaZone}
-	 * @return {@link ArenaZone} based upon name
+	 * @param name Name of the zone
+	 * @return The zone, or null if not found
 	 */
-	public final ArenaZone getArenaZone(String name)
+	public ArenaZone getArenaZone(String name)
 	{
+		Validate.notNull(name, "name cannot be null!");
 		return ultimateArena.getArenaZone(name);
 	}
 
@@ -141,8 +146,9 @@ public class UltimateArenaAPI
 	 * @param name Name of the Arena
 	 * @return The Arena, or null if not found.
 	 */
-	public final Arena getArena(String name)
+	public Arena getArena(String name)
 	{
+		Validate.notNull(name, "name cannot be null!");
 		return ultimateArena.getArena(name);
 	}
 
@@ -152,15 +158,16 @@ public class UltimateArenaAPI
 	 * @param player Player to get arena for
 	 * @return The Arena, or null if not found.
 	 */
-	public final Arena getArena(Player player)
+	public Arena getArena(Player player)
 	{
+		Validate.notNull(player, "player cannot be null!");
 		return ultimateArena.getArena(player);
 	}
 
 	/**
 	 * Stops all running arenas.
 	 */
-	public final void stopArenas()
+	public void stopArenas()
 	{
 		logUsage("stopAll");
 		ultimateArena.stopAll();
@@ -168,27 +175,55 @@ public class UltimateArenaAPI
 
 	/**
 	 * Dumps current API registrations.
+	 * @return The list of registered plugins
 	 */
-	public final void dumpRegistrations()
+	public List<String> dumpRegistrations()
 	{
 		logUsage("dumpRegistrations");
-		ultimateArena.dumpRegistrations();
+		return ultimateArena.dumpRegistrations();
 	}
 
 	/**
-	 * Kicks a given player from their current {@link Arena} (if any).
+	 * Kicks a given {@link Player} from their current {@link Arena}, if
+	 * applicable.
 	 *
-	 * @param player {@link Player} to kick
+	 * @param player Player to kick
 	 */
-	public final void kickPlayer(Player player)
+	public void kickPlayer(Player player)
 	{
+		kickPlayer(player, LeaveReason.GENERIC);
+	}
+
+	/**
+	 * Kicks a given {@link Player} from their current {@link Arena}, if
+	 * applicable.
+	 * 
+	 * @param player Player to kick
+	 * @param reason Reason for kicking the player
+	 */
+	public void kickPlayer(Player player, LeaveReason reason)
+	{
+		Validate.notNull(player, "player cannot be null!");
+		Validate.notNull(reason, "reason cannot be null!");
+
 		logUsage("kickPlayer(" + player.getName() + ")");
 
 		ArenaPlayer ap = ultimateArena.getArenaPlayer(player);
 		if (ap != null)
 		{
-			ap.leaveArena(LeaveReason.KICK);
+			ap.leaveArena(reason);
 		}
+	}
+
+	/**
+	 * Gets the list of currently loaded {@link ArenaType ArenaTypes}. Modifications
+	 * to the returned list will not be reflected in internal UA code.
+	 * 
+	 * @return The list
+	 */
+	public List<ArenaType> getLoadedTypes()
+	{
+		return ultimateArena.getArenaTypeHandler().getArenaTypes();
 	}
 
 	private void logUsage(String event)
@@ -197,13 +232,16 @@ public class UltimateArenaAPI
 	}
 
 	/**
-	 * Returns a new instance of {@link UltimateArenaAPI}.
+	 * Returns a new instance of {@link UltimateArenaAPI}. An error message
+	 * will be printed using the Plugin's logger if hooking fails.
 	 *
-	 * @param plugin {@link JavaPlugin} to hook into {@link UltimateArena} with
-	 * @return New instance of {@link UltimateArenaAPI}
+	 * @param plugin Plugin to hook into UltimateArnea with
+	 * @return The instance, or null if hooking failed
 	 */
 	public static UltimateArenaAPI hookIntoUA(Plugin plugin)
 	{
+		Validate.notNull(plugin, "plugin cannot be null!");
+
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (! pm.isPluginEnabled("UltimateArena"))
 		{
