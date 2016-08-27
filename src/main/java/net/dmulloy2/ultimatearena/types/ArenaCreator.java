@@ -125,8 +125,28 @@ public abstract class ArenaCreator
 
 	/**
 	 * Gives the player instructions for the next step in the creation process.
+	 * Calling this method directly will provide info for steps 1 and 2.
 	 */
-	public abstract void stepInfo();
+	public void stepInfo()
+	{
+		switch (stepNumber)
+		{
+			case 1:
+				if (plugin.isWorldEditEnabled())
+					sendMessage("&3Please set &e2 &3points for the &earena &3using &eWorldEdit&3.");
+				else
+					sendMessage("&3Please set &e2 &3points for the &earena&3.");
+				break;
+			case 2:
+				if (plugin.isWorldEditEnabled())
+					sendMessage("&3Please set &e2 &3points for the &elobby &3using &eWorldEdit&3.");
+				else
+					sendMessage("&3Please set &e2 &3points for the &elobby&3.");
+				break;
+			default:
+				throw new IllegalArgumentException("Only steps 1 and 2 are supported!");
+		}
+	}
 
 	/**
 	 * Undoes the last step in the creation process.
@@ -135,7 +155,7 @@ public abstract class ArenaCreator
 	{
 		if (stepNumber == 1)
 		{
-			sendMessage("&cYou cannot undo a nonexistant step!");
+			sendMessage("&cYou cannot undo a nonexistent step!");
 			return;
 		}
 

@@ -75,4 +75,7 @@ public class Config
 	public static List<String> persistentEntities = ListUtil.toList(
 			"PLAYER", "PAINTING", "ITEM_FRAME", "VILLAGER"
 	);
+
+	@Key("integration.useWorldEdit")
+	public static boolean useWorldEdit = true;
 }

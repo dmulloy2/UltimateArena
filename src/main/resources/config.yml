@@ -99,3 +99,8 @@ persistentEntities:
 - "PAINTING"
 - "ITEM_FRAME"
 - "VILLAGER"
+
+# Configuration for integration
+integration:
+  # Whether or not to use WorldEdit for point selection
+  useWorldEdit: true

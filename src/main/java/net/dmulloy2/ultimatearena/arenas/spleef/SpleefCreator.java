@@ -230,10 +230,8 @@ public class SpleefCreator extends ArenaCreator
 		switch (stepNumber)
 		{
 			case 1:
-				sendMessage("&3Please set &e2 &3points for the arena");
-				break;
 			case 2:
-				sendMessage("&3Please set &e2 &3points for the lobby.");
+				super.stepInfo();
 				break;
 			case 3:
 				sendMessage("&3Please set the &eLobby &3spawnpoint.");

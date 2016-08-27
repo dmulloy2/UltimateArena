@@ -21,6 +21,7 @@ package net.dmulloy2.ultimatearena.integration;
 import java.util.logging.Level;
 
 import net.dmulloy2.integration.DependencyProvider;
+import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.Tuple;
 import net.dmulloy2.util.Util;
@@ -38,11 +39,16 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
  * @author dmulloy2
  */
 
-public class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
+public final class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 {
 	public WorldEditHandler(UltimateArena plugin)
 	{
 		super(plugin, "WorldEdit");
+	}
+
+	public boolean isEnabled()
+	{
+		return super.isEnabled() && Config.useWorldEdit;
 	}
 
 	/**
@@ -50,7 +56,7 @@ public class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 	 *
 	 * @param player {@link Player} to check
 	 */
-	public final boolean hasCuboidSelection(Player player)
+	public boolean hasCuboidSelection(Player player)
 	{
 		if (! isEnabled())
 			return false;
@@ -72,7 +78,7 @@ public class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 	 *
 	 * @param player {@link Player} to get selection for
 	 */
-	public final Tuple<Location, Location> getSelection(Player player)
+	public Tuple<Location, Location> getSelection(Player player)
 	{
 		if (! isEnabled())
 			return null;
