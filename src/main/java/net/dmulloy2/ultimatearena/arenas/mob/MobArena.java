@@ -25,6 +25,7 @@ import java.util.Map;
 
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.types.CustomScoreboard;
+import net.dmulloy2.types.SpecialEntities;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
@@ -38,8 +39,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Skeleton.SkeletonType;
-import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
@@ -184,7 +183,6 @@ public class MobArena extends Arena
 							String mob = spawning.get(Util.random(spawning.size()));
 							LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
 
-							// Special skeletons
 							if (newMob instanceof Skeleton)
 							{
 								boolean giveBow = true;
@@ -197,7 +195,9 @@ public class MobArena extends Arena
 									if (Util.random(2) == 0)
 									{
 										// Set skeleton type to Wither
-										((Skeleton) newMob).setSkeletonType(SkeletonType.WITHER);
+										// We have to replace it now since they're going to be different classes
+										newMob.remove();
+										newMob = SpecialEntities.spawnWitherSkeleton(loc);
 
 										// Wither skeletons dont have bows
 										giveBow = false;
@@ -253,8 +253,8 @@ public class MobArena extends Arena
 									else if (rand == 0)
 									{
 										// Make them a random villager profession
-										Profession profession = Profession.values()[Util.random(Profession.values().length)];
-										((Zombie) newMob).setVillagerProfession(profession);
+										newMob.remove();
+										newMob = SpecialEntities.spawnZombieVillager(loc, null);
 									}
 								}
 							}
