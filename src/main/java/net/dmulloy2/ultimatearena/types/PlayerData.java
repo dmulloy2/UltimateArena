@@ -23,6 +23,7 @@ import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 
 /**
  * Stores data on players.
@@ -48,6 +49,7 @@ public final class PlayerData
 	private int level;
 	private float saturation;
 	private int totalExperience;
+	private Scoreboard board;
 
 	private final Player player;
 
@@ -68,6 +70,7 @@ public final class PlayerData
 		this.level = player.getLevel();
 		this.saturation = player.getSaturation();
 		this.totalExperience = player.getTotalExperience();
+		this.board = player.getScoreboard();
 		this.player = player;
 	}
 
@@ -88,5 +91,6 @@ public final class PlayerData
 		player.setLevel(level);
 		player.setSaturation(saturation);
 		player.setTotalExperience(totalExperience);
+		player.setScoreboard(board);
 	}
 }

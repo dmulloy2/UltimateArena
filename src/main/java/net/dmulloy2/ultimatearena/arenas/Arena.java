@@ -864,9 +864,6 @@ public abstract class Arena implements Reloadable
 	{
 		plugin.debug("Ending player {0}, reason: {1}", ap.getName(), reason);
 
-		// Dispose of the scoreboard
-		ap.getBoard().dispose();
-
 		// API - leave event
 		ArenaLeaveEvent event = new ArenaLeaveEvent(this, ap);
 		plugin.getServer().getPluginManager().callEvent(event);

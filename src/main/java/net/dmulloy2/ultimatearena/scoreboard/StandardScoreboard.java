@@ -36,7 +36,7 @@ public final class StandardScoreboard implements ArenaScoreboard
 	private void setup()
 	{
 		Scoreboard board = player.getPlayer().getScoreboard();
-		if (board == null)
+		if (board == null || CustomScoreboard.isDefault(board))
 			board = plugin.getServer().getScoreboardManager().getNewScoreboard();
 
 		Arena arena = player.getArena();
@@ -77,7 +77,6 @@ public final class StandardScoreboard implements ArenaScoreboard
 	public void dispose()
 	{
 		board.dispose();
-		board.applyTo(player.getPlayer());
 	}
 
 	@Override

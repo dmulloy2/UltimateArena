@@ -521,6 +521,8 @@ public final class ArenaPlayer
 	{
 		clearInventory();
 		clearPotionEffects();
+
+		board.dispose();
 		playerData.apply();
 
 		if (getPlayer().hasMetadata("UA"))

@@ -33,6 +33,7 @@ public class CmdLeave extends UltimateArenaCommand
 		super(plugin);
 		this.name = "leave";
 		this.aliases.add("l");
+		this.aliases.add("quit");
 		this.description = "leave an arena";
 		this.mustBePlayer = true;
 	}
