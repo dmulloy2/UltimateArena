@@ -502,7 +502,7 @@ public final class ArenaPlayer
 	public final void teleport(Location location)
 	{
 		Validate.notNull(location, "location cannot be null!");
-		getPlayer().teleport(location.clone().add(0.5D, 1.0D, 0.5D));
+		getPlayer().teleport(location.clone().add(0.5D, 0.5D, 0.5D));
 	}
 
 	/**

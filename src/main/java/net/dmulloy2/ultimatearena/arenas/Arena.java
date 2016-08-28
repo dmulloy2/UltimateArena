@@ -221,7 +221,7 @@ public abstract class Arena implements Reloadable
 	 * @param player {@link Player} to add to an arena
 	 * @param teamId Team name/id
 	 */
-	public final void addPlayer(Player player, String teamId)
+	public final void addPlayer(final Player player, String teamId)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("joiningArena"), name));
 
@@ -281,15 +281,23 @@ public abstract class Arena implements Reloadable
 		tellPlayers(getMessage("joinedArena"), ap.getName(), active.size(), maxPlayers);
 		this.lastJoin = ap.getName();
 
-		// Open Class Selector
+		// Open Class Selector a second later
 		if (Config.classSelectorAutomatic)
 		{
-			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
-			plugin.getGuiHandler().open(player, csGUI);
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player, started);
+					plugin.getGuiHandler().open(player, csGUI);
+				}
+			}.runTaskLater(plugin, 20L);
 		}
-
-		if (started)
+		else if (started)
+		{
 			spawn(ap);
+		}
 	}
 
 	/**

@@ -160,7 +160,7 @@ public class PlayerListener implements Listener
 						{
 							if (sign.getLine(1).equalsIgnoreCase("Classes"))
 							{
-								ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
+								ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player, false);
 								plugin.getGuiHandler().open(player, csGUI);
 								return;
 							}

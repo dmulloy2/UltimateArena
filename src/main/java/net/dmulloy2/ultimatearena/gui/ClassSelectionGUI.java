@@ -33,6 +33,7 @@ import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,15 +46,17 @@ public class ClassSelectionGUI extends AbstractGUI
 {
 	private final List<ArenaClass> classes;
 	private final ArenaPlayer ap;
+	private final boolean spawnAfter;
 
 	private final UltimateArena plugin;
 
-	public ClassSelectionGUI(UltimateArena plugin, Player player)
+	public ClassSelectionGUI(UltimateArena plugin, Player player, boolean spawnAfter)
 	{
 		super(plugin, player);
 		this.ap = plugin.getArenaPlayer(player);
 		this.classes = getClasses();
 		this.plugin = plugin;
+		this.spawnAfter = spawnAfter;
 
 		this.setup();
 	}
@@ -147,5 +150,15 @@ public class ClassSelectionGUI extends AbstractGUI
 
 		event.setCancelled(true);
 		player.closeInventory();
+
+		if (spawnAfter)
+			ap.getArena().spawn(ap);
+	}
+
+	@Override
+	public void onInventoryClose(InventoryCloseEvent event)
+	{
+		if (spawnAfter)
+			ap.getArena().spawn(ap);
 	}
 }

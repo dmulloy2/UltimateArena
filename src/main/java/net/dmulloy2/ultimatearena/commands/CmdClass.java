@@ -54,7 +54,7 @@ public class CmdClass extends UltimateArenaCommand
 
 		if (args.length == 0)
 		{
-			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player);
+			ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player, false);
 			plugin.getGuiHandler().open(player, csGUI);
 			return;
 		}
