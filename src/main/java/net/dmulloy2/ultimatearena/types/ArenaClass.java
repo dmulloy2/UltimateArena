@@ -60,17 +60,12 @@ public final class ArenaClass extends Configuration
 
 	private Map<Integer, ItemStack> tools;
 	private Map<String, ItemStack> armor;
+	private List<String> commands;
 
 	private boolean useHelmet = true;
 	private double maxHealth = 20.0D;
 	private double cost = -1.0D;
 
-	// Essentials Integration
-	private String essKitName;
-	private boolean useEssentials;
-	private Map<String, Object> essentialsKit;
-
-	// Potion Effects
 	private boolean hasPotionEffects;
 	private List<PotionEffect> potionEffects;
 
@@ -110,6 +105,7 @@ public final class ArenaClass extends Configuration
 		// Initialize variables
 		this.armor = new HashMap<>();
 		this.tools = new HashMap<>();
+		this.commands = new ArrayList<>();
 
 		try
 		{
@@ -190,17 +186,31 @@ public final class ArenaClass extends Configuration
 				}
 			}
 
+			if (isSet(values, "commands"))
+			{
+				for (String command : getStringList(values, "commands"))
+				{
+					if (command.contains("/"))
+						command = command.substring(1);
+
+					commands.add(command);
+				}
+			}
+
 			if (isSet(values, "useEssentials"))
 			{
 				config.set("useEssentials", null);
 				changes = true;
 			}
 
-			essKitName = getString(values, "essentialsKit", "");
-			useEssentials = ! essKitName.isEmpty() && plugin.isEssentialsEnabled();
-			if (useEssentials)
+			// Convert essentials kit integration into command framework
+			String essKitName = getString(values, "essentialsKit", "");
+			if (! essKitName.isEmpty())
 			{
-				essentialsKit = plugin.getEssentialsHandler().readEssentialsKit(essKitName);
+				commands.add("kit " + essKitName + " @p");
+				config.set("essentialsKit", null);
+				config.set("commands", commands);
+				changes = true;
 			}
 
 			if (isSet(values, "hasPotionEffects"))
@@ -382,18 +392,16 @@ public final class ArenaClass extends Configuration
 		// Boolean defaults
 		this.hasPotionEffects = false;
 		this.needsPermission = false;
-		this.useEssentials = false;
 		this.useHelmet = true;
 
 		// Clear lists and maps
-		this.essentialsKit = null;
-		this.potionEffects = null;
-		this.armor = null;
-		this.tools = null;
+		this.armor.clear();
+		this.tools.clear();
+		this.commands.clear();
+		this.potionEffects.clear();
 
 		// Empty strings
 		this.permissionNode = "";
-		this.essKitName = "";
 
 		// Load the class again
 		this.loaded = false;

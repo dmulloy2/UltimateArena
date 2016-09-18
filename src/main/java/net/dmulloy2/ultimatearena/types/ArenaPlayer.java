@@ -22,12 +22,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.UUID;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -35,6 +33,7 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.scoreboard.ArenaScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.DisabledScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.StandardScoreboard;
+import net.dmulloy2.ultimatearena.tasks.CommandRunner;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -50,6 +49,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a Player inside an {@link Arena}.
@@ -297,8 +299,9 @@ public final class ArenaPlayer
 			return;
 		}
 
-		if (plugin.isEssentialsEnabled() && arenaClass.isUseEssentials())
-			plugin.getEssentialsHandler().giveKitItems(this);
+		List<String> commands = arenaClass.getCommands();
+		if (! commands.isEmpty())
+			new CommandRunner(player.getName(), commands, plugin).runTask(plugin);
 
 		for (Entry<String, ItemStack> armor : arenaClass.getArmor().entrySet())
 		{
