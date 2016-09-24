@@ -31,7 +31,6 @@ import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.NumberUtil;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -50,20 +49,21 @@ public class ClassSelectionGUI extends AbstractGUI
 
 	private final UltimateArena plugin;
 
-	public ClassSelectionGUI(UltimateArena plugin, Player player, boolean spawnAfter)
+	public ClassSelectionGUI(UltimateArena plugin, ArenaPlayer ap, boolean spawnAfter)
 	{
-		super(plugin, player);
-		this.ap = plugin.getArenaPlayer(player);
-		this.classes = getClasses();
-		this.plugin = plugin;
+		super(plugin, ap.getPlayer());
 		this.spawnAfter = spawnAfter;
+		this.plugin = plugin;
+		this.ap = ap;
 
+		this.classes = getClasses();
 		this.setup();
 	}
 
 	private List<ArenaClass> getClasses()
 	{
 		List<ArenaClass> classes = new ArrayList<>();
+
 		for (ArenaClass ac : ap.getArena().getAvailableClasses(ap.getTeam()))
 		{
 			if (Config.showUnavailableClasses || ac.checkAvailability(ap, false))

@@ -97,7 +97,7 @@ public class ArenaLoader
 		try
 		{
 			ArenaType type = clazz.newInstance();
-			type.initialize(plugin, description, loader, file, new File(plugin.getDataFolder(), type.getName()));
+			type.initialize(plugin, description, loader, file);
 			return type;
 		}
 		catch (Throwable ex)

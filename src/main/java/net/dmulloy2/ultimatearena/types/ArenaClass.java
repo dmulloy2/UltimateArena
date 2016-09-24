@@ -398,7 +398,9 @@ public final class ArenaClass extends Configuration
 		this.armor.clear();
 		this.tools.clear();
 		this.commands.clear();
-		this.potionEffects.clear();
+
+		if (potionEffects != null)
+			this.potionEffects.clear();
 
 		// Empty strings
 		this.permissionNode = "";

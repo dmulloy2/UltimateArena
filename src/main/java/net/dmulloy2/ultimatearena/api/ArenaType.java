@@ -154,8 +154,7 @@ public abstract class ArenaType
 		return getDescription().getStylized();
 	}
 
-	final void initialize(UltimateArena plugin, ArenaDescription description, ArenaClassLoader classLoader, File file,
-			File dataFolder)
+	final void initialize(UltimateArena plugin, ArenaDescription description, ArenaClassLoader classLoader, File file)
 	{
 		Validate.isTrue(! initialized, "Already initialized!");
 
@@ -163,8 +162,11 @@ public abstract class ArenaType
 		this.description = description;
 		this.classLoader = classLoader;
 		this.file = file;
-		this.dataFolder = dataFolder;
 		this.logger = new ArenaLogger(this);
+
+		File types = new File(plugin.getDataFolder(), "types");
+		this.dataFolder = new File(types, getName().toLowerCase());
+
 		this.initialized = true;
 	}
 

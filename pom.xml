@@ -24,10 +24,6 @@
       <id>essentials-repo</id>
       <url>http://repo.ess3.net/content/repositories/public/</url>
     </repository>
-    <repository>
-      <id>vault-repo</id>
-      <url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
-    </repository>
   </repositories>
 
   <distributionManagement>
@@ -163,14 +159,9 @@
       <version>2.14-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>net.milkbowl.vault</groupId>
-      <artifactId>Vault</artifactId>
-      <version>1.5.6</version>
-    </dependency>
-    <dependency>
       <groupId>com.sk89q.worldedit</groupId>
       <artifactId>worldedit-bukkit</artifactId>
-      <version>6.1.1-SNAPSHOT</version>
+      <version>6.1.4-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>org.bukkit</groupId>

@@ -225,7 +225,7 @@ public abstract class Arena implements Reloadable
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("joiningArena"), name));
 
-		ArenaPlayer ap = new ArenaPlayer(player, this, plugin);
+		final ArenaPlayer ap = new ArenaPlayer(player, this, plugin);
 
 		// API - cancellable join event
 		ArenaJoinEvent event = new ArenaJoinEvent(this, ap);
@@ -289,7 +289,7 @@ public abstract class Arena implements Reloadable
 				@Override
 				public void run()
 				{
-					ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, player, started);
+					ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, ap, started);
 					plugin.getGuiHandler().open(player, csGUI);
 				}
 			}.runTaskLater(plugin, 20L);

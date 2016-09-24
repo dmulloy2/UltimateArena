@@ -124,7 +124,7 @@ public final class ArenaTypeHandler implements Reloadable
 			if (! dataFolder.exists())
 				dataFolder.mkdirs();
 
-			type.initialize(plugin, type.getDescription(), null, null, new File(types, type.getName().toLowerCase()));
+			type.initialize(plugin, type.getDescription(), null, null);
 			type.onEnable();
 
 			// Attempt to move the config
@@ -191,7 +191,9 @@ public final class ArenaTypeHandler implements Reloadable
 			type.onEnable();
 
 			type.loadConfig();
-			arenaTypes.put(type.getName(), type);
+			arenaTypes.put(type.getName().toLowerCase(), type);
+	
+			plugin.getLogHandler().log("Loaded custom arena: {0}", type.getName());
 		}
 		catch (Throwable ex)
 		{
