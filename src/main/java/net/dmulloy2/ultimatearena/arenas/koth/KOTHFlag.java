@@ -20,14 +20,13 @@ package net.dmulloy2.ultimatearena.arenas.koth;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 
-import org.bukkit.entity.Player;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author dmulloy2
@@ -36,6 +35,8 @@ import org.bukkit.entity.Player;
 @Getter @Setter
 public class KOTHFlag extends ArenaFlag
 {
+	private static final double RADIUS = 3.0D;
+
 	protected ArenaPlayer leader;
 	protected KOTHArena arena;
 
@@ -51,42 +52,27 @@ public class KOTHFlag extends ArenaFlag
 		if (! arena.isInGame())
 			return;
 
-		int amt = 0;
-		ArenaPlayer capturer = null;
-
-		for (ArenaPlayer ap : arenaPlayers)
-		{
-			Player player = ap.getPlayer();
-			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld().getUID())
-					&& player.getLocation().distance(location) < 3.0D)
-			{
-				amt++;
-				capturer = ap;
-			}
-		}
-
-		if (amt == 1)
-		{
-			if (capturer != null)
-			{
-				capturer.putData("kothPoints", capturer.getDataInt("kothPoints") + 1);
-				capturer.sendMessage(getMessage("kothCap"), capturer.getDataInt("kothPoints"), arena.getMaxPoints());
-				leadChange();
-			}
-		}
+		ArenaPlayer capturer = findClosest(arenaPlayers, RADIUS);
+		if (capturer != null)
+			handleCapture(capturer);
 	}
 
-	private final void leadChange()
+	private final void handleCapture(ArenaPlayer capturer)
 	{
+		capturer.putData("kothPoints", capturer.getDataInt("kothPoints", 0) + 1);
+		capturer.sendMessage(getMessage("kothCap"), capturer.getDataInt("kothPoints"), arena.getMaxPoints());
+
+		if (capturer.equals(leader))
+			return;
+
+		arena.clearCache();
 		List<ArenaPlayer> lb = arena.getLeaderboard();
+
 		ArenaPlayer ap = lb.get(0);
 		if (ap != null)
 		{
-			if (leader == null || ! ap.getUniqueId().equals(leader.getUniqueId()))
-			{
-				arena.tellPlayers(getMessage("kothLead"), ap.getName());
-				leader = ap;
-			}
+			arena.tellPlayers(getMessage("kothLead"), ap.getName());
+			leader = ap;
 		}
 	}
 }

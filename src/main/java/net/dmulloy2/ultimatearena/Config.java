@@ -73,9 +73,15 @@ public class Config
 	@Key("persistentEntities")
 	@ValueOptions(ValueOption.LIST_UPPER_CASE)
 	public static List<String> persistentEntities = ListUtil.toList(
-			"PLAYER", "PAINTING", "ITEM_FRAME", "VILLAGER"
+			"PAINTING", "ITEM_FRAME", "VILLAGER"
 	);
 
 	@Key("integration.useWorldEdit")
 	public static boolean useWorldEdit = true;
+
+	@Key("debug")
+	public static boolean debug = false;
+
+	@Key("ignoreOverlap")
+	public static boolean ignoreOverlap = false;
 }

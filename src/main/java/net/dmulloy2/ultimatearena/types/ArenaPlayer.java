@@ -226,7 +226,7 @@ public final class ArenaPlayer
 
 		Player player = getPlayer();
 		if (! player.hasMetadata("UA"))
-			player.setMetadata("UA", plugin.getUAIdentifier());
+			player.setMetadata("UA", plugin.getIdentifier());
 	}
 
 	/**
@@ -549,10 +549,20 @@ public final class ArenaPlayer
 
 	public final int getDataInt(String key)
 	{
-		if (data.containsKey(key))
-			return (int) data.get(key);
+		return getDataInt(key, -1);
+	}
 
-		return -1;
+	public final int getDataInt(String key, int def)
+	{
+		return getData(key, def);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final <T> T getData(String key, T def)
+	{
+		if (data.containsKey(key))
+			return (T) data.get(key);
+		return def;
 	}
 
 	/**
@@ -607,4 +617,14 @@ public final class ArenaPlayer
 	{
 		return name;
 	}
+
+	/* public static Sorter<ArenaPlayer, Double> kdrSorter()
+	{
+		return new Sorter<>(key -> key.getKDR());
+	}
+
+	public static <T extends Comparable<T>> Sorter<ArenaPlayer, T> dataSorter(String data, T def)
+	{
+		return new Sorter<ArenaPlayer, T>(key -> key.getData(data, def));
+	} */
 }

@@ -18,20 +18,21 @@
  */
 package net.dmulloy2.ultimatearena.arenas.ctf;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
+import net.dmulloy2.ultimatearena.types.FlagBase;
 import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author dmulloy2
@@ -40,6 +41,8 @@ import org.bukkit.potion.PotionEffectType;
 @Getter @Setter
 public class CTFFlag
 {
+	private static final double RADIUS = 1.75D;
+
 	protected String flagType = "";
 
 	protected Team team;
@@ -156,34 +159,30 @@ public class CTFFlag
 
 		if (! pickedUp)
 		{
-			for (ArenaPlayer ap : arenaPlayers)
+			ArenaPlayer ap = FlagBase.findClosest(arenaPlayers, myloc, RADIUS);
+			if (ap != null)
 			{
-				Player player = ap.getPlayer();
-				if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(myloc.getWorld().getUID())
-						&& player.getLocation().distance(myloc) < 1.75D)
+				if (ap.getTeam() != team)
 				{
-					if (ap.getTeam() != team)
-					{
-						// If the guy is on the other team
-						this.pickedUp = true;
-						this.riding = ap;
+					// If the guy is on the other team
+					this.pickedUp = true;
+					this.riding = ap;
 
-						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
-						ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
-						arena.tellPlayers(arena.getMessage("flagPickedUp"), ap.getName(), flagType);
-						return;
-					}
-					else
+					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
+					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
+					arena.tellPlayers(arena.getMessage("flagPickedUp"), ap.getName(), flagType);
+					return;
+				}
+				else
+				{
+					if (! myloc.equals(returnto))
 					{
-						if (! myloc.equals(returnto))
-						{
-							// If the flag is not at its flagstand
-							ap.sendMessage(arena.getMessage("youReturnedFlag"));
-							ap.setGameXP(ap.getGameXP() + 50);
-							arena.tellPlayers(arena.getMessage("flagReturned"), ap.getName(), flagType);
-							respawn();
-							return;
-						}
+						// If the flag is not at its flagstand
+						ap.sendMessage(arena.getMessage("youReturnedFlag"));
+						ap.setGameXP(ap.getGameXP() + 50);
+						arena.tellPlayers(arena.getMessage("flagReturned"), ap.getName(), flagType);
+						respawn();
+						return;
 					}
 				}
 			}

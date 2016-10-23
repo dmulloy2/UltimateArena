@@ -18,8 +18,6 @@
  */
 package net.dmulloy2.ultimatearena.arenas.bomb;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
@@ -30,7 +28,9 @@ import net.dmulloy2.util.Util;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author dmulloy2
@@ -39,6 +39,8 @@ import org.bukkit.entity.Player;
 @Getter @Setter
 public class BombFlag extends ArenaFlag
 {
+	private static final double RADIUS = 3.0D;
+
 	protected int fuser;
 	protected int timer;
 	protected int bombNumber;
@@ -95,57 +97,40 @@ public class BombFlag extends ArenaFlag
 			}
 		}
 
-		boolean fuse = false;
-		boolean defuse = false;
-		ArenaPlayer capturer = null;
+		if (exploded)
+			return;
 
-		for (ArenaPlayer ap : arenaPlayers)
+		ArenaPlayer capturer = findClosest(arenaPlayers, RADIUS);
+		if (capturer != null)
 		{
-			Player player = ap.getPlayer();
-			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld().getUID())
-					&& player.getLocation().distance(location) < 3.0D)
+			if (capturer.getTeam() == Team.RED)
 			{
-				capturer = ap;
-				if (ap.getTeam() == Team.RED)
-					fuse = true;
-				else
-					defuse = true;
-			}
-		}
-
-		if (! (fuse && defuse) && ! exploded)
-		{
-			if (capturer != null)
-			{
-				if (fuse)
+				if (! fused)
 				{
-					if (! fused)
+					// team 1 is fusing
+					fuser++;
+					capturer.sendMessage(getMessage("fusingBomb"), bombNumber, fuser);
+					if (fuser >= 10)
 					{
-						// team 1 is fusing
-						fuser++;
-						capturer.sendMessage(getMessage("fusingBomb"), bombNumber, fuser);
-						if (fuser >= 10)
-						{
-							fuser = 0;
-							fused = true;
-							arena.tellPlayers(getMessage("bombFused"), bombNumber);
-						}
+						fuser = 0;
+						fused = true;
+						arena.tellPlayers(getMessage("bombFused"), bombNumber);
 					}
 				}
-				else if (defuse)
+			}
+			else if (capturer.getTeam() == Team.BLUE)
+			{
+				// team 2 is desfusing
+				if (fused)
 				{
-					// team 2 is desfusing
-					if (fused)
+					fuser++;
+					capturer.sendMessage(getMessage("defusingBomb"), bombNumber, fuser);
+					if (fuser >= 10)
 					{
-						fuser++;
-						capturer.sendMessage(getMessage("defusingBomb"), bombNumber, fuser);
-						if (fuser >= 10)
-						{
-							fuser = 0;
-							fused = false;
-							timer = 45;
-							arena.tellPlayers(getMessage("bombDefused"), bombNumber);
-						}
+						fuser = 0;
+						fused = false;
+						timer = 45;
+						arena.tellPlayers(getMessage("bombDefused"), bombNumber);
 					}
 				}
 			}

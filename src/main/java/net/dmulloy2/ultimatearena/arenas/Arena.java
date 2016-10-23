@@ -98,6 +98,7 @@ public abstract class Arena implements Reloadable
 	protected List<ArenaSpectator> spectators;
 	protected String lastJoin;
 
+	protected List<ArenaPlayer> leaderboard;
 	protected List<String> finalLeaderboard;
 	protected int leaderboardIndex;
 
@@ -250,7 +251,7 @@ public abstract class Arena implements Reloadable
 		// Save vital data
 		ap.savePlayerData();
 
-		player.setMetadata("UA", plugin.getUAIdentifier());
+		player.setMetadata("UA", plugin.getIdentifier());
 
 		ap.clearInventory();
 
@@ -298,6 +299,8 @@ public abstract class Arena implements Reloadable
 		{
 			spawn(ap);
 		}
+
+		this.leaderboard = null;
 	}
 
 	/**
@@ -579,6 +582,11 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
+	public final void clearCache()
+	{
+		this.leaderboard = null;
+	}
+
 	/**
 	 * Called when a player dies.
 	 *
@@ -713,16 +721,19 @@ public abstract class Arena implements Reloadable
 	 * Kills all players within a certain radius of a {@link Location}
 	 *
 	 * @param loc Center {@link Location}
-	 * @param rad Radius to kill within
+	 * @param radius Radius to kill within
 	 */
-	public final void killAllNear(Location loc, double rad)
+	public final void killAllNear(Location loc, double radius)
 	{
-		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), rad);
+		plugin.debug("Killing all players near {0} in a radius of {1}", Util.locationToString(loc), radius);
+
+		double squared = radius * radius;
 
 		for (ArenaPlayer ap : active)
 		{
-			if (ap.getPlayer().getHealth() > 0.0D && ap.getPlayer().getLocation().distance(loc) < rad)
-				ap.getPlayer().setHealth(0.0D);
+			Player player = ap.getPlayer();
+			if (player.getHealth() > 0.0D && player.getLocation().distanceSquared(loc) < squared)
+				player.setHealth(0.0D);
 		}
 	}
 
@@ -898,6 +909,9 @@ public abstract class Arena implements Reloadable
 			} catch (IndexOutOfBoundsException ex) { }
 		}
 
+		// Invalidate leaderboard cache
+		this.leaderboard = null;
+
 		// Let everyone know why
 		switch (reason)
 		{
@@ -1037,9 +1051,10 @@ public abstract class Arena implements Reloadable
 
 			this.startingAmount = active.size();
 
-			// Setup the leaderboard for leaderboard signs
+			// Setup the leaderboard
 			this.finalLeaderboard = new ArrayList<>(startingAmount);
 			Collections.fill(finalLeaderboard, "");
+			this.leaderboard = null;
 
 			this.leaderboardIndex = startingAmount - 1;
 
@@ -1068,6 +1083,8 @@ public abstract class Arena implements Reloadable
 
 		for (ArenaPlayer ap : getActivePlayers())
 		{
+			Player player = ap.getPlayer();
+
 			// Make sure they're still online
 			if (! ap.isOnline())
 			{
@@ -1076,7 +1093,7 @@ public abstract class Arena implements Reloadable
 			}
 
 			// Kick them if they've reached the death limit and they're alive
-			if (ap.getDeaths() >= maxDeaths && ap.getPlayer().getHealth() > 0.0D)
+			if (ap.getDeaths() >= maxDeaths && player.getHealth() > 0.0D)
 			{
 				ap.leaveArena(LeaveReason.DEATHS);
 				continue;
@@ -1095,9 +1112,9 @@ public abstract class Arena implements Reloadable
 					ap.putData("healTimer", ap.getDataInt("healTimer") - 1);
 					if (ap.getDataInt("healTimer") <= 0)
 					{
-						if (ap.getPlayer().getHealth() > 0 && ap.getPlayer().getHealth() + 1 <= 20)
+						if (player.getHealth() > 0 && player.getHealth() < 20)
 						{
-							ap.getPlayer().setHealth(ap.getPlayer().getHealth() + 1);
+							player.setHealth(Math.max(player.getHealth() + 1, 20));
 							ap.getData().put("healTimer", 2);
 						}
 					}
@@ -1110,8 +1127,8 @@ public abstract class Arena implements Reloadable
 					{
 						for (PotionEffect effect : ac.getPotionEffects())
 						{
-							if (! ap.getPlayer().hasPotionEffect(effect.getType()))
-								ap.getPlayer().addPotionEffect(effect);
+							if (! player.hasPotionEffect(effect.getType()))
+								player.addPotionEffect(effect);
 						}
 					}
 				}
@@ -1221,9 +1238,20 @@ public abstract class Arena implements Reloadable
 			{
 				if (entity != null && entity.isValid())
 				{
-					if (! Config.persistentEntities.contains(entity.getType().name()))
+					if (isInside(entity.getLocation()))
 					{
-						if (isInside(entity.getLocation()))
+						if (entity instanceof Player)
+						{
+							// Players in the arena should already have been teleported
+							// If not, force them to respawn
+							Player player = (Player) entity;
+							player.setHealth(0.0D);
+
+							player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("postgameKick"), name));
+							continue;
+						}
+
+						if (! Config.persistentEntities.contains(entity.getType().name()))
 						{
 							entity.remove();
 							count++;
@@ -1236,7 +1264,7 @@ public abstract class Arena implements Reloadable
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "clearing entities in " + this));
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "clearing entities in " + name));
 		}
 	}
 
@@ -1248,12 +1276,15 @@ public abstract class Arena implements Reloadable
 	}
 
 	/**
-	 * Gets a list of active players, sorted by KDR.
+	 * Gets a list of active players, sorted by KDR. The result is cached and
+	 * {@link #clearCache()} must be called to get a fresh result.
 	 *
-	 * @return The list
+	 * @return The leaderboard
 	 */
 	public List<ArenaPlayer> getLeaderboard()
 	{
+		if (leaderboard != null) return leaderboard;
+		
 		Map<ArenaPlayer, Double> kdrMap = new HashMap<>();
 		for (ArenaPlayer ap : getActivePlayers())
 		{
@@ -1276,7 +1307,7 @@ public abstract class Arena implements Reloadable
 			leaderboard.add(entry.getKey());
 		}
 
-		return leaderboard;
+		return this.leaderboard = leaderboard;
 	}
 
 	/**
@@ -1293,13 +1324,10 @@ public abstract class Arena implements Reloadable
 		int pos = 1;
 		for (ArenaPlayer ap : getLeaderboard())
 		{
-			if (ap != null)
-			{
-				leaderboard.add(FormatUtil.format(getMessage("leaderboard"),
-						pos, decideColor(ap), ap.getName().equals(player.getName()) ? "&l" : "", ap.getName(), ap.getKills(), ap.getDeaths(), ap.getKDR()
-				));
-				pos++;
-			}
+			leaderboard.add(FormatUtil.format(getMessage("leaderboard"),
+					pos, decideColor(ap), ap.getName().equals(player.getName()) ? "&l" : "", ap.getName(), ap.getKills(), ap.getDeaths(), ap.getKDR()
+			));
+			pos++;
 		}
 
 		return leaderboard;

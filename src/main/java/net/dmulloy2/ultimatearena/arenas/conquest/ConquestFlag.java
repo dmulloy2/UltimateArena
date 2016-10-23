@@ -37,6 +37,9 @@ import org.bukkit.entity.Player;
 
 public class ConquestFlag extends ArenaFlag
 {
+	private static final double RADIUS = 4.5D;
+	private static final double RADIUS_SQUARED = RADIUS * RADIUS;
+
 	public ConquestFlag(Arena arena, ArenaLocation location, UltimateArena plugin)
 	{
 		super(arena, location, plugin);
@@ -52,8 +55,8 @@ public class ConquestFlag extends ArenaFlag
 		for (ArenaPlayer ap : arenaPlayers)
 		{
 			Player player = ap.getPlayer();
-			if (player.getHealth() > 0.0D && player.getWorld().getUID().equals(location.getWorld().getUID())
-					&& player.getLocation().distance(location) < 4.5D)
+			if (player.getHealth() > 0.0D && player.getWorld().equals(location.getWorld())
+					&& player.getLocation().distanceSquared(location) < RADIUS_SQUARED)
 			{
 				players.add(ap);
 

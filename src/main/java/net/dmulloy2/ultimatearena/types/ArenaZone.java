@@ -164,10 +164,27 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		lobby.setParam(lobby1, lobby2);
 		arena.setParam(arena1, arena2);
 
-		// Add to the loaded arenas list
-		plugin.getLoadedArenas().add(this);
+		List<ArenaZone> loaded = plugin.getLoadedArenas();
+
+		if (! Config.ignoreOverlap)
+		{
+			for (ArenaZone that : loaded)
+			{
+				if (checkOverlap(that))
+					plugin.getLogHandler().debug(Level.WARNING, "Arena {0} overlaps with arena {1}!", name, that.name);
+			}
+		}
+
+		loaded.add(this);
+
 		this.loaded = true;
 		return true;
+	}
+
+	private boolean checkOverlap(ArenaZone that)
+	{
+		return that.lobby.checkOverlap(lobby) || that.arena.checkOverlap(arena) ||
+			   that.lobby.checkOverlap(arena) || that.arena.checkOverlap(lobby);
 	}
 
 	// ---- Getters and Setters

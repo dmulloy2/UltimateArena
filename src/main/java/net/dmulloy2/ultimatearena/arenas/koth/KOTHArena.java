@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import lombok.Getter;
 import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
@@ -38,12 +37,16 @@ import net.dmulloy2.util.FormatUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import lombok.Getter;
+
 /**
  * @author dmulloy2
  */
 
 public class KOTHArena extends Arena
 {
+	private static final String POINTS_KEY = "kothPoints";
+
 	private @Getter int maxPoints;
 
 	public KOTHArena(ArenaZone az)
@@ -61,7 +64,7 @@ public class KOTHArena extends Arena
 	@Override
 	public void reward(ArenaPlayer ap)
 	{
-		if (ap.getDataInt("kothPoints") >= maxPoints)
+		if (ap.getDataInt(POINTS_KEY) >= maxPoints)
 		{
 			super.reward(ap);
 		}
@@ -82,9 +85,7 @@ public class KOTHArena extends Arena
 	public void check()
 	{
 		for (ArenaFlag flag : flags)
-		{
 			flag.checkNear(getActivePlayers());
-		}
 
 		checkPlayerPoints(maxPoints);
 		checkEmpty();
@@ -99,7 +100,7 @@ public class KOTHArena extends Arena
 	{
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			if (ap.getDataInt("kothPoints") >= max)
+			if (ap.getDataInt(POINTS_KEY) >= max)
 			{
 				tellAllPlayers(getMessage("playerWon"), ap.getName());
 
@@ -113,10 +114,12 @@ public class KOTHArena extends Arena
 	@Override
 	public List<ArenaPlayer> getLeaderboard()
 	{
+		if (leaderboard != null) return leaderboard;
+		
 		Map<ArenaPlayer, Integer> pointsMap = new HashMap<>();
 		for (ArenaPlayer ap : getActivePlayers())
 		{
-			pointsMap.put(ap, ap.getDataInt("kothPoints"));
+			pointsMap.put(ap, ap.getDataInt(POINTS_KEY));
 		}
 
 		List<Entry<ArenaPlayer, Integer>> sortedEntries = new ArrayList<>(pointsMap.entrySet());
@@ -135,7 +138,7 @@ public class KOTHArena extends Arena
 			leaderboard.add(entry.getKey());
 		}
 
-		return leaderboard;
+		return this.leaderboard = leaderboard;
 	}
 
 	@Override
@@ -143,33 +146,13 @@ public class KOTHArena extends Arena
 	{
 		List<String> leaderboard = new ArrayList<String>();
 
-		// Build kills map
-		Map<String, Integer> pointsMap = new HashMap<>();
-		for (ArenaPlayer ap : active)
-		{
-			pointsMap.put(ap.getName(), ap.getDataInt("kothPoints"));
-		}
-
-		List<Entry<String, Integer>> sortedEntries = new ArrayList<>(pointsMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
-		{
-			@Override
-			public int compare(Entry<String, Integer> entry1, Entry<String, Integer> entry2)
-			{
-				return -entry1.getValue().compareTo(entry2.getValue());
-			}
-		});
-
 		int pos = 1;
 		for (ArenaPlayer ap : getLeaderboard())
 		{
-			if (ap != null)
-			{
-				leaderboard.add(FormatUtil.format(getMessage("kothLb"),
-						pos, decideColor(ap), ap.getName().equals(player.getName()) ? "&l" : "", ap.getName(), ap.getKills(), ap.getDeaths(), ap.getDataInt("kothPoints")
-				));
-				pos++;
-			}
+			leaderboard.add(FormatUtil.format(getMessage("kothLb"),
+					pos, decideColor(ap), ap.getName().equals(player.getName()) ? "&l" : "", ap.getName(), ap.getKills(), ap.getDeaths(), ap.getDataInt(POINTS_KEY, 0)
+			));
+			pos++;
 		}
 
 		return leaderboard;
@@ -199,6 +182,6 @@ public class KOTHArena extends Arena
 	@Override
 	public void addScoreboardEntries(CustomScoreboard board, ArenaPlayer player)
 	{
-		board.addEntry("Points", player.getDataInt("kothPoints"));
+		board.addEntry("Points", player.getDataInt(POINTS_KEY));
 	}
 }

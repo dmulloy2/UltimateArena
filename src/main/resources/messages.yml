@@ -175,6 +175,7 @@ elimination: "&e{0} &3has been eliminated!"
 youWereKicked: "&cYou have been kicked from the arena!"
 kickBroadcast: "&e{0} &3has been kicked from the arena!"
 errorBroadcast: "&e{0} &3left the arena due to an error!"
+postgameKick: "&3You were removed from the area of &e{0}&3!"
 
 # Scoreboard
 scoreboardHeader: "&3[ &e{0} &3]"

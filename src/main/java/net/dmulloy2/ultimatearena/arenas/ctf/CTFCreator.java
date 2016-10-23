@@ -59,20 +59,23 @@ public class CTFCreator extends ArenaCreator
 					}
 
 					Tuple<Location, Location> sel = worldEdit.getSelection(player);
-					Location arena1 = sel.getFirst();
-					Location arena2 = sel.getSecond();
+					Location first = sel.getFirst();
+					Location second = sel.getSecond();
 
 					// Perform some checks
-					if (arena1 == null || arena2 == null)
+					if (first == null || second == null)
 					{
 						sendMessage("&cPlease make sure you have two valid points in your selection!");
 						return;
 					}
 
+					ArenaLocation arena1 = new ArenaLocation(first);
+					ArenaLocation arena2 = new ArenaLocation(second);
+
 					checkOverlap(arena1, arena2);
 
-					target.setArena1(new ArenaLocation(arena1));
-					target.setArena2(new ArenaLocation(arena2));
+					target.setArena1(arena1);
+					target.setArena2(arena2);
 
 					sendMessage("&3Arena points set!");
 					break; // Step completed
@@ -106,26 +109,29 @@ public class CTFCreator extends ArenaCreator
 					}
 
 					Tuple<Location, Location> sel = worldEdit.getSelection(player);
-					Location lobby1 = sel.getFirst();
-					Location lobby2 = sel.getSecond();
+					Location first = sel.getFirst();
+					Location second = sel.getSecond();
 
 					// Perform some checks
-					if (lobby1 == null || lobby2 == null)
+					if (first == null || second == null)
 					{
 						sendMessage("&cPlease make sure you have two valid points in your selection!");
 						return;
 					}
 
-					checkOverlap(lobby1, lobby2);
-
-					if (lobby1.getWorld().getUID() != target.getArena1().getWorld().getUID())
+					if (! first.getWorld().equals(second.getWorld()))
 					{
 						sendMessage("&cYou must make your lobby in the same world as your arena!");
 						return;
 					}
 
-					target.setLobby1(new ArenaLocation(lobby1));
-					target.setLobby2(new ArenaLocation(lobby2));
+					ArenaLocation lobby1 = new ArenaLocation(first);
+					ArenaLocation lobby2 = new ArenaLocation(second);
+
+					checkOverlap(lobby1, lobby2);
+
+					target.setLobby1(lobby1);
+					target.setLobby2(lobby2);
 
 					sendMessage("&3Lobby points set!");
 					break; // Step completed

@@ -111,32 +111,33 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
+@Getter
 public class UltimateArena extends SwornPlugin
 {
-	private @Getter SpectatingHandler spectatingHandler;
-	private @Getter ArenaTypeHandler arenaTypeHandler;
-	private @Getter ResourceHandler resourceHandler;
-	private @Getter MessageHandler messageHandler;
-	private @Getter FileHandler fileHandler;
-	private @Getter SignHandler signHandler;
-	private @Getter GUIHandler guiHandler;
+	private SpectatingHandler spectatingHandler;
+	private ArenaTypeHandler arenaTypeHandler;
+	private ResourceHandler resourceHandler;
+	private MessageHandler messageHandler;
+	private FileHandler fileHandler;
+	private SignHandler signHandler;
+	private GUIHandler guiHandler;
 
 	// Integration
-	private @Getter EssentialsHandler essentialsHandler;
-	private @Getter WorldEditHandler worldEditHandler;
-	private @Getter ProtocolHandler protocolHandler;
-	private @Getter VaultHandler vaultHandler;
+	private EssentialsHandler essentialsHandler;
+	private WorldEditHandler worldEditHandler;
+	private ProtocolHandler protocolHandler;
+	private VaultHandler vaultHandler;
 
-	private @Getter Map<String, ArenaJoinTask> waiting = new HashMap<>();
-	private @Getter List<ArenaCreator> makingArena = new ArrayList<>();
-	private @Getter List<String> pluginsUsingAPI = new ArrayList<>();
-	private @Getter List<ArenaZone> loadedArenas = new ArrayList<>();
-	private @Getter List<ArenaClass> classes = new ArrayList<>();
+	private Map<String, ArenaJoinTask> waiting = new HashMap<>();
+	private List<ArenaCreator> makingArena = new ArrayList<>();
+	private List<String> pluginsUsingAPI = new ArrayList<>();
+	private List<ArenaZone> loadedArenas = new ArrayList<>();
+	private List<ArenaClass> classes = new ArrayList<>();
 
 	private List<String> whitelistedCommands;
 	private List<Arena> activeArenas = new ArrayList<>();
 
-	private MetadataValue uaIdentifier;
+	private MetadataValue identifier;
 	private String prefix;
 
 	private @Getter boolean stopping;
@@ -157,7 +158,7 @@ public class UltimateArena extends SwornPlugin
 		long start = System.currentTimeMillis();
 
 		// Create identifier
-		uaIdentifier = new FixedMetadataValue(this, true);
+		identifier = new FixedMetadataValue(this, true);
 
 		// Register LogHandler
 		logHandler = new LogHandler(this);
@@ -342,11 +343,6 @@ public class UltimateArena extends SwornPlugin
 		return worldEditHandler != null && worldEditHandler.isEnabled();
 	}
 
-	public MetadataValue getUAIdentifier()
-	{
-		return uaIdentifier;
-	}
-
 	@Override
 	public String getPrefix()
 	{
@@ -434,6 +430,9 @@ public class UltimateArena extends SwornPlugin
 	// Load Stuff
 	private void loadArenas()
 	{
+		if (Config.ignoreOverlap)
+			logHandler.log(Level.WARNING, "Ignoring arena overlap. Be warned, this causes problems!");
+
 		File folder = new File(getDataFolder(), "arenas");
 		File[] children = folder.listFiles(new FileFilter()
 		{

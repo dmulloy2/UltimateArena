@@ -59,22 +59,32 @@ public class Field
 
 	public boolean isInside(Location loc)
 	{
-		if (! initialized)
-			return false;
-
 		Validate.notNull(loc, "loc cannot be null!");
+		return isInside(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
+	}
 
-		World world = loc.getWorld();
-		if (getWorld().equals(world))
-		{
-			int locX = loc.getBlockX();
-			int locZ = loc.getBlockZ();
+	public boolean isInside(ArenaLocation loc)
+	{
+		Validate.notNull(loc, "loc cannot be null!");
+		return isInside(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
+	}
 
-			if (locX >= min.getX() && locX <= max.getX())
-				return locZ >= min.getZ() && locZ <= max.getZ();
-		}
+	protected boolean isInside(World world, double x, double y, double z)
+	{
+		return initialized
+				&& getWorld().equals(world)
+				&& x >= min.getX() && x <= max.getX()
+				&& z >= min.getZ() && z <= max.getZ();	
+	}
 
-		return false;
+	public boolean checkOverlap(Field that)
+	{
+		return isInside(that.min) || isInside(that.max) || that.checkOverlap(this, false);
+	}
+
+	private boolean checkOverlap(Field that, boolean recurse)
+	{
+		return isInside(that.min) || isInside(that.max) || (recurse && that.checkOverlap(this));
 	}
 
 	public Block getBlockAt(int x, int y, int z)

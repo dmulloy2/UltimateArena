@@ -95,7 +95,6 @@ spectator:
 # Persistent entities
 # These entities won't be removed when the arena stops
 persistentEntities:
-- "PLAYER"
 - "PAINTING"
 - "ITEM_FRAME"
 - "VILLAGER"

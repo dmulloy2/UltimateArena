@@ -38,6 +38,9 @@ import org.bukkit.potion.PotionEffectType;
 @Getter @Setter
 public class CTFFlagBase extends FlagBase
 {
+	private static final double RADIUS = 3.0D;
+	private static final double RADIUS_SQUARED = RADIUS * RADIUS;
+
 	protected CTFFlag enemyflag;
 
 	protected final Team team;
@@ -84,8 +87,8 @@ public class CTFFlagBase extends FlagBase
 					if (enemyflag.getRiding().getName().equals(ap.getName()))
 					{
 						// If the player selected is carrying the enemy flag
-						if (player.getWorld().getUID().equals(location.getWorld().getUID())
-								&& player.getLocation().distance(location.clone().add(0.0D, 1.0D, 0.0D)) < 2.75D)
+						if (player.getWorld().equals(location.getWorld())
+								&& player.getLocation().distanceSquared(location) < RADIUS_SQUARED)
 						{
 							// If hes close to my flag stand, REWARD!
 							enemyflag.respawn();

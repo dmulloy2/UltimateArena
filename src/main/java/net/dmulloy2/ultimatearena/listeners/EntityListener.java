@@ -313,6 +313,7 @@ public class EntityListener implements Listener
 				ap.onDeath();
 
 				Arena arena = ap.getArena();
+				arena.clearCache();
 
 				Player killer = died.getKiller();
 				if (killer != null)
@@ -439,13 +440,17 @@ public class EntityListener implements Listener
 				ArenaPlayer ap = plugin.getArenaPlayer(killer);
 				if (ap != null)
 				{
+					Arena arena = ap.getArena();
+
 					// Selectively count mob kills
-					if (ap.getArena().isCountMobKills())
+					if (arena.isCountMobKills())
 					{
 						ap.addXP(25);
 						ap.setKills(ap.getKills() + 1);
 						ap.setKillStreak(ap.getKillStreak() + 1);
-						ap.getArena().handleKillStreak(ap);
+
+						arena.handleKillStreak(ap);
+						arena.clearCache();
 
 						String name = FormatUtil.getFriendlyName(died.getType());
 						ap.sendMessage(plugin.getMessage("pveKill"), killer.getName(), FormatUtil.getArticle(name), name);

@@ -29,7 +29,6 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -228,12 +227,14 @@ public abstract class ArenaCreator
 		getPlayer().sendMessage(plugin.getPrefix() + FormatUtil.format(string, objects));
 	}
 
-	protected final void checkOverlap(Location loc1, Location loc2)
+	protected final void checkOverlap(ArenaLocation loc1, ArenaLocation loc2)
 	{
+		Field test = new Field(loc1, loc2);
+
 		List<String> overlap = new ArrayList<>();
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
-			if (az.isInside(loc1) || az.isInside(loc2))
+			if (test.checkOverlap(test))
 				overlap.add(az.getName());
 		}
 
@@ -243,7 +244,7 @@ public abstract class ArenaCreator
 				sendMessage("&4These points overlap an existing arena: &c{0}&4!", overlap.get(0));
 			else
 				sendMessage("&4These points overlap existing arenas: &c{0}&4!", new StringJoiner("&4, &c").appendAll(overlap));
-			sendMessage("&4This is known to cause some errors! Type &c/ua undo &4to undo!");
+			sendMessage("&4This is known to cause problems! Type &c/ua undo &4to undo!");
 		}
 	}
 

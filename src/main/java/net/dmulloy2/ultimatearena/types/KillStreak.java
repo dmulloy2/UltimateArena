@@ -18,12 +18,12 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
-import lombok.Getter;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,6 +31,8 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Tameable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
+
+import lombok.Getter;
 
 /**
  * @author dmulloy2
@@ -99,7 +101,7 @@ public final class KillStreak
 		}
 		else if (type == Type.MOB)
 		{
-			MetadataValue meta = ap.getPlugin().getUAIdentifier();
+			MetadataValue meta = ap.getPlugin().getIdentifier();
 
 			World world = ap.getPlayer().getWorld();
 			Location location = ap.getPlayer().getLocation();
@@ -118,9 +120,9 @@ public final class KillStreak
 					entity.setMetadata("ua_attack_dog_" + ap.getName(), meta);
 				}
 
-				if (target != null && entity instanceof Monster)
+				if (target != null && entity instanceof Creature)
 				{
-					((Monster) entity).setTarget(target);
+					((Creature) entity).setTarget(target);
 				}
 			}
 
@@ -135,12 +137,22 @@ public final class KillStreak
 	private final LivingEntity getTarget(ArenaPlayer ap)
 	{
 		Arena arena = ap.getArena();
+
+		// Go for the highest ranked players
 		for (ArenaPlayer target : arena.getLeaderboard())
 		{
 			if (arena.isAllowTeamKilling() || target.getTeam() != ap.getTeam())
 				return target.getPlayer();
 		}
 
+		// Next try a nearby monster
+		for (Entity entity : ap.getPlayer().getNearbyEntities(5.0D, 5.0D, 5.0D))
+		{
+			if (entity instanceof Monster)
+				return (Monster) entity;
+		}
+
+		// Oh well
 		return null;
 	}
 }

@@ -27,6 +27,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -80,5 +81,34 @@ public abstract class FlagBase
 	protected String getMessage(String key)
 	{
 		return plugin.getMessage(key);
+	}
+
+	protected ArenaPlayer findClosest(ArenaPlayer[] players, double radius)
+	{
+		return findClosest(players, location, radius);
+	}
+
+	public static ArenaPlayer findClosest(ArenaPlayer[] players, Location location, double radius)
+	{
+		double radSquared = radius * radius;
+
+		ArenaPlayer closest = null;
+		double distance = -1;
+
+		for (ArenaPlayer ap : players)
+		{
+			Player player = ap.getPlayer();
+			if (player.getHealth() > 0.0D && player.getWorld().equals(location.getWorld()))
+			{
+				double dist = location.distanceSquared(player.getLocation());
+				if (distance < radSquared && (distance == -1 || dist < distance))
+				{
+					closest = ap;
+					distance = dist;
+				}
+			}
+		}
+
+		return closest;
 	}
 }
