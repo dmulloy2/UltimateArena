@@ -19,12 +19,7 @@
 package net.dmulloy2.ultimatearena.arenas.koth;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -115,30 +110,8 @@ public class KOTHArena extends Arena
 	public List<ArenaPlayer> getLeaderboard()
 	{
 		if (leaderboard != null) return leaderboard;
-		
-		Map<ArenaPlayer, Integer> pointsMap = new HashMap<>();
-		for (ArenaPlayer ap : getActivePlayers())
-		{
-			pointsMap.put(ap, ap.getDataInt(POINTS_KEY));
-		}
 
-		List<Entry<ArenaPlayer, Integer>> sortedEntries = new ArrayList<>(pointsMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Entry<ArenaPlayer, Integer>>()
-		{
-			@Override
-			public int compare(Entry<ArenaPlayer, Integer> entry1, Entry<ArenaPlayer, Integer> entry2)
-			{
-				return -entry1.getValue().compareTo(entry2.getValue());
-			}
-		});
-
-		List<ArenaPlayer> leaderboard = new ArrayList<>();
-		for (Entry<ArenaPlayer, Integer> entry : sortedEntries)
-		{
-			leaderboard.add(entry.getKey());
-		}
-
-		return this.leaderboard = leaderboard;
+		return this.leaderboard = ArenaPlayer.dataSorter(POINTS_KEY, 0).sort(getActivePlayers());
 	}
 
 	@Override

@@ -20,11 +20,8 @@ package net.dmulloy2.ultimatearena.arenas;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -1284,30 +1281,8 @@ public abstract class Arena implements Reloadable
 	public List<ArenaPlayer> getLeaderboard()
 	{
 		if (leaderboard != null) return leaderboard;
-		
-		Map<ArenaPlayer, Double> kdrMap = new HashMap<>();
-		for (ArenaPlayer ap : getActivePlayers())
-		{
-			kdrMap.put(ap, ap.getKDR());
-		}
 
-		List<Entry<ArenaPlayer, Double>> sortedEntries = new ArrayList<>(kdrMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Entry<ArenaPlayer, Double>>()
-		{
-			@Override
-			public int compare(Entry<ArenaPlayer, Double> entry1, Entry<ArenaPlayer, Double> entry2)
-			{
-				return -entry1.getValue().compareTo(entry2.getValue());
-			}
-		});
-
-		List<ArenaPlayer> leaderboard = new ArrayList<>();
-		for (Entry<ArenaPlayer, Double> entry : sortedEntries)
-		{
-			leaderboard.add(entry.getKey());
-		}
-
-		return this.leaderboard = leaderboard;
+		return this.leaderboard = ArenaPlayer.kdrSorter().sort(getActivePlayers());
 	}
 
 	/**

@@ -27,6 +27,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import net.dmulloy2.integration.VaultHandler;
+import net.dmulloy2.types.Sorter;
+import net.dmulloy2.types.Sorter.SortCriteria;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -618,13 +620,29 @@ public final class ArenaPlayer
 		return name;
 	}
 
-	/* public static Sorter<ArenaPlayer, Double> kdrSorter()
+	public static Sorter<ArenaPlayer, Double> kdrSorter()
 	{
-		return new Sorter<>(key -> key.getKDR());
+		// return new Sorter<>(key -> key.getKDR());
+		return new Sorter<>(new SortCriteria<ArenaPlayer, Double>()
+		{
+			@Override
+			public Double getValue(ArenaPlayer key)
+			{
+				return key.getKDR();
+			}
+		});
 	}
 
-	public static <T extends Comparable<T>> Sorter<ArenaPlayer, T> dataSorter(String data, T def)
+	public static <T extends Comparable<T>> Sorter<ArenaPlayer, T> dataSorter(final String data, final T def)
 	{
-		return new Sorter<ArenaPlayer, T>(key -> key.getData(data, def));
-	} */
+		// return new Sorter<ArenaPlayer, T>(key -> key.getData(data, def));
+		return new Sorter<>(new SortCriteria<ArenaPlayer, T>()
+		{
+			@Override
+			public T getValue(ArenaPlayer key)
+			{
+				return key.getData(data, def);
+			}
+		});
+	}
 }
