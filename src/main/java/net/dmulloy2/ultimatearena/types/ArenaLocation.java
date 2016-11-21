@@ -48,29 +48,38 @@ import org.bukkit.entity.Player;
 public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 {
 	private final int x, y, z;
+	private final float pitch, yaw;
 	private final String worldName;
 
 	private transient World world;
 	private transient Location location;
 	private transient SimpleVector simpleVector;
 
-	public ArenaLocation(String worldName, int x, int y, int z)
+	public ArenaLocation(String worldName, int x, int y, int z, float pitch, float yaw)
 	{
 		Validate.notNull(worldName, "worldName cannot be null!");
 		this.worldName = worldName;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.pitch = pitch;
+		this.yaw = yaw;
 	}
 
 	public ArenaLocation(String worldName, int x, int z)
 	{
-		this(worldName, x, 0, z);
+		this(worldName, x, 0, z, 0, 0);
+	}
+
+	public ArenaLocation(String worldName, int x, int y, int z)
+	{
+		this(worldName, x, y, z, 0, 0);
 	}
 
 	public ArenaLocation(Location location)
 	{
-		this(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		this(location.getWorld().getName(), location.getBlockX(), location.getBlockY(),
+				location.getBlockZ(), location.getPitch(), location.getYaw());
 	}
 
 	public ArenaLocation(Player player)
@@ -85,6 +94,10 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		this.x = (int) args.get("x");
 		this.y = (int) args.get("y");
 		this.z = (int) args.get("z");
+
+		// We didn't always store pitch and yaw
+		this.pitch = args.containsKey("pitch") ? (float) args.get("pitch") : 0;
+		this.yaw = args.containsKey("yaw") ? (float) args.get("yaw") : 0;
 	}
 
 	/**
@@ -113,7 +126,7 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 			return;
 
 		// store the Location for future calls, and pass it on
-		location = new Location(world, x, y, z);
+		location = new Location(world, x, y, z, pitch, yaw);
 	}
 
 	/**
@@ -150,12 +163,12 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 
 	public static ArenaLocation getMaximum(ArenaLocation l1, ArenaLocation l2)
 	{
-		return new ArenaLocation(l1.worldName, Math.max(l1.x, l2.x), Math.max(l1.y, l2.y), Math.max(l1.z, l2.z));
+		return new ArenaLocation(l1.worldName, Math.max(l1.x, l2.x), Math.max(l1.y, l2.y), Math.max(l1.z, l2.z), 0, 0);
 	}
 
 	public static ArenaLocation getMinimum(ArenaLocation l1, ArenaLocation l2)
 	{
-		return new ArenaLocation(l1.worldName, Math.min(l1.x, l2.x), Math.min(l1.y, l2.y), Math.min(l1.z, l2.z));
+		return new ArenaLocation(l1.worldName, Math.min(l1.x, l2.x), Math.min(l1.y, l2.y), Math.min(l1.z, l2.z), 0, 0);
 	}
 
 	@Override
@@ -167,6 +180,8 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		result.put("x", x);
 		result.put("y", y);
 		result.put("z", z);
+		result.put("pitch", pitch);
+		result.put("yaw", yaw);
 
 		return result;
 	}
@@ -182,6 +197,8 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 			return x == that.x &&
 					y == that.y &&
 					z == that.z &&
+					Float.floatToIntBits(pitch) == Float.floatToIntBits(that.pitch) &&
+					Float.floatToIntBits(yaw) == Float.floatToIntBits(that.yaw) &&
 					worldName.equals(that.worldName);
 		}
 
@@ -191,18 +208,19 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(x, y, z, worldName);
+		return Objects.hash(x, y, z, worldName, pitch, yaw);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "ArenaLocation[x=" + x + ", y=" + y + ", z=" + z + ", worldName=" + worldName + "]";
+		return "ArenaLocation[world=" + worldName + ", x=" + x + ", y=" + y +
+				", z=" + z + ", pitch=" + pitch + ", yaw=" + yaw + "]";
 	}
 
 	@Override
 	public ArenaLocation clone()
 	{
-		return new ArenaLocation(worldName, x, y, z);
+		return new ArenaLocation(worldName, x, y, z, pitch, yaw);
 	}
 }
