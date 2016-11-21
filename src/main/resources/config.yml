@@ -103,3 +103,6 @@ persistentEntities:
 integration:
   # Whether or not to use WorldEdit for point selection
   useWorldEdit: true
+
+# Sometimes happens with naughty plugins
+fixInvisibility: false

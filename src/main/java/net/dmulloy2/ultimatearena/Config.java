@@ -84,4 +84,7 @@ public class Config
 
 	@Key("ignoreOverlap")
 	public static boolean ignoreOverlap = false;
+
+	@Key("fixInvisibility")
+	public static boolean fixInvisibility = false;
 }

@@ -890,6 +890,25 @@ public abstract class Arena implements Reloadable
 
 		ap.setOut(true);
 
+		final Player player = ap.getPlayer();
+
+		// Invisibility fix
+		if (Config.fixInvisibility)
+		{
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					for (ArenaPlayer active : getActivePlayers())
+					{
+						if (active.getPlayer() != null)
+							active.getPlayer().showPlayer(player);
+					}
+				}
+			}.runTaskLater(plugin, 5L);
+		}
+
 		// Remove from lists
 		active.remove(ap);
 		if (reason != LeaveReason.QUIT)
