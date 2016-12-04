@@ -30,6 +30,7 @@ import lombok.Getter;
 import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.types.EnchantmentType;
 import net.dmulloy2.types.MyMaterial;
+import net.dmulloy2.types.PotionType;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.util.FormatUtil;
@@ -102,10 +103,11 @@ public final class ArenaClass extends Configuration
 	{
 		Validate.isTrue(! loaded, "This class has already been loaded!");
 
-		// Initialize variables
+		// Initialize collections
 		this.armor = new HashMap<>();
 		this.tools = new HashMap<>();
 		this.commands = new ArrayList<>();
+		this.description = new ArrayList<>();
 
 		try
 		{
@@ -243,7 +245,7 @@ public final class ArenaClass extends Configuration
 
 			if (isSet(values, "icon"))
 			{
-				icon = ItemUtil.readItem(getString(values, "icon", ""), plugin);
+				icon = ItemUtil.readItem(getString(values, "icon", ""));
 			}
 
 			if (icon == null)
@@ -275,12 +277,12 @@ public final class ArenaClass extends Configuration
 			}
 			catch (Throwable ex)
 			{
-				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "saving changes for class \"" + name + "\""));
+				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "saving changes to class \"" + name + "\""));
 			}
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading class \"" + name + "\""));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading class \"{0}\"", name));
 			return false;
 		}
 
@@ -299,7 +301,7 @@ public final class ArenaClass extends Configuration
 			if (s.contains(":"))
 			{
 				String[] split1 = s.split(":");
-				PotionEffectType type = PotionEffectType.getByName(split1[0].toUpperCase());
+				PotionEffectType type = PotionType.findEffect(split1[0]);
 				int strength = NumberUtil.toInt(split1[1]);
 
 				if (type != null && strength >= 0)
@@ -394,10 +396,11 @@ public final class ArenaClass extends Configuration
 		this.needsPermission = false;
 		this.useHelmet = true;
 
-		// Clear lists and maps
+		// Clear collections
 		this.armor.clear();
 		this.tools.clear();
 		this.commands.clear();
+		this.description.clear();
 
 		if (potionEffects != null)
 			this.potionEffects.clear();
