@@ -95,9 +95,20 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		this.y = (int) args.get("y");
 		this.z = (int) args.get("z");
 
-		// We didn't always store pitch and yaw
-		this.pitch = args.containsKey("pitch") ? (float) args.get("pitch") : 0;
-		this.yaw = args.containsKey("yaw") ? (float) args.get("yaw") : 0;
+		this.pitch = getFloat(args, "pitch");
+		this.yaw = getFloat(args, "yaw");
+	}
+
+	// Safely gets the float from the map
+	private float getFloat(Map<String, Object> map, String key)
+	{
+		if (map.containsKey(key))
+		{
+			Number number = (Number) map.get(key);
+			return number.floatValue();
+		}
+
+		return 0.0F;
 	}
 
 	/**
@@ -126,7 +137,7 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 			return;
 
 		// store the Location for future calls, and pass it on
-		location = new Location(world, x, y, z, pitch, yaw);
+		location = new Location(world, x, y, z, yaw, pitch);
 	}
 
 	/**
