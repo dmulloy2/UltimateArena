@@ -18,9 +18,12 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
-import lombok.Getter;
-
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+
+import lombok.Getter;
 
 /**
  * @author dmulloy2
@@ -48,13 +51,34 @@ public final class Field3D extends Field
 		return false;
 	}
 
-	public final boolean isUnder(Location loc)
+	public boolean isUnder(Location loc)
 	{
 		return super.isInside(loc) && loc.getBlockY() < min.getY();
 	}
 
-	public final int getHeight()
+	public int getHeight()
 	{
 		return max.getY() - min.getY();
+	}
+
+	public Block getBlockAt(int x, int y, int z)
+	{
+		return getWorld().getBlockAt(min.getX() + x, min.getY() + y, min.getZ() + z);
+	}
+
+	public final void setType(Material mat)
+	{
+		World world = getWorld();
+		for (int x = min.getX(); x <= max.getX(); x++)
+		{
+			for (int y = min.getY(); y <= max.getY(); y++)
+			{
+				for (int z = min.getZ(); z <= max.getZ(); z++)
+				{
+					Block block = world.getBlockAt(x, y, z);
+					block.setType(mat);
+				}
+			}
+		}
 	}
 }

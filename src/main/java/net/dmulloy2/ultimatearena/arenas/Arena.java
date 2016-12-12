@@ -1247,6 +1247,9 @@ public abstract class Arena implements Reloadable
 
 	private final void clearEntities()
 	{
+		if (! Config.clearEntities)
+			return;
+
 		try
 		{
 			int count = 0;
@@ -1254,7 +1257,7 @@ public abstract class Arena implements Reloadable
 			{
 				if (entity != null && entity.isValid())
 				{
-					if (isInside(entity.getLocation()))
+					if (az.isInsideArena(entity.getLocation()))
 					{
 						if (entity instanceof Player)
 						{
@@ -1264,6 +1267,7 @@ public abstract class Arena implements Reloadable
 							player.setHealth(0.0D);
 
 							player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("postgameKick"), name));
+							plugin.getLogHandler().log("{0} was removed from the {1} arena", player.getName(), name);
 							continue;
 						}
 
@@ -1280,7 +1284,7 @@ public abstract class Arena implements Reloadable
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "clearing entities in " + name));
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "clearing entities from " + name));
 		}
 	}
 

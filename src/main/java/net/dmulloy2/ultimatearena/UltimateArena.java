@@ -430,9 +430,6 @@ public class UltimateArena extends SwornPlugin
 	// Load Stuff
 	private void loadArenas()
 	{
-		if (Config.ignoreOverlap)
-			logHandler.log(Level.WARNING, "Ignoring arena overlap. Be warned, this causes problems!");
-
 		File folder = new File(getDataFolder(), "arenas");
 		File[] children = folder.listFiles(new FileFilter()
 		{

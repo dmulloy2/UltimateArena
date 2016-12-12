@@ -82,9 +82,9 @@ public class Config
 	@Key("debug")
 	public static boolean debug = false;
 
-	@Key("ignoreOverlap")
-	public static boolean ignoreOverlap = false;
-
 	@Key("fixInvisibility")
 	public static boolean fixInvisibility = false;
+
+	@Key("clearEntities")
+	public static boolean clearEntities = true;
 }

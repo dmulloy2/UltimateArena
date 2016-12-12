@@ -20,13 +20,13 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.util.List;
 
-import lombok.Getter;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import lombok.Getter;
 
 /**
  * @author dmulloy2
@@ -35,46 +35,48 @@ import org.bukkit.block.Block;
 @Getter
 public class Field
 {
-	protected boolean initialized;
-
-	protected ArenaLocation max;
+	protected boolean init;
 	protected ArenaLocation min;
+	protected ArenaLocation max;
+
+	public Field(ArenaLocation loc1, ArenaLocation loc2)
+	{
+		setParam(loc1, loc2);
+	}
 
 	public Field() { }
 
-	public Field(ArenaLocation point1, ArenaLocation point2)
+	public void setParam(ArenaLocation loc1, ArenaLocation loc2)
 	{
-		setParam(point1, point2);
+		Validate.notNull(loc1, "loc1 cannot be null!");
+		Validate.notNull(loc2, "loc2 cannot be null!");
+
+		this.min = ArenaLocation.getMinimum(loc1, loc2);
+		this.max = ArenaLocation.getMaximum(loc1, loc2);
+		this.init = true;
 	}
 
-	public void setParam(ArenaLocation point1, ArenaLocation point2)
+	public World getWorld()
 	{
-		Validate.notNull(point1, "point1 cannot be null!");
-		Validate.notNull(point2, "point2 cannot be null!");
-
-		this.max = ArenaLocation.getMaximum(point1, point2);
-		this.min = ArenaLocation.getMinimum(point1, point2);
-		this.initialized = true;
+		return max.getWorld();
 	}
 
 	public boolean isInside(Location loc)
 	{
 		Validate.notNull(loc, "loc cannot be null!");
-		return isInside(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
+
+		int x = loc.getBlockX();
+		int z = loc.getBlockZ();
+
+		return init
+				&& loc.getWorld().equals(getWorld())
+				&& x <= max.getX() && x >= min.getX()
+				&& z <= max.getZ() && z >= min.getZ();
 	}
 
-	public boolean isInside(ArenaLocation loc)
+	private boolean isInside(ArenaLocation loc)
 	{
-		Validate.notNull(loc, "loc cannot be null!");
-		return isInside(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
-	}
-
-	protected boolean isInside(World world, double x, double y, double z)
-	{
-		return initialized
-				&& getWorld().equals(world)
-				&& x >= min.getX() && x <= max.getX()
-				&& z >= min.getZ() && z <= max.getZ();	
+		return isInside(loc.getLocation());
 	}
 
 	public boolean checkOverlap(Field that)
@@ -87,55 +89,28 @@ public class Field
 		return isInside(that.min) || isInside(that.max) || (recurse && that.checkOverlap(this));
 	}
 
-	public Block getBlockAt(int x, int y, int z)
+	public void removeMaterials(List<Material> clear)
 	{
-		return getWorld().getBlockAt(min.getX() + x, min.getY() + y, min.getZ() + z);
-	}
-
-	public final void setType(Material mat)
-	{
-		World world = getWorld();
-		for (int x = min.getX(); x < max.getX() + 1; x++)
+		for (int x = min.getX(); x <= max.getX(); x++)
 		{
-			for (int y = min.getY(); y < max.getY() + 1; y++)
+			for (int y = min.getY(); y <= max.getY(); y++)
 			{
-				for (int z = min.getZ(); z < max.getZ() + 1; z++)
+				for (int z = min.getZ(); z <= max.getZ(); z++)
 				{
-					Block block = world.getBlockAt(x, y, z);
-					block.setType(mat);
-				}
-			}
-		}
-	}
-
-	public void removeMaterials(List<Material> materials)
-	{
-		World world = getWorld();
-		for (int x = min.getX(); x < max.getX() + 1; x++)
-		{
-			for (int y = min.getY(); y < max.getY() + 1; y++)
-			{
-				for (int z = min.getZ(); z < max.getZ() + 1; z++)
-				{
-					Block block = world.getBlockAt(x, y, z);
-					if (materials.contains(block.getType()))
+					Block block = getWorld().getBlockAt(x, y, z);
+					if (clear.contains(block.getType()))
 						block.setType(Material.AIR);
 				}
 			}
 		}
 	}
 
-	public final World getWorld()
-	{
-		return max.getWorld();
-	}
-
-	public final int getWidth()
+	public int getWidth()
 	{
 		return max.getX() - min.getX();
 	}
 
-	public final int getLength()
+	public int getLength()
 	{
 		return max.getZ() - min.getZ();
 	}

@@ -165,26 +165,10 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		arena.setParam(arena1, arena2);
 
 		List<ArenaZone> loaded = plugin.getLoadedArenas();
-
-		if (! Config.ignoreOverlap)
-		{
-			for (ArenaZone that : loaded)
-			{
-				if (checkOverlap(that))
-					plugin.getLogHandler().debug(Level.WARNING, "Arena {0} overlaps with arena {1}!", name, that.name);
-			}
-		}
-
 		loaded.add(this);
 
 		this.loaded = true;
 		return true;
-	}
-
-	private boolean checkOverlap(ArenaZone that)
-	{
-		return that.lobby.checkOverlap(lobby) || that.arena.checkOverlap(arena) ||
-			   that.lobby.checkOverlap(arena) || that.arena.checkOverlap(lobby);
 	}
 
 	// ---- Getters and Setters
@@ -268,39 +252,17 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- Utility Methods
 
-	/**
-	 * Checks if a location is inside this arena.
-	 *
-	 * @param location {@link Location} to check
-	 * @return True if the location is inside the arena, false if not
-	 */
-	public boolean isInside(Location location)
+	public final boolean isInside(Location loc)
 	{
-		Validate.notNull(location, "location cannot be null!");
-
-		World world = getWorld();
-
-		try
-		{
-			return world.equals(location.getWorld()) && (lobby.isInside(location) || arena.isInside(location));
-		}
-		catch (Throwable ex)
-		{
-			if (! insideStackPrinted)
-			{
-				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "performing location check for " + name));
-
-				if (world == null)
-					plugin.getLogHandler().log(Level.WARNING, "This is caused by a null world. Does world {0} exist?", worldName);
-
-				insideStackPrinted = true;
-			}
-
-			return false;
-		}
+		Validate.notNull(loc, "loc cannot be null!");
+		return lobby.isInside(loc) || arena.isInside(loc);
 	}
 
-	private transient boolean insideStackPrinted;
+	public final boolean isInsideArena(Location loc)
+	{
+		Validate.notNull(loc, "loc cannot be null!");
+		return arena.isInside(loc);
+	}
 
 	/**
 	 * Gets whether or not a player has voted
