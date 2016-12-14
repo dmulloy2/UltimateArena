@@ -52,6 +52,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -74,6 +75,7 @@ public final class ArenaPlayer
 	private int deaths;
 	private int killStreak;
 	private int gameXP;
+	private int grace;
 
 	private boolean out;
 	private boolean canReward;
@@ -230,6 +232,35 @@ public final class ArenaPlayer
 		Player player = getPlayer();
 		if (! player.hasMetadata("UA"))
 			player.setMetadata("UA", plugin.getIdentifier());
+
+		gracePeriod();
+	}
+
+	private void gracePeriod()
+	{
+		if (arena.getGracePeriod() > 0)
+		{
+			this.grace = arena.getGracePeriod();
+
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					sendMessage(plugin.getMessage("graceExpired"));
+					grace = 0;
+				}
+			}.runTaskLater(plugin, grace);
+
+			try
+			{
+				player.getWorld().spawnParticle(Config.graceParticle, player.getLocation(), grace);
+			}
+			catch (Throwable ex)
+			{
+				// Don't worry about it
+			}
+		}
 	}
 
 	/**

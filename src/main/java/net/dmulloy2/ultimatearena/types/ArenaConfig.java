@@ -56,7 +56,7 @@ public class ArenaConfig extends Configuration
 	// ---- Generic
 	protected boolean allowTeamKilling, countMobKills, canModifyWorld, unlimitedAmmo, rewardBasedOnXp, giveRewards, forceBalance,
 		joinInProgress, preserveMobs;
-	protected int gameTime, lobbyTime, maxDeaths, maxPlayers, minPlayers;
+	protected int gameTime, lobbyTime, maxDeaths, maxPlayers, minPlayers, gracePeriod;
 	protected String defaultClass;
 	protected double cashReward;
 
@@ -180,6 +180,7 @@ public class ArenaConfig extends Configuration
 			this.maxDeaths = Math.max(1, getInt(values, "maxDeaths", def.getMaxDeaths()));
 			this.maxPlayers = getInt(values, "maxPlayers", def.getMaxPlayers());
 			this.minPlayers = Math.max(1, getInt(values, "minPlayers", def.getMinPlayers()));
+			this.gracePeriod =  getInt(values, "gracePeriod", def.getGracePeriod());
 
 			this.defaultClass = getString(values, "defaultClass", def.getDefaultClass());
 

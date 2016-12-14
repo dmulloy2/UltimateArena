@@ -264,7 +264,7 @@ public class EntityListener implements Listener
 		}
 	}
 
-	// Cancel damage in the lobby
+	// Cancel damage in the lobby and during grace period
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
@@ -276,6 +276,10 @@ public class EntityListener implements Listener
 			{
 				Arena arena = ap.getArena();
 				if (arena.isInLobby())
+				{
+					event.setCancelled(true);
+				}
+				else if (ap.getGrace() > 0)
 				{
 					event.setCancelled(true);
 				}

@@ -124,7 +124,8 @@ public abstract class Arena implements Reloadable
 	protected int redTeamSize;
 	protected int blueTeamSize;
 	protected int announced;
-	
+	protected int gracePeriod;
+
 	protected boolean allowTeamKilling;
 	protected boolean rewardBasedOnXp;
 	protected boolean pauseStartTimer;
@@ -196,6 +197,7 @@ public abstract class Arena implements Reloadable
 		this.maxDeaths = az.getConfig().getMaxDeaths();
 		this.maxPlayers = az.getConfig().getMaxPlayers();
 		this.minPlayers = az.getConfig().getMinPlayers();
+		this.gracePeriod = az.getConfig().getGracePeriod();
 
 		this.defaultClass = az.getConfig().getDefaultClass();
 
@@ -1589,4 +1591,5 @@ public abstract class Arena implements Reloadable
 	{
 		return name;
 	}
+
 }

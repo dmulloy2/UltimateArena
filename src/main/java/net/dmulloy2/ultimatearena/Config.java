@@ -13,6 +13,8 @@ import net.dmulloy2.config.ValueOptions;
 import net.dmulloy2.config.ValueOptions.ValueOption;
 import net.dmulloy2.util.ListUtil;
 
+import org.bukkit.Particle;
+
 /**
  * @author dmulloy2
  */
@@ -87,4 +89,8 @@ public class Config
 
 	@Key("clearEntities")
 	public static boolean clearEntities = true;
+
+	@Key("graceParticle")
+	@ValueOptions(ValueOption.PARSE_ENUM)
+	public static Particle graceParticle = Particle.SPELL_MOB_AMBIENT;
 }

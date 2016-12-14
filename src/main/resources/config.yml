@@ -110,3 +110,6 @@ fixInvisibility: false
 # Whether or not to clear entities after an arena stops
 # If you have issues with overlapping arenas disable this
 clearEntities: true
+
+# Particle shown around players during the grace period
+graceParticle: "SPELL_MOB_AMBIENT"
