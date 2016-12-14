@@ -44,7 +44,9 @@ public class CommandRunner extends BukkitRunnable
 		
 		for (String command : commands)
 		{
-			plugin.getServer().dispatchCommand(console, command.replace("@p", player));
+			plugin.getServer().dispatchCommand(console, command
+					.replace("@p", player)
+					.replace("%p", player));
 		}
 	}
 }

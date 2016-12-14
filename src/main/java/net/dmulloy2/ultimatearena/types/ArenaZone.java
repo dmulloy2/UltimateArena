@@ -39,6 +39,7 @@ import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.tasks.CommandRunner;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
@@ -298,6 +299,11 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 			return;
 
 		plugin.debug("Rewarding player {0}", ap.getName());
+
+		if (! config.getRewardCommands().isEmpty())
+		{
+			new CommandRunner(ap.getName(), config.getRewardCommands(), plugin).runTask(plugin);	
+		}
 
 		if (! config.getScaledRewards().isEmpty())
 		{

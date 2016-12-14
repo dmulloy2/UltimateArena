@@ -64,8 +64,10 @@ public class ArenaConfig extends Configuration
 	protected List<Material> clearMaterials;
 
 	protected transient List<ItemStack> rewards;
-	protected transient WinCondition winCondition;
+	protected transient List<String> rewardCommands;
 	protected transient List<ScaledReward> scaledRewards;
+
+	protected transient WinCondition winCondition;
 	protected transient Map<Team, List<String>> mandatedClasses;
 	protected transient Map<Integer, List<KillStreak>> killStreaks;
 
@@ -106,6 +108,7 @@ public class ArenaConfig extends Configuration
 	{
 		this.rewards = new ArrayList<>();
 		this.scaledRewards = new ArrayList<>();
+		this.rewardCommands = new ArrayList<>();
 		this.mandatedClasses = new HashMap<>();
 		this.clearMaterials = new ArrayList<>();
 		this.blacklistedClasses = new ArrayList<>();
@@ -188,6 +191,20 @@ public class ArenaConfig extends Configuration
 
 			if (giveRewards)
 			{
+				if (isSet(values, "rewardCommands"))
+				{
+					for (String command : getStringList(values, "rewardCommands"))
+					{
+						if (command.startsWith("/"))
+							command = command.substring(1);
+						rewardCommands.add(command);
+					}
+				}
+				else
+				{
+					this.rewardCommands = def.getRewardCommands();
+				}
+
 				if (isSet(values, "rewards"))
 				{
 					this.rewards = ItemUtil.readItems(getStringList(values, "rewards"), plugin);

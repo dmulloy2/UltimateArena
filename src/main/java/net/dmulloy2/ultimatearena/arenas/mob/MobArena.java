@@ -28,6 +28,7 @@ import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.types.SpecialEntities;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.tasks.CommandRunner;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
@@ -106,6 +107,12 @@ public class MobArena extends Arena
 		// Enable check
 		if (! getConfig().isGiveRewards())
 			return;
+
+		List<String> commands = getConfig().getRewardCommands();
+		if (! commands.isEmpty())
+		{
+			new CommandRunner(ap.getName(), commands, plugin).runTask(plugin);
+		}
 
 		// Get the rewards
 		List<ScaledReward> rewards = getConfig().getScaledRewards();
