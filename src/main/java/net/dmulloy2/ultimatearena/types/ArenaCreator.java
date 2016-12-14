@@ -234,9 +234,9 @@ public abstract class ArenaCreator
 		List<String> overlap = new ArrayList<>();
 		for (ArenaZone az : plugin.getLoadedArenas())
 		{
-			if (test.checkOverlap(az.getArena())
+			if (test.checkOverlap(az.getArena()))
 				overlap.add(az.getName() + " arena");
-			if (test.checkOverlap(az.getLobby())
+			if (test.checkOverlap(az.getLobby()))
 				overlap.add(az.getName() + " lobby");
 		}
 
