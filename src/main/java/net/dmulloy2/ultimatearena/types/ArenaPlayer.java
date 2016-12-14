@@ -36,6 +36,7 @@ import net.dmulloy2.ultimatearena.scoreboard.ArenaScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.DisabledScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.StandardScoreboard;
 import net.dmulloy2.ultimatearena.tasks.CommandRunner;
+import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.NumberUtil;
@@ -320,7 +321,7 @@ public final class ArenaPlayer
 
 		if (arenaClass.getMaxHealth() != 20.0D)
 		{
-			player.setMaxHealth(arenaClass.getMaxHealth());
+			CompatUtil.setMaxHealth(player, arenaClass.getMaxHealth());
 		}
 
 		this.changeClassOnRespawn = false;

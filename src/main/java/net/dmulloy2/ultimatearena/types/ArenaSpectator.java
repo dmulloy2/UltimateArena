@@ -26,6 +26,7 @@ import java.util.Objects;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 
 import org.apache.commons.lang.Validate;
@@ -114,7 +115,7 @@ public final class ArenaSpectator
 		// Heal them up
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
-		player.setHealth(player.getMaxHealth());
+		player.setHealth(CompatUtil.getMaxHealth(player));
 
 		// Let them fly
 		player.setAllowFlight(Config.spectatorFlight);

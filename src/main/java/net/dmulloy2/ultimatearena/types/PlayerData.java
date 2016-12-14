@@ -20,6 +20,8 @@ package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
 
+import net.dmulloy2.util.CompatUtil;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +32,8 @@ import org.bukkit.scoreboard.Scoreboard;
  *
  * @author dmulloy2
  */
+
+// TODO: Support Attributes
 
 @Getter
 public final class PlayerData
@@ -64,7 +68,7 @@ public final class PlayerData
 		this.foodLevel = player.getFoodLevel();
 		this.gameMode = player.getGameMode();
 		this.health = player.getHealth();
-		this.maxHealth = player.getMaxHealth();
+		this.maxHealth = CompatUtil.getMaxHealth(player);
 		this.armorContents = player.getInventory().getArmorContents();
 		this.contents = player.getInventory().getContents();
 		this.level = player.getLevel();
@@ -84,7 +88,7 @@ public final class PlayerData
 		player.setFlying(flying);
 		player.setFoodLevel(foodLevel);
 		player.setGameMode(gameMode);
-		player.setMaxHealth(maxHealth);
+		CompatUtil.setMaxHealth(player, maxHealth);
 		player.setHealth(health);
 		player.getInventory().setArmorContents(armorContents);
 		player.getInventory().setContents(contents);

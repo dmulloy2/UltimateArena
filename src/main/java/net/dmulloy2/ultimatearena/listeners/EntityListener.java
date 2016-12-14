@@ -250,7 +250,7 @@ public class EntityListener implements Listener
 							{
 								Player heal = dp.getPlayer();
 								double health = heal.getHealth();
-								double maxHealth = heal.getMaxHealth();
+								double maxHealth = CompatUtil.getMaxHealth(heal);
 								if (health > 0.0D && health < maxHealth)
 								{
 									heal.setHealth(Math.min(health + 2.0D, maxHealth));
