@@ -516,9 +516,9 @@ public abstract class Arena implements Reloadable
 					plugin.debug("Spawning player {0}", ap.getName());
 
 					ArenaSpawnEvent event = new ArenaSpawnEvent(this, ap, loc);
-					loc = event.getLocation();
+					plugin.getServer().getPluginManager().callEvent(event);
 
-					ap.teleport(loc);
+					ap.teleport(event.getLocation());
 					ap.spawn();
 
 					if (! alreadySpawned)
