@@ -19,10 +19,9 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
-
-import org.bukkit.Location;
 
 /**
  * @author dmulloy2
@@ -36,6 +35,7 @@ public class CmdTeleport extends UltimateArenaCommand
 		this.name = "teleport";
 		this.aliases.add("tp");
 		this.addRequiredArg("arena");
+		this.addOptionalArg("lobby");
 		this.description = "teleport to an arena";
 		this.permission = Permission.TELEPORT;
 		this.mustBePlayer = true;
@@ -57,8 +57,11 @@ public class CmdTeleport extends UltimateArenaCommand
 			return;
 		}
 
-		Location loc = az.getLobby1().getLocation();
-		player.teleport(loc.clone().add(0.0D, 1.0D, 0.0D));
+		ArenaLocation loc = az.getArena().getMax();
+		if (args.length > 1 && args[1].equalsIgnoreCase("lobby"))
+			loc = az.getLobby().getMax();
+
+		player.teleport(loc.getLocation().clone().add(0.5D, 0.5D, 0.5D));
 
 		sendpMessage(getMessage("teleported"), az.getName());
 	}
