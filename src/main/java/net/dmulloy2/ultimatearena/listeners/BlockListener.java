@@ -109,7 +109,7 @@ public class BlockListener implements Listener
 	public void onSignChange(SignChangeEvent event)
 	{
 		String line1 = event.getLine(0);
-		if (line1.equalsIgnoreCase("[UltimateArena]"))
+		if (line1.endsWith("Arena]"))
 		{
 			if (plugin.getPermissionHandler().hasPermission(event.getPlayer(), Permission.BUILD))
 			{
@@ -242,7 +242,7 @@ public class BlockListener implements Listener
 			Sign s = (Sign) block.getState();
 			String line1 = s.getLine(0);
 
-			if (line1.equalsIgnoreCase("[UltimateArena]") || line1.equalsIgnoreCase("[Arena Status]")
+			if (line1.endsWith("Arena]") || line1.equalsIgnoreCase("[Arena Status]")
 					|| line1.startsWith("[Last "))
 			{
 				ArenaSign sign = plugin.getSignHandler().getSign(block.getLocation());

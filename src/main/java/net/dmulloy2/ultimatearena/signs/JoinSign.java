@@ -37,7 +37,7 @@ public final class JoinSign extends ArenaSign
 		if (! ensureSign())
 			return;
 
-		sign.setLine(0, "[UltimateArena]");
+		sign.setLine(0, az.getStylized() + " Arena]");
 		sign.setLine(1, az.getName());
 
 		// Line 3
@@ -140,7 +140,7 @@ public final class JoinSign extends ArenaSign
 		if (! ensureSign())
 			return;
 
-		sign.setLine(0, "[UltimateArena]");
+		sign.setLine(0, az.getStylized() + " Arena]");
 		sign.setLine(1, az.getName());
 
 		if (az.isDisabled())

@@ -153,7 +153,7 @@ public class PlayerListener implements Listener
 					Sign sign = (Sign) block.getState();
 					String line1 = sign.getLine(0);
 
-					if (line1.equalsIgnoreCase("[UltimateArena]"))
+					if (line1.endsWith("Arena]"))
 					{
 						ArenaPlayer ap = plugin.getArenaPlayer(player);
 						if (ap != null)
