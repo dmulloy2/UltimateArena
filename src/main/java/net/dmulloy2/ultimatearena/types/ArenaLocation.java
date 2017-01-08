@@ -182,6 +182,11 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 		return new ArenaLocation(l1.worldName, Math.min(l1.x, l2.x), Math.min(l1.y, l2.y), Math.min(l1.z, l2.z), 0, 0);
 	}
 
+	public String toCommandString()
+	{
+		return String.format("%s, %s, %s", x, y, z);
+	}
+
 	@Override
 	public Map<String, Object> serialize()
 	{

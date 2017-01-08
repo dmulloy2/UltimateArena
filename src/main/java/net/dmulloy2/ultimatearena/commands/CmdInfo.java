@@ -20,6 +20,7 @@ package net.dmulloy2.ultimatearena.commands;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 
 import org.apache.commons.lang.WordUtils;
@@ -38,15 +39,37 @@ public class CmdInfo extends UltimateArenaCommand
 		this.addOptionalArg("arena");
 		this.description = "view info on the arena you are in";
 		this.permission = Permission.INFO;
-		this.mustBePlayer = true;
+		this.mustBePlayer = false;
 	}
 
 	@Override
 	public void perform()
 	{
-		Arena arena = getArena(0);
-		if (arena == null)
-			return;
+		Arena arena = null;
+		if (isPlayer())
+		{
+			arena = getArena(0, false);
+			if (arena == null)
+			{
+				ArenaZone az = plugin.getZoneInside(player.getLocation());
+				if (az != null)
+				{
+					sendMessage(getMessage("genericHeader"), WordUtils.capitalize(az.getName()));
+					sendMessage("&3Type: &e{0}", az.getStylized());
+					sendMessage("&3Max: &e{0}", az.getArena().getMax().toCommandString());
+					sendMessage("&3Min: &e{0}", az.getArena().getMin().toCommandString());
+					// TODO: Possibly expand this?
+				}
+
+				return;
+			}
+		}
+		else
+		{
+			arena = getArena(0);
+			if (arena == null)
+				return;
+		}
 
 		sendMessage(getMessage("genericHeader"), WordUtils.capitalize(arena.getName()));
 
