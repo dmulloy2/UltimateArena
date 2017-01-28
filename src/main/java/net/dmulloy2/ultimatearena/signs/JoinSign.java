@@ -3,14 +3,19 @@
  */
 package net.dmulloy2.ultimatearena.signs;
 
-import lombok.Getter;
 import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.FormatUtil;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
+
+import com.google.common.base.Objects;
+
+import lombok.Getter;
 
 /**
  * @author dmulloy2
@@ -37,7 +42,7 @@ public final class JoinSign extends ArenaSign
 		if (! ensureSign())
 			return;
 
-		sign.setLine(0, "[" + az.getStylized() + " Arena]");
+		sign.setLine(0, getHeader());
 		sign.setLine(1, az.getName());
 
 		// Line 3
@@ -140,7 +145,7 @@ public final class JoinSign extends ArenaSign
 		if (! ensureSign())
 			return;
 
-		sign.setLine(0, "[" + az.getStylized() + " Arena]");
+		sign.setLine(0, getHeader());
 		sign.setLine(1, az.getName());
 
 		if (az.isDisabled())
@@ -155,5 +160,12 @@ public final class JoinSign extends ArenaSign
 		}
 
 		sign.update();
+	}
+
+	private String getHeader()
+	{
+		ArenaType type = az.getType();
+		String typeStr = Objects.firstNonNull(type.getStylizedName(), Objects.firstNonNull(type.getName(), "Ultimate"));
+		return "[" + WordUtils.capitalize(typeStr) + " Arena]";
 	}
 }
