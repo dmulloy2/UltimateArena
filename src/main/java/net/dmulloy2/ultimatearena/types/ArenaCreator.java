@@ -131,6 +131,9 @@ public abstract class ArenaCreator
 		switch (stepNumber)
 		{
 			case 1:
+				sendMessage("&eUltimateArena &3will guide you through the creation process.");
+				sendMessage("&3After every step, type &e/ua sp &3to move to the next step.");
+				
 				if (plugin.isWorldEditEnabled())
 					sendMessage("&3Please set &e2 &3points for the &earena &3using &eWorldEdit&3.");
 				else
