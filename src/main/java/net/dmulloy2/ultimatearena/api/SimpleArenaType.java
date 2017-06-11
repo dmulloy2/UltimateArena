@@ -20,7 +20,6 @@ package net.dmulloy2.ultimatearena.api;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -30,8 +29,6 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
-
-import com.google.common.base.Throwables;
 
 /**
  * Represents a simplified ArenaType that automatically constructs objects based
@@ -85,13 +82,9 @@ public abstract class SimpleArenaType extends ArenaType
 			Constructor<? extends ArenaZone> constructor = clazz.getConstructor(getClass(), File.class);
 			return constructor.newInstance(this, file);
 		}
-		catch (InvocationTargetException ex)
-		{
-			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
-		}
 		catch (Throwable ex)
 		{
-			throw Throwables.propagate(ex);
+			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
 		}
 	}
 
@@ -109,13 +102,9 @@ public abstract class SimpleArenaType extends ArenaType
 			Constructor<? extends ArenaConfig> constructor = clazz.getConstructor(UltimateArena.class, String.class, File.class);
 			return constructor.newInstance(getPlugin(), name, file);
 		}
-		catch (InvocationTargetException ex)
-		{
-			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
-		}
 		catch (Throwable ex)
 		{
-			throw Throwables.propagate(ex);
+			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
 		}
 	}
 
@@ -130,13 +119,9 @@ public abstract class SimpleArenaType extends ArenaType
 			Constructor<? extends ArenaConfig> constructor = clazz.getConstructor(ArenaZone.class);
 			return constructor.newInstance(az);
 		}
-		catch (InvocationTargetException ex)
-		{
-			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
-		}
 		catch (Throwable ex)
 		{
-			throw Throwables.propagate(ex);
+			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
 		}
 	}
 
@@ -151,13 +136,9 @@ public abstract class SimpleArenaType extends ArenaType
 			Constructor<? extends ArenaCreator> constructor = clazz.getConstructor(UltimateArena.class, Player.class, String.class);
 			return constructor.newInstance(getPlugin(), player, name);
 		}
-		catch (InvocationTargetException ex)
-		{
-			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
-		}
 		catch (Throwable ex)
 		{
-			throw Throwables.propagate(ex);
+			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
 		}
 	}
 
@@ -172,13 +153,9 @@ public abstract class SimpleArenaType extends ArenaType
 			Constructor<? extends Arena> constructor = clazz.getConstructor(ArenaZone.class);
 			return constructor.newInstance(az);
 		}
-		catch (InvocationTargetException ex)
-		{
-			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
-		}
 		catch (Throwable ex)
 		{
-			throw Throwables.propagate(ex);
+			throw new RuntimeException("Failed to create new " + clazz.getName() + " instance.", ex);
 		}
 	}
 }

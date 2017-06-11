@@ -13,8 +13,6 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
 
-import com.google.common.base.Objects;
-
 import lombok.Getter;
 
 /**
@@ -162,10 +160,15 @@ public final class JoinSign extends ArenaSign
 		sign.update();
 	}
 
+	private <T> T firstNonNull(T t1, T t2)
+	{
+		return t1 != null ? t1 : t2;
+	}
+
 	private String getHeader()
 	{
 		ArenaType type = az.getType();
-		String typeStr = Objects.firstNonNull(type.getStylizedName(), Objects.firstNonNull(type.getName(), "Ultimate"));
+		String typeStr = firstNonNull(type.getStylizedName(), firstNonNull(type.getName(), "Ultimate"));
 		return "[" + WordUtils.capitalize(typeStr) + " Arena]";
 	}
 }
