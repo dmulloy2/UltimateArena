@@ -21,13 +21,7 @@ package net.dmulloy2.ultimatearena.types;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -104,7 +98,7 @@ public class ArenaConfig extends Configuration
 		this.file = az.getFile();
 	}
 
-	private final void setDefaults()
+	private void setDefaults()
 	{
 		this.rewards = new ArrayList<>();
 		this.scaledRewards = new ArrayList<>();
@@ -271,7 +265,7 @@ public class ArenaConfig extends Configuration
 					List<String> list = (List<String>) entry.getValue();
 					for (String string : list)
 					{
-						string = string.replaceAll("  ", " ");
+						string = string.replace("  ", " ");
 						String[] split = string.split(",");
 
 						// Determine type
@@ -348,27 +342,22 @@ public class ArenaConfig extends Configuration
 	{
 		Map<Integer, List<KillStreak>> ret = new LinkedHashMap<>();
 
-		ret.put(2, Arrays.asList(new KillStreak[] {
-				new KillStreak(2, "&e2 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))
-		}));
+		ret.put(2, Collections.singletonList(
+				new KillStreak(2, "&e2 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))));
 
-		ret.put(4, Arrays.asList(new KillStreak[] {
+		ret.put(4, Arrays.asList(
 				new KillStreak(4, "&e4 &3kills! Unlocked health potion!", ItemUtil.readPotion("heal, 1, 1, false")),
-				new KillStreak(4, "&e4 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
-		}));
+				new KillStreak(4, "&e4 &3kills! Unlocked food!", new ItemStack(Material.COOKED_PORKCHOP, 2))));
 
-		ret.put(5, Arrays.asList(new KillStreak[] {
-				new KillStreak(5, "&e5 &3kills! Unlocked Zombies!", EntityType.ZOMBIE, 4)
-		}));
+		ret.put(5, Collections.singletonList(
+				new KillStreak(5, "&e5 &3kills! Unlocked Zombies!", EntityType.ZOMBIE, 4)));
 
-		ret.put(8, Arrays.asList(new KillStreak[] {
-				new KillStreak(8, "&e8 &3kills! Unlocked attack dogs!", EntityType.WOLF, 2)
-		}));
+		ret.put(8, Collections.singletonList(
+				new KillStreak(8, "&e8 &3kills! Unlocked attack dogs!", EntityType.WOLF, 2)));
 
-		ret.put(12, Arrays.asList(new KillStreak[] {
+		ret.put(12, Arrays.asList(
 				new KillStreak(12, "&e12 &3kills! Unlocked regen potion!", ItemUtil.readPotion("regen, 1, 1, false")),
-				new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
-		}));
+				new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.COOKED_PORKCHOP, 2))));
 
 		return ret;
 	}
@@ -447,7 +436,7 @@ public class ArenaConfig extends Configuration
 				}
 				else if (field.getType().isAssignableFrom(String.class))
 				{
-					if ((String) field.get(this) != null)
+					if (field.get(this) != null)
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(Map.class))

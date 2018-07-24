@@ -60,7 +60,7 @@ public abstract class FlagBase
 	protected void setup()
 	{
 		this.notify = location.clone().add(0.0D, 5.0D, 0.0D).getBlock();
-		this.notify.setType(Material.WOOL);
+		this.notify.setType(Material.WHITE_WOOL);
 
 		location.clone().add(1, 0, 0).getBlock().setType(Material.QUARTZ_BLOCK);
 		location.clone().add(1, 0, 1).getBlock().setType(Material.QUARTZ_BLOCK);
