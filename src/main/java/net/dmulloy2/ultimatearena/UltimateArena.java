@@ -2,17 +2,17 @@
  * UltimateArena - fully customizable PvP arenas
  * Copyright (C) 2012 - 2015 MineSworn
  * Copyright (C) 2013 - 2015 dmulloy2
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -20,14 +20,9 @@ package net.dmulloy2.ultimatearena;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
-import lombok.Getter;
 import net.dmulloy2.SwornAPI;
 import net.dmulloy2.SwornPlugin;
 import net.dmulloy2.commands.CmdHelp;
@@ -42,32 +37,7 @@ import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.api.ArenaTypeHandler;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.commands.CmdAbandon;
-import net.dmulloy2.ultimatearena.commands.CmdClass;
-import net.dmulloy2.ultimatearena.commands.CmdClassList;
-import net.dmulloy2.ultimatearena.commands.CmdCreate;
-import net.dmulloy2.ultimatearena.commands.CmdDelete;
-import net.dmulloy2.ultimatearena.commands.CmdDisable;
-import net.dmulloy2.ultimatearena.commands.CmdDislike;
-import net.dmulloy2.ultimatearena.commands.CmdEnable;
-import net.dmulloy2.ultimatearena.commands.CmdForceJoin;
-import net.dmulloy2.ultimatearena.commands.CmdInfo;
-import net.dmulloy2.ultimatearena.commands.CmdJoin;
-import net.dmulloy2.ultimatearena.commands.CmdKick;
-import net.dmulloy2.ultimatearena.commands.CmdLeave;
-import net.dmulloy2.ultimatearena.commands.CmdLike;
-import net.dmulloy2.ultimatearena.commands.CmdList;
-import net.dmulloy2.ultimatearena.commands.CmdOption;
-import net.dmulloy2.ultimatearena.commands.CmdPause;
-import net.dmulloy2.ultimatearena.commands.CmdReload;
-import net.dmulloy2.ultimatearena.commands.CmdSetPoint;
-import net.dmulloy2.ultimatearena.commands.CmdSpectate;
-import net.dmulloy2.ultimatearena.commands.CmdStart;
-import net.dmulloy2.ultimatearena.commands.CmdStats;
-import net.dmulloy2.ultimatearena.commands.CmdStop;
-import net.dmulloy2.ultimatearena.commands.CmdTeleport;
-import net.dmulloy2.ultimatearena.commands.CmdUndo;
-import net.dmulloy2.ultimatearena.commands.CmdVersion;
+import net.dmulloy2.ultimatearena.commands.*;
 import net.dmulloy2.ultimatearena.handlers.FileHandler;
 import net.dmulloy2.ultimatearena.handlers.MessageHandler;
 import net.dmulloy2.ultimatearena.handlers.SpectatingHandler;
@@ -80,13 +50,7 @@ import net.dmulloy2.ultimatearena.listeners.PlayerListener;
 import net.dmulloy2.ultimatearena.signs.ArenaSign;
 import net.dmulloy2.ultimatearena.signs.SignHandler;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
-import net.dmulloy2.ultimatearena.types.ArenaClass;
-import net.dmulloy2.ultimatearena.types.ArenaCreator;
-import net.dmulloy2.ultimatearena.types.ArenaLocation;
-import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.LeaveReason;
-import net.dmulloy2.ultimatearena.types.Permission;
+import net.dmulloy2.ultimatearena.types.*;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.TimeUtil;
@@ -106,8 +70,11 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import lombok.Getter;
+
 /**
  * UltimateArena main class
+ *
  * @author dmulloy2
  */
 
@@ -233,7 +200,8 @@ public class UltimateArena extends SwornPlugin
 		// Arena Updater, runs every second
 		new ArenaUpdateTask().runTaskTimer(this, TimeUtil.toTicks(1), TimeUtil.toTicks(1));
 
-		logHandler.log("{0} has been enabled. Took {1} ms.", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been enabled. Took {1} ms.", getDescription().getFullName(),
+		               System.currentTimeMillis() - start);
 	}
 
 	@Override
@@ -265,7 +233,8 @@ public class UltimateArena extends SwornPlugin
 		// Clear Memory
 		clearMemory();
 
-		logHandler.log("{0} has been disabled. Took {1} ms.", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been disabled. Took {1} ms.", getDescription().getFullName(),
+		               System.currentTimeMillis() - start);
 	}
 
 	// Console logging
@@ -293,7 +262,7 @@ public class UltimateArena extends SwornPlugin
 	{
 		Validate.notNull(string, "string cannot be null!");
 
-		if (Config.globalMessages && ! string.isEmpty())
+		if (Config.globalMessages && !string.isEmpty())
 		{
 			String broadcast = FormatUtil.format(string, objects);
 			getServer().broadcastMessage(prefix + broadcast);
@@ -389,19 +358,19 @@ public class UltimateArena extends SwornPlugin
 	private void checkFiles()
 	{
 		File dataFolder = getDataFolder();
-		if (! dataFolder.exists())
+		if (!dataFolder.exists())
 		{
 			dataFolder.mkdirs();
 		}
 
 		File arenaFile = new File(dataFolder, "arenas");
-		if (! arenaFile.exists())
+		if (!arenaFile.exists())
 		{
 			arenaFile.mkdir();
 		}
 
 		File classFile = new File(dataFolder, "classes");
-		if (! classFile.exists())
+		if (!classFile.exists())
 		{
 			classFile.mkdir();
 		}
@@ -415,7 +384,7 @@ public class UltimateArena extends SwornPlugin
 		}
 
 		File typesFile = new File(dataFolder, "types");
-		if (! typesFile.exists())
+		if (!typesFile.exists())
 		{
 			typesFile.mkdir();
 		}
@@ -468,15 +437,15 @@ public class UltimateArena extends SwornPlugin
 			ArenaType type = arenaTypeHandler.getArenaType(typeString);
 			if (type == null)
 			{
-				logHandler.log(Level.WARNING, "Failed to find ArenaType \"{0}\" for arena {1}.", typeString, file.getName());
+				logHandler.log(Level.WARNING, "Failed to find ArenaType \"{0}\" for arena {1}.", typeString,
+				               file.getName());
 				return;
 			}
 
 			ArenaZone az = type.getArenaZone(file);
 			if (az != null && az.isLoaded())
 				logHandler.debug("Arena {0} loaded.", az.getName());
-		}
-		catch (Throwable ex)
+		} catch (Throwable ex)
 		{
 			logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "loading arena " + file.getName()));
 		}
@@ -569,7 +538,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets an ArenaClass by its name.
-	 * 
+	 *
 	 * @param name Name
 	 * @return The class or null if not found
 	 */
@@ -586,7 +555,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets an ArenaClass by its icon.
-	 * 
+	 *
 	 * @param icon Icon
 	 * @return The class or null if not found
 	 */
@@ -603,9 +572,9 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Deletes an arena with a given name.
-	 * 
+	 *
 	 * @param player Player deleting the arena
-	 * @param name Arena name
+	 * @param name   Arena name
 	 */
 	public final void deleteArena(Player player, String name)
 	{
@@ -636,8 +605,7 @@ public class UltimateArena extends SwornPlugin
 			sendpMessage(player, FormatUtil.format(getMessage("arenaDelete"), name));
 
 			log("Successfully deleted arena: {0}!", name);
-		}
-		else
+		} else
 		{
 			sendpMessage(player, FormatUtil.format(getMessage("arenaNotFound"), name));
 		}
@@ -647,7 +615,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets the ArenaZone containing the given location.
-	 * 
+	 *
 	 * @param location Location
 	 * @return The ArenaZone or null if not found
 	 */
@@ -664,7 +632,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Whether or not a given location is inside an arena.
-	 * 
+	 *
 	 * @param loc Location
 	 * @return True if inside, false if not
 	 */
@@ -675,7 +643,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Whether or not a given ArenaLocation is inside an arena.
-	 * 
+	 *
 	 * @param loc Location
 	 * @return True if inside, false if not
 	 */
@@ -686,7 +654,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets the Arena that a Player is in.
-	 * 
+	 *
 	 * @param player Player
 	 * @return The Arena, or null if not found.
 	 */
@@ -698,7 +666,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Whether or not a given player is in an arena.
-	 * 
+	 *
 	 * @param player Player
 	 * @return True if they are in an arena, false if not
 	 */
@@ -709,7 +677,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets the ArenaPlayer associated with a given player.
-	 * 
+	 *
 	 * @param player Player
 	 * @return The ArenaPlayer, or null if not found
 	 */
@@ -720,8 +688,8 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets the ArenaPlayer associated with a given player.
-	 * 
-	 * @param player Player
+	 *
+	 * @param player   Player
 	 * @param inactive Check the inactive list
 	 * @return The ArenaPlayer, or null if not found
 	 */
@@ -739,9 +707,9 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Attempt to join an arena.
-	 * 
+	 *
 	 * @param player Player
-	 * @param name Arena name
+	 * @param name   Arena name
 	 */
 	public final void attemptJoin(Player player, String name)
 	{
@@ -750,10 +718,10 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Attempt to join an arena on a given team.
-	 * 
+	 *
 	 * @param player Player joining
-	 * @param name Arena to join
-	 * @param team Team to join
+	 * @param name   Arena to join
+	 * @param team   Team to join
 	 */
 	public final void attemptJoin(Player player, String name, String team)
 	{
@@ -776,9 +744,9 @@ public class UltimateArena extends SwornPlugin
 			return;
 		}
 
-		if (! Config.saveInventories)
+		if (!Config.saveInventories)
 		{
-			if (! InventoryUtil.isEmpty(player.getInventory()))
+			if (!InventoryUtil.isEmpty(player.getInventory()))
 			{
 				sendpMessage(player, FormatUtil.format(getMessage("clearInventory")));
 				return;
@@ -814,7 +782,7 @@ public class UltimateArena extends SwornPlugin
 
 		// Permission check
 		String permission = "ultimatearena.join." + az.getName().toLowerCase();
-		if (az.isNeedsPermission() && ! player.hasPermission(permission))
+		if (az.isNeedsPermission() && !player.hasPermission(permission))
 		{
 			sendpMessage(player, FormatUtil.format(getMessage("noPermission")));
 			sendpMessage(player, FormatUtil.format(getMessage("permissionRequired"), permission));
@@ -849,7 +817,7 @@ public class UltimateArena extends SwornPlugin
 				return;
 			}
 
-			if (arena.isInGame() && ! arena.isJoinInProgress())
+			if (arena.isInGame() && !arena.isJoinInProgress())
 			{
 				sendpMessage(player, FormatUtil.format(getMessage("arenaStarted")));
 				return;
@@ -857,7 +825,7 @@ public class UltimateArena extends SwornPlugin
 
 			if (arena.getPlayerCount() >= arena.getMaxPlayers())
 			{
-				if (! permissionHandler.hasPermission(player, Permission.JOIN_FULL))
+				if (!permissionHandler.hasPermission(player, Permission.JOIN_FULL))
 				{
 					sendpMessage(player, FormatUtil.format(getMessage("arenaFull")));
 					return;
@@ -876,8 +844,7 @@ public class UltimateArena extends SwornPlugin
 			waiting.put(player.getName(), join);
 
 			sendpMessage(player, FormatUtil.format(getMessage("standStill"), seconds));
-		}
-		else
+		} else
 		{
 			join.run();
 		}
@@ -885,10 +852,10 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Adds a player to an arena.
-	 * 
+	 *
 	 * @param player Player
-	 * @param name Arena name
-	 * @param team Team name/id
+	 * @param name   Arena name
+	 * @param team   Team name/id
 	 */
 	public final void addPlayer(Player player, String name, String team)
 	{
@@ -905,7 +872,7 @@ public class UltimateArena extends SwornPlugin
 					return;
 				}
 
-				if (active.isInGame() && ! active.isJoinInProgress())
+				if (active.isInGame() && !active.isJoinInProgress())
 				{
 					sendpMessage(player, FormatUtil.format(getMessage("arenaStarted")));
 					return;
@@ -917,7 +884,7 @@ public class UltimateArena extends SwornPlugin
 					return;
 				}
 
-				if (! permissionHandler.hasPermission(player, Permission.JOIN_FULL))
+				if (!permissionHandler.hasPermission(player, Permission.JOIN_FULL))
 				{
 					sendpMessage(player, FormatUtil.format(getMessage("arenaFull")));
 					return;
@@ -949,8 +916,7 @@ public class UltimateArena extends SwornPlugin
 				arena = type.newArena(az);
 				if (arena == null)
 					throw new NullPointerException();
-			}
-			catch (Throwable ex)
+			} catch (Throwable ex)
 			{
 				type.getLogger().log(Level.WARNING, "Failed to obtain new arena: ", ex);
 				sendpMessage(player, FormatUtil.format(getMessage("invalidArena"), type.getName()));
@@ -960,8 +926,7 @@ public class UltimateArena extends SwornPlugin
 			activeArenas.add(arena);
 			arena.addPlayer(player, team);
 			arena.announce();
-		}
-		catch (Throwable ex)
+		} catch (Throwable ex)
 		{
 			logHandler.log(Level.SEVERE, Util.getUsefulStack(ex, "adding " + player.getName() + " to arena " + name));
 			sendpMessage(player, FormatUtil.format(getMessage("failedToAdd")));
@@ -974,7 +939,7 @@ public class UltimateArena extends SwornPlugin
 		List<ArenaPlayer> validPlayers = new ArrayList<>();
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
-			if (! permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FULL))
+			if (!permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FULL))
 				validPlayers.add(ap);
 		}
 
@@ -988,7 +953,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets an Arena by its name.
-	 * 
+	 *
 	 * @param name Arena name
 	 * @return Arena or null if not found
 	 */
@@ -1018,7 +983,7 @@ public class UltimateArena extends SwornPlugin
 
 	/**
 	 * Gets an ArenaZone by its name.
-	 * 
+	 *
 	 * @param name Arena name
 	 * @return ArenaZone or null if not found
 	 */
@@ -1039,8 +1004,8 @@ public class UltimateArena extends SwornPlugin
 	 * Attempts to create a new {@link Arena}.
 	 *
 	 * @param player {@link Player} who is creating the arena
-	 * @param name Name of the new arena
-	 * @param type Type of the new arena
+	 * @param name   Name of the new arena
+	 * @param type   Type of the new arena
 	 */
 	public final void createArena(Player player, String name, String type)
 	{
@@ -1073,8 +1038,7 @@ public class UltimateArena extends SwornPlugin
 			ac = at.newCreator(player, name);
 			if (ac == null)
 				throw new NullPointerException();
-		}
-		catch (Throwable ex)
+		} catch (Throwable ex)
 		{
 			sendpMessage(player, FormatUtil.format(getMessage("creationFailed"), type));
 			at.getLogger().log(Level.WARNING, "Failed to obtain ArenaCreator for " + type + ": ", ex);
@@ -1120,11 +1084,11 @@ public class UltimateArena extends SwornPlugin
 	 * Sets a point in the arena creation process
 	 *
 	 * @param player {@link Player} setting the point
-	 * @param args Command-line args, if any
+	 * @param args   Command-line args, if any
 	 */
 	public final void setPoint(Player player, String[] args)
 	{
-		if (! isCreatingArena(player))
+		if (!isCreatingArena(player))
 		{
 			sendpMessage(player, FormatUtil.format(getMessage("notCreating")));
 			return;
@@ -1203,7 +1167,7 @@ public class UltimateArena extends SwornPlugin
 	 */
 	public final boolean isWhitelistedCommand(String command)
 	{
-		if (! Config.restrictCommands)
+		if (!Config.restrictCommands)
 			return true;
 
 		Validate.notNull(command, "command cannot be null!");
@@ -1215,7 +1179,7 @@ public class UltimateArena extends SwornPlugin
 			for (String whitelisted : Config.whitelistedCommands)
 			{
 				// Normalize whitelisted
-				if (! whitelisted.startsWith("/"))
+				if (!whitelisted.startsWith("/"))
 					whitelisted = "/" + whitelisted;
 				whitelistedCommands.add(whitelisted.toLowerCase());
 			}
@@ -1223,7 +1187,7 @@ public class UltimateArena extends SwornPlugin
 
 		// Normalize command
 		command = command.toLowerCase();
-		if (! command.startsWith("/"))
+		if (!command.startsWith("/"))
 			command = "/" + command;
 
 		// Iterate to find a match
@@ -1289,8 +1253,7 @@ public class UltimateArena extends SwornPlugin
 				try
 				{
 					arena.update();
-				}
-				catch (Throwable ex)
+				} catch (Throwable ex)
 				{
 					logHandler.log(Level.SEVERE, Util.getUsefulStack(ex, "updating " + arena.getName()));
 				}

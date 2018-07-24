@@ -77,7 +77,7 @@ public class CTFFlag
 		setup();
 	}
 
-	public final void respawn()
+	public void respawn()
 	{
 		timer = 15;
 		pickedUp = false;
@@ -87,7 +87,7 @@ public class CTFFlag
 		setFlag();
 	}
 
-	private final void notifyTime()
+	private void notifyTime()
 	{
 		if (timer % 5 == 0 || timer < 10)
 		{
@@ -95,12 +95,12 @@ public class CTFFlag
 		}
 	}
 
-	private final void sayTimeLeft()
+	private void sayTimeLeft()
 	{
 		arena.tellPlayers(arena.getMessage("ctfTimeLeft"), timer, flagType);
 	}
 
-	private final void setup()
+	private void setup()
 	{
 		Block current = myloc.getBlock();
 		lastBlockDat = current.getState().getData();
@@ -109,7 +109,7 @@ public class CTFFlag
 		colorize();
 	}
 
-	public final void colorize()
+	public void colorize()
 	{
 		Block current = myloc.getBlock();
 		if (team == Team.RED)
@@ -124,7 +124,7 @@ public class CTFFlag
 		setFlagBlock(current);
 	}
 
-	private final void fall()
+	private void fall()
 	{
 		arena.tellPlayers(arena.getMessage("flagDropped"), riding.getName(), flagType);
 
@@ -152,7 +152,7 @@ public class CTFFlag
 		setFlag();
 	}
 
-	public final void checkNear(ArenaPlayer[] arenaPlayers)
+	public void checkNear(ArenaPlayer[] arenaPlayers)
 	{
 		if (stopped)
 			return;
@@ -205,19 +205,19 @@ public class CTFFlag
 		}
 	}
 
-	public final void onPlayerEnd(ArenaPlayer ap)
+	public void onPlayerEnd(ArenaPlayer ap)
 	{
 		if (riding != null && riding.equals(ap))
 			fall();
 	}
 
-	public final void onPlayerDeath(ArenaPlayer ap)
+	public void onPlayerDeath(ArenaPlayer ap)
 	{
 		if (riding != null && riding.equals(ap))
 			fall();
 	}
 
-	public final void despawn()
+	public void despawn()
 	{
 		this.stopped = true;
 
@@ -227,7 +227,7 @@ public class CTFFlag
 		last.getState().update();
 	}
 
-	public final void tick()
+	public void tick()
 	{
 		if (stopped)
 			return;
@@ -252,7 +252,7 @@ public class CTFFlag
 		}
 	}
 
-	private final void setFlag()
+	private void setFlag()
 	{
 		if (stopped)
 			return;
@@ -275,15 +275,13 @@ public class CTFFlag
 		}
 	}
 
-	private final void setFlagBlock(Block block)
+	private void setFlagBlock(Block block)
 	{
 		if (team == Team.RED)
 			block.setType(Material.NETHERRACK);
 		else if (team == Team.BLUE)
 			block.setType(Material.LAPIS_BLOCK);
 		else
-			block.setType(Material.WOOL);
-
-		block.getState().update(true);
+			block.setType(Material.WHITE_WOOL);
 	}
 }

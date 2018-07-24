@@ -45,17 +45,14 @@ public abstract class ArenaFlag extends FlagBase
 	{
 		super(arena, location, plugin);
 
-		BlockState state = notify.getState();
-		state.setType(Material.WOOL);
-		state.setData(new Wool(DyeColor.SILVER));
-		state.update(true);
+		notify.setType(Material.LIGHT_GRAY_WOOL);
 	}
 
 	@Override
 	protected void setup()
 	{
 		super.setup();
-		location.getBlock().setType(Material.WOOL);
+		location.getBlock().setType(Material.WHITE_WOOL);
 	}
 
 	@Override
@@ -64,10 +61,6 @@ public abstract class ArenaFlag extends FlagBase
 	protected final void setOwningTeam(Team team)
 	{
 		this.owningTeam = team;
-
-		BlockState state = notify.getState();
-		state.setType(Material.WOOL);
-		state.setData(new Wool(team == Team.RED ? DyeColor.RED : DyeColor.BLUE));
-		state.update(true);
+		notify.setType(team == Team.RED ? Material.RED_WOOL : Material.BLUE_WOOL);
 	}
 }

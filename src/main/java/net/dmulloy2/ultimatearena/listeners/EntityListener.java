@@ -182,7 +182,6 @@ public class EntityListener implements Listener
 					{
 						ap.sendMessage(plugin.getMessage("friendlyFire"));
 						event.setCancelled(true);
-						return;
 					}
 				}
 			}
@@ -190,7 +189,6 @@ public class EntityListener implements Listener
 			{
 				ap.sendMessage(plugin.getMessage("hurtOutside"));
 				event.setCancelled(true);
-				return;
 			}
 		}
 		else
@@ -199,7 +197,6 @@ public class EntityListener implements Listener
 			{
 				attacker.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("hurtInside")));
 				event.setCancelled(true);
-				return;
 			}
 		}
 	}
@@ -235,7 +232,7 @@ public class EntityListener implements Listener
 			}
 
 			// Healer class
-			if (inHand != null && inHand.getType() == Material.GOLD_AXE)
+			if (inHand != null && inHand.getType() == Material.GOLDEN_AXE)
 			{
 				Player damaged = getPlayer(event.getEntity());
 				if (damaged != null)
@@ -376,7 +373,7 @@ public class EntityListener implements Listener
 
 							if (shooter instanceof Player)
 							{
-								killer = (Player) damager;
+								killer = (Player) shooter;
 								arena.tellPlayers(plugin.getMessage("pvpKill"), killer.getName(), died.getName(), getWeapon(killer));
 								ap.displayStats();
 

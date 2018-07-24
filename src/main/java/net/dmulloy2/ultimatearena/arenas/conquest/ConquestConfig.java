@@ -19,10 +19,7 @@
 package net.dmulloy2.ultimatearena.arenas.conquest;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
@@ -51,28 +48,23 @@ public class ConquestConfig extends ArenaConfig
 	}
 
 	@Override
-	public Map<Integer, List<KillStreak>> getDefaultKillStreak()
-	{
+	public Map<Integer, List<KillStreak>> getDefaultKillStreak() {
 		Map<Integer, List<KillStreak>> ret = new LinkedHashMap<>();
 
 		// Omit zombies
-		ret.put(2, Arrays.asList(new KillStreak[] {
-				new KillStreak(2, "&e2 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))
-		}));
+		ret.put(2, Collections.singletonList(
+				new KillStreak(2, "&e2 &3kills! Unlocked strength potion!", ItemUtil.readPotion("strength, 1, 1, false"))));
 
-		ret.put(4, Arrays.asList(new KillStreak[] {
+		ret.put(4, Arrays.asList(
 				new KillStreak(4, "&e4 &3kills! Unlocked health potion!", ItemUtil.readPotion("heal, 1, 1, false")),
-				new KillStreak(4, "&e4 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
-		}));
+				new KillStreak(4, "&e4 &3kills! Unlocked food!", new ItemStack(Material.COOKED_PORKCHOP, 2))));
 
-		ret.put(8, Arrays.asList(new KillStreak[] {
-				new KillStreak(8, "&e8 &3kills! Unlocked attack dogs!", EntityType.WOLF, 2)
-		}));
+		ret.put(8, Collections.singletonList(
+				new KillStreak(8, "&e8 &3kills! Unlocked attack dogs!", EntityType.WOLF, 2)));
 
-		ret.put(12, Arrays.asList(new KillStreak[] {
+		ret.put(12, Arrays.asList(
 				new KillStreak(12, "&e12 &3kills! Unlocked regen potion!", ItemUtil.readPotion("regen, 1, 1, false")),
-				new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.GRILLED_PORK, 2))
-		}));
+				new KillStreak(12, "&e12 &3kills! Unlocked food!", new ItemStack(Material.COOKED_PORKCHOP, 2))));
 
 		return ret;
 	}

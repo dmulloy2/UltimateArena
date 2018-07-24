@@ -84,9 +84,9 @@ import lombok.Setter;
 @Getter @Setter
 public abstract class Arena implements Reloadable
 {
-	public static enum Mode
+	public enum Mode
 	{
-		LOBBY, INGAME, STOPPING, IDLE, DISABLED;
+		LOBBY, INGAME, STOPPING, IDLE, DISABLED
 	}
 
 	protected List<ArenaPlayer> active;
@@ -143,7 +143,7 @@ public abstract class Arena implements Reloadable
 
 	protected String name;
 
-	protected Mode gameMode = Mode.IDLE;
+	protected Mode gameMode;
 
 	protected final World world;
 	protected final ArenaZone az;

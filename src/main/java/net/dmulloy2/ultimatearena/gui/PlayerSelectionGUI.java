@@ -68,10 +68,10 @@ public class PlayerSelectionGUI extends AbstractGUI
 			Arena arena = spectator.getArena();
 			for (ArenaPlayer ap : arena.getActive())
 			{
-				ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+				ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
 				SkullMeta meta = (SkullMeta) head.getItemMeta();
 				meta.setDisplayName(ChatColor.RESET + ap.getName());
-				meta.setOwner(ap.getName());
+				meta.setOwningPlayer(ap.getPlayer());
 				head.setItemMeta(meta);
 
 				inventory.addItem(head);
@@ -87,12 +87,12 @@ public class PlayerSelectionGUI extends AbstractGUI
 		{
 			Arena arena = spectator.getArena();
 			ItemStack current = event.getCurrentItem();
-			if (current != null && current.getType() == Material.SKULL_ITEM)
+			if (current != null && current.getType() == Material.PLAYER_HEAD)
 			{
 				SkullMeta meta = (SkullMeta) current.getItemMeta();
 				for (ArenaPlayer ap : arena.getActive())
 				{
-					if (ap.getName().equals(meta.getOwner()))
+					if (ap.getPlayer().equals(meta.getOwningPlayer()))
 					{
 						spectator.teleport(ap.getPlayer().getLocation());
 						break;

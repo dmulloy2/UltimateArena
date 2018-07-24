@@ -227,7 +227,7 @@ public final class ArenaPlayer
 		clearInventory();
 		clearPotionEffects();
 
-		giveClassItems();
+		applyClass();
 
 		Player player = getPlayer();
 		if (! player.hasMetadata("UA"))
@@ -311,9 +311,10 @@ public final class ArenaPlayer
 	}
 
 	/**
-	 * Gives the player their class items.
+	 * Applies this player's arena class to the player, including items,
+	 * potion effects, and attributes.
 	 */
-	public final void giveClassItems()
+	public final void applyClass()
 	{
 		if (! arena.isInGame())
 		{
@@ -344,16 +345,17 @@ public final class ArenaPlayer
 				giveArmor(armor.getKey(), item);
 		}
 
-		Player player = getPlayer();
 		for (Entry<Integer, ItemStack> tool : arenaClass.getTools().entrySet())
 		{
 			player.getInventory().setItem(tool.getKey(), tool.getValue());
 		}
 
 		if (arenaClass.getMaxHealth() != 20.0D)
-		{
 			CompatUtil.setMaxHealth(player, arenaClass.getMaxHealth());
-		}
+
+		Attributes attr = arenaClass.getAttributes();
+		if (attr != null)
+			attr.apply(player);
 
 		this.changeClassOnRespawn = false;
 	}
@@ -558,6 +560,13 @@ public final class ArenaPlayer
 	{
 		clearInventory();
 		clearPotionEffects();
+
+		if (arenaClass != null)
+		{
+			Attributes attr = arenaClass.getAttributes();
+			if (attr != null)
+				attr.remove(player);
+		}
 
 		board.dispose();
 		playerData.apply();

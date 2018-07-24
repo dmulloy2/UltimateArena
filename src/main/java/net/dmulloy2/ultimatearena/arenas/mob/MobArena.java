@@ -18,10 +18,7 @@
  */
 package net.dmulloy2.ultimatearena.arenas.mob;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.types.CustomScoreboard;
@@ -54,7 +51,7 @@ public class MobArena extends Arena
 
 	private Map<Integer, List<String>> waves;
 
-	private List<LivingEntity> mobs;
+	private final List<LivingEntity> mobs;
 	private List<String> spawning;
 	
 	public MobArena(ArenaZone az)
@@ -71,7 +68,7 @@ public class MobArena extends Arena
 		this.newWave();
 	}
 
-	private final void newWave()
+	private void newWave()
 	{
 		if (wave > 0)
 		{
@@ -148,7 +145,8 @@ public class MobArena extends Arena
 	}
 
 	private static List<ScaledReward> defaultRewards;
-	private static final List<ScaledReward> getDefaultRewards()
+
+	private static List<ScaledReward> getDefaultRewards()
 	{
 		// Lazy-initialization
 		if (defaultRewards == null)
@@ -157,7 +155,7 @@ public class MobArena extends Arena
 			defaultRewards.add(new ScaledReward(new ItemStack(Material.GOLD_INGOT), 500.0D));
 			defaultRewards.add(new ScaledReward(new ItemStack(Material.SLIME_BALL), 550.0D));
 			defaultRewards.add(new ScaledReward(new ItemStack(Material.GLOWSTONE_DUST), 450.0D));
-			defaultRewards.add(new ScaledReward(new ItemStack(Material.SULPHUR), 425.0D));
+			defaultRewards.add(new ScaledReward(new ItemStack(Material.GUNPOWDER), 425.0D));
 		}
 
 		return defaultRewards;
@@ -322,7 +320,7 @@ public class MobArena extends Arena
 	@Override
 	public List<String> getExtraInfo()
 	{
-		return Arrays.asList("&3Wave: &e" + wave);
+		return Collections.singletonList("&3Wave: &e" + wave);
 	}
 
 	@Override

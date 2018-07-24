@@ -67,6 +67,7 @@ public final class ArenaClass extends Configuration
 	private double maxHealth = 20.0D;
 	private double cost = -1.0D;
 
+	private Attributes attributes;
 	private boolean hasPotionEffects;
 	private List<PotionEffect> potionEffects;
 
@@ -269,6 +270,18 @@ public final class ArenaClass extends Configuration
 			icon.setItemMeta(meta);
 
 			maxHealth = getDouble(values, "maxHealth", 20.0D);
+
+			if (isSet(values, "attributes"))
+			{
+				try
+				{
+					this.attributes = new Attributes(name, getStringList(values, "attributes"));
+				}
+				catch (Throwable ex)
+				{
+					plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "reading attributes for {0}", name));
+				}
+			}
 
 			try
 			{
