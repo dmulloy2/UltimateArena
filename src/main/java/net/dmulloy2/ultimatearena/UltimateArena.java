@@ -30,7 +30,6 @@ import net.dmulloy2.gui.GUIHandler;
 import net.dmulloy2.handlers.CommandHandler;
 import net.dmulloy2.handlers.LogHandler;
 import net.dmulloy2.handlers.PermissionHandler;
-import net.dmulloy2.handlers.ResourceHandler;
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.types.SimpleVector;
 import net.dmulloy2.types.StringJoiner;
@@ -83,7 +82,6 @@ public class UltimateArena extends SwornPlugin
 {
 	private SpectatingHandler spectatingHandler;
 	private ArenaTypeHandler arenaTypeHandler;
-	private ResourceHandler resourceHandler;
 	private MessageHandler messageHandler;
 	private FileHandler fileHandler;
 	private SignHandler signHandler;
@@ -454,20 +452,18 @@ public class UltimateArena extends SwornPlugin
 	private void loadClasses()
 	{
 		File folder = new File(getDataFolder(), "classes");
-		FileFilter filter = new FileFilter()
-		{
-			@Override
-			public boolean accept(File file)
-			{
-				return file.getName().contains(".yml");
-			}
-		};
+		FileFilter filter = file -> file.getName().contains(".yml");
 
 		File[] files = folder.listFiles(filter);
 		if (files == null || files.length == 0)
 		{
 			generateStockClasses();
 			files = folder.listFiles(filter);
+		}
+
+		if (files == null || files.length == 0)
+		{
+			return;
 		}
 
 		int total = 0;
@@ -901,6 +897,12 @@ public class UltimateArena extends SwornPlugin
 				return;
 			}
 
+			if (az == null)
+			{
+				sendpMessage(player, FormatUtil.format(getMessage("unknownArena"), name));
+				return;
+			}
+
 			ArenaType type = az.getType();
 			if (type == null)
 			{
@@ -934,7 +936,7 @@ public class UltimateArena extends SwornPlugin
 	}
 
 	// Kicks a random player if the arena is full
-	private final boolean kickRandomPlayer(Arena arena)
+	private boolean kickRandomPlayer(Arena arena)
 	{
 		List<ArenaPlayer> validPlayers = new ArrayList<>();
 		for (ArenaPlayer ap : arena.getActivePlayers())
@@ -968,7 +970,7 @@ public class UltimateArena extends SwornPlugin
 		return null;
 	}
 
-	private final List<ArenaZone> matchArena(String partial)
+	private List<ArenaZone> matchArena(String partial)
 	{
 		List<ArenaZone> ret = new ArrayList<>();
 
@@ -1088,13 +1090,13 @@ public class UltimateArena extends SwornPlugin
 	 */
 	public final void setPoint(Player player, String[] args)
 	{
-		if (!isCreatingArena(player))
+		ArenaCreator ac = getArenaCreator(player);
+		if (ac == null)
 		{
 			sendpMessage(player, FormatUtil.format(getMessage("notCreating")));
 			return;
 		}
 
-		ArenaCreator ac = getArenaCreator(player);
 		ac.setPoint(args);
 	}
 
@@ -1116,7 +1118,7 @@ public class UltimateArena extends SwornPlugin
 	/**
 	 * Clears lists and maps.
 	 */
-	public final void clearMemory()
+	private void clearMemory()
 	{
 		whitelistedCommands = null;
 
@@ -1132,7 +1134,7 @@ public class UltimateArena extends SwornPlugin
 	 *
 	 * @param plugin {@link Plugin} to accept the registration from
 	 */
-	public void acceptRegistration(Plugin plugin)
+	void acceptRegistration(Plugin plugin)
 	{
 		logHandler.log("Accepted API registration from {0}", plugin.getName());
 		pluginsUsingAPI.add(plugin.getName());
@@ -1143,7 +1145,7 @@ public class UltimateArena extends SwornPlugin
 	 *
 	 * @return Plugins using the API
 	 */
-	public final List<String> dumpRegistrations()
+	final List<String> dumpRegistrations()
 	{
 		if (pluginsUsingAPI.isEmpty())
 		{

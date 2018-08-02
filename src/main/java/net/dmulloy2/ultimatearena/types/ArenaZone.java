@@ -20,17 +20,11 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.io.FileSerialization;
 import net.dmulloy2.io.IOUtil;
@@ -52,7 +46,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.io.Files;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author dmulloy2
@@ -92,10 +87,10 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	protected transient Field lobby;
 	protected transient Field arena;
 
-	protected transient List<String> voted = new ArrayList<String>();
+	protected transient List<String> voted = new ArrayList<>();
 
-	protected List<ArenaLocation> spawns = new ArrayList<ArenaLocation>();
-	protected List<ArenaLocation> flags = new ArrayList<ArenaLocation>();
+	protected List<ArenaLocation> spawns = new ArrayList<>();
+	protected List<ArenaLocation> flags = new ArrayList<>();
 
 	// ---- Transient
 	protected transient File file;
@@ -109,27 +104,19 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	// Creation constructor
 	public ArenaZone(ArenaType type)
 	{
+		Validate.notNull(type, "type cannot be null");
+
 		this.type = type;
 		this.typeString = type.getName();
 		this.plugin = type.getPlugin();
+		this.stylized = type.getStylizedName();
 	}
 
 	// Regular constructor
 	public ArenaZone(ArenaType type, File file)
 	{
-		this.plugin = type.getPlugin();
-		this.file = file;
-		this.type = type;
-		this.typeString = type.getName();
-		this.stylized = type.getStylizedName();
-		this.name = IOUtil.trimFileExtension(file, ".dat");
-		this.initialize();
-	}
+		this(type);
 
-	@Deprecated
-	public ArenaZone(UltimateArena plugin, File file)
-	{
-		this.plugin = plugin;
 		this.file = file;
 		this.name = IOUtil.trimFileExtension(file, ".dat");
 		this.initialize();
@@ -218,7 +205,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	public final List<String> getStats()
 	{
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		StringBuilder line = new StringBuilder();
 		line.append(FormatUtil.format(plugin.getMessage("genericHeader"), WordUtils.capitalize(name)));
@@ -439,13 +426,13 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	}
 
 	@Deprecated
-	private final void convert()
+	private void convert()
 	{
 		try
 		{
 			// Make backup
 			File backup = new File(file.getAbsolutePath() + "_old");
-			Files.copy(file, backup);
+			Files.copy(file.toPath(), backup.toPath());
 
 			// Load legacy arena zone
 			plugin.getFileHandler().loadLegacy(this);
@@ -526,11 +513,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	 */
 	protected ArenaConfig getDefaultConfig()
 	{
-		ArenaType type = getType();
-		if (type == null)
-			return null;
-
-		return type.getConfig();
+		return getType().getConfig();
 	}
 
 	/**

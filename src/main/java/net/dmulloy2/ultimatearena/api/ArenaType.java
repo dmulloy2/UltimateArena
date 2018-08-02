@@ -198,12 +198,13 @@ public abstract class ArenaType
 			try
 			{
 				saveDefaultConfig();
-				config = newConfig();
 			}
 			catch (Throwable ex)
 			{
-				getLogger().log(Level.WARNING, "Failed to obtain configuration: ", ex);
+				getLogger().log(Level.WARNING, "Failed to save default configuration: ", ex);
 			}
+
+			config = newConfig();
 		}
 
 		return config;
