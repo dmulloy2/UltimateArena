@@ -5,7 +5,8 @@ version: ${project.version}${project.build.number}
 author: dmulloy2
 softdepend: [WorldEdit, Vault, Essentials, Multiverse-Core, MyWorlds, ProtocolLib]
 description: The Ultimate in Minecraft death sports and spleef!
-load: postworld
+load: POSTWORLD
+api-version: 1.13
 commands:
   ua:
     description: UltimateArena base command
