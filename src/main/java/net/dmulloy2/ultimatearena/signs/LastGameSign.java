@@ -93,8 +93,7 @@ public class LastGameSign extends ArenaSign
 		if (finalLeaderboard.size() > 1)
 		{
 			int size = Math.min(3, finalLeaderboard.size());
-			List<String> subList = finalLeaderboard.subList(0, size);
-			this.leaderboard = subList;
+			this.leaderboard = finalLeaderboard.subList(0, size);
 			populate(leaderboard);
 		}
 	}

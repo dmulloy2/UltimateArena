@@ -171,7 +171,6 @@ public class CTFFlag
 					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
 					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
 					arena.tellPlayers(arena.getMessage("flagPickedUp"), ap.getName(), flagType);
-					return;
 				}
 				else
 				{
@@ -182,7 +181,6 @@ public class CTFFlag
 						ap.setGameXP(ap.getGameXP() + 50);
 						arena.tellPlayers(arena.getMessage("flagReturned"), ap.getName(), flagType);
 						respawn();
-						return;
 					}
 				}
 			}

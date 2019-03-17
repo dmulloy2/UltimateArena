@@ -38,13 +38,17 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * @author dmulloy2
  */
 
-public class MobArena extends Arena
+public class MobArena extends Arena implements Listener
 {
 	private int mobTimer, mobSpawn, mobPerWave;
 	private int maxWave, wave;
@@ -166,6 +170,7 @@ public class MobArena extends Arena
 	{
 		setWinningTeam(null);
 		rewardTeam(winningTeam);
+		mobs.clear();
 	}
 
 	@Override
@@ -286,6 +291,14 @@ public class MobArena extends Arena
 			}
 		}
 	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onEntityDeath(EntityDeathEvent event)
+	{
+		mobs.remove(event.getEntity());
+	}
+
+	// TODO Use our collection of mobs to protect them from non-players
 
 	@Override
 	public void announceWinner()

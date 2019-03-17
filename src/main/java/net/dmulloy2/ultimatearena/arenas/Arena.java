@@ -373,7 +373,7 @@ public abstract class Arena implements Reloadable
 			{
 				if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
 				{
-					String message = "";
+					String message;
 					
 					if (announced == 0)
 						message = FormatUtil.format(getMessage("arenaCreated"), type.getStylizedName());
@@ -409,7 +409,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public boolean simpleTeamCheck()
 	{
-		return (redTeamSize == 0 || blueTeamSize == 0) ? startingAmount < 1 : true;
+		return (redTeamSize != 0 && blueTeamSize != 0) || startingAmount < 1;
 	}
 
 	/**
@@ -479,7 +479,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public Location getSpawn(ArenaPlayer ap)
 	{
-		ArenaLocation loc = null;
+		ArenaLocation loc;
 		if (isInLobby())
 		{
 			loc = az.getLobbyREDspawn();
@@ -838,7 +838,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public void onStop() { }
 
-	private final void conclude(long delay)
+	private void conclude(long delay)
 	{
 		if (delay <= 0 || plugin.isStopping())
 		{
@@ -856,7 +856,7 @@ public abstract class Arena implements Reloadable
 		}.runTaskLater(plugin, 120L);
 	}
 
-	private final void conclude()
+	private void conclude()
 	{
 		// API - conclude event
 		ArenaConcludeEvent event = new ArenaConcludeEvent(this);
@@ -924,7 +924,7 @@ public abstract class Arena implements Reloadable
 			{
 				finalLeaderboard.set(leaderboardIndex, ap.getName());
 				leaderboardIndex--;
-			} catch (IndexOutOfBoundsException ex) { }
+			} catch (IndexOutOfBoundsException ignored) { }
 		}
 
 		// Invalidate leaderboard cache
@@ -1247,7 +1247,7 @@ public abstract class Arena implements Reloadable
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(getMessage("forceStart"), name));
 	}
 
-	private final void clearEntities()
+	private void clearEntities()
 	{
 		if (! Config.clearEntities)
 			return;
@@ -1290,7 +1290,7 @@ public abstract class Arena implements Reloadable
 		}
 	}
 
-	private final void clearMaterials()
+	private void clearMaterials()
 	{
 		List<Material> clear = getConfig().getClearMaterials();
 		if (! clear.isEmpty())

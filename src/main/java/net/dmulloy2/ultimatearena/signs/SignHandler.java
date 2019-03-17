@@ -62,7 +62,7 @@ public class SignHandler
 		this.loadFromDisk();
 	}
 
-	private final void loadFromDisk()
+	private void loadFromDisk()
 	{
 		try
 		{
@@ -115,7 +115,7 @@ public class SignHandler
 					MemorySection section = (MemorySection) entry.getValue();
 					SignType type = SignType.valueOf(section.getString("type", "JOIN"));
 
-					ArenaSign sign = null;
+					ArenaSign sign;
 					switch (type)
 					{
 						case JOIN:
@@ -155,7 +155,7 @@ public class SignHandler
 		}
 	}
 
-	private final void saveToDisk()
+	private void saveToDisk()
 	{
 		try
 		{
@@ -178,7 +178,7 @@ public class SignHandler
 		}
 	}
 
-	private final boolean createNewSave(boolean delete)
+	private boolean createNewSave(boolean delete)
 	{
 		try
 		{
@@ -208,7 +208,7 @@ public class SignHandler
 		signs.clear();
 	}
 
-	private final void updateAllSigns()
+	private void updateAllSigns()
 	{
 		for (ArenaSign sign : getSigns())
 		{
@@ -349,7 +349,7 @@ public class SignHandler
 		return id;
 	}
 
-	private final int recurseFreeId(int start, Set<Integer> keySet)
+	private int recurseFreeId(int start, Set<Integer> keySet)
 	{
 		int id = start;
 		for (int i : keySet)
@@ -361,7 +361,7 @@ public class SignHandler
 		return id;
 	}
 
-	private final Map<Integer, ArenaSign> getById()
+	private Map<Integer, ArenaSign> getById()
 	{
 		Map<Integer, ArenaSign> ret = new LinkedHashMap<>();
 

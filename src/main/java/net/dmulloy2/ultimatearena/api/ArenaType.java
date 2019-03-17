@@ -319,7 +319,7 @@ public abstract class ArenaType
 		}
 	}
 
-	private final void saveResource(InputStream in, File outFile)
+	private void saveResource(InputStream in, File outFile)
 	{
 		try (Closer closer = new Closer())
 		{
@@ -358,7 +358,7 @@ public abstract class ArenaType
 			URLConnection connection = url.openConnection();
 			connection.setUseCaches(false);
 			return connection.getInputStream();
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 		return null;
 	}
 

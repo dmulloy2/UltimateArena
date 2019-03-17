@@ -18,17 +18,11 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.UUID;
 
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.types.Sorter;
-import net.dmulloy2.types.Sorter.SortCriteria;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -36,11 +30,7 @@ import net.dmulloy2.ultimatearena.scoreboard.ArenaScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.DisabledScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.StandardScoreboard;
 import net.dmulloy2.ultimatearena.tasks.CommandRunner;
-import net.dmulloy2.util.CompatUtil;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.InventoryUtil;
-import net.dmulloy2.util.NumberUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.util.*;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
@@ -128,7 +118,7 @@ public final class ArenaPlayer
 	/**
 	 * Decides the player's hat.
 	 */
-	public final void decideHat(boolean random)
+	public void decideHat(boolean random)
 	{
 		Player player = getPlayer();
 		if (arenaClass != null && ! arenaClass.isUseHelmet())
@@ -163,7 +153,7 @@ public final class ArenaPlayer
 	 * @param stack {@link ItemStack} to give the player
 	 * @throws NullPointerException if stack is null
 	 */
-	public final void giveItem(ItemStack stack)
+	public void giveItem(ItemStack stack)
 	{
 		InventoryUtil.giveItem(getPlayer(), stack);
 	}
@@ -175,7 +165,7 @@ public final class ArenaPlayer
 	 * @param stack {@link ItemStack} to give as armor
 	 * @throws IllegalArgumentException if slot or stack is null
 	 */
-	public final void giveArmor(String slot, ItemStack stack)
+	public void giveArmor(String slot, ItemStack stack)
 	{
 		Validate.notNull(slot, "slot cannot be null!");
 		Validate.notNull(stack, "stack cannot be null!");
@@ -202,7 +192,7 @@ public final class ArenaPlayer
 	/**
 	 * Clears the player's inventory.
 	 */
-	public final void clearInventory()
+	public void clearInventory()
 	{
 		Player player = getPlayer();
 
@@ -222,7 +212,7 @@ public final class ArenaPlayer
 	/**
 	 * Readies the player for spawning.
 	 */
-	public final void spawn()
+	public void spawn()
 	{
 		clearInventory();
 		clearPotionEffects();
@@ -270,7 +260,7 @@ public final class ArenaPlayer
 	 * @return True if the operation was successful, false if not
 	 * @throws IllegalArgumentException if ac is null
 	 */
-	public final boolean setClass(ArenaClass ac)
+	public boolean setClass(ArenaClass ac)
 	{
 		Validate.notNull(ac, "ac cannot be null!");
 
@@ -314,7 +304,7 @@ public final class ArenaPlayer
 	 * Applies this player's arena class to the player, including items,
 	 * potion effects, and attributes.
 	 */
-	public final void applyClass()
+	public void applyClass()
 	{
 		if (! arena.isInGame())
 		{
@@ -363,7 +353,7 @@ public final class ArenaPlayer
 	/**
 	 * Clears the player's potion effects.
 	 */
-	public final void clearPotionEffects()
+	public void clearPotionEffects()
 	{
 		Player player = getPlayer();
 		for (PotionEffect effect : player.getActivePotionEffects())
@@ -380,7 +370,7 @@ public final class ArenaPlayer
 	 * @param string Base message
 	 * @param objects Objects to format in
 	 */
-	public final void sendMessage(String string, Object... objects)
+	public void sendMessage(String string, Object... objects)
 	{
 		if (string.isEmpty())
 			return; // Don't send empty messages
@@ -403,7 +393,7 @@ public final class ArenaPlayer
 	 * @param string Base message
 	 * @param objects Objects to format in
 	 */
-	public final void sendMessageRaw(String string, Object... objects)
+	public void sendMessageRaw(String string, Object... objects)
 	{
 		if (string.isEmpty())
 			return;
@@ -415,7 +405,7 @@ public final class ArenaPlayer
 	/**
 	 * Displays the player's ingame statistics.
 	 */
-	public final void displayStats()
+	public void displayStats()
 	{
 		if (! board.isEnabled())
 		{
@@ -433,7 +423,7 @@ public final class ArenaPlayer
 	 *
 	 * @param xp XP to give the player
 	 */
-	public final void addXP(int xp)
+	public void addXP(int xp)
 	{
 		this.gameXP += xp;
 	}
@@ -443,7 +433,7 @@ public final class ArenaPlayer
 	 *
 	 * @return Their KDR
 	 */
-	public final double getKDR()
+	public double getKDR()
 	{
 		double k = NumberUtil.toDouble(kills);
 		if (deaths == 0)
@@ -460,7 +450,7 @@ public final class ArenaPlayer
 	 *
 	 * @return True if they are dead, false if not
 	 */
-	public final boolean isDead()
+	public boolean isDead()
 	{
 		return (System.currentTimeMillis() - deathTime) <= 60L;
 	}
@@ -468,7 +458,7 @@ public final class ArenaPlayer
 	/**
 	 * Handles the player's death.
 	 */
-	public final void onDeath()
+	public void onDeath()
 	{
 		this.deathTime = System.currentTimeMillis();
 		this.killStreak = 0;
@@ -485,7 +475,7 @@ public final class ArenaPlayer
 	 *
 	 * @param reason Reason the player is leaving
 	 */
-	public final void leaveArena(LeaveReason reason)
+	public void leaveArena(LeaveReason reason)
 	{
 		// Refund transactions if the arena didn't start
 		if (! arena.isStarted() && ! transactions.isEmpty())
@@ -538,7 +528,7 @@ public final class ArenaPlayer
 	 * @param location {@link Location} to teleport the player to
 	 * @throws IllegalArgumentException if location is null
 	 */
-	public final void teleport(Location location)
+	public void teleport(Location location)
 	{
 		Validate.notNull(location, "location cannot be null!");
 		getPlayer().teleport(location.clone().add(0.5D, 0.5D, 0.5D));
@@ -547,7 +537,7 @@ public final class ArenaPlayer
 	/**
 	 * Saves the player's data.
 	 */
-	public final void savePlayerData()
+	public void savePlayerData()
 	{
 		Validate.isTrue(playerData == null, "PlayerData already saved!");
 		this.playerData = new PlayerData(getPlayer());
@@ -556,7 +546,7 @@ public final class ArenaPlayer
 	/**
 	 * Returns the player to their pre-join state.
 	 */
-	public final void reset()
+	public void reset()
 	{
 		clearInventory();
 		clearPotionEffects();
@@ -580,28 +570,28 @@ public final class ArenaPlayer
 	 *
 	 * @return Player instance
 	 */
-	public final Player getPlayer()
+	public Player getPlayer()
 	{
 		return player;
 	}
 
-	public final void putData(String key, int value)
+	public void putData(String key, int value)
 	{
 		data.put(key, value);
 	}
 
-	public final int getDataInt(String key)
+	public int getDataInt(String key)
 	{
 		return getDataInt(key, -1);
 	}
 
-	public final int getDataInt(String key, int def)
+	public int getDataInt(String key, int def)
 	{
 		return getData(key, def);
 	}
 
 	@SuppressWarnings("unchecked")
-	public final <T> T getData(String key, T def)
+	public <T> T getData(String key, T def)
 	{
 		if (data.containsKey(key))
 			return (T) data.get(key);
@@ -611,7 +601,7 @@ public final class ArenaPlayer
 	/**
 	 * Clears this player's memory.
 	 */
-	public final void clear()
+	public void clear()
 	{
 		data.clear();
 		data = null;
@@ -622,12 +612,12 @@ public final class ArenaPlayer
 		plugin = null;
 	}
 
-	public final boolean isOnline()
+	public boolean isOnline()
 	{
 		return player != null && player.isOnline();
 	}
 
-	public final void updateScoreboard()
+	public void updateScoreboard()
 	{
 		board.update();
 	}
@@ -663,27 +653,11 @@ public final class ArenaPlayer
 
 	public static Sorter<ArenaPlayer, Double> kdrSorter()
 	{
-		// return new Sorter<>(key -> key.getKDR());
-		return new Sorter<>(new SortCriteria<ArenaPlayer, Double>()
-		{
-			@Override
-			public Double getValue(ArenaPlayer key)
-			{
-				return key.getKDR();
-			}
-		});
+		return new Sorter<>(ArenaPlayer::getKDR);
 	}
 
-	public static <T extends Comparable<T>> Sorter<ArenaPlayer, T> dataSorter(final String data, final T def)
+	public static <T extends Comparable<T>> Sorter<ArenaPlayer, T> dataSorter(String data, T def)
 	{
-		// return new Sorter<ArenaPlayer, T>(key -> key.getData(data, def));
-		return new Sorter<>(new SortCriteria<ArenaPlayer, T>()
-		{
-			@Override
-			public T getValue(ArenaPlayer key)
-			{
-				return key.getData(data, def);
-			}
-		});
+		return new Sorter<>(key -> key.getData(data, def));
 	}
 }

@@ -272,22 +272,22 @@ public class UltimateArena extends SwornPlugin
 		try
 		{
 			essentialsHandler = new EssentialsHandler(this);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 
 		try
 		{
 			protocolHandler = new ProtocolHandler(this);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 
 		try
 		{
 			vaultHandler = new VaultHandler(this);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 
 		try
 		{
 			worldEditHandler = new WorldEditHandler(this);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 	}
 
 	public final boolean isEssentialsEnabled()

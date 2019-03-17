@@ -9,9 +9,9 @@ package net.dmulloy2.ultimatearena.scoreboard;
 
 public interface ArenaScoreboard
 {
-	public abstract void update();
+	void update();
 
-	public abstract void dispose();
+	void dispose();
 
-	public abstract boolean isEnabled();
+	boolean isEnabled();
 }

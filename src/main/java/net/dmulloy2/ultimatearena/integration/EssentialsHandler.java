@@ -71,7 +71,7 @@ public class EssentialsHandler extends DependencyProvider<Essentials>
 	 *
 	 * @param player {@link Player} to get Essentials user for
 	 */
-	private final User getEssentialsUser(Player player)
+	private User getEssentialsUser(Player player)
 	{
 		if (! isEnabled())
 			return null;

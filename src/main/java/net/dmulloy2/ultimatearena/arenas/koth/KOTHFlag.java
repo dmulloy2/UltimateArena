@@ -57,7 +57,7 @@ public class KOTHFlag extends ArenaFlag
 			handleCapture(capturer);
 	}
 
-	private final void handleCapture(ArenaPlayer capturer)
+	private void handleCapture(ArenaPlayer capturer)
 	{
 		capturer.putData("kothPoints", capturer.getDataInt("kothPoints", 0) + 1);
 		capturer.sendMessage(getMessage("kothCap"), capturer.getDataInt("kothPoints"), arena.getMaxPoints());

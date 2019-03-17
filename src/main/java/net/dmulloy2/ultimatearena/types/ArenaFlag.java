@@ -23,10 +23,7 @@ import lombok.Setter;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.material.Wool;
 
 /**
  * @author dmulloy2

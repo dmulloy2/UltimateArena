@@ -130,7 +130,7 @@ public final class ArenaClass extends Configuration
 					{
 						// Attempt to parse regularly
 						item = ItemUtil.readItem(value);
-					} catch (Throwable ex) { }
+					} catch (Throwable ignored) { }
 
 					if (item != null)
 					{
@@ -139,8 +139,8 @@ public final class ArenaClass extends Configuration
 					}
 
 					// Read legacy
-					Material material = null;
-					short data = 0;
+					Material material;
+					short data;
 
 					Map<Enchantment, Integer> enchants = new HashMap<>();
 
@@ -303,8 +303,7 @@ public final class ArenaClass extends Configuration
 		return true;
 	}
 
-	private final List<PotionEffect> readPotionEffects(String str) throws Throwable
-	{
+	private List<PotionEffect> readPotionEffects(String str) {
 		List<PotionEffect> ret = new ArrayList<>();
 
 		str = str.replaceAll(" ", "");
@@ -327,8 +326,7 @@ public final class ArenaClass extends Configuration
 		return ret;
 	}
 
-	private final Map<Enchantment, Integer> readArmorEnchantments(String string) throws Throwable
-	{
+	private Map<Enchantment, Integer> readArmorEnchantments(String string) {
 		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 
 		string = string.replaceAll(" ", "");

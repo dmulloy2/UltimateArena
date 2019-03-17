@@ -106,12 +106,12 @@ public class ArenaLoader
 		}
 	}
 
-	private final ArenaClassLoader loadClasses(String key, File file) throws MalformedURLException
+	private ArenaClassLoader loadClasses(String key, File file) throws MalformedURLException
 	{
 		Validate.notNull(key, "key cannot be null!");
 		Validate.notNull(file, "file cannot be null!");
 
-		ArenaClassLoader loader = null;
+		ArenaClassLoader loader;
 
 		URL[] urls = new URL[1];
 		urls[0] = file.toURI().toURL();
@@ -134,7 +134,7 @@ public class ArenaLoader
 				throw new InvalidArenaException(new FileNotFoundException("Jar does not contain arena.yml"));
 
 			InputStream stream = closer.register(jar.getInputStream(entry));
-			Map<?, ?> map = (Map<?, ?>) yaml.load(stream);
+			Map<?, ?> map = yaml.load(stream);
 
 			String name = (String) map.get("name");
 			Validate.notNull(name, "Missing required key: name");
@@ -180,7 +180,7 @@ public class ArenaLoader
 				try
 				{
 					cachedClass = loader.findClass(name, false);
-				} catch (ClassNotFoundException ex) { }
+				} catch (ClassNotFoundException ignored) { }
 			}
 		}
 

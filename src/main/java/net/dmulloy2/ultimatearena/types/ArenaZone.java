@@ -371,7 +371,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 						field.setAccessible(accessible);
 					}
 				}
-			} catch (Throwable ex) { }
+			} catch (Throwable ignored) { }
 		}
 
 		loadCustomOptions(config);
@@ -414,7 +414,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 	// ---- Conversion
 
-	private final boolean checkConversion(int version)
+	private boolean checkConversion(int version)
 	{
 		if (version != CURRENT_VERSION)
 		{
@@ -557,7 +557,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(String.class))
 				{
-					if ((String) field.get(this) != null)
+					if (field.get(this) != null)
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(Map.class))

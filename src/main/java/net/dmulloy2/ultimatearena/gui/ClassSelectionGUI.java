@@ -115,7 +115,7 @@ public class ClassSelectionGUI extends AbstractGUI
 				{
 					lore.add(FormatUtil.format(plugin.getMessage("guiUnavailableArena")));
 				}
-				else if (! arena.getAvailableClasses(ap.getTeam()).contains(this))
+				else if (! arena.getAvailableClasses(ap.getTeam()).contains(ac))
 				{
 					lore.add(FormatUtil.format(plugin.getMessage("guiUnavailableTeam")));
 				}

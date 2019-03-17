@@ -39,7 +39,7 @@ public enum WinCondition
 	private final String name;
 	private final String[] config;
 
-	private WinCondition(String name, String... config)
+	WinCondition(String name, String... config)
 	{
 		this.name = name;
 		this.config = config;

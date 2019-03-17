@@ -41,9 +41,9 @@ import lombok.Getter;
 @Getter
 public final class KillStreak
 {
-	public static enum Type
+	public enum Type
 	{
-		ITEM, MOB;
+		ITEM, MOB
 	}
 
 	private final int kills;
@@ -134,7 +134,7 @@ public final class KillStreak
 		}
 	}
 
-	private final LivingEntity getTarget(ArenaPlayer ap)
+	private LivingEntity getTarget(ArenaPlayer ap)
 	{
 		Arena arena = ap.getArena();
 

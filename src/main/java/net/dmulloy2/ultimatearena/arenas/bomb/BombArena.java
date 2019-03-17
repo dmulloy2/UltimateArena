@@ -85,7 +85,6 @@ public class BombArena extends Arena
 			stop();
 
 			rewardTeam(Team.BLUE);
-			return;
 		}
 	}
 

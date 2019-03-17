@@ -451,7 +451,7 @@ public class ArenaConfig extends Configuration
 				}
 
 				field.setAccessible(accessible);
-			} catch (Throwable ex) { }
+			} catch (Throwable ignored) { }
 		}
 
 		serializeCustomOptions(data);

@@ -60,7 +60,7 @@ public enum Permission implements IPermission
 	;
 
 	private final String node;
-	private Permission()
+	Permission()
 	{
 		this.node = toString().toLowerCase().replaceAll("_", ".");
 	}

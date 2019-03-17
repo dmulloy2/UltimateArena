@@ -139,7 +139,6 @@ public class BlockListener implements Listener
 				else if (event.getLine(1).equalsIgnoreCase("Classes"))
 				{
 					// This will open a class selection gui
-					return;
 				}
 				else
 				{

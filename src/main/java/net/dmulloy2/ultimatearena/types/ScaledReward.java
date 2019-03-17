@@ -52,7 +52,7 @@ public class ScaledReward
 			double scale = NumberUtil.toDouble(string.substring(string.lastIndexOf(",") + 1));
 			if (item != null && scale != -1)
 				return new ScaledReward(item, scale);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 		return null;
 	}
 }

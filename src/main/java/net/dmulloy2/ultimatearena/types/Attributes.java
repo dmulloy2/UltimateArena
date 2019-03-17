@@ -34,7 +34,7 @@ public class Attributes
 
 			double value = Double.parseDouble(numStr);
 
-			Operation operation = null;
+			Operation operation;
 			switch (operStr.toLowerCase())
 			{
 				case "*":

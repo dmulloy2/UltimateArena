@@ -51,7 +51,7 @@ public class InfectArena extends PvPArena
 		}
 	}
 
-	private final void chooseInfected(int tries)
+	private void chooseInfected(int tries)
 	{
 		if (tries < 16)
 		{

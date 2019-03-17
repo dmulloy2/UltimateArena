@@ -42,9 +42,9 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 @Getter
 public abstract class ArenaSign implements ConfigurationSerializable
 {
-	public static enum SignType
+	public enum SignType
 	{
-		JOIN, LAST_GAME, STATUS;
+		JOIN, LAST_GAME, STATUS
 	}
 	
 	protected final int id;

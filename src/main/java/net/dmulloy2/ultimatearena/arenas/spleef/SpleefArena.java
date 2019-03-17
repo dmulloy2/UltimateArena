@@ -107,7 +107,7 @@ public class SpleefArena extends FFAArena
 	// Completely arbitrary number
 	private static final int MAX_TRIES = 10;
 
-	private final Location getBlockInSpleefArena()
+	private Location getBlockInSpleefArena()
 	{
 		int x = Util.random(spleefGround.getWidth() - 1);
 		int z = Util.random(spleefGround.getLength() - 1);

@@ -45,7 +45,7 @@ public class CmdInfo extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		Arena arena = null;
+		Arena arena;
 		if (isPlayer())
 		{
 			arena = getArena(0, false);

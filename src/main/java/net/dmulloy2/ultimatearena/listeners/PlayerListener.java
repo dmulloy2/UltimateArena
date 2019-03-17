@@ -75,7 +75,7 @@ public class PlayerListener implements Listener
 			plugin.log("{0} stopping the creation of {1} from quit.", player.getName(), ac.getArenaName());
 		}
 
-		ArenaPlayer ap = null;
+		ArenaPlayer ap;
 		while ((ap = plugin.getArenaPlayer(player, true)) != null)
 		{
 			if (! ap.isOut())
@@ -162,7 +162,6 @@ public class PlayerListener implements Listener
 							{
 								ClassSelectionGUI csGUI = new ClassSelectionGUI(plugin, ap, false);
 								plugin.getGuiHandler().open(player, csGUI);
-								return;
 							}
 						}
 						else
@@ -205,12 +204,10 @@ public class PlayerListener implements Listener
 					else if (line1.equalsIgnoreCase("[Arena Status]"))
 					{
 						// Don't do anything
-						return;
 					}
 					else if (line1.equalsIgnoreCase("[Last Game]"))
 					{
 						// Don't do anything
-						return;
 					}
 					else
 					{
@@ -230,7 +227,6 @@ public class PlayerListener implements Listener
 									String spawn = ap.getArena().isInGame() ? "respawn" : "spawn";
 
 									ap.sendMessage(plugin.getMessage("classSpawn"), spawn, article, name);
-									return;
 								}
 							}
 						}
@@ -252,7 +248,6 @@ public class PlayerListener implements Listener
 							if (field.isInside(block.getLocation()))
 							{
 								block.setType(Material.AIR);
-								return;
 							}
 						}
 					}
