@@ -20,6 +20,12 @@ package net.dmulloy2.ultimatearena.integration;
 
 import java.util.logging.Level;
 
+import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+
 import net.dmulloy2.integration.DependencyProvider;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
@@ -27,11 +33,8 @@ import net.dmulloy2.ultimatearena.types.Tuple;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
-import com.sk89q.worldedit.bukkit.selections.Selection;
 
 /**
  * Handles WorldEdit selections and such
@@ -43,12 +46,12 @@ public final class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 {
 	public WorldEditHandler(UltimateArena plugin)
 	{
-		super(plugin, "WorldEdit");
+		super(plugin, "WorldEdit", 7);
 	}
 
 	public boolean isEnabled()
 	{
-		return super.isEnabled() && Config.useWorldEdit;
+		return Config.useWorldEdit && super.isEnabled();
 	}
 
 	/**
@@ -63,8 +66,9 @@ public final class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 
 		try
 		{
-			Selection sel = getDependency().getSelection(player);
-			return sel instanceof CuboidSelection;
+			LocalSession session = getDependency().getSession(player);
+			Region region = session.getSelection(session.getSelectionWorld());
+			return region instanceof CuboidRegion;
 		}
 		catch (Throwable ex)
 		{
@@ -73,8 +77,13 @@ public final class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 		}
 	}
 
+	private Location blockVectorToLocation(BlockVector3 vector, World world)
+	{
+		return new Location(world, vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
+	}
+
 	/**
-	 * Gets a given player's {@link Selection}.
+	 * Gets a given player's world edit region/selection
 	 *
 	 * @param player {@link Player} to get selection for
 	 */
@@ -85,8 +94,11 @@ public final class WorldEditHandler extends DependencyProvider<WorldEditPlugin>
 
 		try
 		{
-			Selection sel = getDependency().getSelection(player);
-			return new Tuple<>(sel.getMaximumPoint(), sel.getMinimumPoint());
+			LocalSession session = getDependency().getSession(player);
+			Region region = session.getSelection(session.getSelectionWorld());
+			World world = player.getWorld();
+			BlockVector3 max = region.getMaximumPoint(), min = region.getMinimumPoint();
+			return new Tuple<>(blockVectorToLocation(max, world), blockVectorToLocation(min, world));
 		}
 		catch (Throwable ex)
 		{
