@@ -19,8 +19,6 @@
 package net.dmulloy2.ultimatearena.commands;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +56,7 @@ public class CmdList extends UltimateArenaCommand
 			return;
 		}
 
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		StringBuilder line = new StringBuilder();
 		line.append(FormatUtil.format(getMessage("genericHeader"), "UltimateArenas"));
 		lines.add(line.toString());
@@ -72,14 +70,7 @@ public class CmdList extends UltimateArenaCommand
 		}
 
 		List<Entry<ArenaZone, Integer>> sortedEntries = new ArrayList<>(playMap.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Entry<ArenaZone, Integer>>()
-		{
-			@Override
-			public int compare(Entry<ArenaZone, Integer> entry1, Entry<ArenaZone, Integer> entry2)
-			{
-				return -entry1.getValue().compareTo(entry2.getValue());
-			}
-		});
+		sortedEntries.sort((entry1, entry2) -> -entry1.getValue().compareTo(entry2.getValue()));
 
 		// Now display them
 		// TODO: Add this to messages.yml?
@@ -88,8 +79,8 @@ public class CmdList extends UltimateArenaCommand
 			ArenaZone az = entry.getKey();
 
 			line = new StringBuilder();
-			line.append("&3[&b" + az.getType().getStylizedName() + " &eArena&3]");
-			line.append("  " + "&b" + az.getName() + "  ");
+			line.append("&3[&b").append(az.getType().getStylizedName()).append(" &eArena&3]");
+			line.append("  " + "&b").append(az.getName()).append("  ");
 
 			if (az.isDisabled())
 			{
@@ -104,7 +95,7 @@ public class CmdList extends UltimateArenaCommand
 					{
 						if (a.isInLobby())
 						{
-							line.append(" &e[LOBBY | " + a.getStartTimer() + " seconds]");
+							line.append(" &e[LOBBY | ").append(a.getStartTimer()).append(" seconds]");
 						}
 						else
 						{
@@ -121,7 +112,7 @@ public class CmdList extends UltimateArenaCommand
 				}
 			}
 
-			line.append("        &e[&b" + az.getTimesPlayed() + "&e]");
+			line.append("        &e[&b").append(az.getTimesPlayed()).append("&e]");
 			lines.add(line.toString());
 		}
 

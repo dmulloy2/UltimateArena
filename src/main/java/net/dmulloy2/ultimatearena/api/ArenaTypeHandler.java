@@ -94,14 +94,7 @@ public final class ArenaTypeHandler implements Reloadable
 		loadArenaType(new SpleefType());
 
 		// Load custom types
-		File[] files = directory.listFiles(new FileFilter()
-		{
-			@Override
-			public boolean accept(File file)
-			{
-				return file.getName().endsWith(".jar");
-			}
-		});
+		File[] files = directory.listFiles(file -> file.getName().endsWith(".jar"));
 
 		if (files != null && files.length > 0)
 		{

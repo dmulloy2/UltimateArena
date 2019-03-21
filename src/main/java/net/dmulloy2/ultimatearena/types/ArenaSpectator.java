@@ -108,7 +108,7 @@ public final class ArenaSpectator
 		{
 			for (ArenaPlayer ap : arena.getActivePlayers())
 			{
-				ap.getPlayer().hidePlayer(player);
+				CompatUtil.hidePlayer(ap.getPlayer(), plugin, player);
 			}
 		}
 
@@ -134,14 +134,14 @@ public final class ArenaSpectator
 		{
 			for (ArenaPlayer ap : arena.getActivePlayers())
 			{
-				ap.getPlayer().showPlayer(player);
+				CompatUtil.showPlayer(ap.getPlayer(), plugin, player);
 			}
 
 			for (ArenaPlayer ap : arena.getInactivePlayers())
 			{
 				if (ap != null && ap.isOnline())
 				{
-					ap.getPlayer().showPlayer(player);
+					CompatUtil.showPlayer(ap.getPlayer(), plugin, player);
 				}
 			}
 		}

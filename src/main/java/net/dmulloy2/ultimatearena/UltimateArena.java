@@ -269,6 +269,8 @@ public class UltimateArena extends SwornPlugin
 
 	private void setupIntegration()
 	{
+		long start = System.currentTimeMillis();
+
 		try
 		{
 			essentialsHandler = new EssentialsHandler(this);
@@ -288,6 +290,8 @@ public class UltimateArena extends SwornPlugin
 		{
 			worldEditHandler = new WorldEditHandler(this);
 		} catch (Throwable ignored) { }
+
+		log("Integration setup took {0} ms", System.currentTimeMillis() - start);
 	}
 
 	public final boolean isEssentialsEnabled()
@@ -329,13 +333,13 @@ public class UltimateArena extends SwornPlugin
 		arenaTypeHandler.reload();
 
 		// Reload ArenaZones
-		for (ArenaZone az : loadedArenas.toArray(new ArenaZone[loadedArenas.size()]))
+		for (ArenaZone az : loadedArenas.toArray(new ArenaZone[0]))
 		{
 			az.reload();
 		}
 
 		// Reload active arenas
-		for (Arena arena : activeArenas.toArray(new Arena[activeArenas.size()]))
+		for (Arena arena : activeArenas.toArray(new Arena[0]))
 		{
 			arena.reload();
 		}
@@ -344,7 +348,7 @@ public class UltimateArena extends SwornPlugin
 		loadArenas();
 
 		// Reload classes
-		for (ArenaClass ac : classes.toArray(new ArenaClass[classes.size()]))
+		for (ArenaClass ac : classes.toArray(new ArenaClass[0]))
 		{
 			ac.reload();
 		}
@@ -397,15 +401,10 @@ public class UltimateArena extends SwornPlugin
 	// Load Stuff
 	private void loadArenas()
 	{
+		long start = System.currentTimeMillis();
+
 		File folder = new File(getDataFolder(), "arenas");
-		File[] children = folder.listFiles(new FileFilter()
-		{
-			@Override
-			public boolean accept(File file)
-			{
-				return file.getName().endsWith(".dat");
-			}
-		});
+		File[] children = folder.listFiles(file -> file.getName().endsWith(".dat"));
 
 		if (children == null || children.length == 0)
 			return;
@@ -415,7 +414,7 @@ public class UltimateArena extends SwornPlugin
 			loadArena(file);
 		}
 
-		logHandler.log("Loaded {0} arenas.", loadedArenas.size());
+		logHandler.log("Loaded {0} arenas in {1} ms", loadedArenas.size(), System.currentTimeMillis() - start);
 	}
 
 	private void loadArena(File file)
@@ -451,6 +450,8 @@ public class UltimateArena extends SwornPlugin
 
 	private void loadClasses()
 	{
+		long start = System.currentTimeMillis();
+
 		File folder = new File(getDataFolder(), "classes");
 		FileFilter filter = file -> file.getName().contains(".yml");
 
@@ -498,7 +499,7 @@ public class UltimateArena extends SwornPlugin
 			}
 		}
 
-		log("Loaded {0} classes.", total);
+		log("Loaded {0} classes in {1} ms", total, System.currentTimeMillis() - start);
 	}
 
 	private static final List<String> STOCK_CLASSES = Arrays.asList(
@@ -515,8 +516,11 @@ public class UltimateArena extends SwornPlugin
 
 	private void loadSigns()
 	{
+		long start = System.currentTimeMillis();
+
 		signHandler = new SignHandler(this);
-		log("Loaded {0} signs.", signHandler.getSignCount());
+
+		log("Loaded {0} signs in {1} ms", signHandler.getSignCount(), System.currentTimeMillis() - start);
 	}
 
 	/**

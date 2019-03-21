@@ -94,12 +94,12 @@ public abstract class Configuration implements ConfigurationSerializable, Reload
 	protected List<String> getStringList(Map<String, Object> map, String key)
 	{
 		List<String> list = (List<String>) get(map, key, null);
-		return list != null ? list : new ArrayList<String>();
+		return list != null ? list : new ArrayList<>();
 	}
 
 	protected Map<String, Object> getSection(Map<String, Object> map, String key)
 	{
 		ConfigurationSection section = (ConfigurationSection) get(map, key, null);
-		return section != null ? section.getValues(false) : new HashMap<String, Object>();
+		return section != null ? section.getValues(false) : new HashMap<>();
 	}
 }

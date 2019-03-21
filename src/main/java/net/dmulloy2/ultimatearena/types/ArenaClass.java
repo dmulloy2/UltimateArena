@@ -327,7 +327,7 @@ public final class ArenaClass extends Configuration
 	}
 
 	private Map<Enchantment, Integer> readArmorEnchantments(String string) {
-		Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+		Map<Enchantment, Integer> enchants = new HashMap<>();
 
 		string = string.replaceAll(" ", "");
 		String[] split = string.split(",");

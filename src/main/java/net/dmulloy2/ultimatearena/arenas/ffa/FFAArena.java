@@ -111,14 +111,7 @@ public class FFAArena extends Arena
 			map.put(ap, ap.getKills());
 
 		List<Entry<ArenaPlayer, Integer>> sortedEntries = new ArrayList<>(map.entrySet());
-		Collections.sort(sortedEntries, new Comparator<Entry<ArenaPlayer, Integer>>()
-		{
-			@Override
-			public int compare(Entry<ArenaPlayer, Integer> entry1, Entry<ArenaPlayer, Integer> entry2)
-			{
-				return -entry1.getValue().compareTo(entry2.getValue());
-			}
-		});
+		sortedEntries.sort((entry1, entry2) -> -entry1.getValue().compareTo(entry2.getValue()));
 
 		return sortedEntries.get(0).getKey();
 	}

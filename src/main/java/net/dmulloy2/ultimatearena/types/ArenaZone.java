@@ -572,7 +572,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				}
 
 				field.setAccessible(accessible);
-			} catch (Throwable ex) { }
+			} catch (Throwable ignored) { }
 		}
 
 		data.put("version", CURRENT_VERSION);

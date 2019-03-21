@@ -320,7 +320,7 @@ public class SignHandler
 	 */
 	public final ArenaSign[] getSigns()
 	{
-		return signs.toArray(new ArenaSign[signs.size()]);
+		return signs.toArray(new ArenaSign[0]);
 	}
 
 	public final int getSignCount()

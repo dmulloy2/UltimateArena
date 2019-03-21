@@ -52,6 +52,7 @@ import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.ultimatearena.types.WinCondition;
+import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
@@ -63,6 +64,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -82,7 +85,7 @@ import lombok.Setter;
  */
 
 @Getter @Setter
-public abstract class Arena implements Reloadable
+public abstract class Arena implements Reloadable, Listener
 {
 	public enum Mode
 	{
@@ -176,6 +179,7 @@ public abstract class Arena implements Reloadable
 		this.startTimer = az.getConfig().getLobbyTime();
 		this.inLobby = true;
 
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 		this.reload();
 	}
 
@@ -870,6 +874,8 @@ public abstract class Arena implements Reloadable
 
 		plugin.getSignHandler().onArenaCompletion(this);
 		plugin.getSignHandler().updateSigns(az);
+
+		HandlerList.unregisterAll(this);
 	}
 
 	/**
@@ -905,7 +911,9 @@ public abstract class Arena implements Reloadable
 					for (ArenaPlayer active : getActivePlayers())
 					{
 						if (active.getPlayer() != null)
-							active.getPlayer().showPlayer(player);
+						{
+							CompatUtil.showPlayer(active.getPlayer(), plugin, player);
+						}
 					}
 				}
 			}.runTaskLater(plugin, 5L);
@@ -1407,7 +1415,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final ArenaPlayer[] getActivePlayers()
 	{
-		return active.toArray(new ArenaPlayer[active.size()]);
+		return active.toArray(new ArenaPlayer[0]);
 	}
 
 	/**
@@ -1417,7 +1425,7 @@ public abstract class Arena implements Reloadable
 	 */
 	public final ArenaPlayer[] getInactivePlayers()
 	{
-		return inactive.toArray(new ArenaPlayer[inactive.size()]);
+		return inactive.toArray(new ArenaPlayer[0]);
 	}
 
 	/**
@@ -1472,7 +1480,7 @@ public abstract class Arena implements Reloadable
 
 	public final ArenaFlag[] getFlags()
 	{
-		return flags.toArray(new ArenaFlag[flags.size()]);
+		return flags.toArray(new ArenaFlag[0]);
 	}
 
 	// ---- Public API

@@ -144,7 +144,7 @@ public class ConquestArena extends Arena
 		if (isInLobby())
 			return super.getSpawn(ap);
 
-		List<ArenaFlag> spawnto = new ArrayList<ArenaFlag>();
+		List<ArenaFlag> spawnto = new ArrayList<>();
 		for (ArenaFlag flag : getFlags())
 		{
 			if (flag.getOwningTeam() == ap.getTeam())

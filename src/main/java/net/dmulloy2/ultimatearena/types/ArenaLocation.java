@@ -190,7 +190,7 @@ public final class ArenaLocation implements ConfigurationSerializable, Cloneable
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> result = new LinkedHashMap<String, Object>();
+		Map<String, Object> result = new LinkedHashMap<>();
 
 		result.put("worldName", worldName);
 		result.put("x", x);

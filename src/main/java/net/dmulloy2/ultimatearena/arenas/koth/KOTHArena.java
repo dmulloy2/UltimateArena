@@ -117,7 +117,7 @@ public class KOTHArena extends Arena
 	@Override
 	public List<String> getLeaderboard(Player player)
 	{
-		List<String> leaderboard = new ArrayList<String>();
+		List<String> leaderboard = new ArrayList<>();
 
 		int pos = 1;
 		for (ArenaPlayer ap : getLeaderboard())

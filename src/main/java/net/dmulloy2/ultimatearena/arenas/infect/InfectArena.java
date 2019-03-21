@@ -65,7 +65,7 @@ public class InfectArena extends PvPArena
 			}
 			else
 			{
-				chooseInfected(tries++);
+				chooseInfected(++tries);
 			}
 		}
 		else
