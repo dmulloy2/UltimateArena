@@ -2,14 +2,14 @@
 UltimateArena is a completely customizable arena plugin with 10 different arena types and a comphrenehsive API. Players fight to the death and are rewarded with configurable rewards and money! Every aspect of this plugin is configurable!
 
 ## Development Builds
-Development builds of UltimateArena can be found at our Jenkins server: http://ci.dmulloy2.net/job/UltimateArena/
+Development builds of UltimateArena can be found on my Jenkins server: https://ci.dmulloy2.net/job/UltimateArena/
 
 ## Useful Links
-* [API Documentation](https://github.com/MineSworn/UltimateArena/wiki/API)
-* [Configuration](https://github.com/MineSworn/UltimateArena/wiki/Configuration)
-* [Issue Tracker](https://github.com/MineSworn/UltimateArena/issues) 
-* [Permissions](https://github.com/MineSworn/UltimateArena/blob/master/src/main/resources/plugin.yml#L14)
-* [JavaDocs](http://ci.dmulloy2.net/job/UltimateArena/javadoc/)
+* [API Documentation](https://github.com/dmulloy2/UltimateArena/wiki/API)
+* [Configuration](https://github.com/dmulloy2/UltimateArena/wiki/Configuration)
+* [Issue Tracker](https://github.com/dmulloy2/UltimateArena/issues) 
+* [Permissions](https://github.com/dmulloy2/UltimateArena/blob/master/src/main/resources/plugin.yml#L14)
+* [JavaDocs](https://ci.dmulloy2.net/job/UltimateArena/javadoc/)
 
 ## Features
 * 10 arena types (CTF, MobArena, ConquestArena, King of The Hill arena, Bomb Arena, FFA arena, Spleef arena, PvPArena, Hunger arena, and Infect arena)
@@ -33,9 +33,9 @@ Development builds of UltimateArena can be found at our Jenkins server: http://c
 * CTF - Players are split into two teams. The goal is to capture the other team's flag and bring it back to their own base
 
 ## SwornGuns
-UltimateArena works great with SwornGuns! Most of the default classes come with ready-to-fire guns! Download it here: http://ci.shadowvolt.com/job/SwornGuns/
+UltimateArena works great with SwornGuns! Most of the default classes come with ready-to-fire guns! Download it here: https://ci.dmulloy2.net/job/SwornGuns/
 
 ## Issues
-_Please follow the [contribution guidelines](https://github.com/MineSworn/UltimateArena/blob/master/CONTRIBUTING.md) when reporting bugs!_
+_Please follow the [contribution guidelines](https://github.com/dmulloy2/UltimateArena/blob/master/CONTRIBUTING.md) when reporting bugs!_
 
-Report issues here: https://github.com/MineSworn/UltimateArena/issues
+Report issues here: https://github.com/dmulloy2/UltimateArena/issues
