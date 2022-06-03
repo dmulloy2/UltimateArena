@@ -75,7 +75,7 @@ public class ProtocolHandler extends TypelessProvider
 		{
 			PacketContainer packet = manager.createPacket(PacketType.Play.Client.CLIENT_COMMAND);
 			packet.getClientCommands().write(0, EnumWrappers.ClientCommand.PERFORM_RESPAWN);
-			manager.recieveClientPacket(player, packet);
+			manager.receiveClientPacket(player, packet);
 		}
 		catch (Throwable ex)
 		{

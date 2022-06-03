@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import net.dmulloy2.chat.BaseComponent;
-import net.dmulloy2.chat.ChatUtil;
-import net.dmulloy2.chat.ComponentSerializer;
 import net.dmulloy2.types.CustomScoreboard;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.ultimatearena.Config;
@@ -56,6 +53,8 @@ import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -388,7 +387,7 @@ public abstract class Arena implements Reloadable, Listener
 						player.sendMessage(plugin.getPrefix() + message);
 
 					if (components != null)
-						ChatUtil.sendMessage(player, components);
+						player.spigot().sendMessage(components);
 				}
 			}
 		}
