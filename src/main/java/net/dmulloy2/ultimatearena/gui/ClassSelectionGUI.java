@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.gui.AbstractGUI;
-import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.util.FormatUtil;

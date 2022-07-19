@@ -7,8 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
+import net.dmulloy2.util.FormatUtil;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.entity.Player;
@@ -18,10 +21,12 @@ import org.bukkit.entity.Player;
  */
 public class Attributes
 {
-	private Map<Attribute, AttributeModifier> map;
+	private final Map<Attribute, AttributeModifier> map;
+	private final String className;
 
-	public Attributes(String clazz, List<String> list)
+	public Attributes(String className, List<String> list)
 	{
+		this.className = className;
 		this.map = new HashMap<>();
 
 		for (String line : list)
@@ -37,31 +42,27 @@ public class Attributes
 			Operation operation;
 			switch (operStr.toLowerCase())
 			{
-				case "*":
-				case "x":
-					operation = Operation.MULTIPLY_SCALAR_1;
-					break;
-				case "/":
+				case "*", "x" -> operation = Operation.MULTIPLY_SCALAR_1;
+				case "/" -> {
 					operation = Operation.MULTIPLY_SCALAR_1;
 					value = 1.0D / value;
-					break;
-				case "+":
-					operation = Operation.ADD_NUMBER;
-					break;
-				case "-":
+				}
+				case "+" -> operation = Operation.ADD_NUMBER;
+				case "-" -> {
 					operation = Operation.ADD_NUMBER;
 					if (value > 0) value = -value;
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown operation: " + operStr);
+				}
+				default -> throw new IllegalArgumentException("Unknown operation: " + operStr);
 			}
 
-			
-
-			String name = "ua_" + clazz.toLowerCase() + "_" + attribute.name().toLowerCase();
-			AttributeModifier mod = new AttributeModifier(name, value, operation);
-			map.put(attribute, mod);
+			addAttribute(attribute, value, operation);
 		}
+	}
+
+	public void addAttribute(Attribute attribute, double value, AttributeModifier.Operation operation)
+	{
+		String name = FormatUtil.format("ua_{0}_{1}", className.toLowerCase(), attribute.name().toLowerCase());
+		map.put(attribute, new AttributeModifier(UUID.randomUUID(), name, value, operation));
 	}
 
 	public void apply(Player player)
@@ -71,7 +72,9 @@ public class Attributes
 			Attribute attr = entry.getKey();
 			AttributeModifier mod = entry.getValue();
 
-			player.getAttribute(attr).addModifier(mod);
+			AttributeInstance instance = player.getAttribute(attr);
+			if (instance != null)
+				instance.addModifier(mod);
 		}
 	}
 
@@ -82,7 +85,9 @@ public class Attributes
 			Attribute attr = entry.getKey();
 			AttributeModifier mod = entry.getValue();
 
-			player.getAttribute(attr).removeModifier(mod);
+			AttributeInstance instance = player.getAttribute(attr);
+			if (instance != null)
+				instance.removeModifier(mod);
 		}
 	}
 }

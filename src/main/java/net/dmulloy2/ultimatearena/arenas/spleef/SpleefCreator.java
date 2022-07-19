@@ -48,15 +48,16 @@ public class SpleefCreator extends ArenaCreator
 	@Override
 	public void setPoint(String[] args)
 	{
+		boolean error = false;
 		Player player = getPlayer();
 		switch (stepNumber)
 		{
-			case 1: // Arena
+			case 1 -> // Arena
 			{
 				WorldEditHandler worldEdit = plugin.getWorldEditHandler();
 				if (worldEdit != null && worldEdit.isEnabled())
 				{
-					if (! worldEdit.hasCuboidSelection(player))
+					if (!worldEdit.hasCuboidSelection(player))
 					{
 						sendMessage("&cYou must have a WorldEdit selection to do this!");
 						return;
@@ -83,8 +84,7 @@ public class SpleefCreator extends ArenaCreator
 
 					sendMessage("&3Arena points set!");
 					break; // Step completed
-				}
-				else
+				} else
 				{
 					if (target.getArena1() == null)
 					{
@@ -92,8 +92,7 @@ public class SpleefCreator extends ArenaCreator
 						sendMessage("&3First point set.");
 						sendMessage("&3Please set the &e2nd &3point.");
 						return;
-					}
-					else
+					} else
 					{
 						target.setArena2(new ArenaLocation(player));
 						sendMessage("&3Second point set!");
@@ -101,12 +100,12 @@ public class SpleefCreator extends ArenaCreator
 					}
 				}
 			}
-			case 2: // Lobby
+			case 2 -> // Lobby
 			{
 				WorldEditHandler worldEdit = plugin.getWorldEditHandler();
 				if (worldEdit != null && worldEdit.isEnabled())
 				{
-					if (! worldEdit.hasCuboidSelection(player))
+					if (!worldEdit.hasCuboidSelection(player))
 					{
 						sendMessage("&cYou must have a WorldEdit selection to do this!");
 						return;
@@ -123,7 +122,7 @@ public class SpleefCreator extends ArenaCreator
 						return;
 					}
 
-					if (! first.getWorld().equals(second.getWorld()))
+					if (!first.getWorld().equals(second.getWorld()))
 					{
 						sendMessage("&cYou must make your lobby in the same world as your arena!");
 						return;
@@ -139,8 +138,7 @@ public class SpleefCreator extends ArenaCreator
 
 					sendMessage("&3Lobby points set!");
 					break; // Step completed
-				}
-				else
+				} else
 				{
 					ArenaLocation loc = new ArenaLocation(player);
 					if (plugin.isInArena(loc))
@@ -161,8 +159,7 @@ public class SpleefCreator extends ArenaCreator
 						sendMessage("&3First point set.");
 						sendMessage("&3Please set the &e2nd &3point.");
 						return;
-					}
-					else
+					} else
 					{
 						target.setLobby2(new ArenaLocation(player));
 						sendMessage("&3Second point set!");
@@ -170,14 +167,13 @@ public class SpleefCreator extends ArenaCreator
 					}
 				}
 			}
-			case 3: // Lobby spawn
+			case 3 -> // Lobby spawn
 			{
 				target.setLobbyREDspawn(new ArenaLocation(player));
 				sendMessage("&eLobby &3spawnpoint set.");
 				break; // Step completed
 			}
-			case 4:
-			{
+			case 4 -> {
 				Location location = player.getLocation().subtract(0.0D, 1.0D, 0.0D);
 
 				if (target.getFlags().isEmpty())
@@ -185,37 +181,41 @@ public class SpleefCreator extends ArenaCreator
 					target.getFlags().add(new ArenaLocation(location));
 					sendMessage("&3First point set. Please set the &e2nd &3point.");
 					return;
-				}
-				else
+				} else
 				{
 					target.getFlags().add(new ArenaLocation(location));
 					sendMessage("&eSpleef zone &3set.");
 					break; // Step completed
 				}
 			}
-			case 5:
-			{
+			case 5 -> {
 				if (target.getFlags().size() == 2)
 				{
 					target.getFlags().add(new ArenaLocation(player));
 					sendMessage("&3First point set. Please set the &e2nd &3point.");
 					return;
-				}
-				else
+				} else
 				{
 					target.getFlags().add(new ArenaLocation(player));
 					sendMessage("&eOut zone &3set.");
 					break; // Step completed
 				}
 			}
-			case 6:
-			{
+			case 6 -> {
 				Material specialType = Material.QUARTZ_BLOCK;
 				if (args.length > 0)
 				{
-					Material material = MaterialUtil.getMaterial(args[0]);
+					Material material = Material.matchMaterial(args[0]);
 					if (material != null)
+					{
 						specialType = material;
+					}
+					else
+					{
+						sendMessage("&4Invalid spleef ground type \"&c{0}&4\"");
+						error = true;
+						break;
+					}
 				}
 
 				((SpleefZone) target).setSpecialType(specialType);
@@ -224,7 +224,8 @@ public class SpleefCreator extends ArenaCreator
 			}
 		}
 
-		stepUp(); // Next step
+		if (!error)
+			stepUp(); // Next step
 	}
 
 	/**
@@ -235,24 +236,17 @@ public class SpleefCreator extends ArenaCreator
 	{
 		switch (stepNumber)
 		{
-			case 1:
-			case 2:
-				super.stepInfo();
-				break;
-			case 3:
-				sendMessage("&3Please set the &eLobby &3spawnpoint.");
-				break;
-			case 4:
+			case 1, 2 -> super.stepInfo();
+			case 3 -> sendMessage("&3Please set the &eLobby &3spawnpoint.");
+			case 4 -> {
 				sendMessage("&3Please set the &eSpleef ground&3.");
 				sendMessage("&3This should be a 1 block thick rectangle where players will spawn");
-				break;
-			case 5:
-				sendMessage("&3Please set the &eOut zone&3.");
-				break;
-			case 6:
+			}
+			case 5 -> sendMessage("&3Please set the &eOut zone&3.");
+			case 6 -> {
 				sendMessage("&3Please set the &eSpleef Ground Type&3.");
 				sendMessage("&3Use &e/ua sp <material>");
-				break;
+			}
 		}
 	}
 

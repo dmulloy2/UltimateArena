@@ -19,6 +19,7 @@
 package net.dmulloy2.ultimatearena.handlers;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.Util;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -160,7 +162,7 @@ public class FileHandler
 				az.setLobbyREDspawn(new ArenaLocation(worldName, fc.getInt("lobbyRed.x"), fc.getInt("lobbyRed.y"), fc.getInt("lobbyRed.z")));
 
 				String specialType = fc.getString("specialType");
-				((SpleefZone) az).setSpecialType(MaterialUtil.getMaterial(specialType));
+				((SpleefZone) az).setSpecialType(Objects.requireNonNull(Material.matchMaterial(specialType)));
 
 				for (int i = 0; i < 4; i++)
 				{

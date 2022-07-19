@@ -38,8 +38,8 @@ import lombok.Setter;
 @Getter @Setter
 public class SpleefZone extends ArenaZone
 {
-	private String specialTypeString;
-	private Material specialType;
+	private String specialTypeString = "SNOW_BLOCK";
+	private Material specialType = Material.SNOW_BLOCK;
 
 	public SpleefZone(ArenaType type)
 	{
@@ -61,7 +61,7 @@ public class SpleefZone extends ArenaZone
 	public void loadCustomOptions(YamlConfiguration config)
 	{
 		this.specialTypeString = config.getString("specialTypeString");
-		this.specialType = MaterialUtil.getMaterial(specialTypeString);
+		this.specialType = Material.matchMaterial(specialTypeString);
 	}
 
 	@Override

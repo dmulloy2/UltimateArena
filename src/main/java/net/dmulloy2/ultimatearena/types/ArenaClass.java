@@ -28,8 +28,6 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.io.IOUtil;
-import net.dmulloy2.types.EnchantmentType;
-import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.PotionType;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -41,8 +39,9 @@ import net.dmulloy2.util.Util;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -64,7 +63,6 @@ public final class ArenaClass extends Configuration
 	private List<String> commands;
 
 	private boolean useHelmet = true;
-	private double maxHealth = 20.0D;
 	private double cost = -1.0D;
 
 	private Attributes attributes;
@@ -77,8 +75,8 @@ public final class ArenaClass extends Configuration
 	private List<String> description;
 
 	// ---- Transient
-	private transient File file;
-	private transient String name;
+	private final transient File file;
+	private final transient String name;
 	private transient boolean loaded;
 
 	private transient final UltimateArena plugin;
@@ -100,7 +98,7 @@ public final class ArenaClass extends Configuration
 	 *
 	 * @return Whether or not loading was successful
 	 */
-	public final boolean load()
+	public boolean load()
 	{
 		Validate.isTrue(! loaded, "This class has already been loaded!");
 
@@ -124,52 +122,12 @@ public final class ArenaClass extends Configuration
 				for (Entry<String, Object> entry : getSection(values, "armor").entrySet())
 				{
 					String value = entry.getValue().toString();
-					ItemStack item = null;
-
-					try
-					{
-						// Attempt to parse regularly
-						item = ItemUtil.readItem(value);
-					} catch (Throwable ignored) { }
+					ItemStack item = ItemUtil.readItem(value, plugin);
 
 					if (item != null)
 					{
 						armor.put(entry.getKey(), item);
-						continue;
 					}
-
-					// Read legacy
-					Material material;
-					short data;
-
-					Map<Enchantment, Integer> enchants = new HashMap<>();
-
-					value = value.replaceAll(" ", "");
-					if (value.contains(","))
-					{
-						String str = value.substring(0, value.indexOf(","));
-						MyMaterial myMat = MyMaterial.fromString(str);
-						material = myMat.getMaterial();
-						data = myMat.isIgnoreData() ? 0 : myMat.getData();
-						enchants = readArmorEnchantments(value.substring(value.indexOf(",") + 1));
-					}
-					else
-					{
-						MyMaterial myMat = MyMaterial.fromString(value);
-						material = myMat.getMaterial();
-						data = myMat.isIgnoreData() ? 0 : myMat.getData();
-					}
-
-					item = new ItemStack(material, 1, data);
-
-					if (! enchants.isEmpty())
-						item.addUnsafeEnchantments(enchants);
-
-					armor.put(entry.getKey(), item);
-
-					// Convert
-					config.set("armor." + entry.getKey().toLowerCase(), ItemUtil.serialize(item));
-					changes = true;
 				}
 			}
 
@@ -269,8 +227,6 @@ public final class ArenaClass extends Configuration
 			meta.setLore(description);
 			icon.setItemMeta(meta);
 
-			maxHealth = getDouble(values, "maxHealth", 20.0D);
-
 			if (isSet(values, "attributes"))
 			{
 				try
@@ -279,8 +235,29 @@ public final class ArenaClass extends Configuration
 				}
 				catch (Throwable ex)
 				{
+					this.attributes = new Attributes(name, new ArrayList<>());
 					plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "reading attributes for {0}", name));
 				}
+			}
+
+			double maxHealth = getDouble(values, "maxHealth", 20.0D);
+			if (maxHealth != 20.0D)
+			{
+				plugin.getLogHandler().log(Level.WARNING, "use of maxHealth is deprecated. Migrating to attribute in {0}", name);
+
+				if (attributes == null)
+				{
+					this.attributes = new Attributes(name, new ArrayList<>());
+				}
+
+				double difference = maxHealth - 20.0D;
+				attributes.addAttribute(Attribute.GENERIC_MAX_HEALTH, difference, AttributeModifier.Operation.ADD_NUMBER);
+
+				List<String> attributeData = getStringList(values, "attributes");
+				String sign = difference > 0 ? "+" : "-";
+				attributeData.add(FormatUtil.format("GENERIC_MAX_HEALTH:{0}{1}", sign, difference));
+				config.set("attributes", attributeData);
+				changes = true;
 			}
 
 			try
@@ -326,46 +303,23 @@ public final class ArenaClass extends Configuration
 		return ret;
 	}
 
-	private Map<Enchantment, Integer> readArmorEnchantments(String string) {
-		Map<Enchantment, Integer> enchants = new HashMap<>();
-
-		string = string.replaceAll(" ", "");
-		String[] split = string.split(",");
-		for (String s : split)
-		{
-			if (s.contains(":"))
-			{
-				String[] split2 = s.split(":");
-				Enchantment enchantment = EnchantmentType.toEnchantment(split2[0]);
-				int level = NumberUtil.toInt(split2[1]);
-
-				if (enchantment != null && level > 0)
-				{
-					enchants.put(enchantment, level);
-				}
-			}
-		}
-
-		return enchants;
-	}
-
-	public final boolean hasPermission(Player player)
+	public boolean hasPermission(Player player)
 	{
 		Validate.notNull(player, "player cannot be null!");
 		return ! needsPermission || plugin.getPermissionHandler().hasPermission(player, permissionNode);
 	}
 
-	public final ItemStack getIcon()
+	public ItemStack getIcon()
 	{
 		return icon.clone();
 	}
 
-	public final boolean checkAvailability(ArenaPlayer ap)
+	public boolean checkAvailability(ArenaPlayer ap)
 	{
 		return checkAvailability(ap, true);
 	}
 
-	public final boolean checkAvailability(ArenaPlayer ap, boolean message)
+	public boolean checkAvailability(ArenaPlayer ap, boolean message)
 	{
 		if (! hasPermission(ap.getPlayer()))
 		{

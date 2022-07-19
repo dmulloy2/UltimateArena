@@ -21,11 +21,11 @@ package net.dmulloy2.ultimatearena.types;
 import java.util.*;
 import java.util.Map.Entry;
 
-import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.types.Sorter;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.scoreboard.ArenaScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.DisabledScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.StandardScoreboard;
@@ -37,6 +37,9 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -61,6 +64,8 @@ import lombok.Setter;
 @Getter @Setter
 public final class ArenaPlayer
 {
+	private static final UUID HEALTH_ATTRIBUTE_UUID = UUID.randomUUID();
+
 	private int kills;
 	private int deaths;
 	private int killStreak;
@@ -340,12 +345,8 @@ public final class ArenaPlayer
 			player.getInventory().setItem(tool.getKey(), tool.getValue());
 		}
 
-		if (arenaClass.getMaxHealth() != 20.0D)
-			CompatUtil.setMaxHealth(player, arenaClass.getMaxHealth());
-
 		Attributes attr = arenaClass.getAttributes();
-		if (attr != null)
-			attr.apply(player);
+		attr.apply(player);
 
 		this.changeClassOnRespawn = false;
 	}
@@ -554,8 +555,7 @@ public final class ArenaPlayer
 		if (arenaClass != null)
 		{
 			Attributes attr = arenaClass.getAttributes();
-			if (attr != null)
-				attr.remove(player);
+			attr.remove(player);
 		}
 
 		board.dispose();
@@ -629,9 +629,8 @@ public final class ArenaPlayer
 	{
 		if (obj == this) return true;
 		
-		if (obj instanceof ArenaPlayer)
+		if (obj instanceof ArenaPlayer that)
 		{
-			ArenaPlayer that = (ArenaPlayer) obj;
 			return Objects.equals(uniqueId, that.uniqueId) &&
 					Objects.equals(arena, that.arena);
 		}

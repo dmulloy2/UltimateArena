@@ -24,6 +24,10 @@
       <id>essentials-repo</id>
       <url>https://ci.ender.zone/plugin/repository/everything/</url>
     </repository>
+    <repository>
+      <id>jitpack</id>
+      <url>https://jitpack.io</url>
+    </repository>
   </repositories>
 
   <distributionManagement>
@@ -166,7 +170,7 @@
     <dependency>
       <groupId>net.dmulloy2</groupId>
       <artifactId>swornapi</artifactId>
-      <version>1.3-SNAPSHOT</version>
+      <version>2.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -203,6 +207,11 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.github.MilkBowl</groupId>
+      <artifactId>VaultAPI</artifactId>
+      <version>1.7</version>
     </dependency>
   </dependencies>
 </project>
