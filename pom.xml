@@ -102,8 +102,7 @@
                   <pattern>net.dmulloy2</pattern>
                   <shadedPattern>net.dmulloy2.ultimatearena</shadedPattern>
                   <excludes>
-                    <exclude>net.dmulloy2.ultimatearena*</exclude>
-                    <exclude>*ArenaLocation</exclude>
+                    <exclude>net.dmulloy2.ultimatearena.*</exclude>
                   </excludes>
                 </relocation>
               </relocations>
