@@ -105,6 +105,10 @@
                     <exclude>net.dmulloy2.ultimatearena.*</exclude>
                   </excludes>
                 </relocation>
+                <relocation>
+                  <pattern>net.dmulloy2.ultimatearena.ultimatearena</pattern>
+                  <shadedPattern>net.dmulloy2.ultimatearena</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
