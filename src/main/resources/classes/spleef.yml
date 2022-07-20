@@ -3,8 +3,8 @@ armor:
   leggings: IRON_LEGGINGS, 1, prot:1
   boots: IRON_BOOTS, 1, prot:1
 tools:
-  '1': DIAMOND_SPADE, 1, eff:5
+  '1': DIAMOND_SHOVEL, 1, eff:5
 essentialsKit: ''
 useHelmet: true
 potionEffects: ''
-icon: DIAMOND_SPADE, 1
+icon: DIAMOND_SHOVEL, 1

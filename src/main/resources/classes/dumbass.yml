@@ -3,10 +3,10 @@ armor:
   leggings: LEATHER_LEGGINGS, 1, prot:1
   boots: LEATHER_BOOTS, 1, prot:1
 tools:
-  '1': GOLD_SWORD, 1, prot:4
+  '1': GOLDEN_SWORD, 1, prot:4
   '2': FLINT_AND_STEEL, 1, fireprot:4
   '3': POTION, 2
 essentialsKit: ''
 useHelmet: true
 potionEffects: ''
-icon: GOLD_SWORD, 1
+icon: GOLDEN_SWORD, 1

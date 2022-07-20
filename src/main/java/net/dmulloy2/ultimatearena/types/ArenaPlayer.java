@@ -346,7 +346,9 @@ public final class ArenaPlayer
 		}
 
 		Attributes attr = arenaClass.getAttributes();
-		attr.apply(player);
+
+		if (attr != null)
+			attr.apply(player);
 
 		this.changeClassOnRespawn = false;
 	}
@@ -555,7 +557,9 @@ public final class ArenaPlayer
 		if (arenaClass != null)
 		{
 			Attributes attr = arenaClass.getAttributes();
-			attr.remove(player);
+
+			if (attr != null)
+				attr.remove(player);
 		}
 
 		board.dispose();

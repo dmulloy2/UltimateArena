@@ -3,7 +3,7 @@ armor:
   leggings: IRON_LEGGINGS, 1, prot:1
   boots: IRON_BOOTS, 1, prot:1
 tools:
-  '1': GOLD_HOE, 1
+  '1': GOLDEN_HOE, 1
   '2': CLAY_BALL, 1
   '3': SLIME_BALL, 3
   '4': GOLDEN_APPLE, 2
@@ -11,4 +11,4 @@ tools:
 essentialsKit: ''
 useHelmet: true
 potionEffects: ''
-icon: GOLD_HOE, 1
+icon: GOLDEN_HOE, 1

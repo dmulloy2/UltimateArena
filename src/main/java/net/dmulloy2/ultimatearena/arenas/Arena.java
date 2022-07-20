@@ -377,7 +377,7 @@ public abstract class Arena implements Reloadable, Listener
 				if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
 				{
 					String message;
-					
+     
 					if (announced == 0)
 						message = FormatUtil.format(getMessage("arenaCreated"), type.getStylizedName());
 					else
@@ -830,8 +830,15 @@ public abstract class Arena implements Reloadable, Listener
 			as.endPlayer();
 		}
 
-		clearEntities();
-		clearMaterials();
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				clearEntities();
+				clearMaterials();
+			}
+		}.runTaskLater(plugin, 20L);
 
 		conclude(120L);
 	}
