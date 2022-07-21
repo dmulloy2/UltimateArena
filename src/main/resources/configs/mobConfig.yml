@@ -29,7 +29,7 @@ waves:
     - "BLAZE"
     - "BLAZE"
   10:
-    - "PIG_ZOMBIE"
+    - "ZOMBIFIED_PIGLIN"
     - "ENDERMAN"
   13:
     - "GHAST"
