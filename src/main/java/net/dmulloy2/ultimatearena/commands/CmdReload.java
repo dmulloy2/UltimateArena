@@ -32,6 +32,7 @@ public class CmdReload extends UltimateArenaCommand
 		super(plugin);
 		this.name = "reload";
 		this.aliases.add("rl");
+		this.addOptionalArg("confirm");
 		this.description = "reload UltimateArena";
 		this.permission = Permission.RELOAD;
 
@@ -41,6 +42,12 @@ public class CmdReload extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
+		if (plugin.getActiveArenas().length > 0 && (args.length == 0 || !args[0].equalsIgnoreCase("confirm")))
+		{
+			sendpMessage("Reloading UltimateArena will stop any active arenas. Run &b/ua reload confirm&e if you are sure");
+			return;
+		}
+
 		long start = System.currentTimeMillis();
 		plugin.getLogHandler().log("Reloading UltimateArena...");
 		sendpMessage("&aReloading UltimateArena...");

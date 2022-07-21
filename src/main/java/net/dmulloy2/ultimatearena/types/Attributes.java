@@ -24,11 +24,14 @@ public class Attributes
 	private final Map<Attribute, AttributeModifier> map;
 	private final String className;
 
-	public Attributes(String className, List<String> list)
+	public Attributes(String className)
 	{
 		this.className = className;
 		this.map = new HashMap<>();
+	}
 
+	public void loadAttributes(List<String> list)
+	{
 		for (String line : list)
 		{
 			String[] split = line.split(":");
@@ -89,5 +92,10 @@ public class Attributes
 			if (instance != null)
 				instance.removeModifier(mod);
 		}
+	}
+
+	public void clear()
+	{
+		map.clear();
 	}
 }

@@ -107,6 +107,7 @@ public final class ArenaClass extends Configuration
 		this.tools = new HashMap<>();
 		this.commands = new ArrayList<>();
 		this.description = new ArrayList<>();
+		this.attributes = new Attributes(name);
 
 		try
 		{
@@ -231,11 +232,11 @@ public final class ArenaClass extends Configuration
 			{
 				try
 				{
-					this.attributes = new Attributes(name, getStringList(values, "attributes"));
+					List<String> attributeData = getStringList(values, "attributes");
+					attributes.loadAttributes(attributeData);
 				}
 				catch (Throwable ex)
 				{
-					this.attributes = new Attributes(name, new ArrayList<>());
 					plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "reading attributes for {0}", name));
 				}
 			}
@@ -244,11 +245,6 @@ public final class ArenaClass extends Configuration
 			if (maxHealth != 20.0D)
 			{
 				plugin.getLogHandler().log(Level.WARNING, "use of maxHealth is deprecated. Migrating to attribute in {0}", name);
-
-				if (attributes == null)
-				{
-					this.attributes = new Attributes(name, new ArrayList<>());
-				}
 
 				double difference = maxHealth - 20.0D;
 				attributes.addAttribute(Attribute.GENERIC_MAX_HEALTH, difference, AttributeModifier.Operation.ADD_NUMBER);
@@ -369,6 +365,8 @@ public final class ArenaClass extends Configuration
 
 		if (potionEffects != null)
 			this.potionEffects.clear();
+
+		this.attributes.clear();
 
 		// Empty strings
 		this.permissionNode = "";
