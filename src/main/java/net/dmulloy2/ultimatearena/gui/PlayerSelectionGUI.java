@@ -18,12 +18,12 @@
  */
 package net.dmulloy2.ultimatearena.gui;
 
-import net.dmulloy2.gui.AbstractGUI;
+import net.dmulloy2.swornapi.gui.AbstractGUI;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaSpectator;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

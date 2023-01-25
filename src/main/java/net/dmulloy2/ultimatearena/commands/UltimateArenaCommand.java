@@ -18,7 +18,7 @@
  */
 package net.dmulloy2.ultimatearena.commands;
 
-import net.dmulloy2.commands.Command;
+import net.dmulloy2.swornapi.commands.Command;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;

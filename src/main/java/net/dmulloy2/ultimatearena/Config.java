@@ -6,12 +6,12 @@ package net.dmulloy2.ultimatearena;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.SwornPlugin;
-import net.dmulloy2.config.ConfigParser;
-import net.dmulloy2.config.Key;
-import net.dmulloy2.config.ValueOptions;
-import net.dmulloy2.config.ValueOptions.ValueOption;
-import net.dmulloy2.util.ListUtil;
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.config.ConfigParser;
+import net.dmulloy2.swornapi.config.Key;
+import net.dmulloy2.swornapi.config.ValueOptions;
+import net.dmulloy2.swornapi.config.ValueOptions.ValueOption;
+import net.dmulloy2.swornapi.util.ListUtil;
 
 import org.bukkit.Particle;
 

@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.swornapi.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

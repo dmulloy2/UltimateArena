@@ -26,9 +26,9 @@ import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.util.CompatUtil;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.CompatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
 
 import org.bukkit.Material;
 import org.bukkit.World;

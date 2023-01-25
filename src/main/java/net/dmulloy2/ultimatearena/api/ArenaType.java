@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import net.dmulloy2.io.Closer;
+import net.dmulloy2.swornapi.io.Closer;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;

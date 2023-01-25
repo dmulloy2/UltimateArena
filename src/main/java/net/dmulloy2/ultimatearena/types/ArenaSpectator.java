@@ -26,8 +26,8 @@ import java.util.Objects;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.util.CompatUtil;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.CompatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;

@@ -23,15 +23,15 @@ import java.io.FileFilter;
 import java.util.*;
 import java.util.logging.Level;
 
-import net.dmulloy2.SwornAPI;
-import net.dmulloy2.SwornPlugin;
-import net.dmulloy2.commands.CmdHelp;
-import net.dmulloy2.gui.GUIHandler;
-import net.dmulloy2.handlers.CommandHandler;
-import net.dmulloy2.handlers.LogHandler;
-import net.dmulloy2.handlers.PermissionHandler;
-import net.dmulloy2.types.SimpleVector;
-import net.dmulloy2.types.StringJoiner;
+import net.dmulloy2.swornapi.SwornAPI;
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.commands.CmdHelp;
+import net.dmulloy2.swornapi.gui.GUIHandler;
+import net.dmulloy2.swornapi.handlers.CommandHandler;
+import net.dmulloy2.swornapi.handlers.LogHandler;
+import net.dmulloy2.swornapi.handlers.PermissionHandler;
+import net.dmulloy2.swornapi.types.SimpleVector;
+import net.dmulloy2.swornapi.types.StringJoiner;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.api.ArenaTypeHandler;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -50,10 +50,10 @@ import net.dmulloy2.ultimatearena.signs.ArenaSign;
 import net.dmulloy2.ultimatearena.signs.SignHandler;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.*;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.InventoryUtil;
-import net.dmulloy2.util.TimeUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.InventoryUtil;
+import net.dmulloy2.swornapi.util.TimeUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -945,7 +945,7 @@ public class UltimateArena extends SwornPlugin
 		List<ArenaPlayer> validPlayers = new ArrayList<>();
 		for (ArenaPlayer ap : arena.getActivePlayers())
 		{
-			if (!permissionHandler.hasPermission(ap.getPlayer(), net.dmulloy2.ultimatearena.types.Permission.JOIN_FULL))
+			if (!permissionHandler.hasPermission(ap.getPlayer(), Permission.JOIN_FULL))
 				validPlayers.add(ap);
 		}
 

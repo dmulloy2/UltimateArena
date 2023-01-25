@@ -27,7 +27,7 @@ import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Team;
-import net.dmulloy2.util.ListUtil;
+import net.dmulloy2.swornapi.util.ListUtil;
 
 import org.bukkit.entity.Player;
 

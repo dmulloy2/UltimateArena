@@ -212,5 +212,10 @@
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
     </dependency>
+    <dependency>
+      <groupId>net.dmulloy2</groupId>
+      <artifactId>swornguns</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

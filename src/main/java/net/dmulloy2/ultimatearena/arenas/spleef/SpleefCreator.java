@@ -24,8 +24,7 @@ import net.dmulloy2.ultimatearena.types.ArenaCreator;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Tuple;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

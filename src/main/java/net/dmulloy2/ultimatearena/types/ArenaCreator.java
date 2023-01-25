@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import net.dmulloy2.types.StringJoiner;
+import net.dmulloy2.swornapi.types.StringJoiner;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;

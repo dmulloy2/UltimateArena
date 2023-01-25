@@ -25,17 +25,17 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import net.dmulloy2.io.FileSerialization;
-import net.dmulloy2.io.IOUtil;
-import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.swornapi.io.FileSerialization;
+import net.dmulloy2.swornapi.io.IOUtil;
+import net.dmulloy2.swornapi.types.Reloadable;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.tasks.CommandRunner;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;

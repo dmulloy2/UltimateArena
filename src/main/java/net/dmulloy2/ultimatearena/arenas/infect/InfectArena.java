@@ -22,7 +22,7 @@ import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Team;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;

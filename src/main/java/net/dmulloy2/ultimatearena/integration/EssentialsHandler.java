@@ -18,9 +18,9 @@
  */
 package net.dmulloy2.ultimatearena.integration;
 
-import net.dmulloy2.integration.DependencyProvider;
+import net.dmulloy2.swornapi.integration.DependencyProvider;
 import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.entity.Player;
 

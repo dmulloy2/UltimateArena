@@ -28,7 +28,7 @@ import net.dmulloy2.ultimatearena.signs.StatusSign;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;

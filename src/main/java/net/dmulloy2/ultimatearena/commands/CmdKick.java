@@ -22,7 +22,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.entity.Player;
 

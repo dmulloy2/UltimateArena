@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import net.dmulloy2.io.Closer;
+import net.dmulloy2.swornapi.io.Closer;
 import net.dmulloy2.ultimatearena.UltimateArena;
 
 import org.apache.commons.lang.Validate;

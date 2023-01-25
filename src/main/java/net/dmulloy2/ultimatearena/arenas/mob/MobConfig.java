@@ -18,8 +18,6 @@
  */
 package net.dmulloy2.ultimatearena.arenas.mob;
 
-import static net.dmulloy2.util.ListUtil.toList;
-
 import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
@@ -29,8 +27,9 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.KillStreak;
-import net.dmulloy2.util.ItemUtil;
-import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.swornapi.util.ItemUtil;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.ListUtil;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -69,12 +68,12 @@ public class MobConfig extends ArenaConfig
 	private Map<Integer, List<String>> defaultWaves()
 	{
 		Map<Integer, List<String>> ret = new LinkedHashMap<>();
-		ret.put(1, toList("ZOMBIE", "ZOMBIE", "ZOMBIE"));
-		ret.put(2, toList("ZOMBIE", "ZOMBIE", "SKELETON"));
-		ret.put(4, toList("SPIDER"));
-		ret.put(7, toList("BLAZE", "BLAZE"));
-		ret.put(10, toList("PIG_ZOMBIE", "ENDERMAN"));
-		ret.put(13, toList("GHAST"));
+		ret.put(1, ListUtil.toList("ZOMBIE", "ZOMBIE", "ZOMBIE"));
+		ret.put(2, ListUtil.toList("ZOMBIE", "ZOMBIE", "SKELETON"));
+		ret.put(4, ListUtil.toList("SPIDER"));
+		ret.put(7, ListUtil.toList("BLAZE", "BLAZE"));
+		ret.put(10, ListUtil.toList("PIG_ZOMBIE", "ENDERMAN"));
+		ret.put(13, ListUtil.toList("GHAST"));
 		return ret;
 	}
 

@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.NumberUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

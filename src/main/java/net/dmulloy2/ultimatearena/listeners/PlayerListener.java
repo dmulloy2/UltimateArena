@@ -32,8 +32,8 @@ import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Field3D;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;

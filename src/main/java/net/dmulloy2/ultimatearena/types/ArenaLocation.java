@@ -24,7 +24,7 @@ import java.util.Objects;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.dmulloy2.types.SimpleVector;
+import net.dmulloy2.swornapi.types.SimpleVector;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;

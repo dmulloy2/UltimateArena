@@ -21,14 +21,14 @@ package net.dmulloy2.ultimatearena.arenas.conquest;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.types.CustomScoreboard;
+import net.dmulloy2.swornapi.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaFlag;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Team;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.Location;
 

@@ -19,14 +19,13 @@
 package net.dmulloy2.ultimatearena.api;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.swornapi.types.Reloadable;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.bomb.BombType;
 import net.dmulloy2.ultimatearena.arenas.conquest.ConquestType;
@@ -38,7 +37,7 @@ import net.dmulloy2.ultimatearena.arenas.koth.KOTHType;
 import net.dmulloy2.ultimatearena.arenas.mob.MobType;
 import net.dmulloy2.ultimatearena.arenas.pvp.PvPType;
 import net.dmulloy2.ultimatearena.arenas.spleef.SpleefType;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.apache.commons.lang.Validate;
 

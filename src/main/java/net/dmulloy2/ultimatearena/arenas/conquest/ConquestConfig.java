@@ -25,7 +25,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.KillStreak;
-import net.dmulloy2.util.ItemUtil;
+import net.dmulloy2.swornapi.util.ItemUtil;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

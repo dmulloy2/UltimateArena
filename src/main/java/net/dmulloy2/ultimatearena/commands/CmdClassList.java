@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
 
 /**
  * @author dmulloy2

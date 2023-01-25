@@ -20,8 +20,8 @@ package net.dmulloy2.ultimatearena.arenas.mob;
 
 import java.util.*;
 
-import net.dmulloy2.types.CustomScoreboard;
-import net.dmulloy2.types.SpecialEntities;
+import net.dmulloy2.swornapi.types.CustomScoreboard;
+import net.dmulloy2.swornapi.types.SpecialEntities;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
@@ -29,7 +29,7 @@ import net.dmulloy2.ultimatearena.tasks.CommandRunner;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

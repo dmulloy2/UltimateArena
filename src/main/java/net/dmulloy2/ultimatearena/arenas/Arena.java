@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import net.dmulloy2.types.CustomScoreboard;
-import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.swornapi.types.CustomScoreboard;
+import net.dmulloy2.swornapi.types.Reloadable;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
@@ -49,12 +49,13 @@ import net.dmulloy2.ultimatearena.types.LeaveReason;
 import net.dmulloy2.ultimatearena.types.Permission;
 import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.ultimatearena.types.WinCondition;
-import net.dmulloy2.util.CompatUtil;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.CompatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

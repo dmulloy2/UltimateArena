@@ -23,7 +23,6 @@ import java.util.Map;
 
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.util.MaterialUtil;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;

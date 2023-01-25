@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;

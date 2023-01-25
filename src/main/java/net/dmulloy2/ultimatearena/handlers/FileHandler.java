@@ -28,8 +28,7 @@ import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.spleef.SpleefZone;
 import net.dmulloy2.ultimatearena.types.ArenaLocation;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.util.MaterialUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;

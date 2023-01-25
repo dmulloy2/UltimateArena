@@ -3,12 +3,12 @@
  */
 package net.dmulloy2.ultimatearena.scoreboard;
 
-import net.dmulloy2.types.CustomScoreboard;
-import net.dmulloy2.types.CustomScoreboard.EntryFormat;
+import net.dmulloy2.swornapi.types.CustomScoreboard;
+import net.dmulloy2.swornapi.types.CustomScoreboard.EntryFormat;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.scoreboard.DisplaySlot;

@@ -7,7 +7,7 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;

@@ -20,8 +20,8 @@ package net.dmulloy2.ultimatearena.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.dmulloy2.util.ItemUtil;
-import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.swornapi.util.ItemUtil;
+import net.dmulloy2.swornapi.util.NumberUtil;
 
 import org.bukkit.inventory.ItemStack;
 

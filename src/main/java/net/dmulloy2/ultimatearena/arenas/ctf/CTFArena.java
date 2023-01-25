@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
-import net.dmulloy2.types.CustomScoreboard;
+import net.dmulloy2.swornapi.types.CustomScoreboard;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;

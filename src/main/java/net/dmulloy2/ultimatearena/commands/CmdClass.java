@@ -23,7 +23,7 @@ import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 /**
  * @author dmulloy2

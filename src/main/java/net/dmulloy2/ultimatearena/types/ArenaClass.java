@@ -27,14 +27,14 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import net.dmulloy2.io.IOUtil;
-import net.dmulloy2.types.PotionType;
+import net.dmulloy2.swornapi.io.IOUtil;
+import net.dmulloy2.swornapi.types.PotionType;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.ItemUtil;
-import net.dmulloy2.util.NumberUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.ItemUtil;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.WordUtils;
@@ -64,6 +64,7 @@ public final class ArenaClass extends Configuration
 
 	private boolean useHelmet = true;
 	private double cost = -1.0D;
+	private boolean unlimitedAmmo = true;
 
 	private Attributes attributes;
 	private boolean hasPotionEffects;
@@ -200,6 +201,7 @@ public final class ArenaClass extends Configuration
 				changes = true;
 			}
 
+			unlimitedAmmo = getBoolean(values, "unlimitedAmmo", true);
 			needsPermission = getBoolean(values, "needsPermission", false);
 			permissionNode = "ultimatearena.class." + name.toLowerCase().replaceAll("\\s", "_");
 

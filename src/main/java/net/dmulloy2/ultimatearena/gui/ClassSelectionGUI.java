@@ -21,15 +21,15 @@ package net.dmulloy2.ultimatearena.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.gui.AbstractGUI;
+import net.dmulloy2.swornapi.gui.AbstractGUI;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.NumberUtil;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;

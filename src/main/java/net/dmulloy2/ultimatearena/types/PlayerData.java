@@ -20,7 +20,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import lombok.Getter;
 
-import net.dmulloy2.util.CompatUtil;
+import net.dmulloy2.swornapi.util.CompatUtil;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

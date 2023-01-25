@@ -27,7 +27,7 @@ import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.LeaveReason;
-import net.dmulloy2.util.ListUtil;
+import net.dmulloy2.swornapi.util.ListUtil;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
