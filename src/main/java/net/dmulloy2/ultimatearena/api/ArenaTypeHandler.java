@@ -39,7 +39,7 @@ import net.dmulloy2.ultimatearena.arenas.pvp.PvPType;
 import net.dmulloy2.ultimatearena.arenas.spleef.SpleefType;
 import net.dmulloy2.swornapi.util.Util;
 
-import org.apache.commons.lang.Validate;
+import net.dmulloy2.swornapi.util.Validate;
 
 import com.google.common.io.Files;
 

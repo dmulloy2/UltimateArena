@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dmulloy2.swornapi.types.SimpleVector;
 
-import org.apache.commons.lang.Validate;
+import net.dmulloy2.swornapi.util.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

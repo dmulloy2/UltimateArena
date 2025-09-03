@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import net.dmulloy2.swornapi.types.StringJoiner;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.api.ArenaType;
+import org.bukkit.entity.Player;
+
 import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.swornapi.util.Util;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.entity.Player;
+import net.dmulloy2.swornapi.util.Validate;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.api.ArenaType;
 
 /**
  * @author dmulloy2
@@ -248,7 +247,7 @@ public abstract class ArenaCreator
 			if (overlap.size() == 1)
 				sendMessage("&4These points overlap an existing arena: &c{0}&4!", overlap.get(0));
 			else
-				sendMessage("&4These points overlap existing arenas: &c{0}&4!", new StringJoiner("&4, &c").appendAll(overlap));
+				sendMessage("&4These points overlap existing arenas: &c{0}&4!", String.join("&4, &c", overlap));
 			sendMessage("&4This is known to cause problems! Type &c/ua undo &4to undo!");
 		}
 	}

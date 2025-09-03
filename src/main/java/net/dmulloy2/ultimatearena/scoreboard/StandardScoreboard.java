@@ -10,7 +10,6 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.swornapi.util.FormatUtil;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -42,7 +41,7 @@ public final class StandardScoreboard implements ArenaScoreboard
 		Arena arena = player.getArena();
 
 		this.board = CustomScoreboard.newBuilder(board, OBJECTIVE)
-			.displayName(FormatUtil.format(plugin.getMessage("scoreboardHeader"), WordUtils.capitalize(arena.getName())))
+			.displayName(FormatUtil.format(plugin.getMessage("scoreboardHeader"), FormatUtil.capitalize(arena.getName())))
 			.displaySlot(DisplaySlot.SIDEBAR)
 			.entryFormat(EntryFormat.ON_LINE)
 			.keyPrefix(FormatUtil.format(plugin.getMessage("keyPrefix")))

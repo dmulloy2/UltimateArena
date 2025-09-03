@@ -20,7 +20,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
+import net.dmulloy2.swornapi.util.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

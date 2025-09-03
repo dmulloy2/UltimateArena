@@ -18,17 +18,15 @@
  */
 package net.dmulloy2.ultimatearena.commands;
 
+import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
 
-import org.apache.commons.lang.WordUtils;
-
 /**
  * @author dmulloy2
  */
-
 public class CmdInfo extends UltimateArenaCommand
 {
 	public CmdInfo(UltimateArena plugin)
@@ -54,7 +52,7 @@ public class CmdInfo extends UltimateArenaCommand
 				ArenaZone az = plugin.getZoneInside(player.getLocation());
 				if (az != null)
 				{
-					sendMessage(getMessage("genericHeader"), WordUtils.capitalize(az.getName()));
+					sendMessage(getMessage("genericHeader"), FormatUtil.capitalize(az.getName()));
 					sendMessage("&3Type: &e{0}", az.getStylized());
 					sendMessage("&3Max: &e{0}", az.getArena().getMax().toCommandString());
 					sendMessage("&3Min: &e{0}", az.getArena().getMin().toCommandString());
@@ -71,7 +69,7 @@ public class CmdInfo extends UltimateArenaCommand
 				return;
 		}
 
-		sendMessage(getMessage("genericHeader"), WordUtils.capitalize(arena.getName()));
+		sendMessage(getMessage("genericHeader"), FormatUtil.capitalize(arena.getName()));
 
 		if (arena.getExtraInfo() != null)
 		{

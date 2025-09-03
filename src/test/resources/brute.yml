@@ -6,8 +6,7 @@ tools:
   '1': DIAMOND_SWORD, 1, sharp:3, knockback:2, fireaspect:2
   '2': GOLDEN_APPLE, 2
   '3': SLIME_BALL, 5
+essentialsKit: ''
 useHelmet: true
+potionEffects: ''
 icon: DIAMOND_SWORD, 1
-title: '&4Brute'
-description:
-  - '&7A melee class that excels in close combat with high damage and durability.'

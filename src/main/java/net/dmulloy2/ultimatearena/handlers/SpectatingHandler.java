@@ -22,7 +22,6 @@ import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.gui.PlayerSelectionGUI;
 import net.dmulloy2.ultimatearena.types.ArenaSpectator;
-import net.dmulloy2.swornapi.util.CompatUtil;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -36,16 +35,17 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
+ * TODO: consider if this can be replaced with the spectator gamemode
  * @author dmulloy2
  */
-
 public class SpectatingHandler implements Listener
 {
 	private boolean registered;
@@ -104,7 +104,7 @@ public class SpectatingHandler implements Listener
 
 	// ---- Events
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		Player player = event.getPlayer();
@@ -114,7 +114,7 @@ public class SpectatingHandler implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockDamage(BlockDamageEvent event)
 	{
 		Player player = event.getPlayer();
@@ -124,7 +124,7 @@ public class SpectatingHandler implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		Player player = event.getPlayer();
@@ -134,13 +134,14 @@ public class SpectatingHandler implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
 		if (isSpectating(player))
 		{
-			if (CompatUtil.getItemInMainHand(player).getType() == Material.COMPASS)
+			ItemStack item = event.getItem();
+			if (item != null && item.getType() == Material.COMPASS)
 			{
 				PlayerSelectionGUI psGUI = new PlayerSelectionGUI(plugin, player);
 				plugin.getGuiHandler().open(player, psGUI);
@@ -149,17 +150,21 @@ public class SpectatingHandler implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerPickupItem(PlayerPickupItemEvent event)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onPlayerPickupItem(EntityPickupItemEvent event)
 	{
-		Player player = event.getPlayer();
+		if (!(event.getEntity() instanceof Player player))
+		{
+			return;
+		}
+
 		if (isSpectating(player))
 		{
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDropItem(PlayerDropItemEvent event)
 	{
 		Player player = event.getPlayer();
@@ -169,12 +174,11 @@ public class SpectatingHandler implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.getDamager() instanceof Player)
+		if (event.getDamager() instanceof Player player)
 		{
-			Player player = (Player) event.getDamager();
 			if (isSpectating(player))
 			{
 				event.setCancelled(true);
@@ -182,7 +186,7 @@ public class SpectatingHandler implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
 		Player player = null;
@@ -190,9 +194,8 @@ public class SpectatingHandler implements Listener
 		{
 			player = (Player) event.getEntity();
 		}
-		else if (event.getEntity() instanceof Projectile)
+		else if (event.getEntity() instanceof Projectile proj)
 		{
-			Projectile proj = (Projectile) event.getEntity();
 			if (proj.getShooter() instanceof Player)
 				player = (Player) proj.getShooter();
 		}
@@ -206,7 +209,7 @@ public class SpectatingHandler implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerMoveLowest(PlayerMoveEvent event)
 	{
 		if (! event.isCancelled())
@@ -225,10 +228,8 @@ public class SpectatingHandler implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityTarget(EntityTargetEvent event)
 	{
-		Entity entity = event.getTarget();
-		if (entity instanceof Player)
+		if (event.getTarget() instanceof Player player)
 		{
-			Player player = (Player) entity;
 			if (isSpectating(player))
 			{
 				event.setCancelled(true);

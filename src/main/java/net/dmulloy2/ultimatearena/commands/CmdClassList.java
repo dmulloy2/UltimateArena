@@ -18,9 +18,9 @@
  */
 package net.dmulloy2.ultimatearena.commands;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.inventory.ItemStack;
 
+import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.Permission;
@@ -48,7 +48,7 @@ public class CmdClassList extends UltimateArenaCommand
 
 		for (ArenaClass ac : plugin.getClasses())
 		{
-			String name = WordUtils.capitalize(ac.getName());
+			String name = FormatUtil.capitalize(ac.getName());
 			sendMessage(getMessage("classHeader"), name);
 			for (ItemStack weapon : ac.getTools().values())
 			{

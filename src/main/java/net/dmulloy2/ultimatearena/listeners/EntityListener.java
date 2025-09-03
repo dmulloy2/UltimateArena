@@ -26,12 +26,12 @@ import net.dmulloy2.ultimatearena.types.ArenaClass;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.swornapi.util.CompatUtil;
 import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.swornapi.util.MaterialUtil;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -51,6 +51,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
 
@@ -77,9 +79,8 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
-		if (event.getEntity() instanceof Player)
+		if (event.getEntity() instanceof Player player)
 		{
-			Player player = (Player) event.getEntity();
 			ArenaPlayer ap = plugin.getArenaPlayer(player);
 			if (ap != null)
 			{
@@ -213,26 +214,29 @@ public class EntityListener implements Listener
 		if (ap != null)
 		{
 			// Repair in-hand item
-			ItemStack inHand = CompatUtil.getItemInMainHand(player);
-			if (inHand != null && inHand.getType() != Material.AIR)
+			ItemStack inHand = player.getActiveItem();
+			if (inHand.getType() != Material.AIR)
 			{
-				if (inHand.getType().getMaxDurability() != 0)
+				ItemMeta meta = inHand.getItemMeta();
+				if (meta instanceof Damageable damageable)
 				{
-					inHand.setDurability((short) 0);
+					damageable.setDamage(0);
+					inHand.setItemMeta(damageable);
 				}
 			}
 
 			// Repair armor
 			for (ItemStack armor : player.getInventory().getArmorContents())
 			{
-				if (armor != null && armor.getType() != Material.AIR)
+				if (armor instanceof Damageable damageable)
 				{
-					armor.setDurability((short) 0);
+					damageable.setDamage(0);
+					armor.setItemMeta(damageable);
 				}
 			}
 
 			// Healer class
-			if (inHand != null && inHand.getType() == Material.GOLDEN_AXE)
+			if (inHand.getType() == Material.GOLDEN_AXE)
 			{
 				Player damaged = getPlayer(event.getEntity());
 				if (damaged != null)
@@ -247,7 +251,7 @@ public class EntityListener implements Listener
 							{
 								Player heal = dp.getPlayer();
 								double health = heal.getHealth();
-								double maxHealth = CompatUtil.getMaxHealth(heal);
+								double maxHealth = heal.getAttribute(Attribute.MAX_HEALTH).getValue();
 								if (health > 0.0D && health < maxHealth)
 								{
 									heal.setHealth(Math.min(health + 2.0D, maxHealth));
@@ -265,9 +269,8 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
-		if (event.getEntity() instanceof Player)
+		if (event.getEntity() instanceof Player player)
 		{
-			Player player = (Player) event.getEntity();
 			ArenaPlayer ap = plugin.getArenaPlayer(player);
 			if (ap != null)
 			{
@@ -303,9 +306,8 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		if (event.getEntity() instanceof Player)
+		if (event.getEntity() instanceof Player died)
 		{
-			Player died = (Player) event.getEntity();
 			ArenaPlayer ap = plugin.getArenaPlayer(died);
 			if (ap != null)
 			{
@@ -345,9 +347,8 @@ public class EntityListener implements Listener
 				{
 					// Attempt to grab from their last damage cause
 					EntityDamageEvent damageEvent = died.getLastDamageCause();
-					if (damageEvent instanceof EntityDamageByEntityEvent)
+					if (damageEvent instanceof EntityDamageByEntityEvent damageByEntity)
 					{
-						EntityDamageByEntityEvent damageByEntity = (EntityDamageByEntityEvent) damageEvent;
 						Entity damager = damageByEntity.getDamager();
 						if (damager instanceof Player)
 						{
@@ -366,9 +367,8 @@ public class EntityListener implements Listener
 								kp.displayStats();
 							}
 						}
-						else if (damager instanceof Projectile)
+						else if (damager instanceof Projectile proj)
 						{
-							Projectile proj = (Projectile) damager;
 							ProjectileSource shooter = proj.getShooter();
 
 							if (shooter instanceof Player)
@@ -388,16 +388,14 @@ public class EntityListener implements Listener
 									kp.displayStats();
 								}
 							}
-							else if (shooter instanceof Entity)
+							else if (shooter instanceof Entity entity)
 							{
-								Entity entity = (Entity) shooter;
 								String name = FormatUtil.getFriendlyName(entity.getType());
 								arena.tellPlayers(plugin.getMessage("pveDeath"), died.getName(), FormatUtil.getArticle(name), name);
 								ap.displayStats();
 							}
-							else if (shooter instanceof BlockProjectileSource)
+							else if (shooter instanceof BlockProjectileSource source)
 							{
-								BlockProjectileSource source = (BlockProjectileSource) shooter;
 								Block block = source.getBlock();
 								String name = FormatUtil.getFriendlyName(block.getType());
 								arena.tellPlayers(plugin.getMessage("pveDeath"), died.getName(), FormatUtil.getArticle(name), name);
@@ -464,8 +462,8 @@ public class EntityListener implements Listener
 
 	private String getWeapon(Player player)
 	{
-		ItemStack inHand = CompatUtil.getItemInMainHand(player);
-		if (inHand == null || inHand.getType() == Material.AIR)
+		ItemStack inHand = player.getActiveItem();
+		if (inHand.getType() == Material.AIR)
 		{
 			return "their fists";
 		}
@@ -484,9 +482,8 @@ public class EntityListener implements Listener
 			return (Player) entity;
 		}
 
-		if (entity instanceof Projectile)
+		if (entity instanceof Projectile proj)
 		{
-			Projectile proj = (Projectile) entity;
 			ProjectileSource shooter = proj.getShooter();
 			if (shooter instanceof Player)
 				return (Player) shooter;

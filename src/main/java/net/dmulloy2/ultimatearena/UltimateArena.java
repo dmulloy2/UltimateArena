@@ -18,10 +18,25 @@
  */
 package net.dmulloy2.ultimatearena;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
 import java.util.logging.Level;
+
+import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import net.dmulloy2.swornapi.SwornAPI;
 import net.dmulloy2.swornapi.SwornPlugin;
@@ -31,7 +46,7 @@ import net.dmulloy2.swornapi.handlers.CommandHandler;
 import net.dmulloy2.swornapi.handlers.LogHandler;
 import net.dmulloy2.swornapi.handlers.PermissionHandler;
 import net.dmulloy2.swornapi.types.SimpleVector;
-import net.dmulloy2.swornapi.types.StringJoiner;
+import net.dmulloy2.swornapi.util.*;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.api.ArenaTypeHandler;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -50,26 +65,6 @@ import net.dmulloy2.ultimatearena.signs.ArenaSign;
 import net.dmulloy2.ultimatearena.signs.SignHandler;
 import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
 import net.dmulloy2.ultimatearena.types.*;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.InventoryUtil;
-import net.dmulloy2.swornapi.util.TimeUtil;
-import net.dmulloy2.swornapi.util.Util;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.permissions.PermissionDefault;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import lombok.Getter;
 
 /**
  * UltimateArena main class
@@ -198,8 +193,7 @@ public class UltimateArena extends SwornPlugin
 		// Arena Updater, runs every second
 		new ArenaUpdateTask().runTaskTimer(this, TimeUtil.toTicks(1), TimeUtil.toTicks(1));
 
-		logHandler.log("{0} has been enabled. Took {1} ms.", getDescription().getFullName(),
-		               System.currentTimeMillis() - start);
+		logHandler.log("UltimateArena has been enabled. Took {0} ms.", System.currentTimeMillis() - start);
 	}
 
 	@Override
@@ -231,8 +225,7 @@ public class UltimateArena extends SwornPlugin
 		// Clear Memory
 		clearMemory();
 
-		logHandler.log("{0} has been disabled. Took {1} ms.", getDescription().getFullName(),
-		               System.currentTimeMillis() - start);
+		logHandler.log("UltimateArena has been disabled. Took {0} ms.", System.currentTimeMillis() - start);
 	}
 
 	// Console logging
@@ -765,7 +758,7 @@ public class UltimateArena extends SwornPlugin
 				StringJoiner joiner = new StringJoiner("&3, &e");
 				for (ArenaZone match : matches)
 				{
-					joiner.append(match.getName());
+					joiner.add(match.getName());
 				}
 
 				sendpMessage(player, FormatUtil.format(getMessage("didYouMean"), joiner.toString()));
@@ -1158,7 +1151,7 @@ public class UltimateArena extends SwornPlugin
 		}
 
 		StringJoiner joiner = new StringJoiner(", ");
-		joiner.appendAll(pluginsUsingAPI);
+		pluginsUsingAPI.forEach(joiner::add);
 
 		logHandler.log("Plugins using the API: {0}", joiner.toString());
 		return pluginsUsingAPI;

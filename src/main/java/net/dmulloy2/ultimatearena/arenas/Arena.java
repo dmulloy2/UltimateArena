@@ -18,50 +18,13 @@
  */
 package net.dmulloy2.ultimatearena.arenas;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.*;
 import java.util.logging.Level;
 
-import net.dmulloy2.swornapi.types.CustomScoreboard;
-import net.dmulloy2.swornapi.types.Reloadable;
-import net.dmulloy2.ultimatearena.Config;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.api.ArenaType;
-import net.dmulloy2.ultimatearena.api.event.ArenaConcludeEvent;
-import net.dmulloy2.ultimatearena.api.event.ArenaJoinEvent;
-import net.dmulloy2.ultimatearena.api.event.ArenaLeaveEvent;
-import net.dmulloy2.ultimatearena.api.event.ArenaSpawnEvent;
-import net.dmulloy2.ultimatearena.api.event.ArenaStartEvent;
-import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
-import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
-import net.dmulloy2.ultimatearena.types.ArenaClass;
-import net.dmulloy2.ultimatearena.types.ArenaConfig;
-import net.dmulloy2.ultimatearena.types.ArenaFlag;
-import net.dmulloy2.ultimatearena.types.ArenaLocation;
-import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSpectator;
-import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.KillStreak;
-import net.dmulloy2.ultimatearena.types.LeaveReason;
-import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.ultimatearena.types.Team;
-import net.dmulloy2.ultimatearena.types.WinCondition;
-import net.dmulloy2.swornapi.util.CompatUtil;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.Util;
-
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
-
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -69,8 +32,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import lombok.Getter;
-import lombok.Setter;
+import net.dmulloy2.swornapi.types.CustomScoreboard;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
+import net.dmulloy2.ultimatearena.Config;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.api.ArenaType;
+import net.dmulloy2.ultimatearena.api.event.*;
+import net.dmulloy2.ultimatearena.arenas.pvp.PvPArena;
+import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
+import net.dmulloy2.ultimatearena.types.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 /**
  * Base arena class. Can be extended to create custom arena types.
@@ -369,27 +343,39 @@ public abstract class Arena implements Reloadable, Listener
 
 		// Allow players to click and insert into chat
 		String clickToJoin = getMessage("clickToJoin");
-		BaseComponent[] components = clickToJoin.isEmpty() ? null : ComponentSerializer.parse(FormatUtil.format(clickToJoin.replace("%s", name)));
+		Component component = clickToJoin.isEmpty() ? null : GsonComponentSerializer.gson().deserializeOrNull(clickToJoin.replace("%s", name));
 
-		for (Player player : Util.getOnlinePlayers())
+		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
-			if (! plugin.isInArena(player))
+			if (plugin.isInArena(player))
 			{
-				if (plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
-				{
-					String message;
-     
-					if (announced == 0)
-						message = FormatUtil.format(getMessage("arenaCreated"), type.getStylizedName());
-					else
-						message = FormatUtil.format(getMessage("hurryAndJoin"), type.getStylizedName());
+				continue;
+			}
 
-					if (! message.isEmpty())
-						player.sendMessage(plugin.getPrefix() + message);
+			if (!plugin.getPermissionHandler().hasPermission(player, Permission.JOIN))
+			{
+				continue;
+			}
 
-					if (components != null)
-						player.spigot().sendMessage(components);
-				}
+			String message;
+
+			if (announced == 0)
+			{
+				message = FormatUtil.format(getMessage("arenaCreated"), type.getStylizedName());
+			}
+			else
+			{
+				message = FormatUtil.format(getMessage("hurryAndJoin"), type.getStylizedName());
+			}
+
+			if (! message.isEmpty())
+			{
+				player.sendMessage(plugin.getPrefix() + message);
+			}
+
+			if (component != null)
+			{
+				player.sendMessage(component);
 			}
 		}
 
@@ -877,7 +863,7 @@ public abstract class Arena implements Reloadable, Listener
 			this.gameMode = Mode.IDLE;
 
 		plugin.removeActiveArena(this);
-		plugin.broadcast(getMessage("concluded"), WordUtils.capitalize(name));
+		plugin.broadcast(getMessage("concluded"), FormatUtil.capitalize(name));
 
 		plugin.getSignHandler().onArenaCompletion(this);
 		plugin.getSignHandler().updateSigns(az);
@@ -919,7 +905,7 @@ public abstract class Arena implements Reloadable, Listener
 					{
 						if (active.getPlayer() != null)
 						{
-							CompatUtil.showPlayer(active.getPlayer(), plugin, player);
+							active.getPlayer().showPlayer(plugin, player);
 						}
 					}
 				}
@@ -1154,15 +1140,12 @@ public abstract class Arena implements Reloadable, Listener
 				}
 
 				// Potion effects
-				if (! ap.isChangeClassOnRespawn() && ac.isHasPotionEffects())
+				if (! ap.isChangeClassOnRespawn() && ac.hasPotionEffects())
 				{
-					if (ac.getPotionEffects().size() > 0)
+					for (PotionEffect effect : ac.getPotionEffects())
 					{
-						for (PotionEffect effect : ac.getPotionEffects())
-						{
-							if (! player.hasPotionEffect(effect.getType()))
-								player.addPotionEffect(effect);
-						}
+						if (! player.hasPotionEffect(effect.getType()))
+							player.addPotionEffect(effect);
 					}
 				}
 			}

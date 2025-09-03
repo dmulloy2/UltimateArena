@@ -18,17 +18,13 @@
  */
 package net.dmulloy2.ultimatearena.arenas.ffa;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import org.bukkit.Location;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
-
-import org.bukkit.Location;
 
 /**
  * @author dmulloy2
@@ -104,14 +100,19 @@ public class FFAArena extends Arena
 		if (players.isEmpty()) return null;
 		if (players.size() == 1) return players.get(0);
 
-		Map<ArenaPlayer, Integer> map = new HashMap<>();
+		ArenaPlayer winner = null;
+		int mostKills = -1;
+
 		for (ArenaPlayer ap : players)
-			map.put(ap, ap.getKills());
+		{
+			if (ap.getKills() > mostKills)
+			{
+				mostKills = ap.getKills();
+				winner = ap;
+			}
+		}
 
-		List<Entry<ArenaPlayer, Integer>> sortedEntries = new ArrayList<>(map.entrySet());
-		sortedEntries.sort((entry1, entry2) -> -entry1.getValue().compareTo(entry2.getValue()));
-
-		return sortedEntries.get(0).getKey();
+		return winner;
 	}
 
 	@Override

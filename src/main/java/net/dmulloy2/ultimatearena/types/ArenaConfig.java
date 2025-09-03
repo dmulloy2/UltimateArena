@@ -18,6 +18,9 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -25,20 +28,13 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import lombok.Getter;
-import lombok.Setter;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.ItemUtil;
-import net.dmulloy2.swornapi.util.MaterialUtil;
-import net.dmulloy2.swornapi.util.NumberUtil;
-import net.dmulloy2.swornapi.util.Util;
-
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+
+import net.dmulloy2.swornapi.util.*;
+import net.dmulloy2.ultimatearena.UltimateArena;
 
 /**
  * @author dmulloy2
@@ -284,7 +280,7 @@ public class ArenaConfig extends Configuration
 						}
 						else
 						{
-							String item = FormatUtil.join(",", Arrays.copyOfRange(split, 2, split.length));
+							String item = String.join(",", Arrays.copyOfRange(split, 2, split.length));
 							ItemStack stack = ItemUtil.readItem(item, plugin);
 							if (stack != null)
 								streaks.add(new KillStreak(kills, message, stack));
@@ -410,7 +406,7 @@ public class ArenaConfig extends Configuration
 				if (Modifier.isTransient(field.getModifiers()))
 					continue;
 
-				boolean accessible = field.isAccessible();
+				boolean accessible = field.canAccess(this);
 
 				field.setAccessible(true);
 

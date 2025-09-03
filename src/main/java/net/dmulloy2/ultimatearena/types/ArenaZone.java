@@ -18,6 +18,9 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -25,20 +28,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import net.dmulloy2.swornapi.io.FileSerialization;
-import net.dmulloy2.swornapi.io.IOUtil;
-import net.dmulloy2.swornapi.types.Reloadable;
-import net.dmulloy2.ultimatearena.Config;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.api.ArenaType;
-import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.integration.VaultHandler;
-import net.dmulloy2.ultimatearena.tasks.CommandRunner;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.Util;
-
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -46,8 +35,18 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.Getter;
-import lombok.Setter;
+import net.dmulloy2.swornapi.io.FileSerialization;
+import net.dmulloy2.swornapi.io.IOUtil;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
+import net.dmulloy2.swornapi.util.Validate;
+import net.dmulloy2.ultimatearena.Config;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.api.ArenaType;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.integration.VaultHandler;
+import net.dmulloy2.ultimatearena.tasks.CommandRunner;
 
 /**
  * @author dmulloy2
@@ -208,7 +207,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		List<String> lines = new ArrayList<>();
 
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format(plugin.getMessage("genericHeader"), WordUtils.capitalize(name)));
+		line.append(FormatUtil.format(plugin.getMessage("genericHeader"), FormatUtil.capitalize(name)));
 		lines.add(line.toString());
 
 		// Calculate percentage
@@ -222,7 +221,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 		lines.add(line.toString());
 
 		// Calculate popularity
-		if (voted.size() == 0)
+		if (voted.isEmpty())
 		{
 			percentage = 0.0D;
 		}
@@ -365,7 +364,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 				{
 					if (field.getName().equalsIgnoreCase(entry.getKey()))
 					{
-						boolean accessible = field.isAccessible();
+						boolean accessible = field.canAccess(this);
 						field.setAccessible(true);
 						field.set(this, entry.getValue());
 						field.setAccessible(accessible);
@@ -531,7 +530,7 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 
 			try
 			{
-				boolean accessible = field.isAccessible();
+				boolean accessible = field.canAccess(this);
 
 				field.setAccessible(true);
 
@@ -606,9 +605,8 @@ public class ArenaZone implements Reloadable, ConfigurationSerializable
 	{
 		if (obj == this) return true;
 
-		if (obj instanceof ArenaZone)
+		if (obj instanceof ArenaZone that)
 		{
-			ArenaZone that = (ArenaZone) obj;
 			return Objects.equals(name, that.name);
 		}
 

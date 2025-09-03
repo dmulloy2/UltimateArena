@@ -18,35 +18,44 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import lombok.Getter;
-import net.dmulloy2.swornapi.io.IOUtil;
-import net.dmulloy2.swornapi.types.PotionType;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.ItemUtil;
-import net.dmulloy2.swornapi.util.NumberUtil;
-import net.dmulloy2.swornapi.util.Util;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import net.dmulloy2.swornapi.exception.InvalidItemException;
+import net.dmulloy2.swornapi.io.IOUtil;
+import net.dmulloy2.swornapi.types.PotionType;
+import net.dmulloy2.swornapi.util.*;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 /**
  * @author dmulloy2
@@ -61,19 +70,17 @@ public final class ArenaClass extends Configuration
 	private Map<Integer, ItemStack> tools;
 	private Map<String, ItemStack> armor;
 	private List<String> commands;
+	private Map<Enchantment, Integer> helmetEnchantments;
 
 	private boolean useHelmet = true;
 	private double cost = -1.0D;
 	private boolean unlimitedAmmo = true;
 
 	private Attributes attributes;
-	private boolean hasPotionEffects;
 	private List<PotionEffect> potionEffects;
 
 	// GUI
-	private String title;
 	private ItemStack icon;
-	private List<String> description;
 
 	// ---- Transient
 	private final transient File file;
@@ -107,8 +114,8 @@ public final class ArenaClass extends Configuration
 		this.armor = new HashMap<>();
 		this.tools = new HashMap<>();
 		this.commands = new ArrayList<>();
-		this.description = new ArrayList<>();
 		this.attributes = new Attributes(name);
+		this.helmetEnchantments = new HashMap<>();
 
 		try
 		{
@@ -119,32 +126,86 @@ public final class ArenaClass extends Configuration
 
 			Map<String, Object> values = config.getValues(false);
 
-			if (isSet(values, "armor"))
+			ConfigurationSection armorSection = config.getConfigurationSection("armor");
+			if (armorSection != null)
 			{
-				for (Entry<String, Object> entry : getSection(values, "armor").entrySet())
+				for (String key : armorSection.getKeys(false))
 				{
-					String value = entry.getValue().toString();
-					ItemStack item = ItemUtil.readItem(value, plugin);
+					ItemStack item = null;
 
-					if (item != null)
+					ConfigurationSection section = armorSection.getConfigurationSection(key);
+					if (section != null && section.getString("type") != null)
 					{
-						armor.put(entry.getKey(), item);
+						try
+						{
+							item = ModernItemParser.parseItem(section);
+						}
+						catch (InvalidItemException ex)
+						{
+							plugin.getLogHandler().log(Level.WARNING, "[{0}] Could not read armor item in slot \"{1}\": {2}", name, key, ex.getMessage());
+						}
 					}
+
+					if (item == null)
+					{
+						String value = armorSection.getString(key);
+						plugin.getLogHandler().log("[{0}] Attempting to convert legacy armor item \"{1}\"", name, value);
+						item = ItemUtil.readItem(value, plugin);
+
+						if (item == null)
+						{
+							plugin.getLogHandler().log(Level.WARNING, "[{0}] Could not read armor item \"{1}\"", name, value);
+							continue;
+						}
+
+						armorSection.set(key, ModernItemParser.serializeItem(item));
+						changes = true;
+					}
+
+					armor.put(key, item);
 				}
 			}
 
-			if (isSet(values, "tools"))
+			ConfigurationSection toolsSection = config.getConfigurationSection("tools");
+			if (toolsSection != null)
 			{
 				int nextSlot = 0;
-				for (Entry<String, Object> entry : getSection(values, "tools").entrySet())
+
+				for (String key : toolsSection.getKeys(false))
 				{
-					int slot = NumberUtil.toInt(entry.getKey());
-					String value = entry.getValue().toString();
+					ItemStack item = null;
 
-					ItemStack stack = ItemUtil.readItem(value, plugin);
-					if (stack != null)
-						tools.put(slot == -1 ? nextSlot : slot - 1, stack);
+					ConfigurationSection section = toolsSection.getConfigurationSection(key);
+					if (section != null && section.getString("type") != null)
+					{
+						try
+						{
+							item = ModernItemParser.parseItem(section);
+						}
+						catch (InvalidItemException ex)
+						{
+							plugin.getLogHandler().log(Level.WARNING, "[{0}] Could not read tool in slot {1}: {2}", name, key, ex.getMessage());
+						}
+					}
 
+					if (item == null)
+					{
+						String value = toolsSection.getString(key);
+						plugin.getLogHandler().log("[{0}] Attempting to convert legacy tool \"{1}\"", name, value);
+						item = ItemUtil.readItem(value, plugin);
+
+						if (item == null)
+						{
+							plugin.getLogHandler().log(Level.WARNING, "[{0}] Could not read legacy tool \"{1}\"", name, value);
+							continue;
+						}
+
+						toolsSection.set(key, ModernItemParser.serializeItem(item));
+						changes = true;
+					}
+
+					int slot = NumberUtil.toInt(key);
+					tools.put(slot == -1 ? nextSlot : slot - 1, item);
 					nextSlot++;
 				}
 			}
@@ -184,10 +245,52 @@ public final class ArenaClass extends Configuration
 
 			if (isSet(values, "potionEffects"))
 			{
-				String effects = getString(values, "potionEffects", "");
-				hasPotionEffects = ! effects.isEmpty();
-				if (hasPotionEffects)
-					potionEffects = readPotionEffects(effects);
+				Object effectData = get(values, "potionEffects", null);
+				if (effectData instanceof Map<?, ?> rawEffectMap)
+				{
+					potionEffects = new ArrayList<>();
+
+					for (Map.Entry<?, ?> entry : rawEffectMap.entrySet())
+					{
+						try
+						{
+							String effectKeyStr = ((String) entry.getKey()).toLowerCase().replace(' ', '_');
+							int amplifier = (int) entry.getValue();
+
+							Key effectKey = Key.key(effectKeyStr);
+							Registry<PotionEffectType> mobEffectRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.MOB_EFFECT);
+
+							PotionEffectType effectType = mobEffectRegistry.get(effectKey);
+							if (effectType != null)
+							{
+								potionEffects.add(new PotionEffect(effectType, Integer.MAX_VALUE, amplifier));
+							}
+							else
+							{
+								plugin.getLogHandler().log(Level.WARNING, "[Class {0}] \"{1}\" is not a valid Potion Effect", name, effectKey);
+							}
+						} catch (Exception ex)
+						{
+							plugin.getLogHandler().log(Level.WARNING, "[Class {0}] \"{1}\" is not a valid Potion Effect", name, entry.getKey());
+						}
+					}
+				}
+				else
+				{
+					String effects = getString(values, "potionEffects", "");
+					if (!effects.isEmpty())
+					{
+						potionEffects = readPotionEffects(effects);
+
+						Map<String, Object> newEffectMap = new HashMap<>();
+						for (PotionEffect effect : potionEffects)
+						{
+							newEffectMap.put(effect.getType().getKey().asString(), effect.getAmplifier());
+						}
+						config.set("potionEffects", newEffectMap);
+						changes = true;
+					}
+				}
 			}
 
 			useHelmet = getBoolean(values, "useHelmet", true);
@@ -205,9 +308,17 @@ public final class ArenaClass extends Configuration
 			needsPermission = getBoolean(values, "needsPermission", false);
 			permissionNode = "ultimatearena.class." + name.toLowerCase().replaceAll("\\s", "_");
 
-			if (isSet(values, "icon"))
+			if (isSet(values, "iconType"))
+			{
+				Registry<ItemType> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ITEM);
+				icon = registry.get(NamespacedKey.fromString(getString(values, "iconType", "minecraft:paper"))).createItemStack();
+			}
+			else if (isSet(values, "icon"))
 			{
 				icon = ItemUtil.readItem(getString(values, "icon", ""));
+				config.set("iconType", icon.getType().asItemType().getKey().asString());
+				config.set("icon", null);
+				changes = true;
 			}
 
 			if (icon == null)
@@ -215,19 +326,73 @@ public final class ArenaClass extends Configuration
 				icon = new ItemStack(Material.PAPER, 1);
 			}
 
-			title = FormatUtil.format(getString(values, "title", "&e" + WordUtils.capitalize(name)));
+			GsonComponentSerializer componentSerializer = GsonComponentSerializer.gson();
 
+			Component title = null;
+			if (isSet(values, "title"))
+			{
+				String titleStr = getString(values, "title", "");
+				if (titleStr.contains("{"))
+				{
+					try
+					{
+						title = componentSerializer.deserialize(getString(values, "title", ""));
+					} catch (Exception ex)
+					{
+						plugin.getLogHandler().warn(ex, "Could not parse title component in class {0}", name);
+					}
+				}
+				else
+				{
+					title = LegacyComponentSerializer.legacyAmpersand().deserialize(titleStr);
+					config.set("title", componentSerializer.serialize(title));
+					changes = true;
+				}
+			}
+
+			if (title == null)
+			{
+				title = Component.text(FormatUtil.capitalize(name), NamedTextColor.YELLOW);
+			}
+
+			boolean legacyDescription = false;
+			List<Component> description = new ArrayList<>();
 			if (isSet(values, "description"))
 			{
-				for (String line : getStringList(values, "description"))
-					description.add(FormatUtil.format("&7" + line));
+				try
+				{
+					for (String line : getStringList(values, "description"))
+					{
+						boolean legacyLine = !line.contains("{");
+						legacyDescription |= legacyLine;
+
+						Component comp = legacyLine
+							? LegacyComponentSerializer.legacyAmpersand().deserialize(line)
+							: componentSerializer.deserialize(line);
+						description.add(comp);
+					}
+				} catch (Exception ex)
+				{
+					plugin.getLogHandler().warn(ex, "Could not parse lore in class {0}", name);
+				}
+			}
+
+			if (legacyDescription)
+			{
+				List<String> newDescription = new ArrayList<>();
+				for (Component line : description)
+				{
+					newDescription.add(componentSerializer.serialize(line));
+				}
+				config.set("description", newDescription);
+				changes = true;
 			}
 
 			cost = getDouble(values, "cost", -1.0D);
 
 			ItemMeta meta = icon.getItemMeta();
-			meta.setDisplayName(title);
-			meta.setLore(description);
+			meta.customName(title);
+			meta.lore(description);
 			icon.setItemMeta(meta);
 
 			if (isSet(values, "attributes"))
@@ -249,7 +414,7 @@ public final class ArenaClass extends Configuration
 				plugin.getLogHandler().log(Level.WARNING, "use of maxHealth is deprecated. Migrating to attribute in {0}", name);
 
 				double difference = maxHealth - 20.0D;
-				attributes.addAttribute(Attribute.GENERIC_MAX_HEALTH, difference, AttributeModifier.Operation.ADD_NUMBER);
+				attributes.addAttribute(Attribute.MAX_HEALTH, difference, AttributeModifier.Operation.ADD_NUMBER);
 
 				List<String> attributeData = getStringList(values, "attributes");
 				String sign = difference > 0 ? "+" : "-";
@@ -278,7 +443,8 @@ public final class ArenaClass extends Configuration
 		return true;
 	}
 
-	private List<PotionEffect> readPotionEffects(String str) {
+	private List<PotionEffect> readPotionEffects(String str)
+	{
 		List<PotionEffect> ret = new ArrayList<>();
 
 		str = str.replaceAll(" ", "");
@@ -344,6 +510,11 @@ public final class ArenaClass extends Configuration
 		return true;
 	}
 
+	public boolean hasPotionEffects()
+	{
+		return potionEffects != null && !potionEffects.isEmpty();
+	}
+
 	@Override
 	public Map<String, Object> serialize()
 	{
@@ -355,7 +526,6 @@ public final class ArenaClass extends Configuration
 	public void reload()
 	{
 		// Boolean defaults
-		this.hasPotionEffects = false;
 		this.needsPermission = false;
 		this.useHelmet = true;
 
@@ -363,7 +533,6 @@ public final class ArenaClass extends Configuration
 		this.armor.clear();
 		this.tools.clear();
 		this.commands.clear();
-		this.description.clear();
 
 		if (potionEffects != null)
 			this.potionEffects.clear();

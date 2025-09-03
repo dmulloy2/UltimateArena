@@ -105,26 +105,6 @@ public class InfectArena extends PvPArena
 	}
 
 	@Override
-	public void onPlayerEnd(ArenaPlayer ap)
-	{
-		if (isInGame())
-		{
-			if (redTeamSize == 0)
-			{
-				setWinningTeam(Team.BLUE);
-				stop();
-				rewardTeam(Team.BLUE);
-			}
-			else if (blueTeamSize == 0)
-			{
-				setWinningTeam(Team.RED);
-				stop();
-				rewardTeam(Team.RED);
-			}
-		}
-	}
-
-	@Override
 	public void onPreOutOfTime()
 	{
 		setWinningTeam(Team.RED);
@@ -139,8 +119,8 @@ public class InfectArena extends PvPArena
 
 			spawn(ap, true);
 
-			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, 10));
-			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 3));
+			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, Integer.MAX_VALUE, 10));
+			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, Integer.MAX_VALUE, 3));
 			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));
 			ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 2));
 

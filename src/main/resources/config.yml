@@ -95,9 +95,9 @@ spectator:
 # Persistent entities
 # These entities won't be removed when the arena stops
 persistentEntities:
-- "PAINTING"
-- "ITEM_FRAME"
-- "VILLAGER"
+- "minecraft:painting"
+- "minecraft:item_frame"
+- "minecraft:villager"
 
 # Configuration for integration
 integration:
@@ -112,4 +112,4 @@ fixInvisibility: false
 clearEntities: true
 
 # Particle shown around players during the grace period
-graceParticle: "SPELL_MOB_AMBIENT"
+graceParticle: "minecraft:glow"

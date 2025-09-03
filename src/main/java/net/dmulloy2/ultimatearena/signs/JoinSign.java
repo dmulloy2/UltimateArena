@@ -9,16 +9,15 @@ import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.swornapi.util.FormatUtil;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
 
 import lombok.Getter;
 
 /**
+ * TODO: replace with Components
  * @author dmulloy2
  */
-
 @Getter
 public final class JoinSign extends ArenaSign
 {
@@ -169,6 +168,6 @@ public final class JoinSign extends ArenaSign
 	{
 		ArenaType type = az.getType();
 		String typeStr = firstNonNull(type.getStylizedName(), firstNonNull(type.getName(), "Ultimate"));
-		return "[" + WordUtils.capitalize(typeStr) + " Arena]";
+		return "[" + FormatUtil.capitalize(typeStr) + " Arena]";
 	}
 }

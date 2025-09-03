@@ -29,11 +29,10 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import net.dmulloy2.swornapi.io.Closer;
+import net.dmulloy2.swornapi.util.Validate;
 import net.dmulloy2.ultimatearena.UltimateArena;
 
-import org.apache.commons.lang.Validate;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 /**
  * @author dmulloy2
@@ -49,7 +48,7 @@ public class ArenaLoader
 	public ArenaLoader(UltimateArena plugin)
 	{
 		this.plugin = plugin;
-		this.yaml = new Yaml(new SafeConstructor());
+		this.yaml = new Yaml();
 		this.classes = new HashMap<>();
 		this.loaders = new HashMap<>();
 	}
@@ -96,7 +95,7 @@ public class ArenaLoader
 
 		try
 		{
-			ArenaType type = clazz.newInstance();
+			ArenaType type = clazz.getDeclaredConstructor().newInstance();
 			type.initialize(plugin, description, loader, file);
 			return type;
 		}
@@ -171,19 +170,27 @@ public class ArenaLoader
 		Validate.notNull(name, "name cannot be null!");
 
 		Class<?> cachedClass = classes.get(name);
-		if (cachedClass == null)
+		if (cachedClass != null)
 		{
-			for (String current : loaders.keySet())
-			{
-				ArenaClassLoader loader = loaders.get(current);
+			return cachedClass;
+		}
 
-				try
-				{
-					cachedClass = loader.findClass(name, false);
-				} catch (ClassNotFoundException ignored) { }
+		for (String current : loaders.keySet())
+		{
+			ArenaClassLoader loader = loaders.get(current);
+
+			try
+			{
+				cachedClass = loader.findClass(name, false);
+			} catch (ClassNotFoundException ignored) { }
+
+			if (cachedClass != null)
+			{
+				classes.put(name, cachedClass);
+				return cachedClass;
 			}
 		}
 
-		return cachedClass;
+		return null;
 	}
 }

@@ -20,8 +20,25 @@ package net.dmulloy2.ultimatearena.arenas.mob;
 
 import java.util.*;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Registry;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
+
 import net.dmulloy2.swornapi.types.CustomScoreboard;
-import net.dmulloy2.swornapi.types.SpecialEntities;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.ListUtil;
+import net.dmulloy2.swornapi.util.Util;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.arenas.Arena;
 import net.dmulloy2.ultimatearena.integration.VaultHandler;
@@ -29,20 +46,6 @@ import net.dmulloy2.ultimatearena.tasks.CommandRunner;
 import net.dmulloy2.ultimatearena.types.ArenaPlayer;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.ScaledReward;
-import net.dmulloy2.swornapi.util.Util;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Zombie;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * @author dmulloy2
@@ -53,10 +56,10 @@ public class MobArena extends Arena implements Listener
 	private int mobTimer, mobSpawn, mobPerWave;
 	private int maxWave, wave;
 
-	private Map<Integer, List<String>> waves;
+	private Map<Integer, List<EntityType>> waves;
 
-	private final List<LivingEntity> mobs;
-	private List<String> spawning;
+	private final Set<Entity> mobs;
+	private List<EntityType> spawning;
 	
 	public MobArena(ArenaZone az)
 	{
@@ -64,11 +67,11 @@ public class MobArena extends Arena implements Listener
 		this.winningTeam = null;
 
 		this.spawning = new ArrayList<>();
-		spawning.add("ZOMBIE");
-		spawning.add("ZOMBIE");
-		spawning.add("ZOMBIE");
+		spawning.add(EntityType.ZOMBIE);
+		spawning.add(EntityType.ZOMBIE);
+		spawning.add(EntityType.ZOMBIE);
 
-		this.mobs = new ArrayList<>();
+		this.mobs = new HashSet<>();
 		this.newWave();
 	}
 
@@ -170,125 +173,149 @@ public class MobArena extends Arena implements Listener
 	{
 		setWinningTeam(null);
 		rewardTeam(winningTeam);
-		mobs.clear();
+
+		Iterator<Entity> it = mobs.iterator();
+		while (it.hasNext())
+		{
+			Entity mob = it.next();
+			if (!mob.isDead())
+				mob.remove();
+			it.remove();
+		}
+	}
+
+	private Entity spawnMob()
+	{
+		Location loc = az.getSpawns().get(Util.random(az.getSpawns().size())).getLocation();
+		EntityType mobType = spawning.get(Util.random(spawning.size()));
+		Entity newMob = loc.getWorld().spawnEntity(loc, mobType);
+
+		if (newMob instanceof Skeleton)
+		{
+			boolean giveBow = true;
+			int enchantmentLevel = Util.random(5) == 0 ? 2 : 1;
+
+			// Skeletons get amped up starting at level 12
+			if (wave >= 12)
+			{
+				// Wither Skeletons
+				if (Util.random(2) == 0)
+				{
+					// Set skeleton type to Wither
+					// We have to replace it now since they're going to be different classes
+					newMob.remove();
+
+					newMob = loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
+
+					// Wither skeletons dont have bows
+					giveBow = false;
+				}
+				else
+				{
+					// Give them power bows
+					enchantmentLevel = Util.random(5) == 0 ? 2 : 1;
+				}
+			}
+
+			// Give them a bow, if applicable
+			if (giveBow)
+			{
+				ItemStack item = new ItemStack(Material.BOW);
+				item.addEnchantment(Enchantment.PUNCH, enchantmentLevel);
+				((Skeleton) newMob).getEquipment().setItemInMainHand(item);
+			}
+		}
+		// Special zombies
+		else if (newMob instanceof Zombie)
+		{
+			// For zombies, it starts at wave 7
+			if (wave >= 7)
+			{
+				int rand = Util.random(10);
+
+				if (rand == 10)
+				{
+					// Zombies with swords
+					ItemStack item = new ItemStack(wave >= 12 ? Material.DIAMOND_SWORD : Material.IRON_SWORD);
+
+					// Possibly enchant it
+					if (wave >= 12)
+					{
+						item.addEnchantment(Enchantment.SHARPNESS, 2);
+						item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+					}
+
+					((Zombie) newMob).getEquipment().setItemInMainHand(item);
+				}
+				else if (rand == 5)
+				{
+					// Babie zombies
+					((Ageable) newMob).setBaby();
+				}
+				else if (rand == 0)
+				{
+					// Make them a random villager profession
+					newMob.remove();
+					newMob = world.spawnEntity(loc, EntityType.ZOMBIE_VILLAGER);
+
+					Registry<Villager.Type> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.VILLAGER_TYPE);
+					Villager.Type villagerType = ListUtil.randomFromIterable(registry, registry.size());
+					((ZombieVillager) newMob).setVillagerType(villagerType);
+				}
+			}
+		}
+		// TODO: More fun entity calculations? >:D
+
+		return newMob;
+	}
+
+	private void tick()
+	{
+		mobTimer--;
+		mobSpawn--;
+		if (mobSpawn >= 0)
+		{
+			return;
+		}
+
+		if (mobTimer >= 0)
+		{
+			return;
+		}
+
+		newWave();
+		synchronized (mobs)
+		{
+			for (int i = 0; i < mobPerWave; i++)
+			{
+				Entity mob = spawnMob();
+				mobs.add(mob);
+			}
+		}
 	}
 
 	@Override
 	public void check()
 	{
-		if (startTimer <= 0)
+		if (startTimer > 0)
 		{
-			mobTimer--;
-			mobSpawn--;
-			if (mobSpawn < 0)
-			{
-				if (mobTimer < 0)
-				{
-					newWave();
-					synchronized (mobs)
-					{
-						for (int i = 0; i < mobPerWave; i++)
-						{
-							Location loc = az.getSpawns().get(Util.random(az.getSpawns().size())).getLocation();
-							String mob = spawning.get(Util.random(spawning.size()));
-							LivingEntity newMob = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob));
+			return;
+		}
 
-							if (newMob instanceof Skeleton)
-							{
-								boolean giveBow = true;
-								int enchantmentLevel = 0;
+		tick();
 
-								// Skeletons get amped up starting at level 12
-								if (wave >= 12)
-								{
-									// Wither Skeletons
-									if (Util.random(2) == 0)
-									{
-										// Set skeleton type to Wither
-										// We have to replace it now since they're going to be different classes
-										newMob.remove();
-										newMob = SpecialEntities.spawnWitherSkeleton(loc);
+		if (active.isEmpty())
+		{
+			stop();
+		}
 
-										// Wither skeletons dont have bows
-										giveBow = false;
-									}
-									else
-									{
-										// Give them power bows
-										enchantmentLevel = Util.random(5) == 0 ? 2 : 1;
-									}
-								}
+		if (wave > maxWave)
+		{
+			setWinningTeam(null);
 
-								// Give them a bow, if applicable
-								if (giveBow)
-								{
-									ItemStack item = new ItemStack(Material.BOW);
+			stop();
 
-									// Enchant
-									if (enchantmentLevel > 0)
-									{
-										item.addEnchantment(Enchantment.ARROW_DAMAGE, enchantmentLevel);
-									}
-
-									newMob.getEquipment().setItemInMainHand(item);
-								}
-							}
-							// Special zombies
-							else if (newMob instanceof Zombie)
-							{
-								// For zombies, it starts at wave 7
-								if (wave >= 7)
-								{
-									int rand = Util.random(10);
-
-									if (rand == 10)
-									{
-										// Zombies with swords
-										ItemStack item = new ItemStack(wave >= 12 ? Material.DIAMOND_SWORD : Material.IRON_SWORD);
-
-										// Possibly enchant it
-										if (wave >= 12)
-										{
-											item.addEnchantment(Enchantment.DAMAGE_ALL, 2);
-											item.addEnchantment(Enchantment.FIRE_ASPECT, 1);
-										}
-
-										newMob.getEquipment().setItemInMainHand(item);
-									}
-									else if (rand == 5)
-									{
-										// Babie zombies
-										((Zombie) newMob).setBaby(true);
-									}
-									else if (rand == 0)
-									{
-										// Make them a random villager profession
-										newMob.remove();
-										newMob = SpecialEntities.spawnZombieVillager(loc, null);
-									}
-								}
-							}
-							// TODO: More fun entity calculations? >:D
-
-							mobs.add(newMob);
-						}
-					}
-				}
-			}
-
-			if (active.size() <= 0)
-			{
-				stop();
-			}
-
-			if (wave > maxWave)
-			{
-				setWinningTeam(null);
-
-				stop();
-
-				rewardTeam(null);
-			}
+			rewardTeam(null);
 		}
 	}
 
@@ -298,7 +325,26 @@ public class MobArena extends Arena implements Listener
 		mobs.remove(event.getEntity());
 	}
 
-	// TODO Use our collection of mobs to protect them from non-players
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onEntityDamage(EntityDamageByEntityEvent event)
+	{
+		if (!(event.getDamager() instanceof Player player))
+		{
+			return;
+		}
+
+		if (!mobs.contains(event.getEntity()))
+		{
+			return;
+		}
+
+		ArenaPlayer ap = getArenaPlayer(player);
+		if (ap == null)
+		{
+			player.sendMessage(FormatUtil.format(plugin.getPrefix() + getMessage("hurtMobInArena")));
+			event.setCancelled(true);
+		}
+	}
 
 	@Override
 	public void announceWinner()

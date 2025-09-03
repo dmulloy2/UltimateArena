@@ -18,10 +18,25 @@
  */
 package net.dmulloy2.ultimatearena.types;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import net.dmulloy2.swornapi.types.Sorter;
+import net.dmulloy2.swornapi.util.*;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -30,25 +45,6 @@ import net.dmulloy2.ultimatearena.scoreboard.ArenaScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.DisabledScoreboard;
 import net.dmulloy2.ultimatearena.scoreboard.StandardScoreboard;
 import net.dmulloy2.ultimatearena.tasks.CommandRunner;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.InventoryUtil;
-import net.dmulloy2.swornapi.util.NumberUtil;
-import net.dmulloy2.swornapi.util.Util;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Represents a Player inside an {@link Arena}.
@@ -136,18 +132,22 @@ public final class ArenaPlayer
 
 		if (player.getInventory().getHelmet() == null)
 		{
-			ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
-			LeatherArmorMeta meta = (LeatherArmorMeta) helmet.getItemMeta();
-
-			Color color = team == Team.BLUE ? Color.BLUE : Color.RED;
-			if (random)
+			ItemStack helmet = ItemType.LEATHER_HELMET.createItemStack(meta ->
 			{
-				DyeColor rand = DyeColor.values()[Util.random(DyeColor.values().length)];
-				color = rand.getColor();
-			}
+				Color color;
+				if (random)
+				{
+					DyeColor rand = DyeColor.values()[Util.random(DyeColor.values().length)];
+					color = rand.getColor();
+				}
+				else
+				{
+					color = team == Team.BLUE ? Color.BLUE : Color.RED;
+				}
 
-			meta.setColor(color);
-			helmet.setItemMeta(meta);
+				meta.setColor(color);
+			});
+
 			player.getInventory().setHelmet(helmet);
 		}
 	}

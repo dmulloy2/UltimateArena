@@ -19,7 +19,9 @@
 package net.dmulloy2.ultimatearena.arenas.conquest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
@@ -51,7 +53,7 @@ public class ConquestFlag extends ArenaFlag
 		int team1 = 0;
 		int team2 = 0;
 
-		List<ArenaPlayer> players = new ArrayList<>();
+		Set<ArenaPlayer> players = new HashSet<>();
 		for (ArenaPlayer ap : arenaPlayers)
 		{
 			Player player = ap.getPlayer();
@@ -67,8 +69,6 @@ public class ConquestFlag extends ArenaFlag
 			}
 		}
 
-		// Remove any duplicates
-		players = ListUtil.removeDuplicates(players);
 		cappingTeam = team1 > team2 ? Team.RED : Team.BLUE;
 
 		// The other team is trying to cap

@@ -24,6 +24,7 @@ import net.dmulloy2.ultimatearena.types.FlagBase;
 import net.dmulloy2.ultimatearena.types.Team;
 import net.dmulloy2.swornapi.util.Util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -35,9 +36,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * TODO: replace MaterialData with new BlockData
  * @author dmulloy2
  */
-
 @Getter @Setter
 public class CTFFlag
 {
@@ -60,7 +61,7 @@ public class CTFFlag
 	protected boolean stopped;
 
 	protected Material lastBlockType;
-	protected MaterialData lastBlockDat;
+	protected String lastBlockDat;
 
 	public CTFFlag(Arena arena, Location location, Team team)
 	{
@@ -103,7 +104,7 @@ public class CTFFlag
 	private void setup()
 	{
 		Block current = myloc.getBlock();
-		lastBlockDat = current.getState().getData();
+		lastBlockDat = current.getBlockData().getAsString();
 		lastBlockType = current.getType();
 
 		colorize();
@@ -138,12 +139,13 @@ public class CTFFlag
 		for (int i = 1; i < 128; i++)
 		{
 			Block under = myloc.clone().subtract(0, i, 0).getBlock();
-			if (under != null)
+			if (under.getType().equals(Material.AIR) || under.getType().equals(Material.WATER))
 			{
-				if (under.getType().equals(Material.AIR) || under.getType().equals(Material.WATER))
-					count++;
-				else
-					break;
+				count++;
+			}
+			else
+			{
+				break;
 			}
 		}
 
@@ -168,8 +170,8 @@ public class CTFFlag
 					this.pickedUp = true;
 					this.riding = ap;
 
-					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60 * 4, 1));
-					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60 * 4, 1));
+					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20 * 60 * 4, 1));
+					ap.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 20 * 60 * 4, 1));
 					arena.tellPlayers(arena.getMessage("flagPickedUp"), ap.getName(), flagType);
 				}
 				else
@@ -221,8 +223,7 @@ public class CTFFlag
 
 		Block last = lastloc.getBlock();
 		last.setType(lastBlockType);
-		last.getState().setData(lastBlockDat);
-		last.getState().update();
+		last.setBlockData(Bukkit.createBlockData(lastBlockDat));
 	}
 
 	public void tick()
@@ -261,11 +262,10 @@ public class CTFFlag
 		if (! Util.coordsEqual(lastloc, myloc))
 		{
 			last.setType(lastBlockType);
-			last.getState().setData(lastBlockDat);
-			last.getState().update();
+			last.setBlockData(Bukkit.createBlockData(lastBlockDat));
 
 			this.lastBlockType = current.getType();
-			this.lastBlockDat = current.getState().getData();
+			this.lastBlockDat = current.getBlockData().getAsString();
 
 			this.lastloc = myloc.clone();
 

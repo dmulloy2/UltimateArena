@@ -94,8 +94,8 @@ public class CTFFlagBase extends FlagBase
 							enemyflag.respawn();
 							ap.sendMessage(getMessage("youCapturedFlag"));
 
-							ap.getPlayer().removePotionEffect(PotionEffectType.SLOW);
-							ap.getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+							ap.getPlayer().removePotionEffect(PotionEffectType.SLOWNESS);
+							ap.getPlayer().removePotionEffect(PotionEffectType.RESISTANCE);
 
 							for (ArenaPlayer apl : arenaPlayers)
 							{
@@ -103,7 +103,7 @@ public class CTFFlagBase extends FlagBase
 								{
 									apl.sendMessage(getMessage("youUnlockedCrits"));
 									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 1));
-									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 10, 1));
+									apl.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 20 * 10, 1));
 								}
 							}
 

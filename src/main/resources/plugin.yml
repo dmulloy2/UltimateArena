@@ -1,7 +1,6 @@
 name: UltimateArena
 main: net.dmulloy2.ultimatearena.UltimateArena
-version: ${project.version}${project.build.number}
-#version: ${project.version}
+version: ${version}
 author: dmulloy2
 softdepend: [WorldEdit, Vault, Essentials, Multiverse-Core, MyWorlds, ProtocolLib]
 description: The Ultimate in Minecraft death sports and spleef!

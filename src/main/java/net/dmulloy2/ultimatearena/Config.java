@@ -6,14 +6,11 @@ package net.dmulloy2.ultimatearena;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.swornapi.SwornPlugin;
-import net.dmulloy2.swornapi.config.ConfigParser;
-import net.dmulloy2.swornapi.config.Key;
-import net.dmulloy2.swornapi.config.ValueOptions;
-import net.dmulloy2.swornapi.config.ValueOptions.ValueOption;
-import net.dmulloy2.swornapi.util.ListUtil;
-
 import org.bukkit.Particle;
+import org.bukkit.entity.EntityType;
+
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.config.*;
 
 /**
  * @author dmulloy2
@@ -42,7 +39,7 @@ public class Config
 	public static boolean timerXPBar = true;
 
 	@Key("classSelector.title")
-	@ValueOptions(ValueOption.FORMAT)
+	@TransformValue(Transform.FORMAT)
 	public static String classSelectorTitle = "         &l&nSelect a class!&r";
 
 	@Key("classSelector.automatic")
@@ -73,9 +70,9 @@ public class Config
 	public static boolean spectatorInvisible = true;
 
 	@Key("persistentEntities")
-	@ValueOptions(ValueOption.LIST_UPPER_CASE)
-	public static List<String> persistentEntities = ListUtil.toList(
-			"PAINTING", "ITEM_FRAME", "VILLAGER"
+	@TransformRegistry(KnownRegistry.ENTITY_TYPE)
+	public static List<EntityType> persistentEntities = List.of(
+		EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.VILLAGER
 	);
 
 	@Key("integration.useWorldEdit")
@@ -91,6 +88,6 @@ public class Config
 	public static boolean clearEntities = true;
 
 	@Key("graceParticle")
-	@ValueOptions(ValueOption.PARSE_ENUM)
-	public static Particle graceParticle = Particle.SPELL_MOB_AMBIENT;
+	@TransformRegistry(KnownRegistry.PARTICLE)
+	public static Particle graceParticle = Particle.GLOW;
 }

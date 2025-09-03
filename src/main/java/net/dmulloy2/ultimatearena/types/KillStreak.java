@@ -20,7 +20,7 @@ package net.dmulloy2.ultimatearena.types;
 
 import net.dmulloy2.ultimatearena.arenas.Arena;
 
-import org.apache.commons.lang.Validate;
+import net.dmulloy2.swornapi.util.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Creature;

@@ -49,20 +49,22 @@ public class ArenaClassLoader extends URLClassLoader
 	{
 		Class<?> result = classes.get(name);
 
+		if (result != null)
+		{
+			return result;
+		}
+
+		if (global)
+		{
+			result = loader.getClassByName(name);
+		}
+
 		if (result == null)
 		{
-			if (global)
-			{
-				result = loader.getClassByName(name);
-			}
-
-			if (result == null)
-			{
-				result = super.findClass(name);
-			}
-
-			classes.put(name, result);
+			result = super.findClass(name);
 		}
+
+		classes.put(name, result);
 
 		return result;
 	}

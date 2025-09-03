@@ -19,21 +19,6 @@
 package net.dmulloy2.ultimatearena.listeners;
 
 import lombok.AllArgsConstructor;
-import net.dmulloy2.ultimatearena.UltimateArena;
-import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
-import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
-import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
-import net.dmulloy2.ultimatearena.types.ArenaClass;
-import net.dmulloy2.ultimatearena.types.ArenaCreator;
-import net.dmulloy2.ultimatearena.types.ArenaPlayer;
-import net.dmulloy2.ultimatearena.types.ArenaSpectator;
-import net.dmulloy2.ultimatearena.types.ArenaZone;
-import net.dmulloy2.ultimatearena.types.Field3D;
-import net.dmulloy2.ultimatearena.types.LeaveReason;
-import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -44,16 +29,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
+import net.dmulloy2.ultimatearena.UltimateArena;
+import net.dmulloy2.ultimatearena.arenas.Arena;
+import net.dmulloy2.ultimatearena.arenas.spleef.SpleefArena;
+import net.dmulloy2.ultimatearena.gui.ClassSelectionGUI;
+import net.dmulloy2.ultimatearena.tasks.ArenaJoinTask;
+import net.dmulloy2.ultimatearena.types.*;
 
 /**
  * @author dmulloy2
@@ -106,22 +94,31 @@ public class PlayerListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerPickupItem(PlayerPickupItemEvent event)
+	public void onPlayerPickupItem(EntityPickupItemEvent event)
 	{
-		ArenaPlayer ap = plugin.getArenaPlayer(event.getPlayer());
-		if (ap != null)
+		if (!(event.getEntity() instanceof Player player))
 		{
-			Arena arena = ap.getArena();
-			if (! arena.getConfig().isCanModifyWorld())
-			{
-				event.setCancelled(true);
-
-				// Dynamically clean up items
-				Item item = event.getItem();
-				if (arena.isInside(item.getLocation()))
-					item.remove();
-			}
+			return;
 		}
+
+		ArenaPlayer ap = plugin.getArenaPlayer(player);
+		if (ap == null)
+		{
+			return;
+		}
+
+		Arena arena = ap.getArena();
+		if (arena.getConfig().isCanModifyWorld())
+		{
+			return;
+		}
+
+		event.setCancelled(true);
+
+		// Dynamically clean up items
+		Item item = event.getItem();
+		if (arena.isInside(item.getLocation()))
+			item.remove();
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

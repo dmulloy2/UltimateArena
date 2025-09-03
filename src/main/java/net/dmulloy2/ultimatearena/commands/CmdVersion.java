@@ -39,9 +39,9 @@ public class CmdVersion extends UltimateArenaCommand
 	@Override
 	public void perform()
 	{
-		sendMessage("&3====[ &eUltimateArena &3]====");
-		sendMessage("&bVersion&e: {0}", plugin.getDescription().getVersion());
+		sendMessage("&3---- &eUltimateArena &3----");
+		sendMessage("&bVersion&e: {0}", plugin.getPluginMeta().getVersion());
 		sendMessage("&bAuthor&e: dmulloy2");
-		sendMessage("&bIssues&e: https://github.com/MineSworn/UltimateArena/issues");
+		sendMessage("&bIssues&e: https://github.com/dmulloy2/UltimateArena/issues");
 	}
 }

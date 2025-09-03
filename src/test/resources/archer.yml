@@ -2,25 +2,25 @@ armor:
   chestplate:
     type: minecraft:iron_chestplate
     amount: 1
-    enchants:
+    enchantments:
       minecraft:protection: 1
   leggings:
     type: minecraft:iron_leggings
     amount: 1
-    enchants:
+    enchantments:
       minecraft:protection: 1
   boots:
     type: minecraft:iron_boots
     amount: 1
-    enchants:
+    enchantments:
       minecraft:protection: 1
 tools:
   1:
     type: minecraft:bow
     amount: 1
-    enchants:
+    enchantments:
       minecraft:power: 2
-      minecraft:punch: 1
+      minecraft:arrow_knockback: 1
       minecraft:infinity: 1
   2:
     type: minecraft:arrow
@@ -28,7 +28,7 @@ tools:
   3:
     type: minecraft:iron_sword
     amount: 1
-    enchants:
+    enchantments:
       minecraft:sharpness: 2
   4:
     type: minecraft:golden_apple
@@ -37,9 +37,5 @@ tools:
     type: minecraft:slime_ball
     amount: 3
 useHelmet: true
-iconType: minecraft:bow
-title: "{'text':'Archer','color':'yellow'}"
-description:
-  - "{'text':'A ranged class that uses a bow and arrow to attack enemies from afar.','color':'white'}"
-helmetEnchants:
-  minecraft:protection: 4
+icon:
+  type: minecraft:bow

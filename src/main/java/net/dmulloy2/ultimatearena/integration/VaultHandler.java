@@ -17,22 +17,21 @@
  */
 package net.dmulloy2.ultimatearena.integration;
 
-import net.dmulloy2.swornapi.SwornPlugin;
-import net.dmulloy2.swornapi.integration.TypelessProvider;
-import net.dmulloy2.swornapi.util.ListUtil;
-import net.dmulloy2.swornapi.util.Util;
-import net.milkbowl.vault.chat.Chat;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
-import net.milkbowl.vault.permission.Permission;
+import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicesManager;
 
-import java.util.List;
-import java.util.logging.Level;
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.integration.TypelessProvider;
+import net.dmulloy2.swornapi.util.Util;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.permission.Permission;
 
 /**
  * Standard Vault integration handler
@@ -356,7 +355,7 @@ public class VaultHandler extends TypelessProvider
 		if (chat == null)
 			return null;
 
-		return ListUtil.toList(chat.getGroups());
+		return List.of(chat.getGroups());
 	}
 
 	/**

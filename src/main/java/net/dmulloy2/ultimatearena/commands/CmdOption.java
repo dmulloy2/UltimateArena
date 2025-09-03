@@ -22,16 +22,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 
-import net.dmulloy2.swornapi.types.StringJoiner;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.Util;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.api.ArenaType;
 import net.dmulloy2.ultimatearena.types.ArenaConfig;
 import net.dmulloy2.ultimatearena.types.ArenaZone;
 import net.dmulloy2.ultimatearena.types.Permission;
-import net.dmulloy2.swornapi.util.NumberUtil;
-import net.dmulloy2.swornapi.util.Util;
 
 /**
  * @author dmulloy2
@@ -65,7 +65,7 @@ public class CmdOption extends UltimateArenaCommand
 
 			for (Field field : options)
 			{
-				joiner.append(field.getName());
+				joiner.add(field.getName());
 			}
 
 			err("Unknown option \"&c{0}&4\"!", args[2]);
@@ -113,7 +113,7 @@ public class CmdOption extends UltimateArenaCommand
 
 			try
 			{
-				boolean accessible = option.isAccessible();
+				boolean accessible = option.canAccess(config);
 				option.setAccessible(true);
 
 				option.set(config, value);
@@ -144,7 +144,7 @@ public class CmdOption extends UltimateArenaCommand
 
 			try
 			{
-				boolean accessible = option.isAccessible();
+				boolean accessible = option.canAccess(config);
 				option.setAccessible(true);
 
 				option.set(config, value);

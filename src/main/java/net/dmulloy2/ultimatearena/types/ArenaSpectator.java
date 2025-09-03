@@ -26,13 +26,13 @@ import java.util.Objects;
 import net.dmulloy2.ultimatearena.Config;
 import net.dmulloy2.ultimatearena.UltimateArena;
 import net.dmulloy2.ultimatearena.arenas.Arena;
-import net.dmulloy2.swornapi.util.CompatUtil;
 import net.dmulloy2.swornapi.util.FormatUtil;
 
-import org.apache.commons.lang.Validate;
+import net.dmulloy2.swornapi.util.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -108,14 +108,14 @@ public final class ArenaSpectator
 		{
 			for (ArenaPlayer ap : arena.getActivePlayers())
 			{
-				CompatUtil.hidePlayer(ap.getPlayer(), plugin, player);
+				ap.getPlayer().hidePlayer(plugin, player);
 			}
 		}
 
 		// Heal them up
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
-		player.setHealth(CompatUtil.getMaxHealth(player));
+		player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
 
 		// Let them fly
 		player.setAllowFlight(Config.spectatorFlight);
@@ -134,14 +134,14 @@ public final class ArenaSpectator
 		{
 			for (ArenaPlayer ap : arena.getActivePlayers())
 			{
-				CompatUtil.showPlayer(ap.getPlayer(), plugin, player);
+				ap.getPlayer().showPlayer(plugin, player);
 			}
 
 			for (ArenaPlayer ap : arena.getInactivePlayers())
 			{
 				if (ap != null && ap.isOnline())
 				{
-					CompatUtil.showPlayer(ap.getPlayer(), plugin, player);
+					ap.getPlayer().showPlayer(plugin, player);
 				}
 			}
 		}
@@ -226,9 +226,8 @@ public final class ArenaSpectator
 	{
 		if (obj == this) return true;
 		
-		if (obj instanceof ArenaSpectator)
+		if (obj instanceof ArenaSpectator that)
 		{
-			ArenaSpectator that = (ArenaSpectator) obj;
 			return Objects.equals(uniqueId, that.uniqueId) &&
 					Objects.equals(arena, that.arena);
 		}
